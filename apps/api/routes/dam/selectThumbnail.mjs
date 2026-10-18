@@ -1,5 +1,5 @@
 // selectThumbnail.mjs - Complete Fixed Version with Safe Switching
-import { UpdateCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { UpdateCommand, GetCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 
 const TABLE_NAME = process.env.DYNAMO_ASSETS_TABLE_NAME;

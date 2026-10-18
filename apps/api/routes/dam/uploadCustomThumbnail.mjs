@@ -1,7 +1,7 @@
 // uploadCustomThumbnail.mjs - Fixed S3 Signature Issues
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { GetCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 import { createS3Client, publicObjectUrl } from '../../lib/storage.mjs';
 

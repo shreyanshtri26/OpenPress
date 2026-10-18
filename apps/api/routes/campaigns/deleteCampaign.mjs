@@ -1,4 +1,4 @@
-import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import { DeleteCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 
 const TABLE_NAME = process.env.DYNAMO_CAMPAIGN_TABLE_NAME;

@@ -1,4 +1,4 @@
-import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import { DeleteCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 import { ensureTableName, TABLE_NAME } from "./shared.mjs";
 

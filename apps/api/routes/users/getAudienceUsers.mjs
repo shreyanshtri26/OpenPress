@@ -1,4 +1,4 @@
-import { ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { ScanCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 import { AUDIENCE_TABLE_NAME, toAudienceClientUser } from "./audienceProfileHelpers.mjs";
 

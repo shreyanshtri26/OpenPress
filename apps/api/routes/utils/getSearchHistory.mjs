@@ -1,4 +1,4 @@
-import { ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { ScanCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 
 const SEARCH_HISTORY_TABLE = process.env.DYNAMO_SEARCH_HISTORY_TABLE || 'op_searchhistory';

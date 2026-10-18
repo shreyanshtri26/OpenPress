@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../../db/client.mjs";
 import { users } from "../../db/schema.mjs";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { UpdateCommand, GetCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { UpdateCommand, GetCommand, ScanCommand } from "../../db/commands.mjs";
 import { MediaConvertClient, CreateJobCommand } from "@aws-sdk/client-mediaconvert";
 import dynamoClient from "../../dynamoClient.mjs";
 import { spawn } from "child_process";

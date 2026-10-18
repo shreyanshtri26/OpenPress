@@ -2,9 +2,9 @@
 // Admin endpoint — JWT required.
 // Fetches all submissions for a survey from the responses table.
 
-import { ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { ScanCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
-import { GetCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand } from "../../db/commands.mjs";
 import { TABLE_NAME } from "./shared.mjs";
 
 const RESPONSES_TABLE = process.env.DYNAMO_SURVEY_TABLE_NAME

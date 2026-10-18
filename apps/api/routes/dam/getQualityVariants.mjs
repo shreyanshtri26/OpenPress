@@ -1,6 +1,6 @@
 // routes/dam/getQualityVariants.mjs - Complete Video Quality Variants API with Real-Time Status
 import { ListObjectsV2Command, HeadObjectCommand } from "@aws-sdk/client-s3";
-import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, UpdateCommand } from "../../db/commands.mjs";
 import { MediaConvertClient, GetJobCommand } from "@aws-sdk/client-mediaconvert";
 import dynamoClient from "../../dynamoClient.mjs";
 import { createS3Client, publicObjectUrl } from '../../lib/storage.mjs';

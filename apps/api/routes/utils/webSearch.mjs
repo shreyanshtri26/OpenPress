@@ -1,4 +1,4 @@
-import { PutCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 import { randomUUID } from "crypto";
 import { generateGrounded } from "../../lib/gemini.mjs";

@@ -1,6 +1,6 @@
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { isEnabled } from "../../lib/features.mjs";
-import { PutCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 import { randomUUID } from "crypto";
 

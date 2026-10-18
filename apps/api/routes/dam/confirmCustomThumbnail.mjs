@@ -1,6 +1,6 @@
 // confirmCustomThumbnail.mjs - Confirm and Activate Custom Thumbnail
 import { HeadObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { UpdateCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { UpdateCommand, GetCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 import { createS3Client, keyFromObjectUrl } from '../../lib/storage.mjs';
 

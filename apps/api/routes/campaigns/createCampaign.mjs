@@ -1,4 +1,4 @@
-import { PutCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, ScanCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 import crypto from "crypto";
 

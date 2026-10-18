@@ -1,6 +1,6 @@
 // generateSingleThumbnail.mjs - Fixed Version with Proper Error Handling
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
-import { UpdateCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { UpdateCommand, GetCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 import { spawn } from "child_process";
 import { createWriteStream, unlinkSync, statSync, existsSync, readFileSync } from "fs";

@@ -1,4 +1,4 @@
-import { GetCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand } from "../../db/commands.mjs";
 import { eq } from "drizzle-orm";
 import { db } from "../../db/client.mjs";
 import { pages } from "../../db/schema.mjs";

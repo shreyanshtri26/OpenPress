@@ -1,6 +1,6 @@
 // routes/dam/transcodingProcessor.mjs - FFmpeg Video Transcoding Processor
 import { GetObjectCommand, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
-import { UpdateCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { UpdateCommand, GetCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 import { spawn } from "child_process";
 import { createWriteStream, unlinkSync, statSync, existsSync, createReadStream, readdirSync } from "fs";

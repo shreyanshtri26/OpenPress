@@ -4,7 +4,6 @@
 // expressions with attribute_exists, attribute_not_exists, begins_with, contains, size, if_not_exists, list_append,
 // arithmetic, ADD, REMOVE, comparisons, BETWEEN, IN, AND/OR/NOT, Limit + ExclusiveStartKey paging.
 // ponytail: Scan/Query load the table's rows and filter in JS — fine for CMS-sized tables; add SQL filters if a table gets big.
-import { PutCommand, GetCommand, UpdateCommand, DeleteCommand, ScanCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { getClient } from './client.mjs';
 
 // client.mjs's `sql` export is a method-only proxy; tagged-template queries need the real client.
@@ -261,7 +260,6 @@ export function createDocStore() {
     if (!ok) throw conditionFailed();
   };
 
-  const COMMAND_CLASSES = { PutCommand, GetCommand, UpdateCommand, DeleteCommand, ScanCommand, QueryCommand };
   const commands = {
     async PutCommand(input) {
       const pk = pkOf(input.TableName, input.Item);
@@ -366,10 +364,8 @@ export function createDocStore() {
 
   return {
     async send(command) {
-      // instanceof, not constructor.name: bundlers minify class names in production.
-      const name = Object.keys(COMMAND_CLASSES).find((n) => command instanceof COMMAND_CLASSES[n]);
-      const run = commands[name];
-      if (!run) throw new Error(`Postgres document store does not support ${command?.constructor?.name}`);
+      const run = commands[command?.type];
+      if (!run) throw new Error(`Postgres document store does not support ${command?.type}`);
       return run(command.input);
     },
   };

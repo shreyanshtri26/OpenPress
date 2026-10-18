@@ -1,5 +1,5 @@
 // generateThumbnail.mjs - HYBRID APPROACH (MediaConvert + FFmpeg Fallback)
-import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, UpdateCommand } from "../../db/commands.mjs";
 import { MediaConvertClient, CreateJobCommand } from "@aws-sdk/client-mediaconvert";
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import dynamoClient from "../../dynamoClient.mjs";

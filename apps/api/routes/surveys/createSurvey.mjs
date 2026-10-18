@@ -1,4 +1,4 @@
-import { PutCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 import { ensureTableName, normalizeSurvey, TABLE_NAME, validateSurvey } from "./shared.mjs";
 

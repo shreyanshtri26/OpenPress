@@ -2,7 +2,7 @@
 // Public endpoint — no JWT required.
 // Fetches a single active survey by surveyId for the reader-facing form page.
 
-import { GetCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 import { ensureTableName, TABLE_NAME } from "./shared.mjs";
 

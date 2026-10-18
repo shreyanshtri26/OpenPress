@@ -1,4 +1,4 @@
-import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { UpdateCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 import crypto from "crypto";
 

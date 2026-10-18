@@ -1,4 +1,4 @@
-import { ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { ScanCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 
 const TABLE_NAME = process.env.DYNAMO_CONTACT_US_TABLE || "op_contact_submissions";

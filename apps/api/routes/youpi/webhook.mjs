@@ -3,7 +3,7 @@
 // YOUPI_WEBHOOK_SECRET. A confirmed support payment is stored in the supporters table; nothing else is trusted
 // from the browser, which only shows a thank-you message.
 import crypto from 'node:crypto';
-import { PutCommand } from '@aws-sdk/lib-dynamodb';
+import { PutCommand } from "../../db/commands.mjs";
 import dynamoClient from '../../dynamoClient.mjs';
 
 const TABLE = () => process.env.DYNAMO_SUPPORTERS_TABLE || 'op_supporters';

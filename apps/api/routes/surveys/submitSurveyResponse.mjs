@@ -2,7 +2,7 @@
 // Public endpoint — no JWT required.
 // Stores a respondent's answers and increments totalResponses on the survey.
 
-import { GetCommand, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, PutCommand, UpdateCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 import { ensureTableName, TABLE_NAME } from "./shared.mjs";
 import crypto from "crypto";

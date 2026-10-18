@@ -1,4 +1,4 @@
-import { GetCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 
 export const AUDIENCE_TABLE_NAME = process.env.DYNAMO_AUDIENCE_TABLE_NAME || "op_audience";

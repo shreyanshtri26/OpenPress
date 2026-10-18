@@ -1,4 +1,4 @@
-import { PutCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand } from "../../db/commands.mjs";
 import dynamoClient from "../../dynamoClient.mjs";
 
 const CHAT_TABLE = process.env.DYNAMO_SURVEY_CHAT_TABLE_NAME;
