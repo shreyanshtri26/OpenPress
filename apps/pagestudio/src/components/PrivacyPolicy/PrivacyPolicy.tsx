@@ -151,8 +151,8 @@ const DEFAULT_PRIVACY_CONTENT = `
         <div class="mb-4">
             <strong>8.5 Contact us:</strong> If you would like to access the personal data relating to you that we have stored, or to request correction of such personal data, or if you have any concerns regarding this Privacy Policy, please contact us by any of the means set out below:
             <div class="mt-4 p-6 bg-gray-50 border border-gray-200 font-share uppercase tracking-wider text-sm leading-relaxed">
-                <p class="font-bold mb-2">OpenPress IN</p>
-                <p class="mt-4">Email: <a href="mailto:editor@openpress.in" class="underline lowercase font-bold">editor@openpress.in</a></p>
+                <p class="font-bold mb-2">OpenPress</p>
+                <p class="mt-4">Questions about this policy? Contact the editor of this publication.</p>
             </div>
         </div>
         <p class="mb-4">

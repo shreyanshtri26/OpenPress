@@ -407,7 +407,7 @@ const shareCardConfig = {
   },
   defaultProps: {
     id: 'share-card',
-    title: 'OpenPress | News and Identity for Indians in India',
+    title: 'OpenPress | Free, independent news for everyone',
     url: typeof window !== 'undefined' ? window.location.href : '',
   },
   render: (props: { id?: string; title: string; url: string }) => (

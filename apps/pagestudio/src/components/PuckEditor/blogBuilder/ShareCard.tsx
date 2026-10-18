@@ -9,7 +9,7 @@ export type CardProps = {
 };
 
 export default function ShareCard({
-  title = "OpenPress | News and Identity for Indians in India",
+  title = "OpenPress | Free, independent news for everyone",
   url = typeof window !== 'undefined' ? window.location.href : '',
   onShare
 }: CardProps) {

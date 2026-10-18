@@ -4606,7 +4606,7 @@ export function renderFooter(props) {
  * ------------------------------------------------ */
 
 export function renderBottomCardList(props, storiesById) {
-  // In Media Tech, we use storiesById as the library of stories for initial render.
+  // In OpenPress, we use storiesById as the library of stories for initial render.
   const rawStories = Object.values(storiesById || {});
 
   // Support author filtering by authorId or authorName (integrated from openPress-PageBuilder)

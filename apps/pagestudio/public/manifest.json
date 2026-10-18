@@ -47,14 +47,14 @@
       "sizes": "640x926",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "OpenPress homepage on mobile — news and current affairs"
+      "label": "OpenPress homepage on mobile — independent news"
     },
     {
       "src": "/pwa-screenshot-desktop.png",
       "sizes": "1280x800",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "OpenPress homepage on desktop — Indian community news"
+      "label": "OpenPress homepage on desktop — independent news"
     }
   ],
   "related_applications": [],
