@@ -96,7 +96,7 @@ export function renderDevLoginPageHtml() {
         </button>
 
         <!-- Divider -->
-        <div class="relative flex py-2 items-center">
+        <div id="auth-divider" class="relative flex py-2 items-center">
           <div class="flex-grow border-t border-neutral-200"></div>
           <span class="flex-shrink mx-3 text-neutral-400 text-[11px] uppercase tracking-wider font-share">Or with email</span>
           <div class="flex-grow border-t border-neutral-200"></div>
@@ -136,24 +136,32 @@ export function renderDevLoginPageHtml() {
           </button>
         </form>
 
-        <!-- Instant Reader Access (Demo / 1-Click) -->
-        <div class="pt-2">
-          <button
-            type="button"
-            onclick="handleQuickReaderLogin()"
-            class="w-full min-h-[44px] py-2.5 px-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-xs font-share font-medium rounded-xl border border-neutral-200 transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
-          >
-            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-            <span>Instant Neon Auth Reader Access</span>
+        <!-- Email and password (Neon Auth): sign in or create an account -->
+        <form id="neon-form" onsubmit="handleNeonEmailAuth(event)" class="hidden space-y-3.5">
+          <div id="neon-name-row" class="hidden">
+            <label for="neon-name" class="block text-xs font-semibold text-neutral-700 uppercase tracking-wider mb-1.5 font-share">Your Name</label>
+            <input id="neon-name" type="text" autocomplete="name" placeholder="e.g. Jane Doe" class="w-full px-3.5 py-3 bg-neutral-50 border border-neutral-300 rounded-xl text-base sm:text-sm text-neutral-900 focus:outline-none focus:border-neutral-900 focus:ring-2 focus:ring-neutral-200" />
+          </div>
+          <div>
+            <label for="neon-email" class="block text-xs font-semibold text-neutral-700 uppercase tracking-wider mb-1.5 font-share">Email</label>
+            <input id="neon-email" type="email" required autocomplete="email" placeholder="you@example.com" class="w-full px-3.5 py-3 bg-neutral-50 border border-neutral-300 rounded-xl text-base sm:text-sm text-neutral-900 focus:outline-none focus:border-neutral-900 focus:ring-2 focus:ring-neutral-200" />
+          </div>
+          <div>
+            <label for="neon-password" class="block text-xs font-semibold text-neutral-700 uppercase tracking-wider mb-1.5 font-share">Password</label>
+            <input id="neon-password" type="password" required minlength="8" autocomplete="current-password" placeholder="At least 8 characters" class="w-full px-3.5 py-3 bg-neutral-50 border border-neutral-300 rounded-xl text-base sm:text-sm text-neutral-900 focus:outline-none focus:border-neutral-900 focus:ring-2 focus:ring-neutral-200" />
+          </div>
+          <button id="neon-submit-btn" type="submit" class="w-full min-h-[46px] py-3 px-4 bg-neutral-900 hover:bg-black text-white font-share font-semibold text-sm rounded-xl shadow-sm transition-colors">
+            <span>Sign in</span>
           </button>
-        </div>
+        </form>
+
       </div>
 
-      <!-- Strict Table Isolation Disclaimer -->
-      <div class="mt-6 pt-5 border-t border-neutral-100 text-center space-y-2">
-        <p class="text-[11px] text-neutral-500 leading-normal">
-          Strict Public Reader Access. Internal OpenPress CMS staff (Super Users, Admins, Editors, and Journalists) log in via the 
-          <a href="http://localhost:5173/login" class="font-semibold text-neutral-900 underline hover:text-black">CMS Dashboard</a>.
+      <!-- Switch between signing in and creating an account (Neon Auth) -->
+      <div id="auth-mode-toggle" class="hidden mt-6 pt-5 border-t border-neutral-100 text-center">
+        <p class="text-sm text-neutral-600">
+          <span id="auth-mode-question">New here?</span>
+          <button type="button" id="auth-mode-switch" onclick="setAuthMode()" class="font-semibold text-neutral-900 underline hover:text-black">Create an account</button>
         </p>
       </div>
 
@@ -171,8 +179,8 @@ export function renderDevLoginPageHtml() {
       // Set by scripts/publish-login.mjs in production. Without it the page keeps the local demo sign-in.
       const neonAuth = (window.__NEON_AUTH_URL__ || '').replace(/[/]+$/, '');
       if (neonAuth) {
-        var form = document.getElementById('reader-login-form');
-        if (form) [form.previousElementSibling, form, form.nextElementSibling].forEach(function(el) { if (el) el.style.display = 'none'; });
+        ['auth-divider', 'reader-login-form'].forEach(function(id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; });
+        ['neon-form', 'auth-mode-toggle'].forEach(function(id) { var el = document.getElementById(id); if (el) el.classList.remove('hidden'); });
       }
 
       function showError(msg) {
@@ -259,16 +267,6 @@ export function renderDevLoginPageHtml() {
           showError(err.message || 'Failed to sign in. Please try again.');
           if (btn) { btn.disabled = false; btn.innerHTML = '<span>Sign In to ePaper</span>'; }
         }
-      };
-
-      // 1-Click Instant Reader Demo
-      window.handleQuickReaderLogin = async function() {
-        const randomNum = Math.floor(1000 + Math.random() * 9000);
-        const email = 'subscriber.' + randomNum + '@openpress.reader';
-        const name = 'ePaper Reader #' + randomNum;
-        if (document.getElementById('reader-email')) document.getElementById('reader-email').value = email;
-        if (document.getElementById('reader-name')) document.getElementById('reader-name').value = name;
-        await window.handleEmailAuth();
       };
 
       // Handle Google OAuth Redirect Token in URL Hash
@@ -370,14 +368,12 @@ export function renderDevLoginPageHtml() {
       };
 
       // Back from Google: Neon Auth set its session cookie; trade it for a signed token, then let the API verify it.
-      async function completeNeonSignIn() {
-        if (!neonAuth || urlParams.get('neon') !== '1') return;
-        const btn = document.getElementById('google-signin-btn');
-        if (btn) { btn.disabled = true; btn.textContent = 'Finishing sign in...'; }
+      // Trade Neon Auth's session cookie for a signed token and let the API verify it (it ignores anything else).
+      async function finishNeonSession(button, idleLabel) {
         try {
           const tokenRes = await fetch(neonAuth + '/token', { credentials: 'include' });
           const tokenData = tokenRes.ok ? await tokenRes.json() : null;
-          if (!tokenData || !tokenData.token) throw new Error('Google sign-in did not finish. If your browser blocks third-party cookies, allow them for this site and try again.');
+          if (!tokenData || !tokenData.token) throw new Error('Sign in did not finish. If your browser blocks third-party cookies, allow them for this site and try again.');
           const res = await fetch(apiBase + '/epaper/auth/sync', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tokenData.token },
@@ -388,9 +384,57 @@ export function renderDevLoginPageHtml() {
           await completeAuth(data);
         } catch (err) {
           showError(err.message || 'Sign in failed.');
-          if (btn) { btn.disabled = false; btn.textContent = 'Continue with Google'; }
+          if (button) { button.disabled = false; button.textContent = idleLabel; }
         }
       }
+
+      // Back from Google.
+      async function completeNeonSignIn() {
+        if (!neonAuth || urlParams.get('neon') !== '1') return;
+        const btn = document.getElementById('google-signin-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Finishing sign in...'; }
+        await finishNeonSession(btn, 'Continue with Google');
+      }
+
+      var authMode = 'signin';
+      window.setAuthMode = function() {
+        authMode = authMode === 'signin' ? 'signup' : 'signin';
+        var signup = authMode === 'signup';
+        document.getElementById('neon-name-row').classList.toggle('hidden', !signup);
+        document.querySelector('#neon-submit-btn span').textContent = signup ? 'Create account' : 'Sign in';
+        document.getElementById('neon-password').setAttribute('autocomplete', signup ? 'new-password' : 'current-password');
+        document.getElementById('auth-mode-question').textContent = signup ? 'Already have an account?' : 'New here?';
+        document.getElementById('auth-mode-switch').textContent = signup ? 'Sign in' : 'Create an account';
+        clearError();
+      };
+
+      window.handleNeonEmailAuth = async function(e) {
+        if (e) e.preventDefault();
+        clearError();
+        var signup = authMode === 'signup';
+        var email = document.getElementById('neon-email').value.trim();
+        var password = document.getElementById('neon-password').value;
+        var name = document.getElementById('neon-name').value.trim() || email.split('@')[0];
+        var btn = document.getElementById('neon-submit-btn');
+        var idle = signup ? 'Create account' : 'Sign in';
+        btn.disabled = true; btn.querySelector('span').textContent = signup ? 'Creating account...' : 'Signing in...';
+        try {
+          var res = await fetch(neonAuth + (signup ? '/sign-up/email' : '/sign-in/email'), {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(signup ? { email: email, password: password, name: name } : { email: email, password: password })
+          });
+          var data = await res.json().catch(function() { return {}; });
+          if (!res.ok) throw new Error(data.message || (signup ? 'Could not create the account.' : 'Wrong email or password.'));
+        } catch (err) {
+          showError(err.message);
+          btn.disabled = false; btn.querySelector('span').textContent = idle;
+          return;
+        }
+        await finishNeonSession(null, '');
+        btn.disabled = false; btn.querySelector('span').textContent = idle;
+      };
 
       // Check if user is already authenticated
       completeNeonSignIn();
