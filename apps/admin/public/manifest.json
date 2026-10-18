@@ -1,56 +1,76 @@
 {
-    "id": "/",
-    "name": "OpenPress | News and Identity for Indians",
-    "short_name": "OpenPress",
-    "description": "OpenPress is an independent India-based news and current affairs site covering identity, politics, crime and culture.",
-    "start_url": "/",
-    "scope": "/",
-    "display": "standalone",
-    "orientation": "portrait-primary",
-    "background_color": "#ffffff",
-    "theme_color": "#111827",
-    "lang": "en-IN",
-    "dir": "ltr",
-    "categories": ["news", "magazines", "lifestyle"],
-    "icons": [
+  "id": "/",
+  "name": "OpenPress | Free, independent news for everyone",
+  "short_name": "OpenPress",
+  "description": "OpenPress is an open-source newsroom CMS and publishing platform.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#111827",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": [
+    "news",
+    "magazines"
+  ],
+  "icons": [
+    {
+      "src": "/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/pwa-icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/pwa-screenshot-mobile.png",
+      "sizes": "640x926",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "OpenPress homepage on mobile — news and current affairs"
+    },
+    {
+      "src": "/pwa-screenshot-desktop.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "OpenPress homepage on desktop — Indian community news"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Latest News",
+      "short_name": "News",
+      "description": "Read the latest stories",
+      "url": "/",
+      "icons": [
         {
-            "src": "/openpress-logo.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any maskable"
-        },
-        {
-            "src": "/openpress-logo.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any maskable"
+          "src": "/pwa-icon-192.png",
+          "sizes": "192x192"
         }
-    ],
-    "screenshots": [
-        {
-            "src": "/pwa-screenshot-mobile.png",
-            "sizes": "640x926",
-            "type": "image/png",
-            "form_factor": "narrow",
-            "label": "OpenPress homepage on mobile — news and current affairs"
-        },
-        {
-            "src": "/pwa-screenshot-desktop.png",
-            "sizes": "1280x800",
-            "type": "image/png",
-            "form_factor": "wide",
-            "label": "OpenPress homepage on desktop — Indian community news"
-        }
-    ],
-    "related_applications": [],
-    "prefer_related_applications": false,
-    "shortcuts": [
-        {
-            "name": "Latest News",
-            "short_name": "News",
-            "description": "Read the latest news from the Indian community",
-            "url": "/",
-            "icons": [{ "src": "/openpress-logo.png", "sizes": "192x192" }]
-        }
-    ]
+      ]
+    }
+  ]
 }

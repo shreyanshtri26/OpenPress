@@ -5,6 +5,10 @@
 **A free, open publishing platform for independent journalism.**
 Write, review, design and publish a full newspaper website, with no paywall and no per-seat licences.
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+**Live:** [Newspaper and ePaper](https://openpress-news.pages.dev) · [Newsroom dashboard (write and publish stories)](https://openpress-publish.pages.dev)
+
 </div>
 
 ---
@@ -272,6 +276,11 @@ There is one long-lived branch, `main`, and one environment, production. Work on
 - The privacy policy text is placeholder and needs a legal rewrite before launch.
 - Local video thumbnails and transcoding need `ffmpeg`. Without it the optional features stay off.
 - Puck prints a deprecation notice for its older drop zones. Migrating the blocks to slots is a separate project.
+
+## License
+
+OpenPress is open source under the [MIT License](LICENSE): use it, change it, run it commercially, and share it, as long as the copyright notice stays.
+Contributions are welcome: open an issue or a pull request into `main`.
 
 ## Documentation map
 

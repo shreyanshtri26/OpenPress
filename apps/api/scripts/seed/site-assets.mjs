@@ -22,8 +22,9 @@ const FILES = [
   "pwa-icon-192-maskable.png",
   "pwa-icon-512.png",
   "pwa-icon-512-maskable.png",
+  "manifest.json",
 ];
-const TYPES = { ".png": "image/png", ".ico": "image/x-icon" };
+const TYPES = { ".png": "image/png", ".ico": "image/x-icon", ".json": "application/manifest+json" };
 
 export async function seedSiteAssets() {
   const bucket = process.env.S3_WEBSITE_BUCKET_NAME;

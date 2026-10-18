@@ -189,7 +189,7 @@ export function renderMastheadNavbar({
       <button
         onclick="closeMobileMenu(); handleNavClick('${label}', '${slug}')"
         data-section="${label}"
-        class="text-left py-3 px-4 font-share uppercase transition-colors shrink-0 ${isActive ? 'bg-black text-white' : 'hover:bg-gray-100'}"
+        class="text-left py-3 px-4 rounded-xl font-share uppercase transition-colors shrink-0 ${isActive ? 'bg-black text-white' : 'hover:bg-gray-100'}"
       >
         ${label}
       </button>
@@ -440,16 +440,11 @@ export function renderMastheadNavbar({
             </svg>
           </button>
 
-          <!-- Brand logo in Center -->
-          <img
-            src="/openpress-logo-full-nobg-trim.png"
-            alt="OpenPress"
-            class="h-10 w-auto max-w-[110px] min-w-0 object-contain select-none brightness-0 invert"
-            onerror="this.onerror=null; (function(img){ const h = window.location.hostname; let o = window.location.origin; img.src = o + '/openpress-logo-full-nobg-trim.png'; })(this);"
-          />
+          <!-- Title in Center (the page header above already shows the logo) -->
+          <span class="font-share text-sm tracking-[0.2em] uppercase text-white">Menu</span>
 
           <!-- Right Avatar/Initials or SIGN IN button -->
-          <div id="drawer-avatar-container" class="flex items-center justify-end">
+          <div id="drawer-avatar-container" class="flex items-center justify-end min-w-[40px]">
             ${resolvedShowSignIn ? `
             <button
               id="mobile-drawer-login-btn"
@@ -465,7 +460,7 @@ export function renderMastheadNavbar({
         </div>
 
         <!-- Search Input Box below it -->
-        <div id="drawer-search-container" class="relative flex items-center bg-neutral-800 text-neutral-400 rounded-lg px-4 min-h-[44px] text-base transition-all duration-200 border border-neutral-600 focus-within:border-white">
+        <div id="drawer-search-container" class="relative flex items-center bg-neutral-800 text-neutral-400 rounded-xl px-4 min-h-[44px] text-base transition-all duration-200 border border-neutral-600 focus-within:border-white">
           <svg id="drawer-search-icon" class="w-4 h-4 mr-2.5 text-neutral-450 flex-shrink-0 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -500,7 +495,7 @@ export function renderMastheadNavbar({
               <div class="flex-1 min-w-0">
                 <div id="drawer-reader-name" class="font-bold text-sm text-neutral-900 truncate">ePaper Reader</div>
                 <div id="drawer-reader-email" class="text-xs text-neutral-500 truncate"></div>
-                <span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 rounded-full">Subscriber</span>
+                <span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 rounded-full">Signed in</span>
               </div>
             </div>
             <button onclick="closeMobileMenu(); handleLogout();" type="button" class="mt-3 w-full py-2 px-3 text-xs font-semibold text-red-600 bg-white border border-neutral-300 rounded-lg hover:bg-red-50 text-center transition cursor-pointer">
@@ -1024,7 +1019,7 @@ export function renderMastheadNavbar({
       if (loginBtn) {
         var token = localStorage.getItem('website_token') || getCookie('website_token');
         if (window.showSignIn && !token) {
-          loginBtn.style.display = (isLarge && t > 0.05) ? 'flex' : 'none';
+          loginBtn.style.display = 'flex';
         } else {
           loginBtn.style.display = 'none';
         }
@@ -1128,7 +1123,7 @@ export function renderMastheadNavbar({
           header.style.borderBottom = '';
         }
         var loginBtn = document.getElementById('login-btn');
-        if (loginBtn) loginBtn.style.display = 'none';
+        if (loginBtn) loginBtn.style.display = (window.showSignIn && !(localStorage.getItem('website_token') || getCookie('website_token'))) ? 'flex' : 'none';
         /* Clear heights set by _setNavVisual on desktop so Tailwind classes
            take over when the viewport is resized to mobile. */
         document.querySelectorAll('.nav-btn').forEach(function(btn) { btn.style.height = ''; });
@@ -1321,13 +1316,7 @@ export function renderMastheadNavbar({
               if (initialEl) initialEl.classList.remove('hidden');
             }
 
-            if (drawerAvatarContainer) {
-              if (picture) {
-                drawerAvatarContainer.innerHTML = '<button onclick="closeMobileMenu(); window.toggleAccountDropdown();" class="w-8 h-8 rounded-full overflow-hidden border border-neutral-700 bg-neutral-900 flex items-center justify-center animate-none cursor-pointer"><img src="' + picture + '" class="w-full h-full object-cover" /></button>';
-              } else {
-                drawerAvatarContainer.innerHTML = '<button onclick="closeMobileMenu(); window.toggleAccountDropdown();" class="w-8 h-8 rounded-full bg-white text-black font-merriweather font-black flex items-center justify-center text-sm select-none animate-none cursor-pointer">' + initial + '</button>';
-              }
-            }
+            if (drawerAvatarContainer) drawerAvatarContainer.innerHTML = '';
 
             const drawerCard = document.getElementById('drawer-reader-card');
             if (drawerCard) {
@@ -1353,9 +1342,7 @@ export function renderMastheadNavbar({
           if (mobileAccountContainer) mobileAccountContainer.style.display = 'flex';
         } else {
           if (loginBtn) {
-            const isLarge = window.innerWidth >= 1024;
-            const hasScrolled = isLarge && (_navRawT > 0.05);
-            loginBtn.style.display = (window.showSignIn && hasScrolled) ? 'flex' : 'none';
+            loginBtn.style.display = window.showSignIn ? 'flex' : 'none';
           }
           if (bannerLoginBtn) bannerLoginBtn.style.display = 'inline-flex';
           if (accountContainer) accountContainer.style.display = 'none';
