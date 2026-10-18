@@ -1,8 +1,14 @@
 # One-off, manual: seeds the production database and website bucket with the defaults a new newsroom needs
-# (taxonomies incl. section colors, brand files for published pages). Safe to re-run; demo content is not seeded.
+# (taxonomies incl. section colors, brand files for published pages). Safe to re-run. Sample stories and pages only with the demo input.
 name: Seed Production
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      demo:
+        description: Also seed sample stories, authors and page layouts (authors get a random password nobody knows)
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -24,5 +30,9 @@ jobs:
         env: { API_ENV_FILE: '${{ secrets.API_ENV_FILE }}' }
       - run: npm run seed:taxonomies
       - run: npm run seed:site-assets
+      - if: inputs.demo
+        run: |
+          export SEED_USER_PASSWORD="$(openssl rand -hex 24)"
+          npm run seed:users && npm run seed:assets && npm run seed:stories && npm run seed:pages
       - if: always()
         run: rm -f .env.local

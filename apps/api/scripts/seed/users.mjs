@@ -63,7 +63,7 @@ async function seedUsers() {
       continue;
     }
 
-    const hashedPassword = await bcrypt.hash('password123', 10);
+    const hashedPassword = await bcrypt.hash(process.env.SEED_USER_PASSWORD || 'password123', 10);
     const userId = crypto.randomUUID();
 
     await db.insert(users).values({
