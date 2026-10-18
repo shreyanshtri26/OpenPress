@@ -38,7 +38,7 @@ const home = () =>
       "thumbnail-grid:thumbnail-grid-box-1": [card("StoryCard", "thumb-1", 7)],
       "thumbnail-grid:thumbnail-grid-box-2": [card("StoryCard", "thumb-2", 8)],
       "thumbnail-grid:thumbnail-grid-box-3": [card("StoryCard", "thumb-3", 9)],
-      "popular-grid:popular-grid-left": [{ type: "MostPopularTable", props: { id: "popular-table" } }],
+      "popular-grid:popular-grid-left": [{ type: "MostPopularTable", props: { id: "popular-table", items: Array.from({ length: 10 }, (_, i) => ({ number: i + 1, text: `Top story ${i + 1}`, storyId: STORY(i + 1) })) } }],
       "multimedia-grid:multimedia-grid-left": [card("StoryCard", "multimedia-0", 10)],
       "all-stories-grid:all-stories-grid-left": [card("MainCard", "all-main", 11)],
       "all-stories-grid:all-stories-grid-right-top-1": [card("StoryCard", "all-right-1", 12)],

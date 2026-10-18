@@ -133,9 +133,9 @@ a.block:hover { opacity: 1 !important; }
 p.font-share.uppercase, div.font-share.uppercase { color: var(--chip, var(--op-muted)) !important; letter-spacing: 0.04em; font-weight: 600; }
 
 /* Headlines and summaries */
-.font-libre.font-extrabold { font-weight: 700 !important; letter-spacing: -0.025em; line-height: 1.12 !important; color: var(--op-text); }
+.font-libre.font-extrabold { font-weight: 700 !important; letter-spacing: -0.025em; line-height: 1.12 !important; color: var(--card-title, var(--op-text)); }
 .font-libre { letter-spacing: -0.02em; }
-[class*="font-[Merriweather]"] { color: var(--op-muted); font-weight: 400; line-height: 1.5; }
+[class*="font-[Merriweather]"] { color: var(--card-text, var(--op-muted)); font-weight: 400; line-height: 1.5; }
 
 /* Cards with a text panel over the image (main / story card): floating rounded panel. */
 .relative.w-full.block.bg-white > div[class*="-mt-[50px]"] { border-radius: 20px; box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.18); }

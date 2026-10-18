@@ -24,14 +24,28 @@ export const withAccentColor = (blocks: Record<string, any>): Record<string, any
                 <ColorSelect value={value ?? ''} onChange={onChange} defaultColor="#6e6e73" label="Accent colour" />
               ),
             },
+            titleColor: {
+              type: 'custom',
+              label: 'Title colour',
+              render: ({ value, onChange }: { value?: string; onChange: (next: string) => void }) => (
+                <ColorSelect value={value ?? ''} onChange={onChange} defaultColor="#1d1d1f" label="Title colour" />
+              ),
+            },
+            textColor: {
+              type: 'custom',
+              label: 'Paragraph colour',
+              render: ({ value, onChange }: { value?: string; onChange: (next: string) => void }) => (
+                <ColorSelect value={value ?? ''} onChange={onChange} defaultColor="#6e6e73" label="Paragraph colour" />
+              ),
+            },
           },
           render: (props: any): ReactNode => {
             const out = block.render(props)
-            return HEX.test(props?.accentColor ?? '') ? (
-              <div style={{ display: 'contents', ['--chip' as any]: props.accentColor }}>{out}</div>
-            ) : (
-              out
-            )
+            const vars: Record<string, string> = {}
+            if (HEX.test(props?.accentColor ?? '')) vars['--chip'] = props.accentColor
+            if (HEX.test(props?.titleColor ?? '')) vars['--card-title'] = props.titleColor
+            if (HEX.test(props?.textColor ?? '')) vars['--card-text'] = props.textColor
+            return Object.keys(vars).length ? <div style={{ display: 'contents', ...vars } as any}>{out}</div> : out
           },
         },
       ]

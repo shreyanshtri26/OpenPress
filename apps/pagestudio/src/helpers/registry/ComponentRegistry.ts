@@ -533,6 +533,8 @@ for (const key of Object.keys(ComponentRegistry)) {
   const render = ComponentRegistry[key]
   ComponentRegistry[key] = (props: any, ctx: any) => {
     const html = render(props, ctx)
-    return HEX_COLOR.test(props?.accentColor ?? '') ? `<div style="display:contents;--chip:${props.accentColor}">${html}</div>` : html
+    const vars = [['--chip', props?.accentColor], ['--card-title', props?.titleColor], ['--card-text', props?.textColor]]
+      .filter(([, v]) => HEX_COLOR.test(v ?? '')).map(([k, v]) => `${k}:${v}`).join(';')
+    return vars ? `<div style="display:contents;${vars}">${html}</div>` : html
   }
 }

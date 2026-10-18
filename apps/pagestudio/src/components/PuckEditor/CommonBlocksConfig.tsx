@@ -287,7 +287,7 @@ export const commonBlocks: Record<string, any> = {
         label: 'Banner Text Color',
         type: 'custom',
         render: ({ value, onChange }: { value?: string; onChange: (next: string) => void }) => (
-          <ColorSelect value={value ?? ''} onChange={onChange} defaultColor="#000000" label="Banner Text Color" />
+          <ColorSelect value={value ?? ''} onChange={onChange} defaultColor="#FFFFFF" label="Banner Text Color" />
         ),
       },
       // Buttons Config
