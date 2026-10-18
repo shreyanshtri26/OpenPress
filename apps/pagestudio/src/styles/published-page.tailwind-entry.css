@@ -164,8 +164,10 @@ html, body { overflow-x: clip; }
 [data-puck-share]:hover, [data-puck-share-card-button]:hover { background: var(--op-surface) !important; }
 
 
-/* One Sign In: the header button (all widths). The banner and menu drawer copies stay hidden. */
-#banner-login-btn, #mobile-drawer-login-btn { display: none !important; }
+/* One Sign In: in the menu drawer on phones, in the header from the sm breakpoint up. The banner's copy is always hidden. */
+#banner-login-btn { display: none !important; }
+@media (max-width: 639px) { #login-btn { display: none !important; } #mobile-drawer-login-btn { display: inline-flex !important; align-items: center; } }
+@media (min-width: 640px) { #mobile-drawer-login-btn { display: none !important; } }
 
 /* Mobile menu: every control is the same rounded rectangle (the global pill rule for .bg-black must not make the active item an oval). */
 #mobile-menu-drawer button[data-section], #drawer-search-container { border-radius: 12px !important; }

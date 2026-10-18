@@ -468,8 +468,9 @@ export function renderMastheadNavbar({
   </div>
 
   <!-- Mobile menu drawer -->
+  <div id="mobile-menu-dim" onclick="closeMobileMenu()" class="sm:hidden fixed inset-0 z-[59] bg-black/60 transition-opacity duration-300 opacity-0 pointer-events-none" style="-webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);"></div>
   <div id="mobile-menu-overlay" class="sm:hidden fixed inset-x-0 bottom-0 z-[60] flex justify-end transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div class="absolute inset-0 bg-black/50" onclick="closeMobileMenu()"></div>
+    <div class="absolute inset-0" onclick="closeMobileMenu()"></div>
     <div id="mobile-menu-drawer" class="relative w-[75%] max-w-sm bg-white h-full overflow-y-auto shadow-xl flex flex-col transition-transform duration-300 translate-x-full">
       <!-- Header section (Black background) -->
       <div class="bg-white text-black px-4 pt-4 pb-3 flex flex-col gap-3 shrink-0 border-b border-neutral-200">
@@ -1228,6 +1229,8 @@ export function renderMastheadNavbar({
         overlay.style.height = 'calc(100dvh - ' + topOffset + 'px)';
         overlay.classList.remove('opacity-0', 'pointer-events-none');
         overlay.classList.add('opacity-100', 'pointer-events-auto');
+        var dim = document.getElementById('mobile-menu-dim');
+        if (dim) { dim.classList.remove('opacity-0', 'pointer-events-none'); dim.classList.add('opacity-100', 'pointer-events-auto'); }
         drawer.classList.remove('translate-x-full');
         drawer.classList.add('translate-x-0');
         document.body.style.overflow = 'hidden';
@@ -1243,6 +1246,8 @@ export function renderMastheadNavbar({
       if (overlay && drawer) {
         overlay.classList.add('opacity-0', 'pointer-events-none');
         overlay.classList.remove('opacity-100', 'pointer-events-auto');
+        var dim = document.getElementById('mobile-menu-dim');
+        if (dim) { dim.classList.add('opacity-0', 'pointer-events-none'); dim.classList.remove('opacity-100', 'pointer-events-auto'); }
         drawer.classList.add('translate-x-full');
         drawer.classList.remove('translate-x-0');
         document.body.style.overflow = 'unset';
