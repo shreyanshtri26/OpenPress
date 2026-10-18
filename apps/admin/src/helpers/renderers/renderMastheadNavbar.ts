@@ -467,7 +467,19 @@ export function renderMastheadNavbar({
 
   </div>
 
-  <!-- Mobile menu drawer -->
+  <!-- Desktop Hamburger Menu dropdown -->
+  ${showHamburger ? `
+  <div id="desktop-hamburger-menu" class="hidden absolute top-full left-0 w-full bg-white z-50 shadow-lg border-t">
+    <div class="mx-auto w-[84%] py-6">
+      <div class="grid grid-cols-5 gap-4">
+        ${overflowSections.map(renderDesktopMenuItem).join('')}
+      </div>
+    </div>
+  </div>
+  ` : ''}
+</header>
+
+  <!-- Mobile menu drawer: outside <header>, whose backdrop-filter would make these fixed layers relative to the header instead of the viewport -->
   <div id="mobile-menu-dim" onclick="closeMobileMenu()" class="sm:hidden fixed inset-0 z-[59] bg-black/60 transition-opacity duration-300 opacity-0 pointer-events-none" style="-webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);"></div>
   <div id="mobile-menu-overlay" class="sm:hidden fixed inset-x-0 bottom-0 z-[60] flex justify-end transition-opacity duration-300 opacity-0 pointer-events-none">
     <div class="absolute inset-0" onclick="closeMobileMenu()"></div>
@@ -590,17 +602,7 @@ export function renderMastheadNavbar({
     </div>
   </div>
 
-  <!-- Desktop Hamburger Menu dropdown -->
-  ${showHamburger ? `
-  <div id="desktop-hamburger-menu" class="hidden absolute top-full left-0 w-full bg-white z-50 shadow-lg border-t">
-    <div class="mx-auto w-[84%] py-6">
-      <div class="grid grid-cols-5 gap-4">
-        ${overflowSections.map(renderDesktopMenuItem).join('')}
-      </div>
-    </div>
-  </div>
-  ` : ''}
-</header>
+
 
 <!-- Search overlay (outside <header> to avoid stacking context conflicts) -->
 <div id="search-overlay" class="hidden fixed inset-0 z-[200] flex-col bg-white" style="height:100dvh">
