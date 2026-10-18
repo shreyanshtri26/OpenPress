@@ -1,0 +1,28 @@
+# One-off, manual: seeds the production database and website bucket with the defaults a new newsroom needs
+# (taxonomies incl. section colors, brand files for published pages). Safe to re-run; demo content is not seeded.
+name: Seed Production
+
+on: workflow_dispatch
+
+permissions:
+  contents: read
+
+jobs:
+  seed:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    defaults: { run: { working-directory: apps/api } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - run: npm ci
+        working-directory: .
+      - name: Write env file
+        run: printf '%s\n' "$API_ENV_FILE" > .env.local
+        env: { API_ENV_FILE: '${{ secrets.API_ENV_FILE }}' }
+      - run: npm run seed:taxonomies
+      - run: npm run seed:site-assets
+      - if: always()
+        run: rm -f .env.local
