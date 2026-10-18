@@ -253,11 +253,11 @@ GitHub Actions are in `.github/workflows`:
 
 | What | Hosted on | Address |
 | --- | --- | --- |
-| Newsroom dashboard and Page Studio (`apps/admin`) | Cloudflare Pages, project `openpress-dashboard` | `https://openpress-dashboard.pages.dev` |
-| Public newspaper (`apps/site`) | Cloudflare Worker `openpress-site`, reading the published pages from the website bucket | `https://openpress-site.<your-workers-subdomain>.workers.dev` |
+| Newsroom dashboard and Page Studio (`apps/admin`) | Cloudflare Pages, project `openpress-publish` | `https://openpress-publish.pages.dev` |
+| Public newspaper (`apps/site`) | Cloudflare Pages project `openpress-news`, reading the published pages from the website bucket | `https://openpress-news.pages.dev` |
 | API (`apps/api`) | Neon Functions | the function's Neon URL |
 
-Set `VITE_SITE_BASE_URL` and `VITE_CANONICAL_URL` (admin build) and `SITE_URL` (API) to the newspaper's address so published pages carry the right links. With your own domain later, only these settings and the DNS change: add the domain to Cloudflare, attach it to the Pages project and uncomment the `routes` line in `apps/site/wrangler.toml`.
+Set `VITE_SITE_BASE_URL` and `VITE_CANONICAL_URL` (admin build) and `SITE_URL` (API) to the newspaper's address so published pages carry the right links. With your own domain later, only these settings and the DNS change: add the domain to Cloudflare, attach it to the Pages project and attach it to the `openpress-news` Pages project.
 
 There is one long-lived branch, `main`, and one environment, production. Work on short-lived branches, open a pull request into `main` (CI must pass), and every merge to `main` deploys.
 

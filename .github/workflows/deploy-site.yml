@@ -1,6 +1,6 @@
-# Deploys the public newspaper Worker (apps/site) from `main` only. It serves the published pages from the website bucket.
+# Deploys the public newspaper (Cloudflare Pages project openpress-news) (apps/site) from `main` only. It serves the published pages from the website bucket.
 # Needs (Environment "production"):
-#   secrets: CLOUDFLARE_API_TOKEN (Workers edit), CLOUDFLARE_ACCOUNT_ID
+#   secrets: CLOUDFLARE_API_TOKEN (Pages edit), CLOUDFLARE_ACCOUNT_ID
 #   vars:    SITE_BUCKET_ORIGIN (public base URL of the website bucket, no trailing slash)
 name: Deploy Site
 
@@ -28,9 +28,14 @@ jobs:
         with: { node-version-file: .nvmrc, cache: npm }
       - run: npm ci
       - run: npm test -w apps/site
+      - name: Build Pages bundle
+        working-directory: apps/site
+        run: |
+          mkdir -p dist && cp src/index.mjs dist/_worker.js
+          sed -i 's|^BUCKET_ORIGIN = .*|BUCKET_ORIGIN = "${{ vars.SITE_BUCKET_ORIGIN }}"|' wrangler.toml
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/site
-          command: deploy --var BUCKET_ORIGIN:${{ vars.SITE_BUCKET_ORIGIN }}
+          command: pages deploy dist --project-name=openpress-news --branch=main

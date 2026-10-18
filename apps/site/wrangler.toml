@@ -1,10 +1,8 @@
-# The public newspaper: a Cloudflare Worker in front of the website bucket.
-# BUCKET_ORIGIN is the bucket's public base URL, e.g. https://<bucket-host> (no trailing slash). Set it with
-#   wrangler deploy --var BUCKET_ORIGIN:https://...   (the Deploy Site workflow passes the SITE_BUCKET_ORIGIN variable).
-name = "openpress-site"
-main = "src/index.mjs"
+# The public newspaper: a Cloudflare Pages project (advanced mode, _worker.js) in front of the website bucket.
+# BUCKET_ORIGIN is the bucket's public base URL (no trailing slash); the Deploy Site workflow fills it from SITE_BUCKET_ORIGIN.
+name = "openpress-news"
+pages_build_output_dir = "dist"
 compatibility_date = "2025-01-01"
-workers_dev = true   # https://openpress-site.<your-subdomain>.workers.dev until you attach your own domain
 
-# To serve your own domain later, add (the domain's DNS must be on Cloudflare):
-# routes = [{ pattern = "openpress.com", custom_domain = true }, { pattern = "www.openpress.com", custom_domain = true }]  # enable once the domain is on Cloudflare
+[vars]
+BUCKET_ORIGIN = ""

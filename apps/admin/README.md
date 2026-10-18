@@ -144,7 +144,7 @@ npm run build -w apps/admin
 
 This runs three steps: compile the published-page CSS, build the app, and build the **renderer bundle** into `dist/publish-renderer.js`. Deploy `dist/` to a static host. The API downloads `/publish-renderer.js` from this site when it republishes.
 
-`.github/workflows/deploy-web.yml` publishes `dist/` to the Cloudflare Pages project `openpress-dashboard` on every push to `main`. Every route must fall back to `index.html`; `public/_redirects` does that on Pages.
+`.github/workflows/deploy-web.yml` publishes `dist/` to the Cloudflare Pages project `openpress-publish` on every push to `main`. Every route must fall back to `index.html`; `public/_redirects` does that on Pages.
 
 ## Testing
 
