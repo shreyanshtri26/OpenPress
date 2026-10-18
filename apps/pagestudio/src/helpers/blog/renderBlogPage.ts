@@ -562,9 +562,14 @@ export function renderPageFromPuckJSON(
     storyTitle ||
     pageJson.pageType ||
     "Page";
-  // Shares carry the OpenPress share card (1200x630 logo) unless an editor set a dedicated social image;
-  // a story photo or a small transparent logo makes poor, inconsistently cropped previews.
-  const rawOgImage = currentStory?.socialImage || "/openpress-share.png";
+  // Shares carry the story's own image (a dedicated social image wins); the OpenPress card (1200x630) is the
+  // fallback for stories without one, so a preview is never a tiny or transparent logo.
+  const rawOgImage =
+    currentStory?.socialImage ||
+    currentStory?.imageUrl ||
+    currentStory?.image ||
+    (typeof window !== "undefined" ? window.__PUCK_FINAL_IMAGE__ : "") ||
+    "/openpress-share.png";
   const ogImage = toAbsoluteUrl(rawOgImage);
 
 
