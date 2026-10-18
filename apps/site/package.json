@@ -1,0 +1,10 @@
+{
+  "name": "openpress-site",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Cloudflare Worker that serves the published newspaper from the website bucket",
+  "scripts": {
+    "test": "node --test \"tests/**/*.test.mjs\""
+  }
+}

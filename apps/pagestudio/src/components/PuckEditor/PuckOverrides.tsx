@@ -1,0 +1,2277 @@
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useGetPuck } from "@measured/puck";
+import { type PageBuilderData, type PageType } from "./builderConfig";
+import { renderHomePageFromPuckJSON } from "../../helpers/renderHomePageFromPuckJSON";
+import { renderErrorPageFromPuckJSON } from "../../helpers/renderErrorPageFromPuckJSON";
+import { renderSupportUsPageFromPuckJSON } from "../../helpers/renderSupportUsPageFromPuckJSON";
+import { renderAboutPageFromPuckJSON } from "../../helpers/renderAboutPageFromPuckJSON";
+import { renderAuthorsListPageFromPuckJSON } from "../../helpers/renderAuthorsListPageFromPuckJSON";
+import { renderAuthorPageFromPuckJSON } from "../../helpers/renderAuthorPageFromPuckJSON";
+import { renderPrivacyPolicyPageFromPuckJSON } from "../../helpers/renderPrivacyPolicyPageFromPuckJSON";
+import { renderMediaCouncilPageFromPuckJSON } from "../../helpers/renderMediaCouncilPageFromPuckJSON";
+import { renderContactUsPageFromPuckJSON } from "../../helpers/renderContactUsPageFromPuckJSON";
+import { getAuthorOptions } from "./authorData";
+import { checkAuth } from "../../utils/auth.ts";
+import { extractReadyToPublishStories, getHomeChromeLayoutForPublish, getSavedHomeChromeLayout, markHomeNavbarLeaderboardPublished, publishPwaFilesToS3 } from "./syncNavbarLeaderboard";
+import { buildStoriesById } from "../../publish/publishContext";
+import { findEmptyAutoGridCards } from "./blocks/useAutoGridCardAssignments";
+import {
+  checkRepublishJob,
+  getLastKnownRepublishJob,
+  hasReadRepublishStatus,
+  hasSeenRepublishToast,
+  markRepublishToastSeen,
+  startRepublishAll,
+  type RepublishFailure,
+  type RepublishJob,
+} from "./republishAllClient";
+
+type RepublishToast = {
+  key: string;
+  tone: "success" | "info" | "error";
+  title: string;
+  message?: string;
+  failed?: RepublishFailure[];
+  failedCount?: number;
+};
+
+const REPUBLISH_LABELS: Record<string, string> = {
+  chrome: "Site-wide publish",
+  campaign: "Campaign publish",
+  story: "Story publish",
+  blog: "Story pages publish",
+};
+// Live "pages published / total pages" card for the site-wide publish.
+const PublishProgress = ({ job, finished, savingPage }: { job: RepublishJob | null; finished: boolean; savingPage: string | null }) => {
+  const total = job?.total ?? 0;
+  const done = finished && !job?.failedCount ? total || job?.done || 0 : Math.min(job?.done ?? 0, total || job?.done || 0);
+  const known = total > 0;
+  const percent = known ? Math.round((done / total) * 100) : 0;
+  return (
+    <div className="shadow-xl rounded-lg overflow-hidden bg-slate-900 text-white px-4 py-3" role="status" aria-live="polite">
+      <div className="flex items-baseline justify-between gap-3">
+        <span className="font-semibold text-sm">
+          {finished ? (job?.failedCount ? "Publish finished with errors" : "All pages published") : job ? "Publishing all pages" : `Publishing ${savingPage ?? "page"}…`}
+        </span>
+        {known && <span className="text-xs tabular-nums text-white/80">{done} of {total} pages</span>}
+      </div>
+      <div className="mt-2 h-2 rounded-full bg-white/20 overflow-hidden">
+        <div
+          className={`h-full rounded-full ${finished && job?.failedCount ? "bg-amber-400" : "bg-green-400"} transition-all duration-500 ${known ? "" : "w-1/3 animate-pulse"}`}
+          style={known ? { width: `${percent}%` } : undefined}
+        />
+      </div>
+      <p className="text-[11px] text-white/70 mt-1.5">
+        {known
+          ? `${percent}% done${job?.failedCount ? ` · ${job.failedCount} failed` : ""}`
+          : job ? "Preparing the list of pages…" : "Saving this page, then the rest of the site."}
+      </p>
+    </div>
+  );
+};
+
+const republishLabel = (reason?: string): string =>
+  REPUBLISH_LABELS[reason ?? ""] ?? "Site-wide publish";
+
+// Persistent toasts for the site-wide publish job; each shows once per browser.
+const republishToastsFor = (job: RepublishJob): RepublishToast[] => {
+  const toasts: RepublishToast[] = [];
+  const pass = job.pass ?? 1;
+
+  for (const result of job.myCompletedPasses ?? []) {
+    const followUp =
+      job.isActive && pass > result.pass ? " The queued changes are now being published." : "";
+    const key = `pass:${job.jobId}:${result.pass}`;
+    // Older backends do not record a pass's reason; the current pass shares the job's.
+    const label = republishLabel(result.reason ?? (result.pass === pass ? job.reason : undefined));
+
+    if (result.status === "failed") {
+      toasts.push({
+        key,
+        tone: "error",
+        title: `${label} failed`,
+        message: `${result.error || "Publishing stopped."} Publish again to retry.${followUp}`,
+        failed: result.failed,
+        failedCount: result.failedCount,
+      });
+    } else if (result.status === "completed_with_errors") {
+      toasts.push({
+        key,
+        tone: "error",
+        title: `${label} finished, ${result.failedCount} page(s) failed`,
+        message: `Publish again to retry.${followUp}`,
+        failed: result.failed,
+        failedCount: result.failedCount,
+      });
+    } else {
+      toasts.push({
+        key,
+        tone: "success",
+        title: `${label} completed`,
+        message: `${result.done}${result.total ? ` of ${result.total}` : ""} page(s) published.${followUp}`,
+      });
+    }
+  }
+
+  if (job.isActive && job.queuedByMe) {
+    toasts.push({
+      key: `queued:${job.jobId}:${pass}`,
+      tone: "info",
+      title: `A ${republishLabel(job.reason).toLowerCase()} is already in progress`,
+      message: "Your changes will be published right after it finishes.",
+    });
+  }
+
+  if (job.isActive && job.inCurrentPass && pass > 1) {
+    toasts.push({
+      key: `followup:${job.jobId}:${pass}`,
+      tone: "info",
+      title: "Previous publish completed",
+      message: "Your changes are now being published.",
+    });
+  }
+
+  return toasts;
+};
+
+interface HeaderProps {
+  selectedPage: PageType;
+  setSelectedPage: (page: PageType) => void;
+  scheduleAutosave: (data: PageBuilderData) => void;
+  handlePublish: (data: PageBuilderData, skipPreview?: boolean) => any;
+  saving: boolean;
+  activeSection: string | null;
+  setActiveSection: (section: string | null) => void;
+  activeAuthor: string | null;
+  setActiveAuthor: (authorId: string | null) => void;
+}
+
+
+type Story = {
+  storyId?: string;
+  slug?: string;
+  title?: string;
+  headline?: string;
+  storySummary?: string;
+  description?: any;
+  Category?: string | string[];
+  category?: string;
+  Section?: string | string[];
+  section?: string;
+  canonicalUrl?: string;
+  authorName?: string;
+  authorId?: string;
+  author?: string;
+  image?: string;
+  imageUrl?: string;
+  socialImage?: string;
+  socialHeadline?: string;
+  publishUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  publishedAt?: string;
+  publishDate?: string;
+  readTime?: string;
+  keywords?: [];
+  byline?: string[];
+  mediaAltText?: string;
+  mediaCaption?: string;
+  imageFocalPoint?: { x: number; y: number };
+  proposedFilingDate?: string;
+};
+
+const getStoryTaxonomyCategory = (story: Story): string => {
+  if (Array.isArray(story.Category)) {
+    const firstCategory = story.Category.find(
+      (entry): entry is string => typeof entry === 'string' && entry.trim().length > 0
+    );
+
+    if (firstCategory) return firstCategory;
+  }
+
+  if (typeof story.Category === 'string' && story.Category.trim().length > 0) {
+    return story.Category.trim();
+  }
+
+  if (Array.isArray(story.Section)) {
+    const firstSection = story.Section.find(
+      (entry): entry is string => typeof entry === 'string' && entry.trim().length > 0
+    );
+
+    if (firstSection) return firstSection;
+  }
+
+  if (typeof story.Section === 'string' && story.Section.trim().length > 0) {
+    return story.Section.trim();
+  }
+
+  return story.category || story.section || 'General';
+};
+
+// type SectionResponse = {
+//   values: string[];
+// };
+
+// type StoryMap = Record<string, any>;
+
+
+
+export function PuckHeaderActions({
+  selectedPage,
+  setSelectedPage,
+  scheduleAutosave,
+  handlePublish,
+  saving,
+  activeSection,
+  setActiveSection,
+  activeAuthor,
+  setActiveAuthor,
+}: HeaderProps) {
+  // Read editor state on demand (in click handlers) so every edit does not re-render the header.
+  const getPuck = useGetPuck();
+  const appState = {
+    get data() {
+      return getPuck().appState.data;
+    },
+  };
+  const [sections, setSections] = useState<string[]>([]);
+  const [loadingSections, setLoadingSections] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+
+  // Site-wide republish job, queued on the backend when Home's shared chrome
+  // changes (see republishAllClient.ts). The publish button never waits for it;
+  // these two pieces of state only carry its messages.
+  const [republishNotice, setRepublishNotice] = useState<
+    { tone: "info" | "error"; title: string; message: string } | null
+  >(null);
+  const [republishToasts, setRepublishToasts] = useState<RepublishToast[]>([]);
+  // Publishing stays locked while any site-wide job is active.
+  const [activeRepublishJob, setActiveRepublishJob] = useState<RepublishJob | null>(() => {
+    const job = getLastKnownRepublishJob();
+    return job?.isActive ? job : null;
+  });
+  // False until the job status has been read once. The header remounts on every
+  // editor render, so this must not start over each time.
+  const [republishChecked, setRepublishChecked] = useState(hasReadRepublishStatus);
+  const republishPollRef = useRef<number | null>(null);
+  // The last job this tab watched finish, kept on screen for a few seconds so "27 of 27 pages" is seen.
+  const [finishedJob, setFinishedJob] = useState<RepublishJob | null>(null);
+  const watchedJobRef = useRef<RepublishJob | null>(null);
+  const shownJobIdRef = useRef<string | null>(null);
+
+  const token = checkAuth();
+
+  // A publish that rebuilds the shared chrome rewrites every section, author
+  // and story page from this tab. Closing it midway leaves some pages on the
+  // new navbar and some on the old, with no record of where it stopped — so
+  // warn before the tab goes away. (Browsers show their own generic wording;
+  // the returned string only signals that we want the prompt.)
+  useEffect(() => {
+    if (!isPublishing) return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+      return "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isPublishing]);
+
+  const stopRepublishPolling = useCallback(() => {
+    if (republishPollRef.current !== null) {
+      window.clearInterval(republishPollRef.current);
+      republishPollRef.current = null;
+    }
+  }, []);
+
+  const handleRepublishJob = useCallback(
+    (job: RepublishJob | null) => {
+      if (job) {
+        const fresh = republishToastsFor(job).filter((t) => !hasSeenRepublishToast(t.key));
+        if (fresh.length > 0) {
+          setRepublishToasts((current) => [
+            ...current,
+            ...fresh.filter((t) => !current.some((c) => c.key === t.key)),
+          ]);
+        }
+      }
+      if (job?.isActive) {
+        watchedJobRef.current = job;
+      } else {
+        // Finished while we were watching, or so quickly that the first read already shows it done.
+        const justFinished =
+          job && job.finishedAt && Date.now() - Date.parse(job.finishedAt) < 15_000 && shownJobIdRef.current !== job.jobId;
+        const done = watchedJobRef.current ? (job ?? watchedJobRef.current) : justFinished ? job : null;
+        watchedJobRef.current = null;
+        if (done) {
+          shownJobIdRef.current = done.jobId;
+          setFinishedJob(done);
+          window.setTimeout(() => setFinishedJob(null), 6000);
+        }
+      }
+      setActiveRepublishJob(job?.isActive ? job : null);
+      // Nothing left to watch: finished or abandoned.
+      if (!job || !job.isActive) stopRepublishPolling();
+    },
+    [stopRepublishPolling]
+  );
+
+  // Polls while a job is active, so the publish button unlocks when it ends.
+  const startRepublishPolling = useCallback(() => {
+    stopRepublishPolling();
+    republishPollRef.current = window.setInterval(() => {
+      // A failed read keeps the lock and tries again on the next poll.
+      void checkRepublishJob().then(({ known, job }) => {
+        if (known) handleRepublishJob(job);
+      });
+    }, 1_500);
+  }, [handleRepublishJob, stopRepublishPolling]);
+
+  // On mount, resume watching a running job and show results not yet dismissed.
+  useEffect(() => {
+    let cancelled = false;
+
+    void (async () => {
+      const { known, job } = await checkRepublishJob();
+      if (cancelled) return;
+      setRepublishChecked(true);
+      // A failed read must not unlock the button.
+      if (!known) return;
+      handleRepublishJob(job);
+      if (job?.isActive) startRepublishPolling();
+    })();
+
+    return () => {
+      cancelled = true;
+      stopRepublishPolling();
+    };
+  }, [handleRepublishJob, startRepublishPolling, stopRepublishPolling]);
+
+  // Fetch sections when page type is "Section"
+  useEffect(() => {
+    if (selectedPage !== "Section") return;
+
+    const fetchSections = async () => {
+      setLoadingSections(true);
+      try {
+        const base = import.meta.env.VITE_BACKEND_API;
+        const res = await fetch(`${base}/taxonomy/section/values`, {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.values)) {
+            setSections(data.values);
+            // Set first section as default if no active section
+            if (!activeSection && data.values.length > 0) {
+              setActiveSection(data.values[0]);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch sections:", error);
+      } finally {
+        setLoadingSections(false);
+      }
+    };
+
+    fetchSections();
+  }, [selectedPage, activeSection, setActiveSection]);
+
+
+  // After a page other than Home is published: rebuild every page with Home's saved navbar and footer.
+  const publishWholeSite = async () => {
+    const layout = await getSavedHomeChromeLayout();
+    if (!layout) {
+      setRepublishNotice({ tone: "error", title: "Site-wide publish not started", message: "This page published, but Home's layout could not be loaded for the other pages." });
+      return;
+    }
+    const result = await startRepublishAll({ layout });
+    if (result.outcome === "error") {
+      setRepublishNotice({ tone: "error", title: "Site-wide publish not started", message: result.message || "This page published, but the other pages were not queued." });
+      return;
+    }
+    handleRepublishJob(result.job);
+    startRepublishPolling();
+  };
+
+  // Publish Home page to static HTML
+  const handlePublishToFile = async () => {
+    if (selectedPage !== "Home") return;
+
+    const emptyCards = findEmptyAutoGridCards(appState.data as any);
+    if (emptyCards.length > 0) {
+      setRepublishNotice({
+        tone: "error",
+        title: "Can't publish",
+        message: `${emptyCards.length === 1 ? "1 card doesn't" : `${emptyCards.length} cards don't`} have any stories matching the selected filters. Change the filters or remove the empty card${emptyCards.length === 1 ? "" : "s"}.`,
+      });
+      return;
+    }
+
+    setIsPublishing(true);
+    try {
+      const base = import.meta.env.VITE_BACKEND_API;
+
+      // Fetch campaigns
+      let campaigns: any[] = [];
+      try {
+        const campRes = await fetch(`${base}/getCampaigns`, {
+          method: 'GET',
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (campRes.ok) {
+          const campData = await campRes.json();
+          campaigns = campData.campaigns || [];
+        }
+      } catch (error) {
+        console.warn("Failed to fetch campaigns:", error);
+      }
+
+      // Fetch sections for navbar
+      let sectionsList: string[] = [];
+      try {
+        const sectionsRes = await fetch(`${base}/taxonomy/section/values`, {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (sectionsRes.ok) {
+          const sectionsData = await sectionsRes.json();
+          if (Array.isArray(sectionsData.values)) {
+            sectionsList = sectionsData.values;
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to fetch sections, using empty list:", error);
+      }
+
+      // Fetch stories with publishUrl using the proper API
+      const storiesRes = await fetch(`${base}/story/fetchReadyToPublish`, {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json'
+        }
+      });
+      let storiesById: Record<string, any> = {};
+
+      if (storiesRes.ok) {
+        const storiesData = await storiesRes.json();
+        // Shared with the backend republish worker (src/publish/publishContext.ts)
+        // so a page renders identically whichever of the two published it.
+        storiesById = buildStoriesById(extractReadyToPublishStories(storiesData));
+      }
+
+      const finalData = handlePublish(appState.data as any, true);
+
+      // Render to HTML using the renderer
+      const htmlContent = renderHomePageFromPuckJSON({
+        pageType: selectedPage || "Home",
+        data: finalData || appState.data as any,
+        storiesById: storiesById,
+        sections: sectionsList,
+        activeSection: 'HOME',
+        campaigns: campaigns,
+      });
+
+
+
+
+      //  Call the API
+      const response = await fetch(
+        `${base}/pagestudio/saveHomeHtml`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': token ? `Bearer ${token}` : '',
+          },
+          body: JSON.stringify({
+            htmlContent,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result?.message || "Failed to upload HTML");
+      }
+
+      // Publish PWA static files (manifest.json, sw.js, screenshots) to S3
+      // so the live site always has the latest PWA metadata. Runs silently.
+      // Not page HTML, and not tied to the navbar — stays unconditional.
+      try {
+        await publishPwaFilesToS3();
+      } catch (e) {
+        console.warn("PWA files publish failed:", e);
+      }
+
+      // Publishing Home publishes the whole site: every other page is rebuilt from its saved layout with
+      // Home's current navbar and footer, in one backend job whose progress (done / total pages) is shown
+      // in the progress card. There is no "did the chrome change?" check: that guess was the reason
+      // settings such as the LinkedIn icon never reached the other pages.
+      let republishQueued = true;
+      {
+        const layout = await getHomeChromeLayoutForPublish(finalData || (appState.data as any));
+
+        if (!layout) {
+          // Placements registry never resolved, so the layout would be missing
+          // a real leaderboard. Publishing it would strip that ad site-wide.
+          republishQueued = false;
+          setRepublishNotice({
+            tone: "error",
+            title: "Site-wide publish not started",
+            message:
+              "Home published, but the other pages were not: ad placements could not be loaded. Publish Home again.",
+          });
+        } else {
+          const result = await startRepublishAll({ layout });
+
+          if (result.outcome === "started" || result.outcome === "queued") {
+            handleRepublishJob(result.job);
+            startRepublishPolling();
+          } else {
+            republishQueued = false;
+            setRepublishNotice({
+              tone: "error",
+              title: "Site-wide publish not started",
+              message: result.message
+                ? `Home published, but the other pages were not: ${result.message}`
+                : "Home published, but the other pages were not queued.",
+            });
+          }
+        }
+      }
+
+      // Update the signature so future change-detection is accurate — but only
+      // when the other pages are actually going to be rebuilt. Marking it after
+      // a failed queue attempt would leave them on the old chrome forever.
+      if (republishQueued) {
+        await markHomeNavbarLeaderboardPublished(finalData || (appState.data as any));
+      }
+
+      try {
+        await fetch(`${base}/pagestudio/saveSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+        await fetch(`${base}/pagestudio/saveNewsSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+      } catch (error) {
+        console.error("Error saving sitemap:", error);
+      }
+    } catch (error) {
+      console.error("Failed to publish:", error);
+      alert("Failed to publish. Check console for details.");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+
+  // Publish Error page to static HTML
+  const handlePublishErrorToFile = async () => {
+    if (selectedPage !== "Error") return;
+
+    setIsPublishing(true);
+    try {
+      const base = import.meta.env.VITE_BACKEND_API;
+
+      // Fetch campaigns
+      let campaigns: any[] = [];
+      try {
+        const campRes = await fetch(`${base}/getCampaigns`, {
+          method: 'GET',
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (campRes.ok) {
+          const campData = await campRes.json();
+          campaigns = campData.campaigns || [];
+        }
+      } catch (error) {
+        console.warn("Failed to fetch campaigns:", error);
+      }
+
+      // Fetch sections for navbar
+      let sectionsList: string[] = [];
+      try {
+        const sectionsRes = await fetch(`${base}/taxonomy/section/values`, {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (sectionsRes.ok) {
+          const sectionsData = await sectionsRes.json();
+          if (Array.isArray(sectionsData.values)) {
+            sectionsList = sectionsData.values;
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to fetch sections, using empty list:", error);
+      }
+
+      // Fetch stories with publishUrl using the proper API
+      const storiesRes = await fetch(`${base}/story/fetchReadyToPublish`, {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json'
+        }
+      });
+      let storiesById: Record<string, any> = {};
+
+      if (storiesRes.ok) {
+        const storiesData = await storiesRes.json();
+        const stories = extractReadyToPublishStories(storiesData);
+
+        // Build storiesById map with all story fields including publishUrl
+        stories.forEach((story: any) => {
+          if (story.storyId) {
+            storiesById[story.storyId] = {
+              id: story.storyId,
+              title: story.title,
+              headline: story.title,
+              summary: story.storySummary || story.description?.blocks?.[0]?.data?.text || '',
+              category: story.section || 'General',
+              taxonomyCategory: getStoryTaxonomyCategory(story),
+              section: story.section,
+              Section: story.Section || story.section,
+              author: story.authorName || 'Unknown Author',
+              image: story.image || '',
+              imageUrl: story.image || '',
+              publishUrl: story.redirectUrl || '',
+              slug: story.slug || '',
+              updatedAt: story.updatedAt,
+              createdAt: story.createdAt,
+              authorId: story.authorId || '',
+              byLine: story.byline || [],
+              socialImage: story.socialImage || '',
+              socialHeadline: story.socialHeadline || '',
+            
+              description: story.description || null,
+              fullDescription: story.fullDescription || '',
+            };
+          }
+        });
+      }
+
+      // Render to HTML using the renderer
+      const htmlContent = renderErrorPageFromPuckJSON({
+        pageType: selectedPage || "Error",
+        data: handlePublish(appState.data as any, true) || appState.data as any,
+        storiesById: storiesById,
+        sections: sectionsList,
+        campaigns: campaigns,
+      });
+
+      console.log("Error page htmlContent>>>>>>>", htmlContent);
+      console.log("Sending payload to saveErrorHtml API >>>", htmlContent);
+
+
+      // Call the API
+      const response = await fetch(
+        `${base}/pagestudio/saveErrorHtml`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': token ? `Bearer ${token}` : '',
+          },
+          body: JSON.stringify({
+            htmlContent,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      console.log("Save Error HTML API result >>>", result);
+
+      if (!response.ok) {
+        throw new Error(result?.message || "Failed to upload Error HTML");
+      }
+
+      try {
+        await fetch(`${base}/pagestudio/saveSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+        await fetch(`${base}/pagestudio/saveNewsSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+      } catch (error) {
+        console.error("Error saving sitemap:", error);
+      }
+    } catch (error) {
+      console.error("Failed to publish error page:", error);
+      alert("Failed to publish error page. Check console for details.");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+
+  // Publish Section page to static HTML
+  const handlePublishSectionToFile = async () => {
+    if (selectedPage !== "Section" || !activeSection) return;
+
+    setIsPublishing(true);
+    try {
+      const base = import.meta.env.VITE_BACKEND_API;
+
+      // Fetch campaigns
+      let campaigns: any[] = [];
+      try {
+        const campRes = await fetch(`${base}/getCampaigns`, {
+          method: 'GET',
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (campRes.ok) {
+          const campData = await campRes.json();
+          campaigns = campData.campaigns || [];
+        }
+      } catch (error) {
+        console.warn("Failed to fetch campaigns:", error);
+      }
+
+      // Fetch sections for navbar
+      let sectionsList: string[] = [];
+      try {
+        const sectionsRes = await fetch(`${base}/taxonomy/section/values`, {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (sectionsRes.ok) {
+          const sectionsData = await sectionsRes.json();
+          if (Array.isArray(sectionsData.values)) {
+            sectionsList = sectionsData.values;
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to fetch sections, using empty list:", error);
+      }
+
+      const resolvedPageType = `Section-${activeSection}`;
+      // Use current app state data instead of fetching from API
+
+
+      // Fetch stories with publishUrl using the proper API
+      const storiesRes = await fetch(`${base}/story/fetchReadyToPublish`, {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json'
+        }
+      });
+      let storiesById: Record<string, any> = {};
+
+      if (storiesRes.ok) {
+        const storiesData = await storiesRes.json();
+        const stories = extractReadyToPublishStories(storiesData);
+
+        // Build storiesById map with all story fields including publishUrl
+        stories.forEach((story: any) => {
+          if (story.storyId) {
+            storiesById[story.storyId] = {
+              id: story.storyId,
+              title: story.title,
+              headline: story.title,
+              summary: story.storySummary || story.description?.blocks?.[0]?.data?.text || '',
+              category: story.section || 'General',
+              taxonomyCategory: getStoryTaxonomyCategory(story),
+              section: story.section,
+              author: story.authorName || 'Unknown Author',
+              image: story.image || '',
+              imageUrl: story.image || '',
+              publishUrl: story.redirectUrl || '', // This is the key field!
+              slug: story.slug || '',
+              updatedAt: story.updatedAt,
+              createdAt: story.createdAt,
+              authorId: story.authorId || '',
+              byLine: story.byline || [],
+              socialImage: story.socialImage || '',
+              socialHeadline: story.socialHeadline || '',
+            
+              description: story.description || null,
+              fullDescription: story.fullDescription || '',
+            };
+          }
+        });
+      }
+
+      // Render to HTML using the renderer
+      const htmlContent = renderHomePageFromPuckJSON({
+        pageType: resolvedPageType,
+        data: handlePublish(appState.data as any, true) || appState.data as any,
+        storiesById: storiesById,
+        sections: sectionsList,
+        activeSection: activeSection,
+        campaigns: campaigns,
+      });
+
+      console.log("Section htmlContent>>>>>>", htmlContent);
+      console.log("Sending payload to saveSectionHtml API >>>", { htmlContent, sectionValue: activeSection });
+
+      // Call the API with htmlContent and sectionValue
+      const response = await fetch(
+        `${base}/pagestudio/saveSectionHtml`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': token ? `Bearer ${token}` : '',
+          },
+          body: JSON.stringify({
+            htmlContent,
+            sectionValue: activeSection,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      console.log("Save Section HTML API result >>>", result);
+
+      if (!response.ok) {
+        throw new Error(result?.message || "Failed to upload Section HTML");
+      }
+
+      try {
+        await fetch(`${base}/pagestudio/saveSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+        await fetch(`${base}/pagestudio/saveNewsSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+      } catch (error) {
+        console.error("Error saving sitemap:", error);
+      }
+    } catch (error) {
+      console.error("Failed to publish section:", error);
+      alert("Failed to publish section. Check console for details.");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+
+  // Publish About page to static HTML
+  const handlePublishAboutToFile = async () => {
+    if (selectedPage !== "About") return;
+
+    setIsPublishing(true);
+    try {
+      const base = import.meta.env.VITE_BACKEND_API;
+
+      // Fetch campaigns
+      let campaigns: any[] = [];
+      try {
+        const campRes = await fetch(`${base}/getCampaigns`, {
+          method: 'GET',
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (campRes.ok) {
+          const campData = await campRes.json();
+          campaigns = campData.campaigns || [];
+        }
+      } catch (error) {
+        console.warn("Failed to fetch campaigns:", error);
+      }
+
+      // Fetch sections for navbar
+      let sectionsList: string[] = [];
+      try {
+        const sectionsRes = await fetch(`${base}/taxonomy/section/values`, {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (sectionsRes.ok) {
+          const sectionsData = await sectionsRes.json();
+          if (Array.isArray(sectionsData.values)) {
+            sectionsList = sectionsData.values;
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to fetch sections, using empty list:", error);
+      }
+
+      // Use current app state data instead of fetching from API
+
+
+      // Fetch stories with publishUrl using the proper API
+      const storiesRes = await fetch(`${base}/story/fetchReadyToPublish`, {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json'
+        }
+      });
+      let storiesById: Record<string, any> = {};
+
+      if (storiesRes.ok) {
+        const storiesData = await storiesRes.json();
+        const stories = extractReadyToPublishStories(storiesData);
+
+        // Build storiesById map with all story fields including publishUrl
+        stories.forEach((story: any) => {
+          if (story.storyId) {
+            storiesById[story.storyId] = {
+              id: story.storyId,
+              title: story.title,
+              headline: story.title,
+              summary: story.storySummary || story.description?.blocks?.[0]?.data?.text || '',
+              category: story.section || 'General',
+              taxonomyCategory: getStoryTaxonomyCategory(story),
+              section: story.section,
+              author: story.authorName || 'Unknown Author',
+              image: story.image || '',
+              imageUrl: story.image || '',
+              publishUrl: story.redirectUrl || '', // This is the key field!
+              slug: story.slug || '',
+              updatedAt: story.updatedAt,
+              createdAt: story.createdAt,
+              authorId: story.authorId || '',
+              byLine: story.byline || [],
+              socialImage: story.socialImage || '',
+              socialHeadline: story.socialHeadline || '',
+            
+              description: story.description || null,
+              fullDescription: story.fullDescription || '',
+            };
+          }
+        });
+      }
+
+      // Render to HTML using the renderer
+      const htmlContent = renderAboutPageFromPuckJSON({
+        pageType: selectedPage || "About",
+        data: handlePublish(appState.data as any, true) || appState.data as any,
+        storiesById: storiesById,
+        sections: sectionsList,
+        activeSection: 'ABOUT',
+        campaigns: campaigns,
+      });
+
+      console.log("About page htmlContent>>>>>>>", htmlContent);
+      console.log("Sending payload to saveAboutHtml API >>>", htmlContent);
+
+      // Call the API
+      const response = await fetch(
+        `${base}/pagestudio/saveAboutHtml`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': token ? `Bearer ${token}` : '',
+          },
+          body: JSON.stringify({
+            htmlContent,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      console.log("Save About HTML API result >>>", result);
+
+      if (!response.ok) {
+        throw new Error(result?.message || "Failed to upload About HTML");
+      }
+
+      try {
+        await fetch(`${base}/pagestudio/saveSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+        await fetch(`${base}/pagestudio/saveNewsSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+      } catch (error) {
+        console.error("Error saving sitemap:", error);
+      }
+    } catch (error) {
+      console.error("Failed to publish about page:", error);
+      alert("Failed to publish about page. Check console for details.");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+  const handlePublishSupportUsToFile = async () => {
+    if (selectedPage !== "SupportUs") return;
+
+    setIsPublishing(true);
+    try {
+      const base = import.meta.env.VITE_BACKEND_API;
+
+      // Fetch campaigns
+      let campaigns: any[] = [];
+      try {
+        const campRes = await fetch(`${base}/getCampaigns`, {
+          method: 'GET',
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (campRes.ok) {
+          const campData = await campRes.json();
+          campaigns = campData.campaigns || [];
+        }
+      } catch (error) {
+        console.warn("Failed to fetch campaigns:", error);
+      }
+
+      // Fetch sections for navbar
+      let sectionsList: string[] = [];
+      try {
+        const sectionsRes = await fetch(`${base}/taxonomy/section/values`, {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (sectionsRes.ok) {
+          const sectionsData = await sectionsRes.json();
+          if (Array.isArray(sectionsData.values)) {
+            sectionsList = sectionsData.values;
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to fetch sections, using empty list:", error);
+      }
+
+      // Use current app state data instead of fetching from API
+
+
+      // Fetch stories with publishUrl using the proper API
+      const storiesRes = await fetch(`${base}/story/fetchReadyToPublish`, {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json'
+        }
+      });
+      let storiesById: Record<string, any> = {};
+
+      if (storiesRes.ok) {
+        const storiesData = await storiesRes.json();
+        const stories = extractReadyToPublishStories(storiesData);
+
+        // Build storiesById map with all story fields including publishUrl
+        stories.forEach((story: any) => {
+          if (story.storyId) {
+            storiesById[story.storyId] = {
+              id: story.storyId,
+              title: story.title,
+              headline: story.title,
+              summary: story.storySummary || story.description?.blocks?.[0]?.data?.text || '',
+              category: story.section || 'General',
+              taxonomyCategory: getStoryTaxonomyCategory(story),
+              section: story.section,
+              author: story.authorName || 'Unknown Author',
+              image: story.image || '',
+              imageUrl: story.image || '',
+              publishUrl: story.redirectUrl || '', // This is the key field!
+              slug: story.slug || '',
+              updatedAt: story.updatedAt,
+              createdAt: story.createdAt,
+              authorId: story.authorId || '',
+              byLine: story.byline || [],
+              socialImage: story.socialImage || '',
+              socialHeadline: story.socialHeadline || '',
+            
+              description: story.description || null,
+              fullDescription: story.fullDescription || '',
+            };
+          }
+        });
+      }
+
+      // Render to HTML using the renderer
+      const htmlContent = renderSupportUsPageFromPuckJSON({
+        pageType: selectedPage || "SupportUs",
+        data: handlePublish(appState.data as any, true) || appState.data as any,
+        storiesById: storiesById,
+        sections: sectionsList,
+        activeSection: 'SUPPORT-US',
+        campaigns: campaigns,
+      });
+
+      console.log("Support Us page htmlContent>>>>>>>", htmlContent);
+      console.log("Sending payload to saveSupportUsHtml API >>>", htmlContent);
+
+      // Call the API
+      const response = await fetch(
+        `${base}/pagestudio/saveSupportUsHtml`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': token ? `Bearer ${token}` : '',
+          },
+          body: JSON.stringify({
+            htmlContent,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      console.log("Save Support Us HTML API result >>>", result);
+
+      if (!response.ok) {
+        throw new Error(result?.message || "Failed to upload Support Us HTML");
+      }
+
+      try {
+        await fetch(`${base}/pagestudio/saveSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+        await fetch(`${base}/pagestudio/saveNewsSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+      } catch (error) {
+        console.error("Error saving sitemap:", error);
+      }
+    } catch (error) {
+      console.error("Failed to publish support us page:", error);
+      alert("Failed to publish support us page. Check console for details.");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+
+
+  const handlePublishPrivacyPolicyToFile = async () => {
+    if (selectedPage !== "PrivacyPolicy") return;
+
+    setIsPublishing(true);
+    try {
+      const base = import.meta.env.VITE_BACKEND_API;
+
+      // Fetch campaigns
+      let campaigns: any[] = [];
+      try {
+        const campRes = await fetch(`${base}/getCampaigns`, {
+          method: 'GET',
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (campRes.ok) {
+          const campData = await campRes.json();
+          campaigns = campData.campaigns || [];
+        }
+      } catch (error) {
+        console.warn("Failed to fetch campaigns:", error);
+      }
+
+      // Fetch sections for navbar
+      let sectionsList: string[] = [];
+      try {
+        const sectionsRes = await fetch(`${base}/taxonomy/section/values`, {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (sectionsRes.ok) {
+          const sectionsData = await sectionsRes.json();
+          if (Array.isArray(sectionsData.values)) {
+            sectionsList = sectionsData.values;
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to fetch sections, using empty list:", error);
+      }
+
+      // Use current app state data instead of fetching from API
+
+
+      // Fetch stories with publishUrl using the proper API
+      const storiesRes = await fetch(`${base}/story/fetchReadyToPublish`, {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json'
+        }
+      });
+      let storiesById: Record<string, any> = {};
+
+      if (storiesRes.ok) {
+        const storiesData = await storiesRes.json();
+        const stories = extractReadyToPublishStories(storiesData);
+
+        // Build storiesById map with all story fields including publishUrl
+        stories.forEach((story: any) => {
+          if (story.storyId) {
+            storiesById[story.storyId] = {
+              id: story.storyId,
+              title: story.title,
+              headline: story.title,
+              summary: story.storySummary || story.description?.blocks?.[0]?.data?.text || '',
+              category: story.section || 'General',
+              taxonomyCategory: getStoryTaxonomyCategory(story),
+              section: story.section,
+              author: story.authorName || 'Unknown Author',
+              image: story.image || '',
+              imageUrl: story.image || '',
+              publishUrl: story.redirectUrl || '', // This is the key field!
+              slug: story.slug || '',
+              updatedAt: story.updatedAt,
+              createdAt: story.createdAt,
+              authorId: story.authorId || '',
+              byLine: story.byline || [],
+              socialImage: story.socialImage || '',
+              socialHeadline: story.socialHeadline || '',
+            
+              description: story.description || null,
+              fullDescription: story.fullDescription || '',
+            };
+          }
+        });
+      }
+
+
+      // Render to HTML using the renderer
+      const htmlContent = renderPrivacyPolicyPageFromPuckJSON({
+        pageType: selectedPage || "PrivacyPolicy",
+        data: handlePublish(appState.data as any, true) || appState.data as any,
+        storiesById: storiesById,
+        sections: sectionsList,
+        campaigns: campaigns,
+      });
+
+      console.log("Privacy Policy page htmlContent>>>>>>>", htmlContent);
+
+      // Call the specific API for Privacy Policy
+      const response = await fetch(
+        `${base}/pagestudio/savePrivacyPolicyHtml`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': token ? `Bearer ${token}` : '',
+          },
+          body: JSON.stringify({
+            htmlContent,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result?.message || "Failed to upload Privacy Policy HTML");
+      }
+
+      try {
+        await fetch(`${base}/pagestudio/saveSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+        await fetch(`${base}/pagestudio/saveNewsSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+      } catch (error) {
+        console.error("Error saving sitemap:", error);
+      }
+    } catch (error) {
+      console.error("Failed to publish privacy policy page:", error);
+      alert("Failed to publish privacy policy page. Check console for details.");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+  // Publish Contact Us page to static HTML
+  const handlePublishContactUsToFile = async () => {
+    if (selectedPage !== "ContactUs") return;
+
+    setIsPublishing(true);
+    try {
+      const base = import.meta.env.VITE_BACKEND_API;
+
+      // Fetch campaigns
+      let campaigns: any[] = [];
+      try {
+        const campRes = await fetch(`${base}/getCampaigns`, {
+          method: 'GET',
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (campRes.ok) {
+          const campData = await campRes.json();
+          campaigns = campData.campaigns || [];
+        }
+      } catch (error) {
+        console.warn("Failed to fetch campaigns:", error);
+      }
+
+      // Fetch sections for navbar
+      let sectionsList: string[] = [];
+      try {
+        const sectionsRes = await fetch(`${base}/taxonomy/section/values`, {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (sectionsRes.ok) {
+          const sectionsData = await sectionsRes.json();
+          if (Array.isArray(sectionsData.values)) {
+            sectionsList = sectionsData.values;
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to fetch sections, using empty list:", error);
+      }
+
+      // Fetch stories with publishUrl
+      const storiesRes = await fetch(`${base}/story/fetchReadyToPublish`, {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json'
+        }
+      });
+      let storiesById: Record<string, any> = {};
+
+      if (storiesRes.ok) {
+        const storiesData = await storiesRes.json();
+        const stories = extractReadyToPublishStories(storiesData);
+
+        stories.forEach((story: any) => {
+          if (story.storyId) {
+            storiesById[story.storyId] = {
+              id: story.storyId,
+              title: story.title,
+              headline: story.title,
+              summary: story.storySummary || '',
+              category: story.section || 'General',
+              taxonomyCategory: getStoryTaxonomyCategory(story),
+              section: story.section,
+              author: story.authorName || 'Unknown Author',
+              image: story.image || '',
+              imageUrl: story.image || '',
+              publishUrl: story.redirectUrl || '',
+              slug: story.slug || '',
+              updatedAt: story.updatedAt,
+              createdAt: story.createdAt,
+              authorId: story.authorId || '',
+              byLine: story.byline || [],
+            
+              description: story.description || null,
+              fullDescription: story.fullDescription || '',
+            };
+          }
+        });
+      }
+
+      // Render to HTML using the renderer
+      const htmlContent = renderContactUsPageFromPuckJSON({
+        pageType: selectedPage || "ContactUs",
+        data: handlePublish(appState.data as any, true) || appState.data as any,
+        storiesById: storiesById,
+        sections: sectionsList,
+        campaigns: campaigns,
+      });
+
+      // Call the specific API for Contact Us
+      const response = await fetch(
+        `${base}/pagestudio/saveContactUsHtml`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': token ? `Bearer ${token}` : '',
+          },
+          body: JSON.stringify({
+            htmlContent,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to save Contact Us HTML to backend");
+      }
+
+      // try {
+      //   await fetch(`${base}/pagestudio/saveSiteMap`, {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       ...(token && { Authorization: `Bearer ${token}` })
+      //     },
+      //   });
+      //   await fetch(`${base}/pagestudio/saveNewsSiteMap`, {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       ...(token && { Authorization: `Bearer ${token}` })
+      //     },
+      //   });
+      // } catch (error) {
+      //   console.error("Error saving sitemap:", error);
+      // }
+    } catch (error) {
+      console.error("Failed to publish Contact Us page:", error);
+      alert("Failed to publish Contact Us page. Check console for details.");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+
+  // Publish Media Council page to static HTML
+  const handlePublishMediaCouncilToFile = async () => {
+    if (selectedPage !== "MediaCouncil") return;
+
+    setIsPublishing(true);
+    try {
+      const base = import.meta.env.VITE_BACKEND_API;
+
+      // Fetch campaigns
+      let campaigns: any[] = [];
+      try {
+        const campRes = await fetch(`${base}/getCampaigns`, {
+          method: 'GET',
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (campRes.ok) {
+          const campData = await campRes.json();
+          campaigns = campData.campaigns || [];
+        }
+      } catch (error) {
+        console.warn("Failed to fetch campaigns:", error);
+      }
+
+      // Fetch sections for navbar
+      let sectionsList: string[] = [];
+      try {
+        const sectionsRes = await fetch(`${base}/taxonomy/section/values`, {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (sectionsRes.ok) {
+          const sectionsData = await sectionsRes.json();
+          if (Array.isArray(sectionsData.values)) {
+            sectionsList = sectionsData.values;
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to fetch sections, using empty list:", error);
+      }
+
+      // Use current app state data instead of fetching from API
+
+
+      // Fetch stories with publishUrl using the proper API
+      const storiesRes = await fetch(`${base}/story/fetchReadyToPublish`, {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json'
+        }
+      });
+      let storiesById: Record<string, any> = {};
+
+      if (storiesRes.ok) {
+        const storiesData = await storiesRes.json();
+        const stories = extractReadyToPublishStories(storiesData);
+
+        // Build storiesById map with all story fields including publishUrl
+        stories.forEach((story: any) => {
+          if (story.storyId) {
+            storiesById[story.storyId] = {
+              id: story.storyId,
+              title: story.title,
+              headline: story.title,
+              summary: story.storySummary || story.description?.blocks?.[0]?.data?.text || '',
+              category: story.section || 'General',
+              taxonomyCategory: getStoryTaxonomyCategory(story),
+              section: story.section,
+              author: story.authorName || 'Unknown Author',
+              image: story.image || '',
+              imageUrl: story.image || '',
+              publishUrl: story.redirectUrl || '', // This is the key field!
+              slug: story.slug || '',
+              updatedAt: story.updatedAt,
+              createdAt: story.createdAt,
+              authorId: story.authorId || '',
+              byLine: story.byline || [],
+              socialImage: story.socialImage || '',
+              socialHeadline: story.socialHeadline || '',
+            
+              description: story.description || null,
+              fullDescription: story.fullDescription || '',
+            };
+          }
+        });
+      }
+
+
+      // Render to HTML using the renderer
+      const htmlContent = renderMediaCouncilPageFromPuckJSON({
+        pageType: selectedPage || "MediaCouncil",
+        data: handlePublish(appState.data as any, true) || appState.data as any,
+        storiesById: storiesById,
+        sections: sectionsList,
+        campaigns: campaigns,
+      });
+
+      console.log("Media Council page htmlContent>>>>>>>", htmlContent);
+
+      // Call the specific API for Media Council
+      const response = await fetch(
+        `${base}/pagestudio/saveMediaCouncilHtml`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': token ? `Bearer ${token}` : '',
+          },
+          body: JSON.stringify({
+            htmlContent,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result?.message || "Failed to upload Media Council HTML");
+      }
+
+      try {
+        await fetch(`${base}/pagestudio/saveSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+        await fetch(`${base}/pagestudio/saveNewsSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+      } catch (error) {
+        console.error("Error saving sitemap:", error);
+      }
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+
+
+
+  // Publish Authors List page to static HTML
+  const handlePublishAuthorsListToFile = async () => {
+    if (selectedPage !== "AuthorsList") return;
+
+    setIsPublishing(true);
+    try {
+      const base = import.meta.env.VITE_BACKEND_API;
+
+      // Fetch campaigns
+      let campaigns: any[] = [];
+      try {
+        const campRes = await fetch(`${base}/getCampaigns`, {
+          method: 'GET',
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (campRes.ok) {
+          const campData = await campRes.json();
+          campaigns = campData.campaigns || [];
+        }
+      } catch (error) {
+        console.warn("Failed to fetch campaigns:", error);
+      }
+
+      // Fetch sections for navbar
+      let sectionsList: string[] = [];
+      try {
+        const sectionsRes = await fetch(`${base}/taxonomy/section/values`, {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (sectionsRes.ok) {
+          const sectionsData = await sectionsRes.json();
+          if (Array.isArray(sectionsData.values)) {
+            sectionsList = sectionsData.values;
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to fetch sections, using empty list:", error);
+      }
+
+      // Use current app state data instead of fetching from API
+
+      // Fetch stories with publishUrl using the proper API
+      const storiesRes = await fetch(`${base}/story/fetchReadyToPublish`, {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json'
+        }
+      });
+      let storiesById: Record<string, any> = {};
+
+      if (storiesRes.ok) {
+        const storiesData = await storiesRes.json();
+        const stories = extractReadyToPublishStories(storiesData);
+
+        // Build storiesById map with all story fields including publishUrl
+        stories.forEach((story: any) => {
+          if (story.storyId) {
+            storiesById[story.storyId] = {
+              id: story.storyId,
+              title: story.title,
+              headline: story.title,
+              summary: story.storySummary || story.description?.blocks?.[0]?.data?.text || '',
+              category: story.section || 'General',
+              taxonomyCategory: getStoryTaxonomyCategory(story),
+              section: story.section,
+              author: story.authorName || 'Unknown Author',
+              image: story.image || '',
+              imageUrl: story.image || '',
+              publishUrl: story.redirectUrl || '', // This is the key field!
+              slug: story.slug || '',
+              updatedAt: story.updatedAt,
+              createdAt: story.createdAt,
+              authorId: story.authorId || '',
+              byLine: story.byline || [],
+              socialImage: story.socialImage || '',
+              socialHeadline: story.socialHeadline || '',
+            
+              description: story.description || null,
+              fullDescription: story.fullDescription || '',
+            };
+          }
+        });
+      }
+
+      // Render to HTML using the renderer
+      const htmlContent = renderAuthorsListPageFromPuckJSON({
+        pageType: selectedPage || "AuthorsList",
+        data: handlePublish(appState.data as any, true) || appState.data as any,
+        storiesById: storiesById,
+        sections: sectionsList,
+        activeSection: 'AUTHORS-LIST',
+        campaigns: campaigns,
+      });
+
+      console.log("AuthorsList page htmlContent>>>>>>>", htmlContent);
+      console.log("Sending payload to saveAuthorsHtml API >>>", htmlContent);
+
+      // Call the API
+      const response = await fetch(
+        `${base}/pagestudio/saveAuthorsHtml`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': token ? `Bearer ${token}` : '',
+          },
+          body: JSON.stringify({
+            htmlContent,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      console.log("Save AuthorsList HTML API result >>>", result);
+
+      if (!response.ok) {
+        throw new Error(result?.message || "Failed to upload AuthorsList HTML");
+      }
+
+      try {
+        await fetch(`${base}/pagestudio/saveSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+        await fetch(`${base}/pagestudio/saveNewsSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` })
+          },
+        });
+      } catch (error) {
+        console.error("Error saving sitemap:", error);
+      }
+    } catch (error) {
+      console.error("Failed to publish AuthorsList page:", error);
+      alert("Failed to publish AuthorsList page. Check console for details.");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+  // Publish Single Author page to static HTML
+  const handlePublishAuthorPageToFile = async () => {
+    if (selectedPage !== "Author" || !activeAuthor) return;
+
+    setIsPublishing(true);
+    try {
+      const base = import.meta.env.VITE_BACKEND_API;
+      const authorOption = getAuthorOptions().find((opt) => opt.value === activeAuthor);
+      const authorName = authorOption?.label || "Unknown Author";
+      const authorSlug = authorName
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
+
+      // Fetch campaigns
+      let campaigns: any[] = [];
+      try {
+        const campRes = await fetch(`${base}/getCampaigns`, {
+          method: 'GET',
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json'
+          }
+        });
+        if (campRes.ok) {
+          const campData = await campRes.json();
+          campaigns = campData.campaigns || [];
+        }
+      } catch (error) {
+        console.warn("Failed to fetch campaigns:", error);
+      }
+
+      // Fetch sections for navbar
+      let sectionsList: string[] = [];
+      try {
+        const sectionsRes = await fetch(`${base}/taxonomy/section/values`, {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+            "Content-Type": "application/json",
+          },
+        });
+        if (sectionsRes.ok) {
+          const sectionsData = await sectionsRes.json();
+          if (Array.isArray(sectionsData.values)) {
+            sectionsList = sectionsData.values;
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to fetch sections, using empty list:", error);
+      }
+
+      // Use current app state data instead of fetching from API
+
+      // Fetch stories with publishUrl
+      const storiesRes = await fetch(`${base}/story/fetchReadyToPublish`, {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+          "Content-Type": "application/json",
+        },
+      });
+      let storiesById: Record<string, any> = {};
+
+      if (storiesRes.ok) {
+        const storiesData = await storiesRes.json();
+        const stories = extractReadyToPublishStories(storiesData);
+
+        stories.forEach((story: any) => {
+          if (story.storyId) {
+            storiesById[story.storyId] = {
+              id: story.storyId,
+              title: story.title,
+              headline: story.title,
+              summary:
+                story.storySummary ||
+                story.description?.blocks?.[0]?.data?.text ||
+                "",
+              category: story.section || "General",
+              taxonomyCategory: getStoryTaxonomyCategory(story),
+              section: story.section,
+              author: story.authorName || "Unknown Author",
+              image: story.image || "",
+              imageUrl: story.image || "",
+              publishUrl: story.redirectUrl || "",
+              slug: story.slug || "",
+              updatedAt: story.updatedAt,
+              createdAt: story.createdAt,
+              authorId: story.authorId || '',
+              byLine: story.byline || [],
+              socialImage: story.socialImage || '',
+              socialHeadline: story.socialHeadline || '',
+            
+              description: story.description || null,
+              fullDescription: story.fullDescription || '',
+            };
+          }
+        });
+      }
+
+      // Render to HTML using the renderer
+      const htmlContent = renderAuthorPageFromPuckJSON({
+        pageType: selectedPage || "Author",
+        data: handlePublish(appState.data as any, true) || appState.data as any,
+        storiesById: storiesById,
+        sections: sectionsList,
+        authorName: authorName,
+        authorId: activeAuthor,
+        campaigns: campaigns,
+      });
+
+      console.log("html content >>>", htmlContent);
+
+      // Call the API
+      const response = await fetch(`${base}/pagestudio/saveAuthorHtml`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify({
+          htmlContent,
+          authorName,
+          authorSlug,
+          userId: activeAuthor,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result?.message || "Failed to upload author HTML");
+      }
+
+      try {
+        await fetch(`${base}/pagestudio/saveSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+        });
+        await fetch(`${base}/pagestudio/saveNewsSiteMap`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+        });
+      } catch (error) {
+        console.error("Error saving sitemap:", error);
+      }
+    } catch (error) {
+      console.error("Failed to publish author page:", error);
+      alert("Failed to publish author page. Check console for details.");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+
+
+  // Rebuilds every story page from this Blog template on the backend, then the sitemaps.
+  const handlePublishBlogToFile = async () => {
+    if (selectedPage !== "Blog") return;
+
+    setIsPublishing(true);
+    try {
+      const finalData = handlePublish(appState.data as any, true) || appState.data;
+      const result = await startRepublishAll({ reason: "blog", blogData: finalData });
+
+      if (result.outcome === "error") {
+        setRepublishNotice({
+          tone: "error",
+          title: "Story pages not published",
+          message: result.message || "The publish could not be started. Publish again.",
+        });
+        return;
+      }
+      if (result.outcome === "started") {
+        setRepublishNotice({
+          tone: "info",
+          title: "Publish started",
+          message: "Story pages will update in a few minutes.",
+        });
+      }
+      handleRepublishJob(result.job);
+      startRepublishPolling();
+    } catch (error) {
+      console.error("Failed to publish blog:", error);
+      setRepublishNotice({
+        tone: "error",
+        title: "Story pages not published",
+        message: "The publish could not be started. Publish again.",
+      });
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+
+  return (
+    <>
+      {/* Publish toasts share one stack so they never overlap */}
+      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 min-w-[320px] max-w-[440px]">
+        {(activeRepublishJob || finishedJob || isPublishing) && (
+          <PublishProgress
+            job={activeRepublishJob ?? finishedJob}
+            finished={!activeRepublishJob && !!finishedJob}
+            savingPage={isPublishing && !activeRepublishJob && !finishedJob ? selectedPage : null}
+          />
+        )}
+        {republishNotice && (
+          <div className="shadow-xl rounded-lg overflow-hidden">
+            <div className={`${republishNotice.tone === "error" ? "bg-red-600" : "bg-blue-600"} text-white px-4 py-3`}>
+              <div className="flex items-start justify-between gap-3">
+                <span className="font-semibold text-sm">{republishNotice.title}</span>
+                <button
+                  onClick={() => setRepublishNotice(null)}
+                  className="text-white/80 hover:text-white transition-colors"
+                  aria-label="Dismiss message"
+                >
+                  ✕
+                </button>
+              </div>
+              <p className="text-xs text-white/90 mt-1">{republishNotice.message}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Site-wide publish results; each stays until dismissed */}
+        {republishToasts.map((toast) => (
+          <div key={toast.key} className="shadow-xl rounded-lg overflow-hidden">
+            <div
+              className={`${
+                toast.tone === "error" ? "bg-red-600" : toast.tone === "success" ? "bg-green-600" : "bg-blue-600"
+              } text-white px-4 py-3`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <span className="font-semibold text-sm">{toast.title}</span>
+                <button
+                  onClick={() => {
+                    markRepublishToastSeen(toast.key);
+                    setRepublishToasts((current) => current.filter((t) => t.key !== toast.key));
+                  }}
+                  className="text-white/80 hover:text-white transition-colors"
+                  aria-label="Dismiss message"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {toast.message && <p className="text-xs text-white/90 mt-1">{toast.message}</p>}
+
+              {toast.failed && toast.failed.length > 0 && (
+                <ul className="text-xs text-white/90 max-h-40 overflow-y-auto space-y-1 mt-2">
+                  {toast.failed.map((failure, index) => (
+                    <li key={`${failure.page}-${index}`}>
+                      <span className="font-medium">{failure.page}</span>: {failure.reason}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {toast.failed && (toast.failedCount ?? 0) > toast.failed.length && (
+                <p className="text-xs text-white/70 mt-2">
+                  Showing the first {toast.failed.length} of {toast.failedCount}.
+                </p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center w-full justify-between">
+        {/* LEFT: Page Type Dropdown + Section Dropdown */}
+        <div className="flex items-center px-3 gap-4">
+          <div className="flex items-center">
+            <span className="text-sm text-gray-400 mr-2">Currently editing:</span>
+
+            <div className="relative inline-block border-b border-black pr-4">
+              <select
+                value={selectedPage}
+                onChange={(e) => setSelectedPage(e.target.value as PageType)}
+                className="text-sm bg-transparent focus:outline-none cursor-pointer border-none appearance-none pr-5"
+                style={{ padding: "2px 0" }}
+              >
+                <option value="Home">Home</option>
+                <option value="Videos">Videos</option>
+                <option value="VideoAuthor">Video Author</option>
+                <option value="Blog">Blog</option>
+                <option value="Section">Section</option>
+                <option value="Error">Error</option>
+                <option value="About">About</option>
+                <option value="SupportUs">Support Us</option>
+                <option value="PrivacyPolicy">Privacy Policy</option>
+                <option value="MediaCouncil">Editorial Standards</option>
+                <option value="ContactUs">Contact Us</option>
+                <option value="Author">Author</option>
+                <option value="AuthorsList">All Authors</option>
+              </select>
+
+              <span className="absolute right-0 bold text-s pointer-events-none">⌄</span>
+            </div>
+          </div>
+
+          {/* Section Dropdown - only shows when pageType is Section */}
+          {selectedPage === "Section" && (
+            <div className="flex items-center">
+              <span className="text-sm text-gray-400 mr-2">Section:</span>
+              <div className="relative inline-block border-b border-black pr-4">
+                <select
+                  value={activeSection || ""}
+                  onChange={(e) => setActiveSection(e.target.value || null)}
+                  disabled={loadingSections}
+                  className="text-sm bg-transparent focus:outline-none cursor-pointer border-none appearance-none pr-5"
+                  style={{ padding: "2px 0" }}
+                >
+                  {loadingSections ? (
+                    <option>Loading...</option>
+                  ) : (
+                    sections.map((section) => (
+                      <option key={section} value={section}>
+                        {section}
+                      </option>
+                    ))
+                  )}
+                </select>
+                <span className="absolute right-0 bold text-s pointer-events-none">⌄</span>
+              </div>
+            </div>
+          )}
+
+          {/* Author Dropdown - only shows when pageType is Author */}
+          {selectedPage === "Author" && (
+            <div className="flex items-center">
+              <span className="text-sm text-gray-400 mr-2">Author:</span>
+              <div className="relative inline-block border-b border-black pr-4">
+                <select
+                  value={activeAuthor || ""}
+                  onChange={(e) => setActiveAuthor(e.target.value || null)}
+                  className="text-sm bg-transparent focus:outline-none cursor-pointer border-none appearance-none pr-5"
+                  style={{ padding: "2px 0" }}
+                >
+                  <option value="">Select Author</option>
+                  {getAuthorOptions().map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <span className="absolute right-0 bold text-s pointer-events-none">
+                  ⌄
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* RIGHT: Save + Preview + Publish */}
+        <div className="flex items-center gap-2">
+          <button
+            className="px-4 py-2 bg-slate-200 text-slate-900 rounded whitespace-nowrap"
+            onClick={() => scheduleAutosave(appState.data as unknown as PageBuilderData)}
+            disabled={saving}
+          >
+            {saving ? "Saving…" : "Save draft"}
+          </button>
+
+          <button
+            className="px-4 py-2 bg-blue-600 text-white rounded"
+            onClick={() => handlePublish(appState.data as PageBuilderData)}
+          >
+            Preview
+          </button>
+
+          {/* Publish button - for Home, Section, Blog, Error, About, PrivacyPolicy, MediaCouncil, ContactUs, Author, AuthorsList, Account and Login pages */}
+          {(selectedPage === "Home" || selectedPage === "Section" || selectedPage === "Blog" || selectedPage === "Error" || selectedPage === "About" || selectedPage === "SupportUs" || selectedPage === "PrivacyPolicy" || selectedPage === "MediaCouncil" || selectedPage === "ContactUs" || selectedPage === "Author" || selectedPage === "AuthorsList") && (
+            <div className="relative group">
+            <button
+              className={`px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50 ${
+                activeRepublishJob ? "opacity-50 cursor-not-allowed" : "hover:bg-green-700"
+              }`}
+              aria-disabled={!!activeRepublishJob}
+              onClick={async () => {
+                if (activeRepublishJob) return;
+
+                // Catches a job started elsewhere since the last poll.
+                const { known, job } = await checkRepublishJob();
+                if (!known) {
+                  setRepublishNotice({
+                    tone: "error",
+                    title: "Can't publish right now",
+                    message: "Couldn't check whether a site-wide publish is running. Try again.",
+                  });
+                  return;
+                }
+                handleRepublishJob(job);
+                if (job?.isActive) {
+                  startRepublishPolling();
+                  return;
+                }
+
+                const publishHandlers: Record<string, () => Promise<void>> = {
+                  Home: handlePublishToFile,
+                  Blog: handlePublishBlogToFile,
+                  Error: handlePublishErrorToFile,
+                  About: handlePublishAboutToFile,
+                  SupportUs: handlePublishSupportUsToFile,
+                  PrivacyPolicy: handlePublishPrivacyPolicyToFile,
+                  MediaCouncil: handlePublishMediaCouncilToFile,
+                  ContactUs: handlePublishContactUsToFile,
+                  AuthorsList: handlePublishAuthorsListToFile,
+                  Author: handlePublishAuthorPageToFile,
+                  Section: handlePublishSectionToFile,
+                };
+
+                const handler = publishHandlers[selectedPage];
+                if (handler) {
+                  // Home and Blog start their own site-wide job; any other page publishes itself and then the rest.
+                  await handler();
+                  if (selectedPage !== "Home" && selectedPage !== "Blog") await publishWholeSite();
+                }
+              }}
+              disabled={isPublishing || !republishChecked || (selectedPage === "Section" && !activeSection) || (selectedPage === "Author" && !activeAuthor)}
+            >
+              {isPublishing ? "Publishing…" : "Publish"}
+            </button>
+            {activeRepublishJob && !isPublishing && (
+              <div
+                role="tooltip"
+                className="absolute right-0 top-full mt-2 z-[9999] hidden group-hover:block w-72 bg-slate-900 text-white text-xs px-3 py-2 rounded shadow-lg"
+              >
+                <p className="font-semibold text-sm">{republishLabel(activeRepublishJob.reason)} in progress</p>
+                <p className="mt-1 text-white/90">
+                  {activeRepublishJob.total
+                    ? `${activeRepublishJob.done} of ${activeRepublishJob.total} pages updated. `
+                    : ""}
+                  Publishing is paused until it finishes
+                  {activeRepublishJob.isMine ? " — we'll notify you here when it's done." : "."}
+                </p>
+              </div>
+            )}
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+export const PuckOverrides = (
+  selectedPage: PageType,
+  setSelectedPage: (page: PageType) => void,
+  scheduleAutosave: (data: PageBuilderData) => void,
+  handlePublish: (data: PageBuilderData) => void,
+  saving: boolean,
+  activeSection: string | null,
+  setActiveSection: (section: string | null) => void,
+  activeAuthor: string | null,
+  setActiveAuthor: (author: string | null) => void,
+) => ({
+  headerActions: () => (
+    <PuckHeaderActions
+      selectedPage={selectedPage}
+      setSelectedPage={setSelectedPage}
+      scheduleAutosave={scheduleAutosave}
+      handlePublish={handlePublish}
+      saving={saving}
+      activeSection={activeSection}
+      setActiveSection={setActiveSection}
+      activeAuthor={activeAuthor}
+      setActiveAuthor={setActiveAuthor}
+    />
+  ),
+  componentOverlay: ({ children }: { children: React.ReactNode }) => (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "transparent",
+        pointerEvents: "none",
+      }}
+    >
+      {children}
+    </div>
+  ),
+});

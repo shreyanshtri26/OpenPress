@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en" class="notranslate" translate="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="google" content="notranslate" />
+    <meta name="googlebot" content="notranslate" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/openpress-quill.png" />
+    <link rel="apple-touch-icon" href="/openpress-quill.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="stylesheet" href="/css/fontawesome-all.min.css" />
+    <link rel="stylesheet" href="/css/iconfont.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Libre+Franklin:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+      rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+    <script>
+      (function () {
+        if (typeof window === "undefined" || typeof document === "undefined") {
+          return;
+        }
+
+        try {
+          var originalRemoveChild = Node.prototype.removeChild;
+          var originalInsertBefore = Node.prototype.insertBefore;
+          var originalAppendChild = Node.prototype.appendChild;
+
+          Node.prototype.removeChild = function (child) {
+            try {
+              if (!child) {
+                console.warn("Attempted to remove null/undefined child");
+                return null;
+              }
+
+              if (!this.contains(child)) {
+                console.warn("Child not found in parent, skipping removal");
+                return child;
+              }
+
+              return originalRemoveChild.call(this, child);
+            } catch (error) {
+              if (
+                error.name === "NotFoundError" ||
+                error.name === "DOMException" ||
+                (error.message && error.message.includes("not a child"))
+              ) {
+                console.warn("Safari DOM removeChild error prevented:", error.message);
+                return child;
+              }
+              throw error;
+            }
+          };
+
+          Node.prototype.insertBefore = function (newNode, referenceNode) {
+            try {
+              if (!newNode) {
+                console.warn("Attempted to insert null/undefined node");
+                return null;
+              }
+
+              return originalInsertBefore.call(this, newNode, referenceNode);
+            } catch (error) {
+              if (
+                error.name === "NotFoundError" ||
+                error.name === "DOMException" ||
+                error.name === "HierarchyRequestError"
+              ) {
+                console.warn("Safari DOM insertBefore error prevented:", error.message);
+                return newNode;
+              }
+              throw error;
+            }
+          };
+
+          Node.prototype.appendChild = function (child) {
+            try {
+              if (!child) {
+                console.warn("Attempted to append null/undefined child");
+                return null;
+              }
+
+              return originalAppendChild.call(this, child);
+            } catch (error) {
+              if (
+                error.name === "NotFoundError" ||
+                error.name === "DOMException" ||
+                error.name === "HierarchyRequestError"
+              ) {
+                console.warn("Safari DOM appendChild error prevented:", error.message);
+                return child;
+              }
+              throw error;
+            }
+          };
+
+          if (typeof window.addEventListener === "function") {
+            var originalAddEventListener = window.addEventListener;
+            window.addEventListener = function (type, listener, options) {
+              try {
+                return originalAddEventListener.call(this, type, listener, options);
+              } catch (error) {
+                console.warn("Safari addEventListener error prevented:", error.message);
+              }
+            };
+          }
+
+          if (!window.console) {
+            window.console = {
+              log: function () {},
+              warn: function () {},
+              error: function () {},
+            };
+          }
+        } catch (initError) {
+          console.error("Failed to apply Safari DOM patches:", initError);
+
+          if (typeof Node !== "undefined" && Node.prototype) {
+            try {
+              var basicRemoveChild = Node.prototype.removeChild;
+              Node.prototype.removeChild = function (child) {
+                if (child && child.parentNode === this) {
+                  return basicRemoveChild.call(this, child);
+                }
+                return child;
+              };
+            } catch (fallbackError) {
+              console.error("Basic fallback also failed:", fallbackError);
+            }
+          }
+        }
+      })();
+    </script>
+    <script>
+      (function () {
+        if (!Element.prototype.remove) {
+          Element.prototype.remove = function () {
+            if (this.parentNode) {
+              this.parentNode.removeChild(this);
+            }
+          };
+        }
+
+        if (!Element.prototype.closest) {
+          Element.prototype.closest = function (s) {
+            var el = this;
+            do {
+              if (el.matches(s)) return el;
+              el = el.parentElement || el.parentNode;
+            } while (el !== null && el.nodeType === 1);
+            return null;
+          };
+        }
+
+        if (!Element.prototype.matches) {
+          Element.prototype.matches =
+            Element.prototype.matchesSelector ||
+            Element.prototype.webkitMatchesSelector ||
+            Element.prototype.mozMatchesSelector ||
+            Element.prototype.msMatchesSelector;
+        }
+      })();
+    </script>
+    <title>OpenPress</title>
+  </head>
+  <body class="font-sans">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

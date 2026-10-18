@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   OpenPress theme — Apple-inspired: calm, spacious, one system sans, hairlines,
+   soft radii, frosted navigation. Plain CSS after the utilities so it wins
+   over the editorial (serif / mono / dotted) utility classes used by blocks.
+   ========================================================================== */
+:root {
+  --op-text: #1d1d1f;
+  --op-muted: #6e6e73;
+  --op-line: #d2d2d7;
+  --op-surface: #f5f5f7;
+  --op-accent: #0071e3;
+  --op-radius: 18px;
+  --op-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+body { font-family: var(--op-font) !important; color: var(--op-text); background: #fff; letter-spacing: -0.011em; }
+a { text-underline-offset: 3px; }
+a:hover { color: var(--op-accent); }
+
+/* One family everywhere; weight and size carry the hierarchy. */
+:root body .font-merriweather, :root body .font-libre, :root body .font-lato, :root body .font-share, :root body .font-sans, :root body .font-serif, :root body .font-mono,
+:root body [class*="font-["], :root body [style*="font-family"] { font-family: var(--op-font) !important; }
+:root body .font-merriweather { letter-spacing: -0.022em; }
+:root body .font-share { letter-spacing: 0.01em; }
+.italic { font-style: normal !important; }
+h1, h2, h3, h4 { letter-spacing: -0.025em; line-height: 1.1; color: var(--op-text); }
+h1 { font-weight: 700; }
+h2, h3 { font-weight: 600; }
+
+/* Hairlines instead of black / dotted newspaper rules. */
+.border-dotted { border-style: solid !important; }
+.border-black, .border-gray-200, .border-gray-300, .border-gray-400 { border-color: var(--op-line) !important; }
+.navbar-dec-line { display: none !important; }
+
+/* Navigation: frosted, sticky, quiet. */
+header { background: rgba(255, 255, 255, 0.8) !important; -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--op-line); }
+header a.uppercase, header button.uppercase, header .uppercase { text-transform: none !important; letter-spacing: 0 !important; font-size: 0.875rem; font-weight: 400; color: var(--op-text); }
+header a.uppercase:hover, header button.uppercase:hover { color: var(--op-accent); }
+header svg { color: var(--op-text); }
+
+/* Imagery: rounded, never full-bleed boxes. The logo and icons are left alone. */
+img:not([src*="logo"]):not([src*="favicon"]):not([src*="icon"]) { border-radius: var(--op-radius); }
+figure { margin-top: 1.5rem; margin-bottom: 1.5rem; }
+figcaption { color: var(--op-muted); }
+
+/* Article reading width and rhythm. */
+.blog-body-content { font-size: 1.1875rem; line-height: 1.65; color: var(--op-text); }
+.blog-body-content p { margin-bottom: 1.1em; }
+.blog-body-content a { color: var(--op-accent); }
+
+/* Buttons become pills. */
+button.bg-black, a.bg-black, .bg-black[class*="px-"] { border-radius: 980px !important; }
+button.bg-black:hover, a.bg-black:hover { background: #333336 !important; }
+
+/* Footer: light and small, like a product page. */
+footer.bg-black { background: var(--op-surface) !important; color: var(--op-muted) !important; border-top: 1px solid var(--op-line); }
+footer .text-white { color: var(--op-muted) !important; }
+footer a:hover { color: var(--op-accent) !important; }
+footer .invert, footer img.invert { filter: none !important; }
+footer .border-white { border-color: var(--op-line) !important; }
+footer .uppercase { text-transform: none !important; letter-spacing: 0 !important; }
+
+/* Cards: calm hover. */
+a img { transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1); }
+a:hover > img { transform: scale(1.015); }
+
+/* ---- Masthead navbar -------------------------------------------------------
+   Top of page: date | large logo | social, with the section row underneath, separated by hairlines.
+   After scrolling (html.op-scrolled): one compact frosted bar: sections | quill mark | social. */
+@media (min-width: 640px) {
+  #navbar-top-row { display: grid !important; grid-template-columns: 1fr auto 1fr; grid-template-areas: "date logo right" "nav nav nav"; align-items: center; row-gap: 0; padding-bottom: 0 !important; }
+  #navbar-date { grid-area: date; font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--op-muted); }
+  #navbar-logo-wrap { grid-area: logo; flex: none !important; }
+  #navbar-right-wrap { grid-area: right; justify-self: end; }
+  #navbar-nav-wrap { grid-area: nav; justify-content: center !important; border-top: 1px solid var(--op-line); border-bottom: 1px solid var(--op-line); margin-top: 8px; flex: none !important; width: 100%; }
+  #navbar-nav-wrap nav { flex: none !important; justify-content: center; gap: 0.25rem; }
+
+  html.op-scrolled #navbar-top-row { grid-template-areas: "nav logo right"; }
+  html.op-scrolled #navbar-date { display: none; }
+  html.op-scrolled #navbar-nav-wrap { border: 0; margin-top: 0; justify-content: flex-start !important; width: auto; }
+}
+
+/* ---- Masthead navbar polish --------------------------------------------------
+   Frosted glass bar, pill-shaped controls, quiet type. Section links are title-case pills:
+   the active one is a solid dark pill, hover is a soft grey one. */
+header { background: rgba(255, 255, 255, 0.8) !important; -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid transparent; transition: box-shadow 0.3s ease, border-color 0.3s ease; }
+/* The scroll script animates a dark border and shadow onto the header inline; replace them with a hairline and a soft shadow. */
+header { border-bottom: 1px solid transparent !important; box-shadow: none !important; }
+html.op-scrolled header { border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.18) !important; background: rgba(255, 255, 255, 0.86) !important; }
+
+#navbar-nav-wrap { border-top: 0 !important; border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important; margin-top: 10px !important; padding-bottom: 6px; }
+html.op-scrolled #navbar-nav-wrap { border-bottom: 0 !important; padding-bottom: 0; }
+#navbar-nav-wrap nav { gap: 0.125rem !important; }
+#navbar-nav-wrap .nav-btn { height: 36px !important; padding: 0 2px !important; }
+#navbar-nav-wrap .nav-box { display: none !important; }
+#navbar-nav-wrap .nav-btn > span.relative { text-transform: none; letter-spacing: -0.01em; font-size: 0.8125rem; font-weight: 500; color: rgba(29, 29, 31, 0.72); padding: 6px 14px; border-radius: 980px; border-bottom: 0; transition: background-color 0.2s ease, color 0.2s ease; }
+#navbar-nav-wrap .nav-btn:hover > span.relative { background: rgba(0, 0, 0, 0.06); color: var(--op-text); }
+#navbar-nav-wrap .nav-btn:has(.nav-box[style*="display: block"]) > span.relative { background: var(--pill, var(--op-text)); color: #fff; }
+
+/* Menu and search: round, quiet icon buttons. */
+#desktop-hamburger-btn, #navbar-search-btn { width: 36px; height: 36px !important; padding: 0 !important; border-radius: 50%; transform: none !important; transition: background-color 0.2s ease; }
+#desktop-hamburger-btn:hover, #navbar-search-btn:hover { background: rgba(0, 0, 0, 0.06); opacity: 1 !important; }
+#desktop-hamburger-btn span { width: 16px !important; height: 1.5px !important; border-radius: 2px; }
+
+/* Social icons: small, muted, round hover. */
+#navbar-social-icons { gap: 2px; }
+#navbar-social-icons a { width: 34px !important; height: 34px !important; border-radius: 50%; color: var(--op-muted) !important; transition: background-color 0.2s ease, color 0.2s ease; }
+#navbar-social-icons a:hover { background: rgba(0, 0, 0, 0.06); color: var(--op-text) !important; opacity: 1 !important; }
+#navbar-social-icons svg { width: 18px !important; height: 18px !important; }
+
+/* Buttons (Support us, Sign in, Become a member): Apple-style pills. */
+#banner-support-btn, #banner-login-btn, #login-btn, #navbar-support-btn { border-radius: 980px !important; padding: 7px 16px !important; font-size: 0.8125rem !important; font-weight: 600 !important; letter-spacing: -0.01em !important; text-transform: none !important; line-height: 1.1 !important; box-shadow: none !important; transition: filter 0.2s ease, transform 0.15s ease; }
+#banner-support-btn:hover, #banner-login-btn:hover, #login-btn:hover, #navbar-support-btn:hover { filter: brightness(0.92); color: inherit; }
+#banner-support-btn:active, #banner-login-btn:active, #login-btn:active, #navbar-support-btn:active { transform: scale(0.97); }
+
+/* Top banner: a slim, calm notice. */
+#navbar-top-banner { margin-top: 0 !important; min-height: 40px !important; padding: 8px 16px !important; }
+#navbar-top-banner > div > div:first-child { font-style: normal !important; font-size: 0.8125rem !important; font-weight: 500 !important; letter-spacing: -0.01em; text-transform: none !important; }
+
+/* ---- Cards ------------------------------------------------------------------
+   One consistent card language: rounded media, quiet category chips, tight bold headlines,
+   muted summaries, soft lift on hover. Selectors target the markup the block renderers emit. */
+img.object-cover { border-radius: 14px; }
+a.block:hover { opacity: 1 !important; }
+[class*="hover:opacity-90"]:hover { opacity: 1 !important; }
+
+/* Category chips: tinted by --chip, which a card's accent colour or the section's taxonomy colour sets. */
+[class*="border-[0.5px]"].uppercase, span.font-share.border.uppercase { border: 0 !important; background: color-mix(in srgb, var(--chip, #6e6e73) 12%, #fff); color: var(--chip, var(--op-muted)) !important; border-radius: 980px; padding: 3px 10px !important; font-size: 0.6875rem !important; font-weight: 600; letter-spacing: 0.04em; }
+p.font-share.uppercase, div.font-share.uppercase { color: var(--chip, var(--op-muted)) !important; letter-spacing: 0.04em; font-weight: 600; }
+
+/* Headlines and summaries */
+.font-libre.font-extrabold { font-weight: 700 !important; letter-spacing: -0.025em; line-height: 1.12 !important; color: var(--op-text); }
+.font-libre { letter-spacing: -0.02em; }
+[class*="font-[Merriweather]"] { color: var(--op-muted); font-weight: 400; line-height: 1.5; }
+
+/* Cards with a text panel over the image (main / story card): floating rounded panel. */
+.relative.w-full.block.bg-white > div[class*="-mt-[50px]"] { border-radius: 20px; box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.18); }
+.relative.w-full.block.bg-white { transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1); }
+.relative.w-full.block.bg-white:hover { transform: translateY(-3px); }
+
+/* List-style cards (showcase, featured, story sub, bottom): hairline rows, rounded hover wash. */
+[class*="hover:bg-gray-50"] { border-radius: 12px; transition: background-color 0.2s ease; }
+[class*="hover:bg-gray-50"]:hover { background-color: var(--op-surface) !important; }
+.recommend-card-content { padding-top: 10px; }
+.flex.flex-col.lg\:flex-row.bg-white.border-b { border-radius: 16px; transition: background-color 0.2s ease; }
+
+/* Tables (most popular): soft rounded outline. */
+table.border-collapse td, table.border-collapse th { border-color: var(--op-line) !important; }
+table.border-collapse { border-radius: 16px; border-collapse: separate; border-spacing: 0; overflow: hidden; border-color: var(--op-line) !important; }
+
+/* The closed mobile menu drawer sits off-screen to the right; never let it create a horizontal scrollbar. */
+html, body { overflow-x: clip; }
+
+/* Give the menu and search icons room beside the section links. */
+#navbar-nav-wrap nav > #desktop-hamburger-btn { margin-left: 1.5rem; padding: 0 0.5rem; }
+#navbar-nav-wrap nav > #navbar-search-btn { margin-left: 0.25rem; }
+
+/* Share button on articles: a quiet pill. */
+[data-puck-share], [data-puck-share-card-button] { border-radius: 980px !important; overflow: hidden; border-color: var(--op-line) !important; background: #fff !important; transition: background-color 0.2s ease; }
+[data-puck-share]:hover, [data-puck-share-card-button]:hover { background: var(--op-surface) !important; }

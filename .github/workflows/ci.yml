@@ -1,0 +1,101 @@
+# Continuous integration. One long-lived branch: `main`. Work happens on short-lived branches that are merged
+# into main through a pull request, and this workflow must pass before the merge (make "CI passed" a required check).
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      api: ${{ steps.f.outputs.api }}
+      web: ${{ steps.f.outputs.web }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: f
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            api: ['apps/api/**', 'apps/site/**', 'package-lock.json', '.github/workflows/ci.yml']
+            # the admin app builds Page Studio's source (/build), so either one rebuilds the web
+            web: ['apps/admin/**', 'apps/pagestudio/**', 'package-lock.json', '.github/workflows/ci.yml']
+
+  api:
+    needs: changes
+    if: needs.changes.outputs.api == 'true'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: openpress
+          POSTGRES_PASSWORD: openpress-local-secret
+          POSTGRES_DB: openpress
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U openpress"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://openpress:openpress-local-secret@127.0.0.1:5432/openpress
+      JWT_SECRET: ci-only-secret
+      CRON_SECRET: ci-only-cron-secret
+      ALLOWED_ORIGINS: http://localhost:5173
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - run: npm ci
+      - run: npm run check -w apps/api
+      - name: Create the schema, roles and first user
+        run: npm run setup -w apps/api
+      - name: Seed sample data the tests read
+        working-directory: apps/api
+        run: |
+          for s in users taxonomies assets stories pages analytics; do node scripts/seed/$s.mjs; done
+      - run: npm test -w apps/api
+      - run: npm test -w apps/site
+
+  web:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - run: npm ci
+      - run: npm test -w apps/admin
+      - name: Type-check and build Page Studio
+        run: npm run build -w apps/pagestudio
+      - name: Build the admin app
+        run: npm run build -w apps/admin
+      - name: Lint (advisory)
+        run: npm run lint --workspaces --if-present
+        continue-on-error: true # ponytail: existing lint debt; make blocking once lint is clean
+
+  # One stable name to require in branch protection, whichever jobs ran.
+  ci-passed:
+    name: CI passed
+    needs: [api, web]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if a job failed or was cancelled
+        run: |
+          echo "api: ${{ needs.api.result }}  web: ${{ needs.web.result }}"
+          case "${{ needs.api.result }}${{ needs.web.result }}" in
+            *failure*|*cancelled*) exit 1 ;;
+          esac

@@ -1,0 +1,5 @@
+lib/**
+server/**
+dist/**
+public/**
+node_modules/**

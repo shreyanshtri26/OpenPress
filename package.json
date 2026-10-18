@@ -1,0 +1,21 @@
+{
+  "name": "openpress",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm test --workspaces --if-present",
+    "dev:infra": "docker compose up -d",
+    "setup:local": "npm run setup -w apps/api",
+    "dev": "node scripts/dev.mjs"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

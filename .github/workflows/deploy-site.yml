@@ -1,0 +1,36 @@
+# Deploys the public newspaper Worker (apps/site) from `main` only. It serves the published pages from the website bucket.
+# Needs (Environment "production"):
+#   secrets: CLOUDFLARE_API_TOKEN (Workers edit), CLOUDFLARE_ACCOUNT_ID
+#   vars:    SITE_BUCKET_ORIGIN (public base URL of the website bucket, no trailing slash)
+name: Deploy Site
+
+on:
+  push:
+    branches: [main]
+    paths: ['apps/site/**', 'apps/api/lib/site-keys.mjs', '.github/workflows/deploy-site.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-site
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - run: npm ci
+      - run: npm test -w apps/site
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/site
+          command: deploy --var BUCKET_ORIGIN:${{ vars.SITE_BUCKET_ORIGIN }}

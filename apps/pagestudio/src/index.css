@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .font-share {
+    font-family: 'Share Tech Mono', monospace !important;
+  }
+
+  .font-merriweather {
+    font-family: 'Merriweather', serif !important;
+  }
+}
+@layer base {
+  :root {
+    --header-height: 5rem;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.6;
+    font-weight: 400;
+    color: #0f172a;
+    background-color: #f8fafc;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --header-height: 7rem;
+    }
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: #f8fafc;
+    color: inherit;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  .bg-graph-paper {
+    background-color: #ffffff;
+    background-image:
+      linear-gradient(#e8e9ee 0.75px, transparent 0.75px),
+      linear-gradient(90deg, #e8e9ee 0.75px, transparent 0.75px);
+    background-size: 10px 10px;
+    min-height: 200px;
+  }
+}
+
+/* Hide default search input "clear" button in WebKit browsers */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+  -webkit-appearance: none;
+}
+
+/* Fix recommendation card styling for 2x2 (layout 2) thumbnail grids on mobile */
+@media (max-width: 639px) {
+  .thumbnail-grid .grid-cols-2 .recommend-card-content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .thumbnail-grid .grid-cols-2 .recommend-card-content .font-libre {
+    font-size: 1.25rem !important;
+    line-height: 1.15 !important;
+  }
+}

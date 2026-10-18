@@ -1,0 +1,49 @@
+name: Deploy Lambda Code & Config
+
+on:
+  push:
+    branches:
+      - gold
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      # This is the "Ternary" logic: If branch is main, use 'production', else use branch name (uat)
+      name: ${{ github.ref_name == 'main' && 'production' || github.ref_name }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check request logging and analytics preservation
+        run: |
+          node --check index.mjs
+          node --test tests/requestLogging.test.mjs
+
+      - name: Zip files
+        run: zip -r function.zip . -x "*.git*" ".github/*"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.S3_REGION }} # Pulls from env-specific secrets
+
+      - name: Update Lambda Code
+        run: |
+          aws lambda update-function-code \
+            --function-name ${{ secrets.AWS_LAMBDA_FUNCTION }} \
+            --zip-file fileb://function.zip
+
+      - name: Wait for Lambda update
+        run: |
+          aws lambda wait function-updated \
+            --function-name ${{ secrets.AWS_LAMBDA_FUNCTION }}

@@ -1,0 +1,186 @@
+/* --- Default (Mobile-First) Styles --- */
+.loginPageContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  align-items: center;
+  padding: 48px 20px 32px;
+  box-sizing: border-box;
+  position: relative;
+  gap: 24px;
+}
+.copyrightContainer {
+  position: absolute;
+  bottom: 2px;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.navBarContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.logoTxt {
+  color: rgba(0, 0, 0, 0.851);
+  font-weight: bolder;
+  font-size: 22px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.loginTitleContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  text-align: center;
+}
+
+.loginLogo {
+  width: 280px;
+  max-width: 80%;
+  height: auto;
+  margin: 0 auto 16px;
+  display: block;
+}
+
+.loginTxt {
+  color: rgba(0, 0, 0, 0.851);
+  font-weight: bolder;
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.loginTxt2 {
+  font-size: 16px;
+  color: rgb(0, 0, 0);
+  word-spacing: 1px;
+  margin-bottom: 10px;
+  max-width: 450px;
+}
+
+.loginFormContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 340px;
+  margin: 20px auto;
+}
+
+.loginFormInput {
+  border: 1px solid #d4d4d8;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  font-size: 15px;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.loginFormInputsContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.loginBtn {
+  background-color: black;
+  padding: 12px 8px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.loginBtn:disabled {
+  background-color: #888;
+  cursor: not-allowed;
+}
+
+.noAcctPrompt {
+  display: none;
+}
+
+.noAcctTxt {
+  font-size: 14px;
+  color: rgb(0, 0, 0);
+}
+
+.noAcctTxt2 {
+  font-size: 14px;
+  color: rgb(0, 0, 0);
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.labelTxt {
+  font-size: 14px;
+  color: rgb(0, 0, 0);
+  margin-bottom: 8px;
+}
+
+.bttmContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.forgotPassTxt {
+  font-size: 14px;
+  color: rgb(0, 0, 0);
+  margin-bottom: 10px;
+}
+
+.copyrightContainer {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  padding-bottom: 20px;
+  margin-top: 20px;
+}
+
+.copyrightTxt {
+  font-size: 12px;
+  color: #555;
+}
+
+@media (min-width: 640px) {
+  .loginPageContainer {
+    padding: 72px 48px;
+  }
+
+  .loginFormContainer {
+    max-width: 380px;
+  }
+}
+
+/* --- Tablet & Desktop Styles --- */
+@media (min-width: 768px) {
+  .loginPageContainer {
+    padding: 120px;
+  }
+
+  .navBarContainer,
+  .loginTitleContainer {
+    width: 90%;
+    max-width: 1400px;
+  }
+
+  .noAcctPrompt {
+    display: inline;
+  }
+
+  .loginTxt {
+    font-size: 40px;
+  }
+
+  .loginFormContainer {
+    width: 33%;
+  }
+}

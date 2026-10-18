@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
+  "rules": {
+    "react/no-unescaped-entities": "off",
+    "no-unused-vars": "warn"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@builder/*": [
+        "../pagestudio/src/*"
+      ],
+      "@studio/*": [
+        "../pagestudio/src/*"
+      ]
+    }
+  },
+  "include": [
+    "vite-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "src/context/UserContext.js",
+    "src/components/StoryEditor/RaiseStory.jsx",
+    "src/components/common/DAM/asset-library/AssetLibraryChatDrawer.jsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

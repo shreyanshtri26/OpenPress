@@ -1,0 +1,1581 @@
+/* styles/globals.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Apple Design Foundations & Materials (WWDC / Emil Kowalski Framework)
+   ========================================================================== */
+
+:root {
+  --apple-font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
+  --apple-ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 1. Optical Typography Scale */
+h1, .apple-h1 {
+  font-family: var(--apple-font-sans);
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  line-height: 1.1;
+  font-optical-sizing: auto;
+}
+
+h2, .apple-h2 {
+  font-family: var(--apple-font-sans);
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  line-height: 1.2;
+  font-optical-sizing: auto;
+}
+
+h3, .apple-h3 {
+  font-family: var(--apple-font-sans);
+  letter-spacing: -0.015em;
+  font-weight: 600;
+  line-height: 1.3;
+  font-optical-sizing: auto;
+}
+
+.apple-caption {
+  font-size: 0.75rem;
+  letter-spacing: 0.015em; /* Positive tracking for small text */
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+/* 2. Tactile 0ms Press Feedback */
+.apple-pressable,
+button:not(:disabled):not([class*="no-press"]),
+.clickable-card {
+  transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1), opacity 120ms ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.apple-pressable:active:not(:disabled),
+button:not(:disabled):not([class*="no-press"]):active,
+.clickable-card:active {
+  transform: scale(0.975);
+}
+
+/* 3. Translucent Materials & Depth Hierarchy */
+.apple-chrome {
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+.apple-glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 0, 0, 0.03);
+  border-radius: 12px;
+}
+
+.apple-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.02);
+  border-radius: 12px;
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.apple-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 12px 28px rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+/* 4. Accessibility & Overrides */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .apple-pressable:active,
+  button:active {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .apple-chrome,
+  .apple-glass-card {
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* Hide scrollbar by default but keep scroll functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  border: none;
+}
+
+/* Fix DevExtreme TextArea border consistency */
+.dx-textarea {
+  border: 1px solid #d1d5db !important;
+}
+
+/* Fix accordion borders - Simple targeted override */
+.metadata-accordion .dx-accordion-item {
+  border-color: #e5e7eb !important;
+}
+
+.metadata-accordion .dx-accordion-item.dx-state-focused,
+.metadata-accordion .dx-accordion-item.dx-accordion-item-expanded {
+  border-color: #e5e7eb !important;
+  box-shadow: none !important;
+}
+
+.custom-accordion .dx-accordion-item {
+  border-color: #040404 !important;
+}
+
+.custom-accordion .dx-accordion-item.dx-state-focused,
+.custom-accordion .dx-accordion-item.dx-accordion-item-expanded {
+  border-color: #040404 !important;
+  box-shadow: none !important;
+}
+
+/* Make divider between accordion items more visible */
+.metadata-accordion .dx-accordion-item+.dx-accordion-item {
+  border-top-color: #374151 !important;
+}
+
+/* Reduce vertical spacing between dropdown options - More specific selectors */
+.dx-dropdowneditor-overlay.dx-popup-wrapper .dx-list .dx-list-item,
+.dx-selectbox-container .dx-dropdowneditor-overlay.dx-popup-wrapper .dx-list .dx-list-item,
+.dx-dropdownlist-popup-wrapper .dx-list-item,
+.dx-list-item {
+  padding-top: 2px !important;
+  padding-bottom: 3px !important;
+  min-height: 14px !important;
+  border: none !important;
+}
+
+.dx-dropdowneditor-overlay.dx-popup-wrapper .dx-list .dx-list-item:hover,
+.dx-selectbox-container .dx-dropdowneditor-overlay.dx-popup-wrapper .dx-list .dx-list-item:hover,
+.dx-dropdownlist-popup-wrapper .dx-list-item:hover,
+.dx-list-item:hover {
+  background-color: transparent !important;
+}
+
+.dx-dropdowneditor-overlay.dx-popup-wrapper .dx-list .dx-list-item-content,
+.dx-selectbox-container .dx-dropdowneditor-overlay.dx-popup-wrapper .dx-list .dx-list-item-content,
+.dx-dropdownlist-popup-wrapper .dx-list-item-content,
+.dx-list-item-content {
+  padding-top: 2px !important;
+  padding-bottom: 3px !important;
+  min-height: 14px !important;
+}
+
+.admin-users-datagrid .dx-header-filter {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.admin-users-datagrid .dx-header-filter .dx-icon-filter-operation-default::before {
+  color: #4b5563;
+}
+
+.allstories-datagrid.dx-datagrid,
+.scraped-stories-datagrid.dx-datagrid {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+}
+
+/* Rows + Headers */
+.allstories-datagrid .dx-row,
+.allstories-datagrid .dx-row-alt,
+.allstories-datagrid .dx-header-row,
+.allstories-datagrid .dx-freespace-row,
+.scraped-stories-datagrid .dx-row,
+.scraped-stories-datagrid .dx-row-alt,
+.scraped-stories-datagrid .dx-header-row,
+.scraped-stories-datagrid .dx-freespace-row {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Hover states */
+.scraped-stories-datagrid .dx-row.dx-state-hover,
+.scraped-stories-datagrid .dx-row.dx-state-focused,
+.scraped-stories-datagrid .dx-row.dx-state-hover td,
+.scraped-stories-datagrid .dx-row.dx-state-focused td {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Selection state — match CampaignsManager / PlacementPerformanceGrid grey highlight */
+.scraped-stories-datagrid .dx-datagrid-rowsview .dx-row.dx-selection > td,
+.scraped-stories-datagrid .dx-datagrid-rowsview .dx-row.dx-selection.dx-state-hover > td {
+  background-color: #e6e6e6 !important;
+  color: #000000 !important;
+}
+
+/* ===== BORDER FIX ONLY (no padding changes) ===== */
+
+/* 1) Single divider under header */
+.allstories-datagrid .dx-datagrid-headers .dx-header-row>td,
+.scraped-stories-datagrid .dx-datagrid-headers .dx-header-row>td {
+  border-bottom: 1px solid #000 !important;
+}
+
+/* 2) Row separators ONLY for data rows (avoid affecting freespace row) */
+.allstories-datagrid .dx-datagrid-rowsview .dx-data-row>td,
+.scraped-stories-datagrid .dx-datagrid-rowsview .dx-data-row>td {
+  border-bottom: 1px solid #000 !important;
+  color: #000000 !important;
+}
+
+/* 3) Remove separator under last visible data row to avoid double border with wrapper */
+.allstories-datagrid .dx-datagrid-rowsview tbody tr.dx-data-row:last-child>td {
+  border-bottom: 0 !important;
+}
+
+/* 4) Ensure freespace row never draws a border line */
+.allstories-datagrid .dx-datagrid-rowsview .dx-freespace-row>td {
+  border-bottom: 0 !important;
+}
+
+/* 5) Remove pager/bottom container borders (prevents extra bottom line) */
+.allstories-datagrid .dx-datagrid-pager,
+.allstories-datagrid .dx-datagrid-bottom-content,
+.allstories-datagrid .dx-datagrid-rowsview,
+.scraped-stories-datagrid .dx-datagrid-pager,
+.scraped-stories-datagrid .dx-datagrid-bottom-content,
+.scraped-stories-datagrid .dx-datagrid-rowsview {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* ===== keep your existing non-border rules below ===== */
+
+/* Filter row inputs */
+.allstories-datagrid .dx-datagrid-filter-row .dx-editor-cell .dx-texteditor-input,
+.allstories-datagrid .dx-datagrid-filter-row .dx-editor-cell input,
+.allstories-datagrid .dx-editor-cell .dx-texteditor-input,
+.allstories-datagrid .dx-editor-cell input {
+  color: #000000 !important;
+}
+
+.allstories-datagrid .dx-datagrid-rowsview .dx-row>td,
+.scraped-stories-datagrid .dx-datagrid-rowsview .dx-row>td {
+  padding: 10px 16px !important;
+}
+
+/* Header cells only. `.dx-row` inside .dx-datagrid-headers also matches the
+   filter row, and forcing 16px padding there shifts the editor out from under
+   the filter-operation icon, so the icon lands on top of the typed value. */
+.allstories-datagrid .dx-datagrid-headers .dx-header-row>td,
+.scraped-stories-datagrid .dx-datagrid-headers .dx-header-row>td {
+  padding: 10px 16px !important;
+}
+
+/* Ensure padding and clean horizontal space for toolbar in allstories-datagrid */
+.allstories-datagrid .dx-toolbar,
+.campaigns-datagrid .dx-toolbar,
+.scraped-stories-datagrid .dx-toolbar,
+.placement-datagrid .dx-toolbar {
+  padding: 10px 16px !important;
+  background-color: #ffffff !important;
+}
+
+.allstories-datagrid .dx-group-panel {
+  padding: 8px 0 !important;
+}
+
+/* Fix overlapping and truncate text in narrow tables / containers */
+.allstories-datagrid .dx-group-panel-item {
+  max-width: 130px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.allstories-datagrid .dx-group-panel-message {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: inline-block !important;
+  max-width: none !important;
+}
+
+/* Match the exact responsive grid wrapper inside Audience Tab */
+@media (min-width: 768px) {
+  .grid-cols-1 .allstories-datagrid .dx-group-panel-message,
+  .md\:grid-cols-2 .allstories-datagrid .dx-group-panel-message,
+  .lg\:grid-cols-3 .allstories-datagrid .dx-group-panel-message {
+    max-width: 120px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-cols-1 .allstories-datagrid .dx-group-panel-message,
+  .md\:grid-cols-2 .allstories-datagrid .dx-group-panel-message,
+  .lg\:grid-cols-3 .allstories-datagrid .dx-group-panel-message {
+    max-width: 130px !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid-cols-1 .allstories-datagrid .dx-group-panel-message,
+  .md\:grid-cols-2 .allstories-datagrid .dx-group-panel-message,
+  .lg\:grid-cols-3 .allstories-datagrid .dx-group-panel-message {
+    max-width: 140px !important;
+  }
+}
+
+@media (min-width: 1536px) {
+  .grid-cols-1 .allstories-datagrid .dx-group-panel-message,
+  .md\:grid-cols-2 .allstories-datagrid .dx-group-panel-message,
+  .lg\:grid-cols-3 .allstories-datagrid .dx-group-panel-message {
+    max-width: none !important;
+  }
+}
+
+.allstories-datagrid .dx-datagrid-pager,
+.allstories-datagrid .dx-datagrid-bottom-content,
+.scraped-stories-datagrid .dx-datagrid-pager,
+.scraped-stories-datagrid .dx-datagrid-bottom-content {
+  background-color: #fff !important;
+  border-top: none !important;
+  box-shadow: none !important;
+  margin-top: 0 !important;
+}
+
+.allstories-datagrid .dx-datagrid-headers .dx-header-row td,
+.scraped-stories-datagrid .dx-datagrid-headers .dx-header-row td {
+  font-weight: 600 !important;
+  color: #111827 !important;
+}
+
+/* ✅ Row cell font weight */
+.allstories-datagrid .dx-datagrid-rowsview .dx-row>td,
+.scraped-stories-datagrid .dx-datagrid-rowsview .dx-row>td {
+  font-weight: 400 !important;
+  color: #000 !important;
+}
+
+.allstories-datagrid,
+.scraped-stories-datagrid {
+  background-color: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  font-family: inherit !important;
+  min-width: 100px !important;
+}
+
+.scraped-stories-datagrid .dx-datagrid-headers .dx-header-row>td {
+  border-bottom: 1px solid #e5e7eb !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
+  padding: 12px 16px !important;
+}
+
+.scraped-stories-datagrid .dx-datagrid-rowsview .dx-data-row>td {
+  border-bottom: 1px solid #f3f4f6 !important;
+  color: #111827 !important;
+  padding: 12px 16px !important;
+  vertical-align: middle !important;
+}
+
+.scraped-stories-datagrid .dx-datagrid-filter-row td {
+  padding: 8px 16px !important;
+}
+
+.allstories-datagrid .dx-datagrid-filter-row .dx-editor-with-menu .dx-menu-item-content .dx-icon-filter,
+.scraped-stories-datagrid .dx-datagrid-filter-row .dx-editor-with-menu .dx-menu-item-content .dx-icon-filter {
+  color: #6b7280 !important;
+}
+
+/* Ensure horizontal scrollbar is visible when needed */
+.scraped-stories-datagrid .dx-datagrid-scrollable-container {
+  overflow-x: auto !important;
+}
+
+.allstories-datagrid .dx-data-row[aria-rowindex="999999"] {
+  display: none !important;
+}
+
+/* ✅ Clean black borders for accordion items */
+.settings-role-accordion .dx-accordion-item {
+  border-top: 1px solid #000 !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+/* ✅ Add black border-bottom to the last accordion item */
+.settings-role-accordion .dx-accordion-item:last-child {
+  border-bottom: 1px solid #000 !important;
+}
+
+/* ✅ Remove hover/focus highlights (no gray or blue border) */
+.settings-role-accordion .dx-accordion-item.dx-state-hover,
+.settings-role-accordion .dx-accordion-item.dx-state-focused,
+.settings-role-accordion .dx-accordion-item.dx-accordion-item-expanded {
+  border-color: #000 !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+/* ✅ Keep text color stable on hover */
+.settings-role-accordion .dx-accordion-item.dx-state-hover .dx-accordion-item-title {
+  color: #000 !important;
+}
+
+/* PWA Install Banner Styles */
+.pwa-install-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #000000;
+  color: #ffffff;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+  animation: bannerSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@keyframes bannerSlideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.pwa-install-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pwa-install-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.pwa-install-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #ffffff;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.pwa-install-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pwa-install-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.pwa-install-text h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.pwa-install-text p {
+  margin: 3px 0 0 0;
+  font-size: 13px;
+  color: #e4e4e7;
+  line-height: 1.4;
+}
+
+.pwa-install-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.pwa-install-btn {
+  background: linear-gradient(135deg, #4b5563 0%, #1f2937 50%, #000000 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 22px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.pwa-install-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #6b7280 0%, #374151 50%, #111827 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.pwa-install-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.pwa-install-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pwa-dismiss-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #a1a1aa;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.pwa-dismiss-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.pwa-dismiss-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile responsive styles */
+@media (max-width: 640px) {
+  .pwa-install-banner {
+    padding-bottom: env(safe-area-inset-bottom, 8px);
+  }
+
+  .pwa-install-content {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .pwa-install-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+  }
+
+  .pwa-install-text h3 {
+    font-size: 14px;
+    color: #ffffff;
+  }
+
+  .pwa-install-text p {
+    font-size: 12px;
+    color: #a1a1aa;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .pwa-install-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+}
+
+/* iOS Installation Modal Styles */
+.ios-install-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.ios-install-modal {
+  background: white;
+  border-radius: 16px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.ios-install-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ios-install-modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.ios-modal-close-btn {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.ios-modal-close-btn:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.ios-install-modal-body {
+  padding: 24px;
+}
+
+.ios-install-intro {
+  margin: 0 0 20px 0;
+  font-size: 15px;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.ios-install-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: step-counter;
+}
+
+.ios-install-steps li {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ios-install-steps li:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.step-number {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #27272a 0%, #09090b 100%);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content p {
+  margin: 0 0 12px 0;
+  font-size: 15px;
+  color: #111827;
+  line-height: 1.6;
+}
+
+.step-content p:last-child {
+  margin-bottom: 0;
+}
+
+.step-content strong {
+  font-weight: 600;
+  color: #007AFF;
+}
+
+.step-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f9ff;
+  border: 2px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 12px 0;
+  width: fit-content;
+}
+
+.step-hint {
+  font-size: 13px !important;
+  color: #6b7280 !important;
+  font-style: italic;
+}
+
+.ios-install-footer {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.ios-install-footer p {
+  margin: 0;
+  font-size: 15px;
+  color: #059669;
+  font-weight: 500;
+}
+
+/* Mobile responsive styles for iOS modal */
+@media (max-width: 640px) {
+  .ios-install-modal-overlay {
+    padding: 12px;
+  }
+
+  .ios-install-modal {
+    max-height: 95vh;
+  }
+
+  .ios-install-modal-header {
+    padding: 16px 20px;
+  }
+
+  .ios-install-modal-header h3 {
+    font-size: 18px;
+  }
+
+  .ios-install-modal-body {
+    padding: 20px;
+  }
+
+  .ios-install-intro {
+    font-size: 14px;
+  }
+
+  .ios-install-steps li {
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+  }
+
+  .step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .step-content p {
+    font-size: 14px;
+  }
+
+  .step-icon {
+    padding: 10px;
+  }
+
+  .step-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Editor.js Responsive Styles for Tablets and iPads */
+#editorjs-container {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+#editorjs-container [contenteditable="true"] {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+/* Keep text selected when clicking inline toolbar buttons */
+#editorjs-container .ce-inline-toolbar,
+#editorjs-container .ce-inline-toolbar *:not(input) {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+/* Mobile devices (< 640px) - 12px padding */
+@media (max-width: 639px) {
+  #editorjs-container .codex-editor__redactor {
+    padding-left: 10px !important;
+    padding-right: 0 !important;
+  }
+
+  #editorjs-container .ce-block {
+    padding-left: 3px !important;
+    padding-right: 0 !important;
+  }
+
+  #editorjs-container .ce-block__content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  #editorjs-container .ce-toolbar__content {
+    max-width: 100% !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* Small tablets (640px - 767px) - 8px padding (sm:px-2) */
+@media (min-width: 640px) and (max-width: 767px) {
+  #editorjs-container .codex-editor__redactor {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  #editorjs-container .ce-block {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  #editorjs-container .ce-block__content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  #editorjs-container .ce-toolbar__content {
+    max-width: 100% !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* Tablets and iPads (768px - 1023px) - 24px padding (md:px-6) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  #editorjs-container .codex-editor__redactor {
+    padding-left: 12px !important;
+    padding-right: 0 !important;
+  }
+
+  #editorjs-container .ce-block {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  #editorjs-container .ce-block__content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  #editorjs-container .ce-toolbar__content {
+    max-width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  /* Better touch targets for iPad */
+  #editorjs-container .ce-toolbar__plus,
+  #editorjs-container .ce-toolbar__settings-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+}
+
+/* Desktop (1024px and above) - 24px padding (lg:px-6) */
+@media (min-width: 1024px) {
+  #editorjs-container .codex-editor__redactor {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  #editorjs-container .ce-block {
+    padding-left: 10 !important;
+  }
+
+  #editorjs-container .ce-block__content {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  #editorjs-container .ce-toolbar__content {
+    margin-left: 0 !important;
+  }
+}
+
+/* Touch device optimizations for all tablets and iPads */
+@media (hover: none) and (pointer: coarse) {
+
+  #editorjs-container .ce-toolbar__plus,
+  #editorjs-container .ce-toolbar__settings-btn,
+  #editorjs-container .ce-inline-tool,
+  #editorjs-container .ce-conversion-tool {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    touch-action: manipulation;
+  }
+
+  #editorjs-container .ce-popover__item {
+    min-height: 44px !important;
+    padding: 12px 16px !important;
+  }
+}
+
+/* ==========================================================================
+   EDITOR.JS IMAGE-CAPTION STICKINESS FIXES
+   ========================================================================== */
+
+/* 1. Transition between Image block and separate Caption block */
+.ce-block:has(.image-tool)+.ce-block:has(.ce-caption-block) {
+  margin-top: 0px !important;
+}
+
+/* 2. Custom Caption Tool Block (Left-Aligned + Branding) */
+.ce-caption-block {
+  text-align: left !important;
+  font-style: normal !important;
+  margin: 0 !important;
+  margin-top: 0.75rem !important;
+  margin-bottom: 0.75rem !important;
+  text-decoration: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  font-size: 16px !important;
+  line-height: 1.375 !important;
+  font-family: 'Lato', sans-serif !important;
+  font-weight: 500 !important;
+  color: #716d6d !important;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+h2.ce-caption-block {
+  display: block;
+}
+
+.ce-caption-block[data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: #999;
+  cursor: text;
+}
+
+/* 3. Built-in Image Tool Overrides */
+
+/* Remove gap from image container */
+.image-tool__image {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  line-height: 0 !important;
+  display: block !important;
+}
+
+.image-tool__image img {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  display: block !important;
+  margin: 0 !important;
+}
+
+/* Handle the specific 'withCaption' state margin */
+.image-tool--withCaption .image-tool__image {
+  margin-bottom: 0 !important;
+}
+
+/* Built-in Caption positioning and styling (Branding) */
+.image-tool__caption {
+  position: static !important;
+  display: block !important;
+  text-align: left !important;
+  font-style: normal !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-top: 0.75rem !important;
+  font-size: 16px !important;
+  line-height: 1.375 !important;
+  font-family: 'Lato', sans-serif !important;
+  font-weight: 500 !important;
+  color: #716d6d !important;
+  min-height: 0 !important;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  background: transparent !important;
+}
+
+/* 4. Ensure parent containers don't force centering or extra padding */
+.ce-block:has(.image-tool) .ce-block__content,
+.ce-block:has(.ce-caption-block) .ce-block__content {
+  padding-bottom: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+/* Handle empty caption placeholder */
+.image-tool__caption:empty::before {
+  content: attr(data-placeholder);
+  color: #999;
+  cursor: text;
+}
+@keyframes overshoot-bounce {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  35% {
+    transform: translateY(var(--overshoot-distance, -80px));
+    opacity: 0;
+  }
+  45% {
+    transform: translateY(var(--overshoot-distance, -80px));
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-overshoot {
+  animation: overshoot-bounce var(--overshoot-duration, 0.8s) cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Hide default search input "clear" button in WebKit browsers */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+  -webkit-appearance: none;
+}
+
+/* Fix recommendation card styling for 2x2 (layout 2) thumbnail grids on mobile */
+@media (max-width: 639px) {
+  .thumbnail-grid .grid-cols-2 .recommend-card-content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .thumbnail-grid .grid-cols-2 .recommend-card-content .font-libre {
+    font-size: 1.25rem !important;
+    line-height: 1.15 !important;
+  }
+}
+
+/* ==========================================================================
+   MOBILE VIEW RESPONSIVE FIX FOR INLINE ARTICLE IMAGES ONLY
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Tightly scoped to inline article body images/figures to prevent impacting any other UI components */
+  figure.article-inline-figure,
+  figure.story-image-figure,
+  figure.story-image-wrap-figure,
+  .story-image-block,
+  .story-image-wrap-block,
+  .image-wrap-tune,
+  .inline-image-wrap,
+  .story-wrapped-paragraph > div,
+  #editorjs-container .image-wrap-tune,
+  #editorjs-container .inline-image-wrap {
+    max-width: 100% !important;
+    width: 100% !important;
+    float: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  figure.article-inline-figure img,
+  figure.story-image-figure img,
+  figure.story-image-wrap-figure img,
+  .story-image-block img,
+  .story-image-wrap-block img,
+  .image-wrap-tune img,
+  .inline-image-wrap img,
+  .story-wrapped-paragraph img,
+  #editorjs-container img {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+}
+
+/* ==========================================================================
+   DataGrid bottom bar — filter panel ("Create Filter") + pager
+   Applies to every DevExtreme DataGrid so the grids share one look:
+   white surface, gray-200 hairlines, black primary, neutral slate text.
+   ========================================================================== */
+
+/* --- Shared bottom container -------------------------------------------- */
+.dx-datagrid .dx-datagrid-bottom-content,
+.dx-datagrid-filter-panel,
+.dx-datagrid-pager.dx-pager {
+  background-color: #ffffff !important;
+  font-family: inherit !important;
+}
+
+/* --- Filter panel: the "Create Filter" row ------------------------------- */
+.dx-datagrid .dx-datagrid-filter-panel {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 10px 16px !important;
+  border-top: 1px solid #e5e7eb !important;
+  border-bottom: none !important;
+  min-height: 44px !important;
+}
+
+.dx-datagrid .dx-datagrid-filter-panel .dx-icon-filter {
+  color: #6b7280 !important;
+  font-size: 15px !important;
+  /* DevExtreme ships this icon flush against the label — space it out */
+  margin-right: 10px !important;
+  padding-right: 0 !important;
+}
+
+.dx-datagrid .dx-datagrid-filter-panel .dx-datagrid-filter-panel-text {
+  color: #111827 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  transition: color 120ms ease !important;
+}
+
+/* DevExtreme already underlines this on hover; only the colour needs theming */
+.dx-datagrid .dx-datagrid-filter-panel .dx-datagrid-filter-panel-text:hover {
+  color: #000000 !important;
+}
+
+/* Applied-filter expression reads as body text, not as a link */
+.dx-datagrid .dx-datagrid-filter-panel .dx-datagrid-filter-panel-checkbox + .dx-datagrid-filter-panel-text {
+  font-weight: 400 !important;
+  color: #374151 !important;
+}
+
+.dx-datagrid .dx-datagrid-filter-panel .dx-datagrid-filter-panel-clear-filter {
+  color: #6b7280 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  margin-left: 4px !important;
+}
+
+.dx-datagrid .dx-datagrid-filter-panel .dx-datagrid-filter-panel-clear-filter:hover {
+  color: #dc2626 !important;
+}
+
+/* --- Pager --------------------------------------------------------------- */
+.dx-datagrid .dx-datagrid-pager.dx-pager {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 12px 16px !important;
+  border-top: 1px solid #e5e7eb !important;
+  box-shadow: none !important;
+  margin-top: 0 !important;
+}
+
+/* The filter panel already draws the footer's dividing line, so the pager
+   under it stays borderless and the two read as one footer block. */
+.dx-datagrid .dx-datagrid-filter-panel ~ .dx-datagrid-pager.dx-pager {
+  border-top: none !important;
+  padding-top: 2px !important;
+}
+
+/* Page-size selector: "SHOW" label + a borderless 10 / 20 / 50 / All toggle.
+   No boxes — only the active size is filled, everything else is plain text. */
+.dx-datagrid .dx-pager .dx-page-sizes {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  float: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  order: 0 !important;
+}
+
+.dx-datagrid .dx-pager .dx-page-sizes::before {
+  content: "SHOW";
+  margin-right: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #9ca3af;
+}
+
+.dx-datagrid .dx-pager .dx-page-sizes .dx-page-size {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 34px !important;
+  height: 28px !important;
+  padding: 0 10px !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #6b7280 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  transition: background-color 120ms ease, color 120ms ease !important;
+}
+
+.dx-datagrid .dx-pager .dx-page-sizes .dx-page-size:hover {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+.dx-datagrid .dx-pager .dx-page-sizes .dx-page-size.dx-selection,
+.dx-datagrid .dx-pager .dx-page-sizes .dx-page-size.dx-selection:hover {
+  background: #000000 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  opacity: 1 !important;
+}
+
+/* Pages block sits on the right: info text, arrows, page numbers */
+.dx-datagrid .dx-pager .dx-pages {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  float: none !important;
+  margin: 0 0 0 auto !important;
+  order: 1 !important;
+}
+
+.dx-datagrid .dx-pager .dx-pages .dx-info {
+  margin: 0 10px 0 0 !important;
+  color: #6b7280 !important;
+  font-size: 12.5px !important;
+  font-weight: 400 !important;
+  opacity: 1 !important;
+}
+
+.dx-datagrid .dx-pager .dx-pages .dx-page,
+.dx-datagrid .dx-pager .dx-pages .dx-navigate-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  min-width: 30px !important;
+  height: 28px !important;
+  padding: 0 8px !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #6b7280 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  transition: background-color 120ms ease, color 120ms ease !important;
+}
+
+/* The prev/next chevrons are an icon-font ::before that DevExtreme centres with
+   absolute offsets hard-coded for its 21px glyph (top/left 50% then -10.5px).
+   Our 13px button text throws those offsets off, so drop the glyph back into
+   normal flow and let the button's own flex centring place it. */
+.dx-datagrid .dx-pager .dx-pages .dx-navigate-button {
+  font-size: 16px !important;
+  line-height: 1 !important;
+}
+
+.dx-datagrid .dx-pager .dx-pages .dx-navigate-button::before {
+  position: static !important;
+  display: block !important;
+  width: auto !important;
+  top: auto !important;
+  left: auto !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+
+.dx-datagrid .dx-pager .dx-pages .dx-page:hover,
+.dx-datagrid .dx-pager .dx-pages .dx-navigate-button:hover {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+.dx-datagrid .dx-pager .dx-pages .dx-page.dx-selection,
+.dx-datagrid .dx-pager .dx-pages .dx-page.dx-selection:hover {
+  background: #000000 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  opacity: 1 !important;
+}
+
+.dx-datagrid .dx-pager .dx-pages .dx-navigate-button.dx-button-disable,
+.dx-datagrid .dx-pager .dx-pages .dx-navigate-button.dx-button-disable:hover {
+  background: transparent !important;
+  color: #d1d5db !important;
+  cursor: default !important;
+}
+
+/* DevExtreme paints its own focus ring/box — the footer stays borderless */
+.dx-datagrid .dx-pager .dx-page.dx-state-focused,
+.dx-datagrid .dx-pager .dx-page-size.dx-state-focused,
+.dx-datagrid .dx-pager .dx-navigate-button.dx-state-focused {
+  box-shadow: none !important;
+  outline: none !important;
+  border: none !important;
+}
+
+/* Keyboard users still get a ring */
+.dx-datagrid .dx-pager .dx-page:focus-visible,
+.dx-datagrid .dx-pager .dx-page-size:focus-visible,
+.dx-datagrid .dx-pager .dx-navigate-button:focus-visible {
+  outline: 2px solid #000000 !important;
+  outline-offset: -2px !important;
+}
+
+/* --- Filter builder popup ------------------------------------------------ */
+.dx-filterbuilder .dx-filterbuilder-group-item .dx-filterbuilder-text,
+.dx-filterbuilder .dx-filterbuilder-item-value-text {
+  color: #111827 !important;
+}
+
+.dx-filterbuilder .dx-filterbuilder-group-operation,
+.dx-filterbuilder .dx-filterbuilder-item-field,
+.dx-filterbuilder .dx-filterbuilder-item-operation {
+  border-radius: 0 !important;
+}
+
+.dx-popup-wrapper .dx-toolbar .dx-button.dx-button-default {
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+  color: #ffffff !important;
+  border-radius: 0 !important;
+}
+
+.dx-popup-wrapper .dx-toolbar .dx-button.dx-button-default:hover {
+  background-color: #1f2937 !important;
+  border-color: #1f2937 !important;
+}
+
+/* --- Small screens: stack the two halves --------------------------------- */
+@media (max-width: 640px) {
+  .dx-datagrid .dx-datagrid-pager.dx-pager {
+    gap: 8px !important;
+    padding: 10px 12px !important;
+  }
+
+  .dx-datagrid .dx-pager .dx-pages {
+    margin-left: 0 !important;
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  .dx-datagrid .dx-pager .dx-pages .dx-info {
+    width: 100% !important;
+    margin: 0 0 4px 0 !important;
+  }
+}
+
+/* --- DataGrid filter row: value must never sit under the operation icon ----
+   DevExtreme reserves 32px at the start of the editor for the filter-operation
+   chooser (the magnifier / equals icon) and pads the input to clear it. Custom
+   cell padding elsewhere in this file used to break that offset, so pin the
+   geometry down explicitly for every grid. */
+.dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu,
+.dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor {
+  position: relative !important;
+}
+
+.dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-filter-menu {
+  position: absolute !important;
+  top: 0 !important;
+  inset-inline-start: 0 !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  z-index: 2 !important;
+}
+
+.dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input,
+.dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before {
+  padding-inline-start: 34px !important;
+}
+
+/* The editor cell owns its own spacing — no extra padding on the <td> */
+.dx-datagrid-filter-row > td.dx-editor-cell {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  padding-inline-start: 4px !important;
+  padding-inline-end: 4px !important;
+}
+
+/* --- Grid focus + checked accents: DevExtreme blue -> app black -----------
+   DevExtreme's light theme uses #337ab7 / #5c95c5 for focus rings, focused
+   editor borders and checkbox ticks. The app's primary is black, so remap
+   every one of those accents inside grids (and the popups they open). */
+
+/* Focused text editors: filter row, search panel, inline row editing */
+.dx-datagrid .dx-texteditor.dx-state-focused,
+.dx-datagrid .dx-texteditor.dx-state-active,
+.dx-popup-wrapper .dx-texteditor.dx-state-focused,
+.dx-popup-wrapper .dx-texteditor.dx-state-active {
+  border-color: #000000 !important;
+}
+
+.dx-datagrid .dx-texteditor.dx-state-focused .dx-texteditor-label,
+.dx-popup-wrapper .dx-texteditor.dx-state-focused .dx-texteditor-label {
+  color: #000000 !important;
+}
+
+/* The overlay DevExtreme draws around a focused cell */
+.dx-datagrid-focus-overlay,
+.dx-treelist-focus-overlay {
+  border-color: #000000 !important;
+}
+
+/* Focused filter-operation menu button, and the range-filter popup */
+.dx-datagrid-filter-row .dx-menu-item.dx-state-focused::after,
+.dx-datagrid-filter-range-overlay .dx-overlay-content .dx-texteditor.dx-state-focused::after {
+  border-color: #000000 !important;
+}
+
+/* Keyboard focus outlines on headers, group panel, links and the filter panel */
+.dx-datagrid .dx-datagrid-header-panel.dx-state-focused .dx-datagrid-group-panel .dx-group-panel-item:focus,
+.dx-datagrid .dx-datagrid-headers.dx-state-focused .dx-header-row td:focus,
+.dx-datagrid .dx-datagrid-headers.dx-state-focused .dx-header-row td .dx-header-filter:focus,
+.dx-datagrid .dx-datagrid-rowsview.dx-state-focused .dx-data-row > td.dx-command-edit > a.dx-link:focus,
+.dx-datagrid-filter-panel.dx-state-focused .dx-datagrid-filter-panel-text:focus,
+.dx-datagrid-filter-panel.dx-state-focused .dx-datagrid-filter-panel-clear-filter:focus,
+.dx-datagrid-total-footer:focus-within,
+.dx-pager.dx-state-focused .dx-page:focus,
+.dx-pager.dx-state-focused .dx-page-size:focus,
+.dx-pager.dx-state-focused .dx-navigate-button:focus {
+  outline-color: #000000 !important;
+}
+
+/* Focused row underline */
+.dx-datagrid-rowsview .dx-row-focused.dx-data-row > td,
+.dx-datagrid-rowsview .dx-row-focused.dx-data-row > tr:last-child > td {
+  border-bottom-color: #000000 !important;
+}
+
+/* Checkboxes: row selection, header-filter lists, the filter-panel toggle.
+   Applied unscoped so the ones rendered in overlays match too. */
+.dx-checkbox-checked .dx-checkbox-icon,
+.dx-checkbox-indeterminate .dx-checkbox-icon {
+  color: #000000 !important;
+}
+
+/* The partial-selection square in a "select all" header checkbox is a ::before
+   filled with background-color, so the colour rule above does not reach it. */
+.dx-checkbox-indeterminate .dx-checkbox-icon::before {
+  background-color: #000000 !important;
+}
+
+.dx-checkbox.dx-state-focused .dx-checkbox-icon,
+.dx-checkbox.dx-state-hover .dx-checkbox-icon,
+.dx-checkbox-checked .dx-checkbox-icon {
+  border-color: #000000 !important;
+}
+
+/* Story Editor Formatting Toolbar Alignment (#650) */
+#editorjs-container .ce-inline-toolbar__buttons {
+  display: flex;
+  align-items: center;
+}
+
+#editorjs-container .ce-inline-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  line-height: 1;
+}

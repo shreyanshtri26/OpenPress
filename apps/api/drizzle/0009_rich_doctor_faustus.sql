@@ -1,0 +1,1 @@
+ALTER TABLE "taxonomies" ADD COLUMN "colors" jsonb DEFAULT '{}'::jsonb NOT NULL;

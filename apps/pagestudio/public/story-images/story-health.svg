@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="healthGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#065f46" />
+      <stop offset="100%" stop-color="#34d399" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#healthGradient)" />
+  <path d="M160 540 Q320 440 480 520 T800 460" stroke="#f0fdf4" stroke-width="30" fill="none" stroke-linecap="round" opacity="0.4" />
+  <circle cx="340" cy="280" r="120" fill="#f0fdf4" opacity="0.2" />
+  <circle cx="880" cy="320" r="80" fill="#ecfdf5" opacity="0.35" />
+</svg>

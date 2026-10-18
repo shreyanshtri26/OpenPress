@@ -1,0 +1,49 @@
+# Deploys the API to Neon Functions from `main` only. Production is the single environment.
+# Needs (repository settings, Environment "production"):
+#   secrets: NEON_API_KEY, API_ENV_FILE (the whole .env.deploy file: DATABASE_URL, JWT_SECRET, CRON_SECRET, ...)
+#   vars:    NEON_PROJECT_ID, NEON_BRANCH (the Neon branch to deploy to, normally "main"), API_URL, SMOKE_ORIGIN
+name: Deploy API
+
+on:
+  push:
+    branches: [main]
+    paths: ['apps/api/**', 'package-lock.json', '.github/workflows/deploy-api.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-api
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    defaults: { run: { working-directory: apps/api } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - run: npm ci
+        working-directory: .
+      - run: npm run check
+      - name: Write env file
+        run: printf '%s\n' "$API_ENV_FILE" > .env.deploy
+        env: { API_ENV_FILE: '${{ secrets.API_ENV_FILE }}' }
+      - name: Apply database migrations
+        # Reads DATABASE_URL from the env file; applies only the migrations that have not run yet.
+        run: node --env-file=.env.deploy ../../node_modules/drizzle-kit/bin.cjs migrate --config=drizzle.config.mjs
+      - name: Deploy to Neon
+        env: { NEON_API_KEY: '${{ secrets.NEON_API_KEY }}' }
+        run: |
+          npx --yes neon link --project-id "${{ vars.NEON_PROJECT_ID }}" -y --no-env-pull
+          npx --yes neon checkout "${{ vars.NEON_BRANCH }}" --no-env-pull
+          npx --yes neon deploy --env .env.deploy
+      - name: Smoke test
+        env: { API_URL: '${{ vars.API_URL }}', SMOKE_ORIGIN: '${{ vars.SMOKE_ORIGIN }}' }
+        run: npm run smoke
+      - if: always()
+        run: rm -f .env.deploy

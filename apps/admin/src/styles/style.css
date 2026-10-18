@@ -1,0 +1,86 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  text-transform: capitalize;
+  border: 1px solid transparent;
+}
+
+.status-badge--draft {
+  background-color: #e0f2fe;
+  color: #1d4ed8;
+  border-color: #38bdf8;
+}
+
+.status-badge--hold {
+  background-color: #fef3c7;
+  color: #b45309;
+  border-color: #fbbf24;
+}
+
+.status-badge--on_hold {
+  background-color: #fef3c7;
+  color: #b45309;
+  border-color: #fbbf24;
+}
+
+.status-badge--rejected {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-color: #f87171;
+}
+
+.status-badge--decision {
+  background-color: #ede9fe;
+  color: #5b21b6;
+  border-color: #c4b5fd;
+}
+
+.status-badge--approved {
+  background-color: #dcfce7;
+  color: #15803d;
+  border-color: #86efac;
+}
+
+.status-badge--idea {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border-color: #7dd3fc;
+}
+
+.status-badge--progress {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  border-color: #93c5fd;
+}
+
+.status-badge--review {
+  background-color: #fef9c3;
+  color: #92400e;
+  border-color: #fcd34d;
+}
+
+.status-badge--ready {
+  background-color: #ccfbf1;
+  color: #0f766e;
+  border-color: #5eead4;
+}
+
+.status-badge--published {
+  background-color: #fae8ff;
+  color: #86198f;
+  border-color: #f0abfc;
+}
+
+.status-badge--default {
+  background-color: #e5e7eb;
+  color: #374151;
+  border-color: #d1d5db;
+}
+

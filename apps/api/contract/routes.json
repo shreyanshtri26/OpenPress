@@ -1,0 +1,1028 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/article/create",
+    "sample": "/api/article/create",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/news",
+    "sample": "/api/news",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/articles/edit",
+    "sample": "/api/articles/edit",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/articles/update",
+    "sample": "/api/articles/update",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/articles/getById",
+    "sample": "/api/articles/getById",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/articles/get",
+    "sample": "/api/articles/get",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/articles/getRemarks",
+    "sample": "/api/articles/getRemarks",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/articles/getArticlesByEditor",
+    "sample": "/api/articles/getArticlesByEditor",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/articles",
+    "sample": "/api/articles",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/journalist/articles",
+    "sample": "/api/journalist/articles",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/articles/reviewArticle",
+    "sample": "/api/articles/reviewArticle",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/articles/updateArticleStatus",
+    "sample": "/api/articles/updateArticleStatus",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/story/postCommentAction",
+    "sample": "/api/story/postCommentAction",
+    "auth": "jwt"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/updateStory",
+    "sample": "/api/updateStory",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/draft",
+    "sample": "/api/draft",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/deleteStory",
+    "sample": "/api/deleteStory",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/deleteStoryPermanent",
+    "sample": "/api/deleteStoryPermanent",
+    "auth": "jwt"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/editComment",
+    "sample": "/api/editComment",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/fetchDrafts",
+    "sample": "/api/fetchDrafts",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/postCommentsDynamo",
+    "sample": "/api/postCommentsDynamo",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/articles/postStory",
+    "sample": "/api/articles/postStory",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/saveDraft",
+    "sample": "/api/saveDraft",
+    "auth": "jwt"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/updateDraft",
+    "sample": "/api/updateDraft",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/story/fetchStories",
+    "sample": "/story/fetchStories",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/storyDynamo",
+    "sample": "/api/storyDynamo",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/fetchStory",
+    "sample": "/api/fetchStory",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/proxy",
+    "sample": "/api/proxy",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/story/fetchStoryById",
+    "sample": "/story/fetchStoryById",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/story/fetchReadyToPublish",
+    "sample": "/story/fetchReadyToPublish",
+    "auth": "public"
+  },
+  {
+    "method": "POST",
+    "path": "/contact/submit",
+    "sample": "/contact/submit",
+    "auth": "public"
+  },
+  {
+    "method": "GET",
+    "path": "/contact/inquiries",
+    "sample": "/contact/inquiries",
+    "auth": "jwt"
+  },
+  {
+    "method": "PUT",
+    "path": "/pagestudio/autosave",
+    "sample": "/pagestudio/autosave",
+    "auth": "jwt"
+  },
+  {
+    "method": "PUT",
+    "path": "/pagebuilder/autosave",
+    "sample": "/pagebuilder/autosave",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/pagestudio/page",
+    "sample": "/pagestudio/page",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/pagebuilder/page",
+    "sample": "/pagebuilder/page",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveHtml",
+    "sample": "/pagestudio/saveHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveHtml",
+    "sample": "/pagebuilder/saveHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveHomeHtml",
+    "sample": "/pagestudio/saveHomeHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveHomeHtml",
+    "sample": "/pagebuilder/saveHomeHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveErrorHtml",
+    "sample": "/pagestudio/saveErrorHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveErrorHtml",
+    "sample": "/pagebuilder/saveErrorHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveAboutHtml",
+    "sample": "/pagestudio/saveAboutHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveAboutHtml",
+    "sample": "/pagebuilder/saveAboutHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveSupportUsHtml",
+    "sample": "/pagestudio/saveSupportUsHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveSupportUsHtml",
+    "sample": "/pagebuilder/saveSupportUsHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/youpi/webhook",
+    "sample": "/youpi/webhook",
+    "auth": "public"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/savePrivacyPolicyHtml",
+    "sample": "/pagestudio/savePrivacyPolicyHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/savePrivacyPolicyHtml",
+    "sample": "/pagebuilder/savePrivacyPolicyHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveMediaCouncilHtml",
+    "sample": "/pagestudio/saveMediaCouncilHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveMediaCouncilHtml",
+    "sample": "/pagebuilder/saveMediaCouncilHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveContactUsHtml",
+    "sample": "/pagestudio/saveContactUsHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveContactUsHtml",
+    "sample": "/pagebuilder/saveContactUsHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveLoginHtml",
+    "sample": "/pagestudio/saveLoginHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveLoginHtml",
+    "sample": "/pagebuilder/saveLoginHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveSectionHtml",
+    "sample": "/pagestudio/saveSectionHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveSectionHtml",
+    "sample": "/pagebuilder/saveSectionHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveAuthorsHtml",
+    "sample": "/pagestudio/saveAuthorsHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveAuthorsHtml",
+    "sample": "/pagebuilder/saveAuthorsHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveAuthorHtml",
+    "sample": "/pagestudio/saveAuthorHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveAuthorHtml",
+    "sample": "/pagebuilder/saveAuthorHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveSurveyHtml",
+    "sample": "/pagestudio/saveSurveyHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveSurveyHtml",
+    "sample": "/pagebuilder/saveSurveyHtml",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveSiteMap",
+    "sample": "/pagestudio/saveSiteMap",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveSiteMap",
+    "sample": "/pagebuilder/saveSiteMap",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/saveNewsSiteMap",
+    "sample": "/pagestudio/saveNewsSiteMap",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/saveNewsSiteMap",
+    "sample": "/pagebuilder/saveNewsSiteMap",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/savePwaFiles",
+    "sample": "/pagestudio/savePwaFiles",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/savePwaFiles",
+    "sample": "/pagebuilder/savePwaFiles",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/pagestudio/forceUpdatePwaIcons",
+    "sample": "/pagestudio/forceUpdatePwaIcons",
+    "auth": "public"
+  },
+  {
+    "method": "GET",
+    "path": "/pagebuilder/forceUpdatePwaIcons",
+    "sample": "/pagebuilder/forceUpdatePwaIcons",
+    "auth": "public"
+  },
+  {
+    "method": "POST",
+    "path": "/pagestudio/republishAll",
+    "sample": "/pagestudio/republishAll",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/pagebuilder/republishAll",
+    "sample": "/pagebuilder/republishAll",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/pagestudio/republishAll/status",
+    "sample": "/pagestudio/republishAll/status",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/pagebuilder/republishAll/status",
+    "sample": "/pagebuilder/republishAll/status",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/analytics/collect",
+    "sample": "/analytics/collect",
+    "auth": "public"
+  },
+  {
+    "method": "POST",
+    "path": "/ai/normal_stream",
+    "sample": "/ai/normal_stream",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/ai/stream_response",
+    "sample": "/ai/stream_response",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/loginDynamo",
+    "sample": "/loginDynamo",
+    "auth": "public"
+  },
+  {
+    "method": "GET",
+    "path": "/api/getAllUsers",
+    "sample": "/api/getAllUsers",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/addUser",
+    "sample": "/addUser",
+    "auth": "superuser"
+  },
+  {
+    "method": "GET",
+    "path": "/getAllUsers",
+    "sample": "/getAllUsers",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/getAuthors",
+    "sample": "/getAuthors",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/deleteUser",
+    "sample": "/deleteUser",
+    "auth": "superuser"
+  },
+  {
+    "method": "DELETE",
+    "path": "/deleteAuthor",
+    "sample": "/deleteAuthor",
+    "auth": "superuser"
+  },
+  {
+    "method": "PUT",
+    "path": "/editUser",
+    "sample": "/editUser",
+    "auth": "superuser"
+  },
+  {
+    "method": "POST",
+    "path": "/forgotPassword",
+    "sample": "/forgotPassword",
+    "auth": "public"
+  },
+  {
+    "method": "POST",
+    "path": "/resetPassword",
+    "sample": "/resetPassword",
+    "auth": "public"
+  },
+  {
+    "method": "POST",
+    "path": "/uploadUserImage",
+    "sample": "/uploadUserImage",
+    "auth": "jwt"
+  },
+  {
+    "method": "PUT",
+    "path": "/updateProfile",
+    "sample": "/updateProfile",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/deleteAccount",
+    "sample": "/deleteAccount",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/pagestudio/deleteAccount",
+    "sample": "/api/pagestudio/deleteAccount",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/pagebuilder/deleteAccount",
+    "sample": "/api/pagebuilder/deleteAccount",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/audience/profile",
+    "sample": "/api/audience/profile",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/audience/users",
+    "sample": "/api/audience/users",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/addRole",
+    "sample": "/addRole",
+    "auth": "superuser"
+  },
+  {
+    "method": "GET",
+    "path": "/getAllRoles",
+    "sample": "/getAllRoles",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/deleteRole",
+    "sample": "/deleteRole",
+    "auth": "superuser"
+  },
+  {
+    "method": "PUT",
+    "path": "/updateRole",
+    "sample": "/updateRole",
+    "auth": "superuser"
+  },
+  {
+    "method": "GET",
+    "path": "/roles/list",
+    "sample": "/roles/list",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/getRole",
+    "sample": "/getRole",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/taxonomy",
+    "sample": "/taxonomy",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/taxonomies",
+    "sample": "/taxonomies",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/taxonomies",
+    "sample": "/api/taxonomies",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/taxonomy/addValue",
+    "sample": "/taxonomy/addValue",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/taxonomy/value",
+    "sample": "/taxonomy/value",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/taxonomy",
+    "sample": "/taxonomy",
+    "auth": "jwt"
+  },
+  {
+    "method": "PUT",
+    "path": "/taxonomy/name",
+    "sample": "/taxonomy/name",
+    "auth": "jwt"
+  },
+  {
+    "method": "PUT",
+    "path": "/taxonomy/updateValue",
+    "sample": "/taxonomy/updateValue",
+    "auth": "jwt"
+  },
+  {
+    "method": "PUT",
+    "path": "/taxonomy/permissions",
+    "sample": "/taxonomy/permissions",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/taxonomy/section/values",
+    "sample": "/taxonomy/section/values",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/taxonomy/colors",
+    "sample": "/taxonomy/colors",
+    "auth": "public"
+  },
+  {
+    "method": "POST",
+    "path": "/api/uploadAsset",
+    "sample": "/api/uploadAsset",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/assets/create",
+    "sample": "/api/assets/create",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/fetchAsset",
+    "sample": "/api/fetchAsset",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/assets/delete",
+    "sample": "/api/assets/delete",
+    "auth": "jwt"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/assets/update",
+    "sample": "/api/assets/update",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/generateThumbnail",
+    "sample": "/api/generateThumbnail",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/uploadCustomThumbnail",
+    "sample": "/api/uploadCustomThumbnail",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/confirmCustomThumbnail",
+    "sample": "/api/confirmCustomThumbnail",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/selectThumbnail",
+    "sample": "/api/selectThumbnail",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/debug/listS3Objects",
+    "sample": "/api/debug/listS3Objects",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/generateSingleThumbnail",
+    "sample": "/api/generateSingleThumbnail",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/transcodingTrigger",
+    "sample": "/api/transcodingTrigger",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/transcodingProcessor",
+    "sample": "/api/transcodingProcessor",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/getMediaconvert-endpoint",
+    "sample": "/api/getMediaconvert-endpoint",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/extractMetadata",
+    "sample": "/api/extractMetadata",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/asset/status",
+    "sample": "/api/asset/status",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/assets/videos",
+    "sample": "/api/assets/videos",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/uploadCampaignAdImage",
+    "sample": "/uploadCampaignAdImage",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/createCampaign",
+    "sample": "/createCampaign",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/deleteCampaign",
+    "sample": "/deleteCampaign",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/getCampaigns",
+    "sample": "/getCampaigns",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/campaigns/checkAvailability",
+    "sample": "/campaigns/checkAvailability",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/publishCampaign",
+    "sample": "/publishCampaign",
+    "auth": "jwt"
+  },
+  {
+    "method": "PUT",
+    "path": "/updateCampaign",
+    "sample": "/updateCampaign",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/campaigns/trackEvent",
+    "sample": "/campaigns/trackEvent",
+    "auth": "public"
+  },
+  {
+    "method": "GET",
+    "path": "/surveys",
+    "sample": "/surveys",
+    "auth": "editor"
+  },
+  {
+    "method": "POST",
+    "path": "/surveys",
+    "sample": "/surveys",
+    "auth": "editor"
+  },
+  {
+    "method": "PUT",
+    "path": "/surveys",
+    "sample": "/surveys",
+    "auth": "editor"
+  },
+  {
+    "method": "DELETE",
+    "path": "/surveys",
+    "sample": "/surveys",
+    "auth": "editor"
+  },
+  {
+    "method": "POST",
+    "path": "/surveys/invite",
+    "sample": "/surveys/invite",
+    "auth": "editor"
+  },
+  {
+    "method": "GET",
+    "path": "/placements",
+    "sample": "/placements",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/placement",
+    "sample": "/placement",
+    "auth": "jwt"
+  },
+  {
+    "method": "PUT",
+    "path": "/placement",
+    "sample": "/placement",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/placement",
+    "sample": "/placement",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/rekognition/getVideoAnalysis",
+    "sample": "/api/rekognition/getVideoAnalysis",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/rekognition/createFaceCollection",
+    "sample": "/api/rekognition/createFaceCollection",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/rekognition/addFaceToCollection",
+    "sample": "/api/rekognition/addFaceToCollection",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/rekognition/searchFaceByImage",
+    "sample": "/api/rekognition/searchFaceByImage",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/rekognition/listFaceCollections",
+    "sample": "/api/rekognition/listFaceCollections",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/check-ffprobe",
+    "sample": "/api/check-ffprobe",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/utils/search",
+    "sample": "/api/utils/search",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/utils/search/history",
+    "sample": "/api/utils/search/history",
+    "auth": "jwt"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/utils/search/history",
+    "sample": "/api/utils/search/history",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/epaper/auth/sync",
+    "sample": "/epaper/auth/sync",
+    "auth": "public"
+  },
+  {
+    "method": "POST",
+    "path": "/api/epaper/auth/sync",
+    "sample": "/api/epaper/auth/sync",
+    "auth": "public"
+  },
+  {
+    "method": "GET",
+    "path": "/epaper/auth/me",
+    "sample": "/epaper/auth/me",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "/api/epaper/auth/me",
+    "sample": "/api/epaper/auth/me",
+    "auth": "jwt"
+  },
+  {
+    "method": "POST",
+    "path": "/epaper/auth/logout",
+    "sample": "/epaper/auth/logout",
+    "auth": "public"
+  },
+  {
+    "method": "POST",
+    "path": "/api/epaper/auth/logout",
+    "sample": "/api/epaper/auth/logout",
+    "auth": "public"
+  },
+  {
+    "method": "PUT",
+    "path": "^/api/stories/[^/]+$",
+    "sample": "/api/stories/sample-id",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "^/api/getQualityVariants",
+    "sample": "/api/getQualityVariants",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "^/api/asset/[^/]+/status$",
+    "sample": "/api/asset/sample-id/status",
+    "auth": "jwt"
+  },
+  {
+    "method": "GET",
+    "path": "^/surveys/public/",
+    "sample": "/surveys/public/sample-id",
+    "auth": "public"
+  },
+  {
+    "method": "GET",
+    "path": "^/surveys/[^/]+/responses$",
+    "sample": "/surveys/sample-id/responses",
+    "auth": "editor"
+  },
+  {
+    "method": "POST",
+    "path": "^/surveys/[^/]+/responses$",
+    "sample": "/surveys/sample-id/responses",
+    "auth": "public"
+  },
+  {
+    "method": "POST",
+    "path": "^/surveys/[^/]+/ai-summary$",
+    "sample": "/surveys/sample-id/ai-summary",
+    "auth": "editor"
+  },
+  {
+    "method": "GET",
+    "path": "^/surveys/[^/]+/chat$",
+    "sample": "/surveys/sample-id/chat",
+    "auth": "editor"
+  },
+  {
+    "method": "POST",
+    "path": "^/surveys/[^/]+/chat$",
+    "sample": "/surveys/sample-id/chat",
+    "auth": "editor"
+  },
+  {
+    "method": "POST",
+    "path": "^/surveys/[^/]+/chat/assets$",
+    "sample": "/surveys/sample-id/chat/assets",
+    "auth": "editor"
+  },
+  {
+    "method": "DELETE",
+    "path": "^/surveys/[^/]+/chat/assets$",
+    "sample": "/surveys/sample-id/chat/assets",
+    "auth": "editor"
+  }
+]
