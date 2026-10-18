@@ -158,7 +158,7 @@ export function renderMastheadNavbar({
     .filter((s: any) => s.title && s.publishUrl);
   const preloadedStoriesJson = serializeForInlineScript(preloadedStories);
   const mobileDrawerLoginHtml = serializeForInlineScript(
-    `<button id="mobile-drawer-login-btn" onclick="closeMobileMenu(); openEpaperAuthModal();" type="button" class="font-share text-[10px] tracking-wider px-2.5 py-1 transition-colors uppercase font-bold rounded cursor-pointer" style="background-color: ${resolvedSignInBg}; color: ${resolvedSignInText};">${signInText}</button>`
+    `<button id="mobile-drawer-login-btn" onclick="closeMobileMenu(); openEpaperAuthModal();" type="button" class="font-share text-xs tracking-wider px-4 min-h-[36px] shrink-0 whitespace-nowrap transition-colors uppercase font-bold rounded-full cursor-pointer" style="background-color: ${resolvedSignInBg}; color: ${resolvedSignInText};">${signInText}</button>`
   );
 
   // Get first 3 sections for top nav; remaining sections go into the hamburger
@@ -434,7 +434,7 @@ export function renderMastheadNavbar({
         <!-- Top row -->
         <div class="flex items-center justify-between h-[40px]">
           <!-- Close Button on Left -->
-          <button onclick="closeMobileMenu()" class="p-1 -ml-1 text-white hover:bg-neutral-800 rounded-full transition-colors animate-none" aria-label="Close menu">
+          <button onclick="closeMobileMenu()" class="p-2 -ml-2 min-w-[40px] min-h-[40px] flex items-center justify-center text-white hover:bg-neutral-800 rounded-full transition-colors animate-none" aria-label="Close menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -444,7 +444,7 @@ export function renderMastheadNavbar({
           <img
             src="/openpress-logo-full-nobg-trim.png"
             alt="OpenPress"
-            class="h-12 w-auto max-w-[150px] object-contain select-none brightness-0 invert"
+            class="h-10 w-auto max-w-[110px] min-w-0 object-contain select-none brightness-0 invert"
             onerror="this.onerror=null; (function(img){ const h = window.location.hostname; let o = window.location.origin; img.src = o + '/openpress-logo-full-nobg-trim.png'; })(this);"
           />
 
@@ -465,7 +465,7 @@ export function renderMastheadNavbar({
         </div>
 
         <!-- Search Input Box below it -->
-        <div id="drawer-search-container" class="relative flex items-center bg-neutral-800 text-neutral-450 rounded-none px-4 py-2 text-sm transition-all duration-200 border border-transparent">
+        <div id="drawer-search-container" class="relative flex items-center bg-neutral-800 text-neutral-400 rounded-lg px-4 min-h-[44px] text-base transition-all duration-200 border border-neutral-600 focus-within:border-white">
           <svg id="drawer-search-icon" class="w-4 h-4 mr-2.5 text-neutral-450 flex-shrink-0 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -474,8 +474,8 @@ export function renderMastheadNavbar({
             type="text"
             oninput="handleDrawerSearch(this.value)"
             placeholder="Search stories..."
-            class="w-full bg-transparent outline-none text-white text-sm placeholder-neutral-400 transition-colors duration-200 appearance-none rounded-none"
-            style="border-radius: 0; -webkit-appearance: none;"
+            class="w-full bg-transparent outline-none text-white text-base placeholder-neutral-400 transition-colors duration-200 appearance-none"
+            style="font-size: 16px; -webkit-appearance: none;"
           />
           <button
             id="drawer-search-clear-btn"
@@ -1158,10 +1158,8 @@ export function renderMastheadNavbar({
         const isActive = section === activeSection;
 
         if (isActive) {
-          btn.classList.add('text-black');
-          btn.classList.remove('hover:text-black');
-          if (btn.classList.contains('bg-black')) { /* mobile active */ }
-          else { btn.classList.add('font-bold'); }
+          if (btn.classList.contains('bg-black')) { /* mobile active: stays white on black */ }
+          else { btn.classList.add('text-black', 'font-bold'); btn.classList.remove('hover:text-black'); }
         } else {
           btn.classList.remove('text-black', 'font-bold');
           btn.classList.add('hover:text-black');

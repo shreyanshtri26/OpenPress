@@ -18,6 +18,7 @@
     "seed:assets": "node --env-file=.env.local scripts/seed/assets.mjs",
     "seed:stories": "node --env-file=.env.local scripts/seed/stories.mjs",
     "seed:pages": "node --env-file=.env.local scripts/seed/pages.mjs",
+    "publish:login": "node --env-file=.env.local scripts/publish-login.mjs",
     "seed:site-assets": "node --env-file=.env.local scripts/seed/site-assets.mjs",
     "seed:analytics": "node --env-file=.env.local scripts/seed/analytics.mjs"
   },
