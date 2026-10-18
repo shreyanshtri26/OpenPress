@@ -7,4 +7,4 @@ compatibility_date = "2025-01-01"
 workers_dev = true   # https://openpress-site.<your-subdomain>.workers.dev until you attach your own domain
 
 # To serve your own domain later, add (the domain's DNS must be on Cloudflare):
-# routes = [{ pattern = "example.com", custom_domain = true }, { pattern = "www.example.com", custom_domain = true }]
+routes = [{ pattern = "openpress.com", custom_domain = true }, { pattern = "www.openpress.com", custom_domain = true }]
