@@ -1755,6 +1755,11 @@ export function renderMastheadNavbar({
           else if (isMobileMenuOpen) { window.closeMobileMenu(); }
         }
       });
+
+      // Leaving the phone layout while the menu is open must not leave the page scroll-locked.
+      window.addEventListener('resize', function() {
+        if (isMobileMenuOpen && window.innerWidth >= 640) window.closeMobileMenu();
+      });
     }
 
     if (document.readyState === 'loading') {
