@@ -280,7 +280,7 @@ export const commonBlocks: Record<string, any> = {
         label: 'Banner Background Color',
         type: 'custom',
         render: ({ value, onChange }: { value?: string; onChange: (next: string) => void }) => (
-          <ColorSelect value={value ?? ''} onChange={onChange} defaultColor="#F1EDFF" label="Banner Background Color" />
+          <ColorSelect value={value ?? ''} onChange={onChange} defaultColor="#000000" label="Banner Background Color" />
         ),
       },
       bannerTextColor: {
@@ -353,7 +353,7 @@ export const commonBlocks: Record<string, any> = {
       showFacebook: true,
       showLinkedIn: true,
       bannerText: 'Our journalism is free. It needs your support. Consider becoming a member?',
-      bannerBgColor: '#F1EDFF',
+      bannerBgColor: '#000000',
       bannerTextColor: '',
       supportUsText: 'SUPPORT US',
       supportUsBgColor: '',

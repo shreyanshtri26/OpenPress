@@ -157,7 +157,7 @@ export function renderMastheadNavbar({
   showLinkedIn = true,
   storiesById = {},
   bannerText = 'Our journalism is free. It needs your support. Consider becoming a member?',
-  bannerBgColor = '#F1EDFF',
+  bannerBgColor = '#000000',
   bannerTextColor = '',
   supportUsText = 'SUPPORT US',
   supportUsBgColor = '',
@@ -175,7 +175,7 @@ export function renderMastheadNavbar({
   showSupportUs = false;
   showBecomeMember = false;
   const resolvedTheme = themeColor || '#0057FF';
-  const resolvedBannerBg = bannerBgColor || '#F1EDFF';
+  const resolvedBannerBg = bannerBgColor || '#000000';
   const resolvedBannerText = bannerTextColor || getContrastColor(resolvedBannerBg);
 
   const resolvedSupportUsBg = supportUsBgColor || resolvedTheme;

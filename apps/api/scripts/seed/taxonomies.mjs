@@ -58,7 +58,7 @@ export const DEFAULT_TAXONOMIES = [
     // The palette the editor's colour pickers (navbar buttons, card accents) offer.
     name: 'Color',
     isMendatory: false,
-    values: ['#0057FF', '#0071E3', '#1D1D1F', '#B42318', '#067647', '#B54708', '#6941C6', '#C11574', '#0E7090', '#6E6E73'],
+    values: ['#0057FF', '#0071E3', '#1D1D1F', '#B42318', '#067647', '#B54708', '#6941C6', '#C11574', '#0E7090', '#6E6E73', '#000000', '#FFFFFF'],
     permissions: { Selection: 'single' },
   },
   {
