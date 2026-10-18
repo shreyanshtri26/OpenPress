@@ -171,3 +171,6 @@ html, body { overflow-x: clip; }
 
 /* Mobile menu: every control is the same rounded rectangle (the global pill rule for .bg-black must not make the active item an oval). */
 #mobile-menu-drawer button[data-section], #drawer-search-container { border-radius: 12px !important; }
+
+/* Black badges and buttons keep white text: the header-wide .uppercase colour rule must not win over text-white. */
+.bg-black.uppercase, .bg-black .uppercase { color: #fff !important; }

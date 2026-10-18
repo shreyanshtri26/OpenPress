@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --check index.mjs && node --check src/server.mjs",
+    "test": "node --check index.mjs && node --check src/server.mjs && node scripts/check-login-page.mjs && node lib/neon-auth.check.mjs",
     "check": "node --check index.mjs && node --check src/server.mjs",
     "routes:extract": "node scripts/extract-routes.mjs",
     "smoke": "node scripts/smoke.mjs",

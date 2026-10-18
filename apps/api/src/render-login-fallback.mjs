@@ -169,7 +169,7 @@ export function renderDevLoginPageHtml() {
       const urlParams = new URLSearchParams(window.location.search);
       const returnUrl = urlParams.get('returnUrl') || '/';
       // Set by scripts/publish-login.mjs in production. Without it the page keeps the local demo sign-in.
-      const neonAuth = (window.__NEON_AUTH_URL__ || '').replace(/\/+$/, '');
+      const neonAuth = (window.__NEON_AUTH_URL__ || '').replace(/[/]+$/, '');
       if (neonAuth) {
         var form = document.getElementById('reader-login-form');
         if (form) [form.previousElementSibling, form, form.nextElementSibling].forEach(function(el) { if (el) el.style.display = 'none'; });
