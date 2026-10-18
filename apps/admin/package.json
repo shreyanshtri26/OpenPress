@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "build:publish-renderer": "cd ../pagestudio && vite build --config vite.publish-renderer.config.ts --outDir ../admin/dist"
+    "build:publish-renderer": "cd ../pagestudio && npm run build:published-styles && vite build --config vite.publish-renderer.config.ts --outDir ../admin/dist"
   },
   "dependencies": {
     "@editorjs/checklist": "^1.6.0",

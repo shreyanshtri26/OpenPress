@@ -189,7 +189,7 @@ export function renderMastheadNavbar({
       <button
         onclick="closeMobileMenu(); handleNavClick('${label}', '${slug}')"
         data-section="${label}"
-        class="text-left py-3 px-4 rounded-xl font-share uppercase transition-colors shrink-0 ${isActive ? 'bg-black text-white' : 'hover:bg-gray-100'}"
+        class="text-left py-3 px-4 rounded-xl font-share uppercase transition-colors shrink-0 ${isActive ? 'bg-neutral-100 text-black font-bold' : 'hover:bg-gray-100'}"
       >
         ${label}
       </button>
@@ -430,18 +430,18 @@ export function renderMastheadNavbar({
     <div class="absolute inset-0 bg-black/50" onclick="closeMobileMenu()"></div>
     <div id="mobile-menu-drawer" class="relative w-[75%] max-w-sm bg-white h-full overflow-y-auto shadow-xl flex flex-col transition-transform duration-300 translate-x-full">
       <!-- Header section (Black background) -->
-      <div class="bg-black text-white px-4 pt-4 pb-3 flex flex-col gap-3 shrink-0">
+      <div class="bg-white text-black px-4 pt-4 pb-3 flex flex-col gap-3 shrink-0 border-b border-neutral-200">
         <!-- Top row -->
         <div class="flex items-center justify-between h-[40px]">
           <!-- Close Button on Left -->
-          <button onclick="closeMobileMenu()" class="p-2 -ml-2 min-w-[40px] min-h-[40px] flex items-center justify-center text-white hover:bg-neutral-800 rounded-full transition-colors animate-none" aria-label="Close menu">
+          <button onclick="closeMobileMenu()" class="p-2 -ml-2 min-w-[40px] min-h-[40px] flex items-center justify-center text-black hover:bg-neutral-100 rounded-xl transition-colors animate-none" aria-label="Close menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
 
           <!-- Title in Center (the page header above already shows the logo) -->
-          <span class="font-share text-sm tracking-[0.2em] uppercase text-white">Menu</span>
+          <span class="font-share text-sm tracking-[0.2em] uppercase text-black">Menu</span>
 
           <!-- Right Avatar/Initials or SIGN IN button -->
           <div id="drawer-avatar-container" class="flex items-center justify-end min-w-[40px]">
@@ -460,7 +460,7 @@ export function renderMastheadNavbar({
         </div>
 
         <!-- Search Input Box below it -->
-        <div id="drawer-search-container" class="relative flex items-center bg-neutral-800 text-neutral-400 rounded-xl px-4 min-h-[44px] text-base transition-all duration-200 border border-neutral-600 focus-within:border-white">
+        <div id="drawer-search-container" class="relative flex items-center bg-neutral-100 text-neutral-500 rounded-xl px-4 min-h-[44px] text-base transition-all duration-200 border border-neutral-200 focus-within:border-black">
           <svg id="drawer-search-icon" class="w-4 h-4 mr-2.5 text-neutral-450 flex-shrink-0 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -469,14 +469,14 @@ export function renderMastheadNavbar({
             type="text"
             oninput="handleDrawerSearch(this.value)"
             placeholder="Search stories..."
-            class="w-full bg-transparent outline-none text-white text-base placeholder-neutral-400 transition-colors duration-200 appearance-none"
+            class="w-full bg-transparent outline-none text-black text-base placeholder-neutral-500 transition-colors duration-200 appearance-none"
             style="font-size: 16px; -webkit-appearance: none;"
           />
           <button
             id="drawer-search-clear-btn"
             onclick="clearDrawerSearch()"
             style="display: none;"
-            class="text-neutral-450 hover:text-white transition-colors duration-200"
+            class="text-neutral-500 hover:text-black transition-colors duration-200"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -1153,7 +1153,7 @@ export function renderMastheadNavbar({
         const isActive = section === activeSection;
 
         if (isActive) {
-          if (btn.classList.contains('bg-black')) { /* mobile active: stays white on black */ }
+          if (btn.classList.contains('bg-neutral-100')) { /* mobile drawer active item: already styled */ }
           else { btn.classList.add('text-black', 'font-bold'); btn.classList.remove('hover:text-black'); }
         } else {
           btn.classList.remove('text-black', 'font-bold');

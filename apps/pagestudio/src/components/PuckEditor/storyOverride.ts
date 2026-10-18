@@ -110,11 +110,8 @@ export const buildStoryOverride = (
     authorId: safeString(storyData.authorId),
     readTime,
     imageUrl: safeString(storyData.image) || safeString(storyData.imageUrl) || undefined,
-    socialImage:
-      safeString(storyData.socialImage) ||
-      safeString(storyData.image) ||
-      safeString(storyData.imageUrl) ||
-      undefined,
+    // Only a dedicated social image; without one, shares use the OpenPress card (see renderBlogPage).
+    socialImage: safeString(storyData.socialImage) || undefined,
     imageAlt: safeString(storyData.title) || 'Story image',
     kicker: safeString(storyData.Section),
     storySummary: safeString(storyData.storySummary),
