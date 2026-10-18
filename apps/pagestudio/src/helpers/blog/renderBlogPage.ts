@@ -342,7 +342,7 @@ export function renderPageFromPuckJSON(
   const keywords = currentStory?.keywords ?? [];
   const baseUrl = (import.meta as any).env?.VITE_CANONICAL_URL || "https://openpress.com";
   const siteName = (import.meta as any).env?.VITE_SITE_NAME || "OpenPress";
-  const twitterHandle = (import.meta as any).env?.VITE_TWITTER_HANDLE || "@shreyanshtri26";
+  const twitterHandle = (import.meta as any).env?.VITE_TWITTER_HANDLE || "";
 
   const toUrlSegment = (value: string): string =>
     value
@@ -562,12 +562,9 @@ export function renderPageFromPuckJSON(
     storyTitle ||
     pageJson.pageType ||
     "Page";
-  const rawOgImage =
-    currentStory?.socialImage ||
-    currentStory?.imageUrl ||
-    currentStory?.image ||
-    (typeof window !== "undefined" ? window.__PUCK_FINAL_IMAGE__ : "") ||
-    "/openpress-logo-full-nobg-trim.png";
+  // Shares carry the OpenPress share card (1200x630 logo) unless an editor set a dedicated social image;
+  // a story photo or a small transparent logo makes poor, inconsistently cropped previews.
+  const rawOgImage = currentStory?.socialImage || "/openpress-share.png";
   const ogImage = toAbsoluteUrl(rawOgImage);
 
 
@@ -617,7 +614,7 @@ export function renderPageFromPuckJSON(
   
   <!-- Twitter Card Tags -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="${escapeHtml(twitterHandle)}" />
+  ${twitterHandle ? `<meta name="twitter:site" content="${escapeHtml(twitterHandle)}" />` : ""}
   <meta name="twitter:title" content="${escapeHtml(ogTitle)}" />
   <meta name="twitter:description" content="${escapeHtml(ogDescription)}" />
   ${ogImage ? `<meta name="twitter:image" content="${escapeHtml(ogImage)}" />` : ""}

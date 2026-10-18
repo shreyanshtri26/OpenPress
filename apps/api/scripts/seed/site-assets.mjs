@@ -22,6 +22,7 @@ const FILES = [
   "pwa-icon-192-maskable.png",
   "pwa-icon-512.png",
   "pwa-icon-512-maskable.png",
+  "openpress-share.png",
   "manifest.json",
 ];
 const TYPES = { ".png": "image/png", ".ico": "image/x-icon", ".json": "application/manifest+json" };
