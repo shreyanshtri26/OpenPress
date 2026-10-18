@@ -428,7 +428,7 @@ export function renderMastheadNavbar({
   <!-- Mobile menu drawer -->
   <div id="mobile-menu-overlay" class="sm:hidden fixed inset-x-0 bottom-0 z-[60] flex justify-end transition-opacity duration-300 opacity-0 pointer-events-none">
     <div class="absolute inset-0 bg-black/50" onclick="closeMobileMenu()"></div>
-    <div id="mobile-menu-drawer" class="relative w-[75%] max-w-sm bg-white h-full shadow-xl flex flex-col transition-transform duration-300 translate-x-full">
+    <div id="mobile-menu-drawer" class="relative w-[75%] max-w-sm bg-white h-full overflow-y-auto shadow-xl flex flex-col transition-transform duration-300 translate-x-full">
       <!-- Header section (Black background) -->
       <div class="bg-black text-white px-4 pt-4 pb-3 flex flex-col gap-3 shrink-0">
         <!-- Top row -->
@@ -1184,11 +1184,13 @@ export function renderMastheadNavbar({
         var header = document.querySelector('header');
         var topOffset = 0;
         if (banner && banner.offsetHeight > 0) {
-          topOffset = banner.getBoundingClientRect().bottom + window.scrollY;
+          topOffset = banner.getBoundingClientRect().bottom;
         } else if (header) {
-          topOffset = header.getBoundingClientRect().bottom + window.scrollY;
+          topOffset = header.getBoundingClientRect().bottom;
         }
+        topOffset = Math.max(0, topOffset);
         overlay.style.top = topOffset + 'px';
+        overlay.style.height = 'calc(100dvh - ' + topOffset + 'px)';
         overlay.classList.remove('opacity-0', 'pointer-events-none');
         overlay.classList.add('opacity-100', 'pointer-events-auto');
         drawer.classList.remove('translate-x-full');

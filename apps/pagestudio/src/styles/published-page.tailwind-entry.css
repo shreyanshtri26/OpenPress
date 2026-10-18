@@ -162,3 +162,6 @@ html, body { overflow-x: clip; }
 /* Share button on articles: a quiet pill. */
 [data-puck-share], [data-puck-share-card-button] { border-radius: 980px !important; overflow: hidden; border-color: var(--op-line) !important; background: #fff !important; transition: background-color 0.2s ease; }
 [data-puck-share]:hover, [data-puck-share-card-button]:hover { background: var(--op-surface) !important; }
+
+/* Phones: the menu drawer carries Sign In, so the banner's copy is hidden to avoid showing two. */
+@media (max-width: 639px) { #banner-login-btn { display: none !important; } }
