@@ -6,7 +6,7 @@ export function renderDevLoginPageHtml() {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign In — OpenPress ePaper</title>
-  <meta name="description" content="Sign in to your OpenPress reader account powered by Neon Auth." />
+  <meta name="description" content="Sign in to your OpenPress account to read the ePaper and keep your preferences." />
   <link rel="icon" href="/openpress-quill-nobg-trim.png" type="image/png" />
 
   <!-- Fonts -->
@@ -55,14 +55,10 @@ export function renderDevLoginPageHtml() {
         <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-neutral-900 text-white mb-3 shadow-sm">
           <img src="/openpress-quill-nobg-trim.png" alt="" class="h-6 w-auto invert" />
         </div>
-        <h1 class="text-2xl font-bold font-merriweather text-neutral-900 tracking-tight">Sign In to OpenPress</h1>
+        <h1 id="auth-title" class="text-2xl font-bold font-merriweather text-neutral-900 tracking-tight">Sign In to OpenPress</h1>
         <p class="text-xs text-neutral-500 mt-1.5 font-share leading-relaxed">
-          Sign in to your reader account powered by Neon Auth to access subscriber editions and personalized features.
+          Sign in or create an account to read the ePaper and keep your preferences.
         </p>
-        <div class="mt-3 inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          Public Reader Access
-        </div>
       </div>
 
       <!-- Already Logged In State Banner (hidden by default) -->
@@ -136,7 +132,7 @@ export function renderDevLoginPageHtml() {
           </button>
         </form>
 
-        <!-- Email and password (Neon Auth): sign in or create an account -->
+        <!-- Email and password: sign in or create an account -->
         <form id="neon-form" onsubmit="handleNeonEmailAuth(event)" class="hidden space-y-3.5">
           <div id="neon-name-row" class="hidden">
             <label for="neon-name" class="block text-xs font-semibold text-neutral-700 uppercase tracking-wider mb-1.5 font-share">Your Name</label>
@@ -157,7 +153,7 @@ export function renderDevLoginPageHtml() {
 
       </div>
 
-      <!-- Switch between signing in and creating an account (Neon Auth) -->
+      <!-- Switch between signing in and creating an account -->
       <div id="auth-mode-toggle" class="hidden mt-6 pt-5 border-t border-neutral-100 text-center">
         <p class="text-sm text-neutral-600">
           <span id="auth-mode-question">New here?</span>
@@ -367,8 +363,8 @@ export function renderDevLoginPageHtml() {
         }
       };
 
-      // Back from Google: Neon Auth set its session cookie; trade it for a signed token, then let the API verify it.
-      // Trade Neon Auth's session cookie for a signed token and let the API verify it (it ignores anything else).
+      // Back from Google.
+      // Trade the session cookie for a signed token and let the API verify it (it ignores anything else).
       async function finishNeonSession(button, idleLabel) {
         try {
           const tokenRes = await fetch(neonAuth + '/token', { credentials: 'include' });
@@ -401,6 +397,7 @@ export function renderDevLoginPageHtml() {
         authMode = authMode === 'signin' ? 'signup' : 'signin';
         var signup = authMode === 'signup';
         document.getElementById('neon-name-row').classList.toggle('hidden', !signup);
+        document.getElementById('auth-title').textContent = signup ? 'Create your account' : 'Sign In to OpenPress';
         document.querySelector('#neon-submit-btn span').textContent = signup ? 'Create account' : 'Sign in';
         document.getElementById('neon-password').setAttribute('autocomplete', signup ? 'new-password' : 'current-password');
         document.getElementById('auth-mode-question').textContent = signup ? 'Already have an account?' : 'New here?';
