@@ -13,7 +13,7 @@ const footer = (id) => ({ type: "Footer", props: { id } });
 const page = (title, content, zones = {}) => ({ root: { props: { title } }, content, zones });
 
 // story number -> section (matches SAMPLE_STORIES order in stories.mjs)
-const SECTION_OF = { 1: "Politics", 2: "News", 3: "Opinion", 4: "Business", 5: "Sports", 6: "Technology", 7: "Arts & Culture", 8: "Lifestyle", 9: "World", 10: "News" };
+const SECTION_OF = { 1: "Politics", 2: "News", 3: "Opinion", 4: "Business", 5: "Sports", 6: "Technology", 7: "Arts & Culture", 8: "Lifestyle", 9: "World", 10: "News", 11: "World", 12: "Business", 13: "Technology", 14: "Sports", 15: "Lifestyle" };
 
 const home = () =>
   page(
@@ -40,10 +40,10 @@ const home = () =>
       "thumbnail-grid:thumbnail-grid-box-3": [card("StoryCard", "thumb-3", 9)],
       "popular-grid:popular-grid-left": [{ type: "MostPopularTable", props: { id: "popular-table" } }],
       "multimedia-grid:multimedia-grid-left": [card("StoryCard", "multimedia-0", 10)],
-      "all-stories-grid:all-stories-grid-left": [card("MainCard", "all-main", 2)],
-      "all-stories-grid:all-stories-grid-right-top-1": [card("StoryCard", "all-right-1", 3)],
-      "all-stories-grid:all-stories-grid-right-top-2": [card("StoryCard", "all-right-2", 4)],
-      "all-stories-grid:all-stories-grid-right-top-3": [card("StoryCard", "all-right-3", 5)],
+      "all-stories-grid:all-stories-grid-left": [card("MainCard", "all-main", 11)],
+      "all-stories-grid:all-stories-grid-right-top-1": [card("StoryCard", "all-right-1", 12)],
+      "all-stories-grid:all-stories-grid-right-top-2": [card("StoryCard", "all-right-2", 13)],
+      "all-stories-grid:all-stories-grid-right-top-3": [card("StoryCard", "all-right-3", 14)],
     },
   );
 

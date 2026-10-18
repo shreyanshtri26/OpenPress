@@ -1,7 +1,7 @@
 import { inArray } from "drizzle-orm";
 import { db, sql } from "../../db/client.mjs";
 import { stories, users } from "../../db/schema.mjs";
-import { SAMPLE_ASSETS } from "./assets.mjs";
+import { SAMPLE_ASSETS, seedUrl } from "./assets.mjs";
 
 // Sample content for local development only. Fixed story ids make the script safe to re-run (upsert).
 const REPORTERS = ["jane.reporter@openpress.local", "david.journalist@openpress.local", "alex.writer@openpress.local"];
@@ -38,6 +38,22 @@ const SAMPLE_STORIES = [
   ["Hospitals extend evening clinics to cut emergency waiting times", "News", "Investigation",
     "Extra evening appointments are meant to draw non-urgent cases away from emergency departments.",
     ["Three hospitals have added evening clinics for minor injuries and routine checks, staffed by existing teams working new rosters.", "Early figures show a modest fall in late-night emergency arrivals, and managers say the trial will run through the winter."]],
+  ["Shipping lanes reopen after weeks of rerouted cargo", "World", "Breaking News",
+    "Major carriers confirmed the route is safe again, easing delays for importers worldwide.",
+    ["Carriers began sending vessels through the shortened route this week after inspectors cleared the last of the hazards.", "Port operators expect backlogs to clear within a month, and freight forecasters have already trimmed their price outlook for the quarter.", "Importers say the biggest relief will come for perishable goods, which had been the hardest hit by the longer journeys."]],
+  ["Small shops see a lift as the high street gets a weekend market", "Business", "Community",
+    "A monthly street market is bringing new customers to independent traders.",
+    ["Traders on the main street report higher footfall since the market began, with many first-time visitors stepping into neighbouring shops.", "The council says the market will run all year if turnout holds, and is looking at extending opening hours into the evening.", "Owners say the lift is modest but steady, and several have hired extra weekend staff."]],
+  ["A free coding club turns library afternoons into a starter course", "Technology", "Feature",
+    "Volunteers teach teenagers to build their first websites using only borrowed laptops.",
+    ["The weekly club began with six students and now fills the library's study room, with a waiting list for the autumn term.", "Volunteers from local companies run the sessions and say the aim is confidence, not careers, though several students have already built sites for family businesses.", "The library plans to lend out the laptops for home practice once a donation drive reaches its target."]],
+  ["Veteran striker signs a final contract with her hometown club", "Sports", "Feature",
+    "After a decade abroad, the forward returns to finish her career where it began.",
+    ["The announcement came after training on Tuesday, to cheers from fans who had gathered at the gates.", "The club's coach said her experience will guide a young squad through a difficult run of fixtures.", "She will also run weekend clinics for girls' teams in the area as part of the deal."]],
+  ["Community kitchens swap recipes for the long winter ahead", "Lifestyle", "Community",
+    "Cooks across the city are trading low-cost, high-flavour meals for cold months.",
+    ["Volunteers at four kitchens have started a shared recipe book, filled with soups, stews and bakes that cost little and freeze well.", "Organisers say the book is meant to be copied, so anyone can print it or add a page of their own.", "The first edition will be handed out at the winter food drive next month."]],
+
 ];
 
 const slugify = (s) => s.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -53,7 +69,7 @@ export async function seedStories() {
   }
 
   const siteUrl = (process.env.FRONTEND_WEBSITE_URL || "http://127.0.0.1:9000/openpress-website").replace(/\/+$/, "");
-  const images = SAMPLE_ASSETS.map((a) => a.fileUrl);
+  const images = SAMPLE_ASSETS.map(seedUrl);
   let count = 0;
 
   for (const [i, [title, section, category, summary, paragraphs]] of SAMPLE_STORIES.entries()) {

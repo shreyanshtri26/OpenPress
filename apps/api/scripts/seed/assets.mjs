@@ -1,6 +1,25 @@
 import { randomUUID } from "node:crypto";
 import { db } from "../../db/client.mjs";
 import { assets } from "../../db/schema.mjs";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { createS3Client, publicObjectUrl } from "../../lib/storage.mjs";
+
+// With UPLOAD_ASSETS=1 the sample images are copied into the DAM bucket, so articles can use them from the media library.
+export const seedUrl = (item) =>
+  process.env.UPLOAD_ASSETS && process.env.S3_DAM_BUCKET_NAME
+    ? publicObjectUrl(process.env.S3_DAM_BUCKET_NAME, `seed/${item.fileName}`)
+    : item.fileUrl;
+
+async function uploadSample(s3, item) {
+  const res = await fetch(item.fileUrl);
+  if (!res.ok) throw new Error(`Could not download ${item.fileUrl}: ${res.status}`);
+  await s3.send(new PutObjectCommand({
+    Bucket: process.env.S3_DAM_BUCKET_NAME,
+    Key: `seed/${item.fileName}`,
+    Body: Buffer.from(await res.arrayBuffer()),
+    ContentType: item.fileType,
+  }));
+}
 
 export const SAMPLE_ASSETS = [
   {
@@ -128,8 +147,11 @@ export const SAMPLE_ASSETS = [
 export async function seedAssets() {
   console.log("Seeding sample DAM assets into Postgres...");
   let count = 0;
+  const s3 = process.env.UPLOAD_ASSETS ? createS3Client() : null;
 
   for (const item of SAMPLE_ASSETS) {
+    if (s3) await uploadSample(s3, item);
+    const url = seedUrl(item);
     const assetId = `asset_${item.fileName.replace(/[^a-z0-9]+/gi, '_').toLowerCase()}`;
     await db
       .insert(assets)
@@ -138,9 +160,9 @@ export async function seedAssets() {
         name: item.name,
         fileName: item.fileName,
         fileType: item.fileType,
-        fileUrl: item.fileUrl,
-        previewUrl: item.previewUrl,
-        s3Key: item.fileName,
+        fileUrl: url,
+        previewUrl: url,
+        s3Key: s3 ? `seed/${item.fileName}` : item.fileName,
         userId: "admin-seed",
         uploadedBy: "Local Admin",
         description: item.description,
@@ -165,8 +187,8 @@ export async function seedAssets() {
           name: item.name,
           fileName: item.fileName,
           fileType: item.fileType,
-          fileUrl: item.fileUrl,
-          previewUrl: item.previewUrl,
+          fileUrl: url,
+          previewUrl: url,
           description: item.description,
           summary: item.summary,
           caption: item.caption,

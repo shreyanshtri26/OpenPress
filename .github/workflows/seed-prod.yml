@@ -32,6 +32,7 @@ jobs:
       - run: npm run seed:site-assets
       - if: inputs.demo
         run: |
+          export UPLOAD_ASSETS=1
           export SEED_USER_PASSWORD="$(openssl rand -hex 24)"
           npm run seed:users && npm run seed:assets && npm run seed:stories && npm run seed:pages
       - if: always()
