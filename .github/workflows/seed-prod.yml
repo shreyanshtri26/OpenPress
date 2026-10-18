@@ -31,7 +31,7 @@ jobs:
       - run: npm run seed:taxonomies
       - run: npm run seed:site-assets
       - run: npm run publish:login
-        env: { API_URL: '${{ vars.API_URL }}' }
+        env: { API_URL: '${{ vars.API_URL }}', NEON_AUTH_BASE_URL: '${{ vars.NEON_AUTH_BASE_URL }}' }
       - if: inputs.demo
         run: |
           export UPLOAD_ASSETS=1

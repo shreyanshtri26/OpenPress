@@ -2,13 +2,30 @@ import { eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import { db } from '../../db/client.mjs';
 import { readerUsers } from '../../db/schema.mjs';
+import { verifyNeonAuthToken } from '../../lib/neon-auth.mjs';
 
 const READER_JWT_SECRET = process.env.EPAPER_JWT_SECRET || process.env.JWT_SECRET || 'epaper-reader-secret-key';
 
 export const handler = async (event) => {
   try {
     const body = JSON.parse(event.body || '{}');
-    const { neonAuthId, email, displayName, avatarUrl } = body;
+    let { neonAuthId, email, displayName, avatarUrl } = body;
+
+    // Production: the identity must come from a Neon Auth JWT. The body is not trusted, otherwise anyone could
+    // sign in as any email. EPAPER_DEMO_LOGIN=true keeps the unverified demo sign-in for local development only.
+    if (process.env.NEON_AUTH_BASE_URL) {
+      const bearer = (event.headers?.authorization || event.headers?.Authorization || '').replace(/^Bearer\s+/i, '');
+      let claims;
+      try {
+        claims = await verifyNeonAuthToken(bearer, process.env.NEON_AUTH_BASE_URL);
+      } catch (e) {
+        return { statusCode: 401, body: JSON.stringify({ message: 'Sign in with Google to continue' }) };
+      }
+      ({ sub: neonAuthId, email, name: displayName } = claims);
+      avatarUrl = claims.picture || claims.image || undefined;
+    } else if (process.env.EPAPER_DEMO_LOGIN !== 'true') {
+      return { statusCode: 503, body: JSON.stringify({ message: 'Reader sign-in is not configured' }) };
+    }
 
     if (!email) {
       return {

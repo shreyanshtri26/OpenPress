@@ -8,7 +8,7 @@ const { API_URL, S3_WEBSITE_BUCKET_NAME } = process.env;
 if (!API_URL || !S3_WEBSITE_BUCKET_NAME) throw new Error('Set API_URL and S3_WEBSITE_BUCKET_NAME');
 
 // The page falls back to its own origin for the API, which is wrong on a static host, so say where the API is.
-const html = renderDevLoginPageHtml().replaceAll('http://localhost:5173/login', `${process.env.FRONTEND_URL || ''}/login`).replace('<head>', `<head>\n  <script>window.__openPress_API__ = ${JSON.stringify(API_URL.replace(/\/+$/, ''))};</script>`);
+const html = renderDevLoginPageHtml().replaceAll('http://localhost:5173/login', `${process.env.FRONTEND_URL || ''}/login`).replace('<head>', `<head>\n  <script>window.__openPress_API__ = ${JSON.stringify(API_URL.replace(/\/+$/, ''))};${process.env.NEON_AUTH_BASE_URL ? ` window.__NEON_AUTH_URL__ = ${JSON.stringify(process.env.NEON_AUTH_BASE_URL)};` : ''}</script>`);
 await createS3Client().send(new PutObjectCommand({
   Bucket: S3_WEBSITE_BUCKET_NAME,
   Key: 'login.html',

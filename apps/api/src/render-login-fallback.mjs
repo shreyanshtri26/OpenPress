@@ -168,6 +168,12 @@ export function renderDevLoginPageHtml() {
       const apiBase = window.__openPress_API__ || (window.location.origin.includes(':8080') ? 'http://localhost:3001' : window.location.origin);
       const urlParams = new URLSearchParams(window.location.search);
       const returnUrl = urlParams.get('returnUrl') || '/';
+      // Set by scripts/publish-login.mjs in production. Without it the page keeps the local demo sign-in.
+      const neonAuth = (window.__NEON_AUTH_URL__ || '').replace(/\/+$/, '');
+      if (neonAuth) {
+        var form = document.getElementById('reader-login-form');
+        if (form) [form.previousElementSibling, form, form.nextElementSibling].forEach(function(el) { if (el) el.style.display = 'none'; });
+      }
 
       function showError(msg) {
         const el = document.getElementById('auth-error-banner');
@@ -309,6 +315,25 @@ export function renderDevLoginPageHtml() {
           btn.innerHTML = '<span>Redirecting to Google...</span>';
         }
 
+        if (neonAuth) {
+          try {
+            const callbackURL = window.location.origin + '/login?neon=1&returnUrl=' + encodeURIComponent(returnUrl);
+            const res = await fetch(neonAuth + '/sign-in/social', {
+              method: 'POST',
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ provider: 'google', callbackURL: callbackURL })
+            });
+            const data = await res.json();
+            if (!res.ok || !data.url) throw new Error(data.message || 'Could not start Google sign-in');
+            window.location.href = data.url;
+          } catch (err) {
+            showError(err.message || 'Could not start Google sign-in.');
+            if (btn) { btn.disabled = false; btn.textContent = 'Continue with Google'; }
+          }
+          return;
+        }
+
         const googleClientId = window.__GOOGLE_CLIENT_ID__;
         if (googleClientId) {
           // Standard Google OAuth direct redirect flow (no popups)
@@ -344,7 +369,31 @@ export function renderDevLoginPageHtml() {
         }
       };
 
+      // Back from Google: Neon Auth set its session cookie; trade it for a signed token, then let the API verify it.
+      async function completeNeonSignIn() {
+        if (!neonAuth || urlParams.get('neon') !== '1') return;
+        const btn = document.getElementById('google-signin-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Finishing sign in...'; }
+        try {
+          const tokenRes = await fetch(neonAuth + '/token', { credentials: 'include' });
+          const tokenData = tokenRes.ok ? await tokenRes.json() : null;
+          if (!tokenData || !tokenData.token) throw new Error('Google sign-in did not finish. If your browser blocks third-party cookies, allow them for this site and try again.');
+          const res = await fetch(apiBase + '/epaper/auth/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tokenData.token },
+            body: '{}'
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message || 'Sign in failed');
+          await completeAuth(data);
+        } catch (err) {
+          showError(err.message || 'Sign in failed.');
+          if (btn) { btn.disabled = false; btn.textContent = 'Continue with Google'; }
+        }
+      }
+
       // Check if user is already authenticated
+      completeNeonSignIn();
       checkExistingAuth();
       handleOAuthCallback();
     })();
