@@ -44,7 +44,7 @@
   "screenshots": [
     {
       "src": "/pwa-screenshot-mobile.png",
-      "sizes": "640x926",
+      "sizes": "640x925",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "OpenPress homepage on mobile — independent news"

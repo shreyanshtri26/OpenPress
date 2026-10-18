@@ -24,6 +24,8 @@ const FILES = [
   "pwa-icon-512-maskable.png",
   "openpress-share.png",
   "manifest.json",
+  "pwa-screenshot-mobile.png",
+  "pwa-screenshot-desktop.png",
 ];
 const TYPES = { ".png": "image/png", ".ico": "image/x-icon", ".json": "application/manifest+json" };
 
