@@ -300,9 +300,9 @@ export function renderMastheadNavbar({
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <line x1="14" y1="20" x2="50" y2="20" stroke="black" stroke-width="3.5" stroke-linecap="round" />
-          <line x1="14" y1="32" x2="50" y2="32" stroke="black" stroke-width="3.5" stroke-linecap="round" />
-          <line x1="14" y1="44" x2="50" y2="44" stroke="black" stroke-width="3.5" stroke-linecap="round" />
+          <line x1="14" y1="20" x2="50" y2="20" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" />
+          <line x1="14" y1="32" x2="50" y2="32" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" />
+          <line x1="14" y1="44" x2="50" y2="44" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" />
         </svg>
       </button>
     </div>

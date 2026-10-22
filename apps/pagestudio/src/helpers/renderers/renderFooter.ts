@@ -48,7 +48,7 @@ export function renderFooter(props: FooterProps): string {
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-6 pb-4 border-b border-[#e5e5ea]">
                         <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 sm:gap-4 text-center sm:text-left">
                             <a href="/" aria-label="OpenPress home" class="shrink-0 flex items-center">
-                                <img src="/openpress-logo-full-nobg-trim.png" alt="OpenPress" class="h-7 sm:h-8 w-auto object-contain" />
+                                <img id="footer-logo-mark" src="/openpress-logo-full-nobg-trim.png" alt="OpenPress" class="op-footer-logo h-7 sm:h-8 w-auto object-contain" />
                             </a>
                             <span class="hidden sm:inline text-[#d2d2d7] select-none">|</span>
                             <p class="text-[12px] text-[#6e6e73] font-merriweather italic">
