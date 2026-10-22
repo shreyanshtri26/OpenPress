@@ -1,10 +1,10 @@
 /* Page Studio theme: Apple-style greys for the editor chrome only.
    Published pages have their own tokens (published-page.tailwind-entry.css); the canvas is not touched.
-   Puck's grey scale runs dark (01) to light (12), so dark mode simply reverses it. */
+   One flat Apple grey (#f5f5f7) everywhere, light only: no dark mode. */
 .studio-shell {
   --studio-bg: #f5f5f7;
-  --studio-surface: #ffffff;
-  --studio-surface-2: #fbfbfd;
+  --studio-surface: #f5f5f7;
+  --studio-surface-2: #f5f5f7;
   --studio-line: rgba(0, 0, 0, 0.08);
   --studio-text: #1d1d1f;
   --studio-muted: #6e6e73;
@@ -20,31 +20,18 @@
   --puck-color-grey-01: #1d1d1f; --puck-color-grey-02: #2c2c2e; --puck-color-grey-03: #3a3a3c;
   --puck-color-grey-04: #515154; --puck-color-grey-05: #6e6e73; --puck-color-grey-06: #86868b;
   --puck-color-grey-07: #a1a1a6; --puck-color-grey-08: #c7c7cc; --puck-color-grey-09: #d9d9de;
-  --puck-color-grey-10: #e8e8ed; --puck-color-grey-11: #f5f5f7; --puck-color-grey-12: #fbfbfd;
+  --puck-color-grey-10: #e8e8ed; --puck-color-grey-11: #f5f5f7; --puck-color-grey-12: #f5f5f7;
   --puck-color-azure-01: #003a75; --puck-color-azure-02: #00539f; --puck-color-azure-03: #0062c4;
   --puck-color-azure-04: #0071e3; --puck-color-azure-05: #2b88e8; --puck-color-azure-06: #5aa2ee;
   --puck-color-azure-07: #86bbf3; --puck-color-azure-08: #b0d2f7; --puck-color-azure-09: #d3e5fa;
   --puck-color-azure-10: #e8f1fc; --puck-color-azure-11: #f2f7fe; --puck-color-azure-12: #f8fbff;
 
+  --puck-color-white: #f5f5f7;
+  color-scheme: light;
   color: var(--studio-text);
   background: var(--studio-bg);
   font-family: var(--puck-font-family);
   -webkit-font-smoothing: antialiased;
-}
-
-@media (prefers-color-scheme: dark) {
-  .studio-shell:not([data-studio-theme="light"]) {
-    --studio-bg: #1D1D1F; --studio-surface: #262628; --studio-surface-2: #2e2e31;
-    --studio-line: rgba(255, 255, 255, 0.12); --studio-text: #f5f5f7; --studio-muted: #A2AAAD;
-    --studio-accent: #0a84ff; --studio-accent-hover: #409cff;
-    --studio-danger: #ff453a; --studio-ok: #30d158; --studio-warn: #ff9f0a;
-    --studio-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5);
-    --puck-color-grey-01: #f5f5f7; --puck-color-grey-02: #e8e8ed; --puck-color-grey-03: #d9d9de;
-    --puck-color-grey-04: #c7c7cc; --puck-color-grey-05: #a1a1a6; --puck-color-grey-06: #86868b;
-    --puck-color-grey-07: #6e6e73; --puck-color-grey-08: #515154; --puck-color-grey-09: #3a3a3c;
-    --puck-color-grey-10: #2e2e31; --puck-color-grey-11: #262628; --puck-color-grey-12: #1D1D1F;
-    --puck-color-white: #262628; --puck-color-black: #f5f5f7;
-  }
 }
 
 /* Top bar (the Back strip in admin) */

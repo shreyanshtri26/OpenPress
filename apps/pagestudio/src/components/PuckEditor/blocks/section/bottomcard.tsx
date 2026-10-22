@@ -60,7 +60,7 @@ export const BottomCard: React.FC<BottomCardProps> = ({
         }
     }, [storyId]);
 
-    const displayImage = story?.imageUrl || fallbackImage || '/story-images/modi.png';
+    const displayImage = story?.imageUrl || fallbackImage || '/openpress-share.png';
     const displayTitle = fallbackTitle || story?.headline || 'Featured story';
     const displayDescription = fallbackDescription || story?.storySummary || 'Lorem ipsum dolor sit amet consectetur adipiscing elit quisque elit quisque faucibus.';
 

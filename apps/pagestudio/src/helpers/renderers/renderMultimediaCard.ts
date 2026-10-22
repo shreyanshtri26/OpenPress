@@ -17,7 +17,7 @@ export function renderMultimediaCard(
 ): string {
   const story = props.storyId ? ctx.storiesById?.[props.storyId] : null
 
-  const imageUrl = props.imageUrl || story?.image || '/story-images/Media.png'
+  const imageUrl = props.imageUrl || story?.image || '/openpress-share.png'
   const title = props.title || story?.headline || 'Featured story'
   const description =
     props.description || story?.summary ||

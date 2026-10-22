@@ -124,7 +124,7 @@ const blogCardConfig = {
       {
         number: 1,
         storyId: getStoryOptions()[0]?.value || '',
-        text: 'A Government Shutdown, Weaponized',
+        text: 'Headline goes here',
       },
       {
         number: 2,
@@ -355,7 +355,7 @@ const blogImageCardConfig = {
   defaultProps: {
     id: 'blog-image-card',
     storyId: getStoryOptions()[0]?.value || '',
-    imageUrl: "/story-images/default.png",
+    imageUrl: "/openpress-share.png",
     title: "Lorem ipsum dolor sit amet adipiscing elit",
   },
   render: (props: { id?: string; storyId?: string; imageUrl?: string; title?: string }) => (

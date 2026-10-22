@@ -39,7 +39,7 @@ export function renderBottomCard(props: BottomCardProps, _ctx?: RenderContext): 
     : undefined
 
   // Fallbacks similar to React component
-  const displayImage = story?.imageUrl || props.imageUrl || '/story-images/modi.png'
+  const displayImage = story?.imageUrl || props.imageUrl || '/openpress-share.png'
   const displayTitle = props.title || story?.headline || 'Featured story'
   const displayDescription = props.description || story?.storySummary || story?.summary || 'Lorem ipsum dolor sit amet consectetur adipiscing elit quisque elit quisque faucibus.'
 

@@ -15,7 +15,7 @@ export type MultimediaCardProps = {
 };
 
 export const MultimediaCard: React.FC<MultimediaCardProps> = ({
-  imageUrl = "/story-images/Media.png",
+  imageUrl = "/openpress-share.png",
   title = "Featured story",
   description = "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.",
   author = "NAME",

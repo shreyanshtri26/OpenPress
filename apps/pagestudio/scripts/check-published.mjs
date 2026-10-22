@@ -3,6 +3,7 @@
 import assert from 'node:assert/strict';
 import { pathToFileURL } from 'node:url';
 import path from 'node:path';
+import { existsSync } from 'node:fs';
 
 const bundle = path.resolve(import.meta.dirname, '../dist/publish-renderer.js');
 const { renderHomePage } = await import(pathToFileURL(bundle).href);
@@ -20,9 +21,10 @@ assert.equal(count(/<footer[\s>]/g), 1, 'exactly one <footer>');
 assert.match(html, /name="viewport"/, 'viewport meta');
 assert.doesNotMatch(markup, /\bundefined\b|\[object Object\]|NaN(?![a-z])/, 'no leaked undefined/[object Object]/NaN');
 assert.equal(count(/<div[\s>]/g), count(/<\/div>/g), 'balanced <div> tags');
-// Every local image the page references must be one of the shipped brand files.
+// Every local image the page references must be a file the site actually ships (a missing default shows as a broken image).
+const publicDir = path.resolve(import.meta.dirname, '../public');
 for (const [, src] of markup.matchAll(/<img[^>]+src="(\/[^"]+)"/g)) {
-  assert.match(src, /^\/openpress-[\w-]+\.png$|^\/(logo|favicon)/, `unexpected local image ${src}`);
+  assert.ok(existsSync(path.join(publicDir, src)), `local image ${src} is not in pagestudio/public`);
 }
 // Dark theme: logos must be recoloured on both the media query and class-based dark modes.
 assert.match(style, /prefers-color-scheme:\s*dark/, 'dark-mode media query in inlined CSS');

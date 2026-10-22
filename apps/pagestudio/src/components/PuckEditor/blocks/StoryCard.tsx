@@ -19,7 +19,7 @@ export type StoryCardProps = {
 export const StoryCard: React.FC<StoryCardProps> = ({
   id,
   storyId,
-  imageUrl: fallbackImage = "/story-images/modi.png",
+  imageUrl: fallbackImage = "/openpress-share.png",
   label: propLabel,
   title: propTitle,
   description: propDescription,
@@ -73,14 +73,14 @@ export const StoryCard: React.FC<StoryCardProps> = ({
   const isAutomatic = hasCardAssignment || Boolean(autoStoryId);
   const displayImage = story?.imageUrl || fallbackImage;
   const displayLabel = isAutomatic
-    ? story?.category || propLabel || "SELFIE WITH THE PM"
-    : propLabel || story?.category || "SELFIE WITH THE PM";
+    ? story?.category || propLabel || "NEWS"
+    : propLabel || story?.category || "NEWS";
   const displayTitle = isAutomatic
-    ? story?.headline || propTitle || "A Government Shutdown, Weaponized"
-    : propTitle || story?.headline || "A Government Shutdown, Weaponized";
+    ? story?.headline || propTitle || "Headline goes here"
+    : propTitle || story?.headline || "Headline goes here";
   const displayDescription = isAutomatic
-    ? story?.summary || propDescription || "The president is boasting about doing things to Democrats that are bad for them and irreversible by them."
-    : propDescription || story?.summary || "The president is boasting about doing things to Democrats that are bad for them and irreversible by them.";
+    ? story?.summary || propDescription || "A short summary of the story appears here."
+    : propDescription || story?.summary || "A short summary of the story appears here.";
 
   const html = (displayDescription || "")
     .split(/(<[^>]+>)/g)

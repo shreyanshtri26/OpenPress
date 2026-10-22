@@ -11,7 +11,7 @@ export type BlogImageCardProps = {
 
 export const BlogImageCard: React.FC<BlogImageCardProps> = ({
   storyId,
-  imageUrl: fallbackImage = "/story-images/default.png",
+  imageUrl: fallbackImage = "/openpress-share.png",
   title: fallbackTitle = "Lorem ipsum dolor sit amet adipiscing elit",
 }) => {
   const [story, setStory] = useState<Story | null>(null);

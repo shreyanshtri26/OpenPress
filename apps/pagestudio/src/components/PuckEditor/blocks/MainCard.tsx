@@ -17,10 +17,10 @@ export type MainCardProps = {
 export const MainCard: React.FC<MainCardProps> = ({
   id,
   storyId,
-  imageUrl = "/story-images/modi.png",
-  label = "SELFIE WITH THE PM",
-  title = "A Government Shutdown, Weaponized",
-  description = "The president is boasting about doing things to Democrats that are bad for them and irreversible by them.",
+  imageUrl = "/openpress-share.png",
+  label = "NEWS",
+  title = "Headline goes here",
+  description = "A short summary of the story appears here.",
 }) => {
   const [story, setStory] = useState<Story | null>(null);
   const [imageLoaded, setImageLoaded] = useState(false);

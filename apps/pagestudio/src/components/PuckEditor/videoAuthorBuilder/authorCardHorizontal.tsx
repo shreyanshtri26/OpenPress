@@ -12,7 +12,7 @@ export type AuthorCardHorizontalProps = {
 };
 
 export const AuthorCardHorizontal: React.FC<AuthorCardHorizontalProps> = ({
-  imageUrl = "/story-images/Media.png",
+  imageUrl = "/openpress-share.png",
   title = "Lorem ipsum dolor sit amet adipiscing elit",
   description = "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis.",
   views = 8991,

@@ -203,7 +203,7 @@ const rawCardBlocks: Record<string, any> = {
       items: [
         {
           storyId: getStoryOptions()[0]?.value || '',
-          title: 'A Government Shutdown, Weaponized',
+          title: 'Headline goes here',
           category: 'WORLD',
         },
         {
@@ -275,7 +275,7 @@ const rawCardBlocks: Record<string, any> = {
           storyId: getStoryOptions()[0]?.value || '',
           hoverBgColor: '#ffffff',
           defaultOpenState: 'close',
-          title: 'A Government Shutdown, Weaponized',
+          title: 'Headline goes here',
           category: 'WORLD',
         },
         {
@@ -459,19 +459,19 @@ const rawCardBlocks: Record<string, any> = {
       storyId: getStoryOptions()[0]?.value || '',
       imageUrl:
         findStoryById(getStoryOptions()[0]?.value)?.imageUrl ??
-        '/story-images/modi.png',
+        '/openpress-share.png',
 
       label:
         findStoryById(getStoryOptions()[0]?.value)?.category ??
-        'SELFIE WITH THE PM',
+        'NEWS',
 
       title:
         findStoryById(getStoryOptions()[0]?.value)?.headline ??
-        'A Government Shutdown, Weaponized',
+        'Headline goes here',
 
       description:
         findStoryById(getStoryOptions()[0]?.value)?.summary ??
-        'The president is boasting about doing things to Democrats...',
+        'A short summary of the story appears here...',
     } as MainCardProps,
 
     resolveFields: async (_data: any, { fields, parent }: any) => {
@@ -660,7 +660,7 @@ const rawCardBlocks: Record<string, any> = {
       items: [
         {
           storyId: getStoryOptions()[0]?.value || '',
-          title: 'A Government Shutdown, Weaponized',
+          title: 'Headline goes here',
           category: 'WORLD',
         },
         {

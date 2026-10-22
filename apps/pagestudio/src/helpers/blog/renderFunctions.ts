@@ -1044,7 +1044,7 @@ function renderBlogSubHeading({ time = "18 minutes ago", category = "CATEGORY" }
 }
 
 //  RENDER: BlogImageCard
-function renderBlogImageCard({ storyId, imageUrl: fallbackImage = "/story-images/default.png", title: fallbackTitle = "" }: { storyId?: string; imageUrl?: string; title?: string }, storiesById: StoryMap) {
+function renderBlogImageCard({ storyId, imageUrl: fallbackImage = "/openpress-share.png", title: fallbackTitle = "" }: { storyId?: string; imageUrl?: string; title?: string }, storiesById: StoryMap) {
   const story = storyId ? storiesById[storyId] : null;
   const displayImage = story?.imageUrl || story?.image || fallbackImage || "https://via.placeholder.com/900x600";
   const displayTitle = story?.caption || fallbackTitle || "";

@@ -22,24 +22,24 @@ export function renderStoryCard(props: StoryCardProps, ctx: RenderContext): stri
   const image =
     story?.image ||
     props.imageUrl ||
-    '/story-images/modi.png'
+    '/openpress-share.png'
 
   const label =
     props.label ||
     story?.category ||
-    'SELFIE WITH THE PM'
+    'NEWS'
 
   const titleRaw =
     props.title ||
     story?.headline ||
-    'A Government Shutdown, Weaponized'
+    'Headline goes here'
 
   const title = titleRaw
 
   const displayDescription =
     props.description ||
     story?.summary ||
-    'The president is boasting about doing things to Democrats that are bad for them and irreversible by them.'
+    'A short summary of the story appears here.'
 
   const html = displayDescription
     .split(/(<[^>]+>)/g)
