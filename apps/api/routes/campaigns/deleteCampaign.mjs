@@ -1,7 +1,7 @@
 import { DeleteCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const TABLE_NAME = process.env.DYNAMO_CAMPAIGN_TABLE_NAME;
+const TABLE_NAME = process.env.DOC_CAMPAIGN_TABLE_NAME;
 
 export const handler = async (event) => {
   try {
@@ -19,7 +19,7 @@ export const handler = async (event) => {
     }
 
     // Delete with safety check
-    await dynamoClient.send(
+    await docClient.send(
       new DeleteCommand({
         TableName: TABLE_NAME,
         Key: { campaignId },
@@ -38,7 +38,7 @@ export const handler = async (event) => {
   } catch (error) {
     console.error("Delete campaign error:", error);
 
-    if (error.name === "ConditionalCheckFailedException") {
+    if (error.name === "ConditionCheckFailed") {
       return {
         statusCode: 404,
         body: JSON.stringify({

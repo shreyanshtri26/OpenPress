@@ -1,11 +1,11 @@
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { createS3Client } from '../../lib/storage.mjs';
 
-const s3 = createS3Client({ region: process.env.AWS_OpenPress_REGION });
+const s3 = createS3Client({ region: process.env.STORAGE_REGION });
 
 export const handler = async (event) => {
   try {
-    const bucket = process.env.S3_DAM_BUCKET_NAME;
+    const bucket = process.env.DAM_BUCKET_NAME;
     const body = JSON.parse(event.body || "{}");
     const s3Key = typeof body.s3Key === "string" ? body.s3Key.trim() : "";
 

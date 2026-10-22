@@ -1,10 +1,10 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { CloudFrontClient, CreateInvalidationCommand } from "@aws-sdk/client-cloudfront";
-import { createS3Client } from '../../lib/storage.mjs';
+import { createS3Client, clientConfig } from '../../lib/storage.mjs';
 
-const s3Client = createS3Client({ region: process.env.AWS_OpenPress_REGION });
-const cloudfrontClient = new CloudFrontClient({ region: process.env.AWS_OpenPress_REGION });
-const BUCKET_NAME = process.env.S3_WEBSITE_BUCKET_NAME;
+const s3Client = createS3Client({ region: process.env.STORAGE_REGION });
+const cdnClient = new CloudFrontClient({ ...clientConfig(),});
+const BUCKET_NAME = process.env.WEBSITE_BUCKET_NAME;
 
 export const handler = async (event) => {
   try {
@@ -44,9 +44,9 @@ export const handler = async (event) => {
       }));
     }
 
-    if (process.env.CLOUDFRONT_DISTRIBUTION_ID) {
-      await cloudfrontClient.send(new CreateInvalidationCommand({
-        DistributionId: process.env.CLOUDFRONT_DISTRIBUTION_ID,
+    if (process.env.CDN_DISTRIBUTION_ID) {
+      await cdnClient.send(new CreateInvalidationCommand({
+        DistributionId: process.env.CDN_DISTRIBUTION_ID,
         InvalidationBatch: {
           CallerReference: Date.now().toString(),
           Paths: { Quantity: 1, Items: ["/*"] }

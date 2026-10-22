@@ -12,7 +12,7 @@ import { renderMediaCouncilPageFromPuckJSON } from "../../helpers/renderMediaCou
 import { renderContactUsPageFromPuckJSON } from "../../helpers/renderContactUsPageFromPuckJSON";
 import { getAuthorOptions } from "./authorData";
 import { checkAuth } from "../../utils/auth.ts";
-import { extractReadyToPublishStories, getHomeChromeLayoutForPublish, getSavedHomeChromeLayout, markHomeNavbarLeaderboardPublished, publishPwaFilesToS3 } from "./syncNavbarLeaderboard";
+import { extractReadyToPublishStories, getHomeChromeLayoutForPublish, getSavedHomeChromeLayout, markHomeNavbarLeaderboardPublished, publishPwaFiles } from "./syncNavbarLeaderboard";
 import { buildStoriesById } from "../../publish/publishContext";
 import { findEmptyAutoGridCards } from "./blocks/useAutoGridCardAssignments";
 import {
@@ -511,7 +511,7 @@ export function PuckHeaderActions({
       // so the live site always has the latest PWA metadata. Runs silently.
       // Not page HTML, and not tied to the navbar — stays unconditional.
       try {
-        await publishPwaFilesToS3();
+        await publishPwaFiles();
       } catch (e) {
         console.warn("PWA files publish failed:", e);
       }

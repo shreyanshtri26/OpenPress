@@ -1,5 +1,5 @@
 import { DeleteCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { ensureTableName, TABLE_NAME } from "./shared.mjs";
 
 export const handler = async (event) => {
@@ -16,7 +16,7 @@ export const handler = async (event) => {
       };
     }
 
-    await dynamoClient.send(
+    await docClient.send(
       new DeleteCommand({
         TableName: TABLE_NAME,
         Key: { surveyId },
@@ -31,7 +31,7 @@ export const handler = async (event) => {
   } catch (error) {
     console.error("Delete survey error:", error);
 
-    if (error.name === "ConditionalCheckFailedException") {
+    if (error.name === "ConditionCheckFailed") {
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "Survey not found" }),

@@ -1,7 +1,7 @@
 import { ScanCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const SEARCH_HISTORY_TABLE = process.env.DYNAMO_SEARCH_HISTORY_TABLE || 'op_searchhistory';
+const SEARCH_HISTORY_TABLE = process.env.DOC_SEARCH_HISTORY_TABLE || 'op_searchhistory';
 
 export const handler = async (event) => {
     const user = event.user;
@@ -24,7 +24,7 @@ export const handler = async (event) => {
             }
         });
 
-        const result = await dynamoClient.send(command);
+        const result = await docClient.send(command);
         
         // Sort by timestamp descending
         const sortedHistory = (result.Items || []).sort((a, b) => 

@@ -828,7 +828,7 @@ export default function AllStories({ onBack, handleEditStory }: AllStoriesProps)
     try {
       // 1. Fetch fresh story data
       const storyResponse = await apiFetch(
-        `${env.backendApi}/api/storyDynamo?storyId=${currentStoryId}`,
+        `${env.backendApi}/api/storyById?storyId=${currentStoryId}`,
         {
           method: "GET",
           headers: {

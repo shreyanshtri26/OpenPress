@@ -1,14 +1,14 @@
 import { UpdateCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const TABLE_NAME = process.env.DYNAMO_PLACEMENT_TABLE_NAME;
+const TABLE_NAME = process.env.DOC_PLACEMENT_TABLE_NAME;
 
 export const handler = async (event) => {
   if (!TABLE_NAME) {
     return {
       statusCode: 500,
       body: JSON.stringify({
-        message: "Server configuration error: DYNAMO_PLACEMENT_TABLE_NAME is not set",
+        message: "Server configuration error: DOC_PLACEMENT_TABLE_NAME is not set",
       }),
     };
   }
@@ -92,7 +92,7 @@ export const handler = async (event) => {
       };
     }
 
-    const result = await dynamoClient.send(
+    const result = await docClient.send(
       new UpdateCommand({
         TableName: TABLE_NAME,
         Key: { placementId },
@@ -115,7 +115,7 @@ export const handler = async (event) => {
   } catch (error) {
     console.error("Update placement error:", error);
 
-    if (error.name === "ConditionalCheckFailedException") {
+    if (error.name === "ConditionCheckFailed") {
       return {
         statusCode: 404,
         body: JSON.stringify({

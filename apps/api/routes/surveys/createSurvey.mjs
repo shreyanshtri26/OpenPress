@@ -1,5 +1,5 @@
 import { PutCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { ensureTableName, normalizeSurvey, TABLE_NAME, validateSurvey } from "./shared.mjs";
 
 export const handler = async (event) => {
@@ -17,7 +17,7 @@ export const handler = async (event) => {
       };
     }
 
-    await dynamoClient.send(
+    await docClient.send(
       new PutCommand({
         TableName: TABLE_NAME,
         Item: survey,
@@ -32,7 +32,7 @@ export const handler = async (event) => {
   } catch (error) {
     console.error("Create survey error:", error);
 
-    if (error.name === "ConditionalCheckFailedException") {
+    if (error.name === "ConditionCheckFailed") {
       return {
         statusCode: 409,
         body: JSON.stringify({ message: "Survey already exists" }),

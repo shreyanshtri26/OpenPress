@@ -2,29 +2,28 @@
 import { ListObjectsV2Command, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { GetCommand, UpdateCommand } from "../../db/commands.mjs";
 import { MediaConvertClient, GetJobCommand } from "@aws-sdk/client-mediaconvert";
-import dynamoClient from "../../dynamoClient.mjs";
-import { createS3Client, publicObjectUrl } from '../../lib/storage.mjs';
+import docClient from "../../docClient.mjs";
+import { createS3Client, publicObjectUrl, clientConfig } from '../../lib/storage.mjs';
 
-const s3Client = createS3Client({ region: process.env.AWS_OpenPress_REGION });
-const mediaConvertClient = new MediaConvertClient({
-  region: process.env.AWS_OpenPress_REGION,
-  endpoint: process.env.MEDIACONVERT_ENDPOINT
+const s3Client = createS3Client({ region: process.env.STORAGE_REGION });
+const transcodeClient = new MediaConvertClient({ ...clientConfig(),
+  endpoint: process.env.TRANSCODE_ENDPOINT
 });
 
-const TABLE_NAME = process.env.DYNAMO_ASSETS_TABLE_NAME;
-const BUCKET_NAME = process.env.S3_DAM_BUCKET_NAME;
+const TABLE_NAME = process.env.DOC_ASSETS_TABLE_NAME;
+const BUCKET_NAME = process.env.DAM_BUCKET_NAME;
 
-// Check real-time MediaConvert job status
-async function checkMediaConvertJobStatus(jobId) {
+// Check real-time Transcode job status
+async function checkTranscodeJobStatus(jobId) {
   if (!jobId) {
-    console.log("⚠️ No MediaConvert job ID provided");
+    console.log("⚠️ No Transcode job ID provided");
     return null;
   }
   
   try {
-    console.log(`📊 Checking MediaConvert job status: ${jobId}`);
+    console.log(`📊 Checking Transcode job status: ${jobId}`);
     const command = new GetJobCommand({ Id: jobId });
-    const result = await mediaConvertClient.send(command);
+    const result = await transcodeClient.send(command);
     
     const jobStatus = {
       status: result.Job.Status,
@@ -35,11 +34,11 @@ async function checkMediaConvertJobStatus(jobId) {
       outputGroupDetails: result.Job.OutputGroupDetails
     };
     
-    console.log(`✅ MediaConvert job ${jobId} status: ${jobStatus.status} (${jobStatus.progress}%)`);
+    console.log(`✅ Transcode job ${jobId} status: ${jobStatus.status} (${jobStatus.progress}%)`);
     return jobStatus;
     
   } catch (error) {
-    console.error(`❌ Failed to check MediaConvert job ${jobId}:`, error.message);
+    console.error(`❌ Failed to check Transcode job ${jobId}:`, error.message);
     return null;
   }
 }
@@ -59,7 +58,7 @@ async function updateAssetTranscodingStatus(assetId, status, additionalFields = 
       ...Object.fromEntries(Object.entries(additionalFields).map(([k, v]) => [`:${k}`, v]))
     };
 
-    await dynamoClient.send(new UpdateCommand({
+    await docClient.send(new UpdateCommand({
       TableName: TABLE_NAME,
       Key: { assetId },
       UpdateExpression: updateExpression,
@@ -73,7 +72,7 @@ async function updateAssetTranscodingStatus(assetId, status, additionalFields = 
 }
 
 // List S3 objects with error handling
-async function listS3Objects(prefix) {
+async function listStorageObjects(prefix) {
   try {
     console.log(`📁 Listing S3 objects with prefix: ${prefix}`);
     const command = new ListObjectsV2Command({
@@ -200,7 +199,7 @@ export const handler = async (event) => {
       Key: { assetId }
     });
 
-    const result = await dynamoClient.send(getCommand);
+    const result = await docClient.send(getCommand);
     const asset = result.Item;
 
     if (!asset) {
@@ -238,11 +237,11 @@ export const handler = async (event) => {
 
     console.log(`✅ Video asset found: ${assetId}`);
 
-    // Check real-time MediaConvert job status if job exists
+    // Check real-time Transcode job status if job exists
     let realTimeJobStatus = null;
-    if (asset.mediaConvertJobId) {
-      console.log(`📊 Checking MediaConvert job: ${asset.mediaConvertJobId}`);
-      realTimeJobStatus = await checkMediaConvertJobStatus(asset.mediaConvertJobId);
+    if (asset.transcodeJobId) {
+      console.log(`📊 Checking Transcode job: ${asset.transcodeJobId}`);
+      realTimeJobStatus = await checkTranscodeJobStatus(asset.transcodeJobId);
       
       // Update database if status changed
       if (realTimeJobStatus && realTimeJobStatus.status !== asset.transcodingStatus) {
@@ -277,7 +276,7 @@ export const handler = async (event) => {
       processedVariants: [],
       thumbnails: [],
       transcodingStatus: realTimeJobStatus?.status || asset.transcodingStatus || "NOT_STARTED",
-      mediaConvertJobId: asset.mediaConvertJobId || null,
+      transcodeJobId: asset.transcodeJobId || null,
       lastChecked: new Date().toISOString()
     };
 
@@ -298,14 +297,14 @@ export const handler = async (event) => {
     }
 
     // Check for processed files if transcoding exists
-    if (asset.mediaConvertJobId) {
+    if (asset.transcodeJobId) {
       try {
         console.log(`📁 Checking for processed files...`);
         
         // List processed video files and thumbnails
         const [videoFiles, thumbnailFiles] = await Promise.all([
-          listS3Objects(`processed/${assetId}/videos/`),
-          listS3Objects(`processed/${assetId}/thumbnails/`)
+          listStorageObjects(`processed/${assetId}/videos/`),
+          listStorageObjects(`processed/${assetId}/thumbnails/`)
         ]);
 
         console.log(`📊 Found ${videoFiles.length} video files, ${thumbnailFiles.length} thumbnail files`);

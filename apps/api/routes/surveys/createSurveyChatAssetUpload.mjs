@@ -3,7 +3,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import crypto from "crypto";
 import { createS3Client } from '../../lib/storage.mjs';
 
-const s3 = createS3Client({ region: process.env.AWS_OpenPress_REGION });
+const s3 = createS3Client({ region: process.env.STORAGE_REGION });
 const ALLOWED_TYPES = new Set([
   "image/jpeg",
   "image/png",
@@ -30,8 +30,8 @@ function safeFileName(fileName) {
 
 export const handler = async (event) => {
   try {
-    const bucket = process.env.S3_DAM_BUCKET_NAME;
-    const region = process.env.AWS_OpenPress_REGION || "us-east-1";
+    const bucket = process.env.DAM_BUCKET_NAME;
+    const region = process.env.STORAGE_REGION || "us-east-1";
     const surveyId = getSurveyId(event);
     const body = JSON.parse(event.body || "{}");
     const fileName = safeFileName(body.fileName);

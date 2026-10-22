@@ -5,9 +5,9 @@ import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
 import { createS3Client } from '../../lib/storage.mjs';
 
-const s3Client = createS3Client({ region: process.env.AWS_OpenPress_REGION });
+const s3Client = createS3Client({ region: process.env.STORAGE_REGION });
 
-const BUCKET_NAME = process.env.S3_WEBSITE_BUCKET_NAME;
+const BUCKET_NAME = process.env.WEBSITE_BUCKET_NAME;
 export const JOB_KEY = "_jobs/republish-all.json";
 
 /** Statuses that mean "this job still has work to do". */

@@ -192,9 +192,9 @@ export function useAssetMetadata(asset, apiMetadata) {
         // let aiDetectedCelebrities = [];
         // let userSelectedCelebrities = [];
         
-        // Extract AI-detected celebrities from rekognition
-        // if (d.rekognitionAnalysis?.celebrities?.celebrities) {
-        //   aiDetectedCelebrities = d.rekognitionAnalysis.celebrities.celebrities.map(c => c.name);
+        // Extract AI-detected celebrities from analysis
+        // if (d.imageAnalysis?.celebrities?.celebrities) {
+        //   aiDetectedCelebrities = d.imageAnalysis.celebrities.celebrities.map(c => c.name);
         // }
         // Get user's selected celebrities from top-level field
         // if (d.celebrities && Array.isArray(d.celebrities)) {
@@ -528,8 +528,8 @@ Write the caption now:
           }
         });
       }
-    } else if (apiMetadata.rekognitionAnalysis) {
-      const rek = apiMetadata.rekognitionAnalysis;
+    } else if (apiMetadata.imageAnalysis) {
+      const rek = apiMetadata.imageAnalysis;
 
       if (rek.labels?.labels) {
         allTags = rek.labels.labels.map((l) => l.name);
@@ -610,15 +610,15 @@ Write the caption now:
 
 
   // -----------------------------
-  // VIDEO LABELS (async Rekognition Video jobs)
+  // VIDEO LABELS (async ImageAnalysis Video jobs)
   // -----------------------------
-  // Video analysis runs as async Rekognition Video jobs (see videoAnalysisJobs
-  // on the asset) instead of the synchronous rekognitionAnalysis used for
+  // Video analysis runs as async ImageAnalysis Video jobs (see videoAnalysisJobs
+  // on the asset) instead of the synchronous imageAnalysis used for
   // images, so it needs its own polling path to populate availableTags.
   useEffect(() => {
     if (!apiMetadata || !backendMetadataLoaded) return;
     if (!needsApiTags) return;
-    if (apiMetadata.rekognitionAnalysis || apiMetadata.analysis?.labels?.data) return;
+    if (apiMetadata.imageAnalysis || apiMetadata.analysis?.labels?.data) return;
 
     const isVideoAsset =
       apiMetadata?.isVideo || apiMetadata?.type?.startsWith("video/") || apiMetadata?.assetType === "video";
@@ -634,7 +634,7 @@ Write the caption now:
       attempts += 1;
 
       try {
-        const res = await apiFetch(`${env.backendApi}/api/rekognition/getVideoAnalysis`, {
+        const res = await apiFetch(`${env.backendApi}/api/analysis/getVideoAnalysis`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

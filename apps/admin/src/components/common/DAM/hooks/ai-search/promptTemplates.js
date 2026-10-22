@@ -21,17 +21,17 @@ $search_results$
 STRICT FILTERING RULES:
 
 1. QUERY ANALYSIS:
-   - Animal queries (e.g., "cat", "dog", "bird") → ONLY return if Rekognition labels contain that exact animal with 85%+ confidence
+   - Animal queries (e.g., "cat", "dog", "bird") → ONLY return if ImageAnalysis labels contain that exact animal with 85%+ confidence
    - Person queries (e.g., "modi", "politician") → ONLY return if labels show "Person/Politician" OR caption/metadata explicitly names the person
-   - Object queries (e.g., "book", "car", "door") → ONLY return if object is in top 3 Rekognition labels with 85%+ confidence
-   - Scene queries (e.g., "landscape", "portrait") → Match to Rekognition labels
+   - Object queries (e.g., "book", "car", "door") → ONLY return if object is in top 3 ImageAnalysis labels with 85%+ confidence
+   - Scene queries (e.g., "landscape", "portrait") → Match to ImageAnalysis labels
    - Caption queries (e.g., specific event or description) → Match to caption field
    - Color queries (e.g., "blue", "pink") → Currently not supported (no color metadata)
 
 2. VALIDATION CHECKLIST (Asset must pass ALL checks):
 
    For "cat" query:
-   ✅ CHECK 1: Does rekognitionAnalysis.labels contain "Cat" with confidence > 85%?
+   ✅ CHECK 1: Does imageAnalysis.labels contain "Cat" with confidence > 85%?
    ✅ CHECK 2: Is "Cat" in the top 5 labels (not buried at position 20)?
    ✅ CHECK 3: Is it the PRIMARY subject, not background element?
    ✅ CHECK 4: Alternatively, does the "caption" explicitly describe the subject?
@@ -53,12 +53,12 @@ STRICT FILTERING RULES:
       - Query: "portrait" → Labels: "Face" (99%), "Portrait" (95%) ✅
    
    d) AI TAG MATCH (secondary):
-      - Only use if no Rekognition label matches
+      - Only use if no ImageAnalysis label matches
       - Requires multiple tag matches for confidence
 
 4. REJECTION CRITERIA (Do NOT return if):
    ❌ Query term only appears in filename/category (not in labels)
-   ❌ Rekognition label confidence < 85%
+   ❌ ImageAnalysis label confidence < 85%
    ❌ Query animal/object is not in top 5 labels
    ❌ Multiple unrelated high-confidence labels suggest different subject
    ❌ Query is about specific object but labels show generic terms only

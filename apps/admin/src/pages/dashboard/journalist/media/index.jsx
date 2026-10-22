@@ -63,7 +63,7 @@ const DAMContainer = () => {
                     toast.success(`File uploaded !!`);
 
 
-                    // api call to upload metadata in dynamoDB
+                    // api call to upload metadata
                     const assetResponse = await apiFetch(
                         `${env.backendApi}/api/assets/create`,
                         {
@@ -85,7 +85,7 @@ const DAMContainer = () => {
                     if (!assetResponse.ok) throw new Error("Failed to save asset metadata");
 
                     const assetData = await assetResponse.json();
-                    console.log("Asset created in DynamoDB:", assetData);
+                    console.log("Asset created:", assetData);
 
 
                     // const mockAsset = {

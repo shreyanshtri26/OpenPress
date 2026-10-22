@@ -131,7 +131,7 @@ The blocks, renderers and publish bundle are documented in [apps/pagestudio/READ
 
 ## Authentication and roles
 
-- Sign-in calls `POST /loginDynamo`. The returned token is kept in a cookie and sent as `Authorization: Bearer ...` by `apiFetch`.
+- Sign-in calls `POST /login`. The returned token is kept in a cookie and sent as `Authorization: Bearer ...` by `apiFetch`.
 - `UserContext` exposes the user, the role and the permission matrix. `AuthGuard` redirects signed-out users to `/login`.
 - Sessions end after nine hours without activity.
 - The sidebar and screens respect the role's permission matrix. The API enforces role checks for user, role and survey management.

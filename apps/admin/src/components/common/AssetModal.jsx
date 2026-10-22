@@ -79,8 +79,8 @@ const AssetModal = ({
       // if (metadata.analysis?.celebrities?.data) { // removed: celebrity detection feature deprecated
       //   celebrities = metadata.analysis.celebrities.data.map((c) => c.name);
       // }
-    } else if (metadata.rekognitionAnalysis) {
-      const rek = metadata.rekognitionAnalysis;
+    } else if (metadata.imageAnalysis) {
+      const rek = metadata.imageAnalysis;
 
       if (rek.labels?.labels) {
         allTags = rek.labels.labels.map((label) => label.name);

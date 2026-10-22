@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-export const TABLE_NAME = process.env.DYNAMO_SURVEY_TABLE_NAME;
+export const TABLE_NAME = process.env.DOC_SURVEY_TABLE_NAME;
 
 const ALLOWED_STATUSES = new Set(["draft", "active", "paused", "closed"]);
 const ALLOWED_TARGET_TYPES = new Set(["global", "category", "article"]);
@@ -17,7 +17,7 @@ const ALLOWED_QUESTION_TYPES = new Set([
 
 export function ensureTableName() {
   if (!TABLE_NAME) {
-    const error = new Error("DYNAMO_SURVEY_TABLE_NAME is not configured");
+    const error = new Error("DOC_SURVEY_TABLE_NAME is not configured");
     error.statusCode = 500;
     throw error;
   }

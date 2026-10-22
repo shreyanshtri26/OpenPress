@@ -1,7 +1,7 @@
 import { ScanCommand, DeleteCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const SEARCH_HISTORY_TABLE = process.env.DYNAMO_SEARCH_HISTORY_TABLE || 'op_searchhistory';
+const SEARCH_HISTORY_TABLE = process.env.DOC_SEARCH_HISTORY_TABLE || 'op_searchhistory';
 
 export const handler = async (event) => {
     const user = event.user;
@@ -35,7 +35,7 @@ export const handler = async (event) => {
             }
         });
 
-        const scanResult = await dynamoClient.send(scanCommand);
+        const scanResult = await docClient.send(scanCommand);
         const items = scanResult.Items || [];
 
         if (items.length === 0) {
@@ -47,7 +47,7 @@ export const handler = async (event) => {
 
         // Delete each found item
         const deletePromises = items.map(item => 
-            dynamoClient.send(new DeleteCommand({
+            docClient.send(new DeleteCommand({
                 TableName: SEARCH_HISTORY_TABLE,
                 Key: {
                     searchId: item.searchId

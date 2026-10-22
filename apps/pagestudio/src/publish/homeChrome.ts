@@ -11,7 +11,7 @@
 //   - the editor (syncNavbarLeaderboard.ts), which resolves placements from its
 //     in-memory registry, and
 //   - the backend republish-all worker, which runs this code in Node out of the
-//     published-page renderer bundle and loads placements from DynamoDB.
+//     published-page renderer bundle and loads placements from the database.
 //
 // Any divergence between the two would silently strip or duplicate a real
 // leaderboard on every page of the site, so there is only one copy.
@@ -60,7 +60,7 @@ export const canonicalize = (value: any): any => {
       });
     return out;
   }
-  // The backend round-trips an empty string as `null` (e.g. DynamoDB doesn't
+  // The backend round-trips an empty string as `null` (e.g. the document store doesn't
   // store empty-string attributes), so a prop saved as '' comes back as null
   // on the very next load with no user edit involved. Both mean "unset" for
   // every prop here, so normalize them to the same value.

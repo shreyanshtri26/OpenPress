@@ -1,7 +1,7 @@
 import { GetCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-export const AUDIENCE_TABLE_NAME = process.env.DYNAMO_AUDIENCE_TABLE_NAME || "op_audience";
+export const AUDIENCE_TABLE_NAME = process.env.DOC_AUDIENCE_TABLE_NAME || "op_audience";
 
 const toNumber = (value, fallback = 0) => {
   const parsed = Number(value);
@@ -26,7 +26,7 @@ const toBoolean = (value, fallback = false) => {
 export const getAudienceUserByEmail = async (email) => {
   if (!email) return null;
 
-  const result = await dynamoClient.send(
+  const result = await docClient.send(
     new GetCommand({
       TableName: AUDIENCE_TABLE_NAME,
       Key: { email },

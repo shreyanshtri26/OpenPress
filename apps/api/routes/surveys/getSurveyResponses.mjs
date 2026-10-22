@@ -3,12 +3,12 @@
 // Fetches all submissions for a survey from the responses table.
 
 import { ScanCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { GetCommand } from "../../db/commands.mjs";
 import { TABLE_NAME } from "./shared.mjs";
 
-const RESPONSES_TABLE = process.env.DYNAMO_SURVEY_TABLE_NAME
-  ? `${process.env.DYNAMO_SURVEY_TABLE_NAME}_responses`
+const RESPONSES_TABLE = process.env.DOC_SURVEY_TABLE_NAME
+  ? `${process.env.DOC_SURVEY_TABLE_NAME}_responses`
   : undefined;
 
 export const handler = async (event) => {
@@ -27,7 +27,7 @@ export const handler = async (event) => {
     const getEmbeddedResponses = async () => {
       if (!TABLE_NAME) return [];
       try {
-        const surveyResult = await dynamoClient.send(
+        const surveyResult = await docClient.send(
           new GetCommand({
             TableName: TABLE_NAME,
             Key: { surveyId },
@@ -47,7 +47,7 @@ export const handler = async (event) => {
 
     if (RESPONSES_TABLE) {
       try {
-        const result = await dynamoClient.send(
+        const result = await docClient.send(
           new ScanCommand({
             TableName: RESPONSES_TABLE,
             FilterExpression: "surveyId = :surveyId",

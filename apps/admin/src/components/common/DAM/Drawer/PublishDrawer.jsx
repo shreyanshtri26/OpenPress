@@ -1046,7 +1046,7 @@ export default function PublishDrawer({
       // ✨ FETCH FRESH STORY DATA from backend before publishing
       console.log("Fetching latest story data before publishing...");
       const storyResponse = await apiFetch(
-        `${env.backendApi}/api/storyDynamo?storyId=${currentStoryId}`,
+        `${env.backendApi}/api/storyById?storyId=${currentStoryId}`,
         {
           method: "GET",
           headers: {
@@ -1454,7 +1454,7 @@ export default function PublishDrawer({
         const check = async () => {
           if (settled) return;
           try {
-            const statusRes = await apiFetch(`${env.backendApi}/api/storyDynamo?storyId=${storyId}`, { method: 'GET', headers });
+            const statusRes = await apiFetch(`${env.backendApi}/api/storyById?storyId=${storyId}`, { method: 'GET', headers });
             if (statusRes.ok) {
               const body = await statusRes.json();
               const status = String((body?.data || body)?.status || '').toLowerCase();

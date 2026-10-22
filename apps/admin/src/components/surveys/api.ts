@@ -27,7 +27,7 @@ export interface SurveyChatAsset {
 }
 
 /**
- * Sends survey invite emails via the backend SES wrapper.
+ * Sends survey invite emails via the backend email wrapper.
  */
 export async function sendSurveyInvites(
   params: {

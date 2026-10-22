@@ -1,8 +1,8 @@
 // routes/dam/transcodingTriggerAsync.mjs - Enhanced with better logging
 import { UpdateCommand, GetCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const TABLE_NAME = process.env.DYNAMO_ASSETS_TABLE_NAME;
+const TABLE_NAME = process.env.DOC_ASSETS_TABLE_NAME;
 
 export const handler = async (event) => {
   const startTime = Date.now();
@@ -27,7 +27,7 @@ export const handler = async (event) => {
       TableName: TABLE_NAME,
       Key: { assetId }
     });
-    const result = await dynamoClient.send(getCommand);
+    const result = await docClient.send(getCommand);
     const asset = result.Item;
 
     if (!asset) {
@@ -75,7 +75,7 @@ export const handler = async (event) => {
       }
     });
 
-    await dynamoClient.send(updateCommand);
+    await docClient.send(updateCommand);
     console.log(`✅ [${assetId}] Status updated to processing`);
 
     // Start background processing (DON'T WAIT FOR IT)
@@ -137,7 +137,7 @@ async function processTranscodingInBackground(assetId, userId, requestedQualitie
     
     // Update status to failed
     try {
-      await dynamoClient.send(new UpdateCommand({
+      await docClient.send(new UpdateCommand({
         TableName: TABLE_NAME,
         Key: { assetId },
         UpdateExpression: `

@@ -1,12 +1,12 @@
 import { ScanCommand, UpdateCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const TABLE_NAME = process.env.DYNAMO_CAMPAIGN_TABLE_NAME;
+const TABLE_NAME = process.env.DOC_CAMPAIGN_TABLE_NAME;
 
 export const handler = async (event) => {
   try {
 
-    const result = await dynamoClient.send(
+    const result = await docClient.send(
       new ScanCommand({
         TableName: TABLE_NAME
       })
@@ -25,7 +25,7 @@ export const handler = async (event) => {
 
     if (toExpire.length > 0) {
       await Promise.allSettled(toExpire.map(c =>
-        dynamoClient.send(new UpdateCommand({
+        docClient.send(new UpdateCommand({
           TableName: TABLE_NAME,
           Key: { campaignId: c.campaignId },
           UpdateExpression: "SET #status = :expired, updatedAt = :now",

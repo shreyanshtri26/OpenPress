@@ -2,12 +2,12 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { GetCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { createS3Client, publicObjectUrl } from '../../lib/storage.mjs';
 
-const s3Client = createS3Client({ region: process.env.AWS_OpenPress_REGION });
-const TABLE_NAME = process.env.DYNAMO_ASSETS_TABLE_NAME;
-const BUCKET_NAME = process.env.S3_DAM_BUCKET_NAME;
+const s3Client = createS3Client({ region: process.env.STORAGE_REGION });
+const TABLE_NAME = process.env.DOC_ASSETS_TABLE_NAME;
+const BUCKET_NAME = process.env.DAM_BUCKET_NAME;
 
 // ✅ Validation Rules
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -38,7 +38,7 @@ export const handler = async (event) => {
       Key: { assetId }
     });
 
-    const result = await dynamoClient.send(getCommand);
+    const result = await docClient.send(getCommand);
     const asset = result.Item;
 
     if (!asset) {

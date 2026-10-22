@@ -7,30 +7,29 @@ import { users } from "../../db/schema.mjs";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { UpdateCommand, GetCommand, ScanCommand } from "../../db/commands.mjs";
 import { MediaConvertClient, CreateJobCommand } from "@aws-sdk/client-mediaconvert";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { spawn } from "child_process";
 import { createWriteStream, unlinkSync, statSync, existsSync, readdirSync } from "fs";
 import { pipeline } from "stream/promises";
 
 //AI metadata
-import { detectModeration } from '../rekognition/Images/detectModeration.mjs';
-// import { recognizeCelebrities } from '../rekognition/Images/recognizeCelebrities.mjs'; // removed: celebrity detection feature deprecated
-import { detectText } from '../rekognition/Images/detectText.mjs';
-import { detectLabels } from '../rekognition/Images/detectLabels.mjs';
-import { startVideoAnalysis } from '../rekognition/videos/startVideoAnalysis.mjs';
-import { createS3Client } from '../../lib/storage.mjs';
+import { detectModeration } from '../analysis/Images/detectModeration.mjs';
+// import { recognizeCelebrities } from '../analysis/Images/recognizeCelebrities.mjs'; // removed: celebrity detection feature deprecated
+import { detectText } from '../analysis/Images/detectText.mjs';
+import { detectLabels } from '../analysis/Images/detectLabels.mjs';
+import { startVideoAnalysis } from '../analysis/videos/startVideoAnalysis.mjs';
+import { createS3Client, clientConfig } from '../../lib/storage.mjs';
 
-const s3Client = createS3Client({ region: process.env.AWS_OpenPress_REGION });
-const TABLE_NAME = process.env.DYNAMO_ASSETS_TABLE_NAME;
-const BUCKET_NAME = process.env.S3_DAM_BUCKET_NAME;
-const REKOGNITION_BUCKET_NAME = process.env.S3_REKOGNITION_BUCKET_NAME;
+const s3Client = createS3Client({ region: process.env.STORAGE_REGION });
+const TABLE_NAME = process.env.DOC_ASSETS_TABLE_NAME;
+const BUCKET_NAME = process.env.DAM_BUCKET_NAME;
+const REKOGNITION_BUCKET_NAME = process.env.ANALYSIS_BUCKET_NAME;
 
 
 
-// MediaConvert client configuration
-const mediaConvertClient = new MediaConvertClient({
-  region: process.env.AWS_OpenPress_REGION,
-  endpoint: process.env.MEDIACONVERT_ENDPOINT
+// Transcode client configuration
+const transcodeClient = new MediaConvertClient({ ...clientConfig(),
+  endpoint: process.env.TRANSCODE_ENDPOINT
 });
 
 // Find FFprobe from layers
@@ -139,7 +138,7 @@ async function createMultiQualityTranscodingJob(assetId, videoKey, fileSize, dur
 
       console.log(`🎯 Creating ${qualitySettings.length} quality variants: ${qualitySettings.map(q => q.suffix).join(', ')}`);
 
-      // Build MediaConvert job with FIXED H.264 settings
+      // Build Transcode job with FIXED H.264 settings
       const outputs = qualitySettings.map(quality => ({
           NameModifier: quality.suffix,
           VideoDescription: {
@@ -224,7 +223,7 @@ async function createMultiQualityTranscodingJob(assetId, videoKey, fileSize, dur
       ];
 
       const jobSettings = {
-          Role: process.env.MEDIACONVERT_ROLE_ARN,
+          Role: process.env.TRANSCODE_ROLE_ARN,
           UserMetadata: {
               "AssetId": assetId,
               "OriginalKey": videoKey,
@@ -272,10 +271,10 @@ async function createMultiQualityTranscodingJob(assetId, videoKey, fileSize, dur
           }
       };
 
-      console.log(`🚀 Creating MediaConvert job with ${outputs.length} video qualities + ${thumbnailOutputs.length} thumbnails`);
+      console.log(`🚀 Creating Transcode job with ${outputs.length} video qualities + ${thumbnailOutputs.length} thumbnails`);
 
       const command = new CreateJobCommand(jobSettings);
-      const response = await mediaConvertClient.send(command);
+      const response = await transcodeClient.send(command);
 
       // Estimate processing time
       const baseMinutes = Math.ceil(duration / 60); // 1 minute per minute of video
@@ -313,11 +312,11 @@ async function createMultiQualityTranscodingJob(assetId, videoKey, fileSize, dur
       console.error(`   Full error:`, error);
       
       if (error.name === 'BadRequestException') {
-          console.error('   💡 Suggestion: Check MediaConvert job settings configuration');
+          console.error('   💡 Suggestion: Check Transcode job settings configuration');
       } else if (error.name === 'UnauthorizedOperation') {
-          console.error('   💡 Suggestion: Check MediaConvert service role permissions');
+          console.error('   💡 Suggestion: Check Transcode service role permissions');
       } else if (error.name === 'TooManyRequestsException') {
-          console.error('   💡 Suggestion: MediaConvert queue is busy, try again later');
+          console.error('   💡 Suggestion: Transcode queue is busy, try again later');
       }
       
       // Don't throw - let the video asset remain available in original format
@@ -370,7 +369,7 @@ export const handler = async (event) => {
       Key: { assetId }
     });
 
-    const result = await dynamoClient.send(getCommand);
+    const result = await docClient.send(getCommand);
     const asset = result.Item;
 
     if (!asset) {
@@ -460,7 +459,7 @@ export const handler = async (event) => {
             ExpressionAttributeNames: expressionAttributeNames
           })
         });
-        await dynamoClient.send(updateCommand);
+        await docClient.send(updateCommand);
 
         return {
           statusCode: 200,
@@ -548,9 +547,9 @@ export const handler = async (event) => {
       expressionAttributeValues[":subtype"] = subtype;
     }
      //For AI metadata
-     let rekognitionResults = null;
-     if (isImage && isEnabled('rekognition')) {
-      rekognitionResults = {};
+     let analysisResults = null;
+     if (isImage && isEnabled('analysis')) {
+      analysisResults = {};
 
       try {
 
@@ -575,10 +574,10 @@ export const handler = async (event) => {
 
 
         if (labels && !labels.error) {
-          rekognitionResults.labels = labels;
+          analysisResults.labels = labels;
           console.log('✅ Labels:', labels.totalLabels, 'detected');
         } else {
-          rekognitionResults.labels = {
+          analysisResults.labels = {
             error: labels?.error || 'Unknown error',
             labels: [],
             totalLabels: 0
@@ -587,10 +586,10 @@ export const handler = async (event) => {
         }
         
         if (moderation && !moderation.error) {
-          rekognitionResults.moderation = moderation;
+          analysisResults.moderation = moderation;
           console.log('✅ Moderation:', { isSafe: moderation.isSafe, riskLevel: moderation.riskLevel, flags: moderation.totalFlags });
         } else {
-          rekognitionResults.moderation = {
+          analysisResults.moderation = {
             error: moderation?.error || 'Unknown error',
             isSafe: null,
             riskLevel: 'UNKNOWN'
@@ -600,14 +599,14 @@ export const handler = async (event) => {
         
         // Process celebrity results (removed: celebrity detection feature deprecated)
         // if (celebrities && !celebrities.error) {
-        //   rekognitionResults.celebrities = celebrities;
+        //   analysisResults.celebrities = celebrities;
         //   if (celebrities.totalCelebrities > 0) {
         //     console.log('✅ Celebrities detected:', celebrities.celebrities.map(c => c.name).join(', '));
         //   } else {
         //     console.log('✅ Celebrity detection: None found');
         //   }
         // } else {
-        //   rekognitionResults.celebrities = {
+        //   analysisResults.celebrities = {
         //     error: celebrities?.error || 'Unknown error',
         //     celebrities: [],
         //     totalCelebrities: 0
@@ -617,14 +616,14 @@ export const handler = async (event) => {
         
         // Process text results
         if (text && !text.error) {
-          rekognitionResults.text = text;
+          analysisResults.text = text;
           if (text.totalLines > 0) {
             console.log('✅ Text detected:', text.fullText.substring(0, 50) + (text.fullText.length > 50 ? '...' : ''));
           } else {
             console.log('✅ Text detection: No text found');
           }
         } else {
-          rekognitionResults.text = {
+          analysisResults.text = {
             error: text?.error || 'Unknown error',
             fullText: '',
             totalLines: 0,
@@ -635,12 +634,12 @@ export const handler = async (event) => {
         
         // Summary log
         console.log('✅ AI ANALYSIS COMPLETED');
-        console.log(`   🏷️ Labels: ${rekognitionResults.labels.totalLabels || 0}`);
-        console.log(`   🛡️ Moderation: ${rekognitionResults.moderation.isSafe !== null ? (rekognitionResults.moderation.isSafe ? 'SAFE' : rekognitionResults.moderation.riskLevel) : 'ERROR'}`);
-        // console.log(`   🌟 Celebrities: ${rekognitionResults.celebrities.totalCelebrities || 0} detected`); // removed: celebrity detection feature deprecated
-        console.log(`   📝 Text: ${rekognitionResults.text.totalLines || 0} lines, ${rekognitionResults.text.totalWords || 0} words`);
+        console.log(`   🏷️ Labels: ${analysisResults.labels.totalLabels || 0}`);
+        console.log(`   🛡️ Moderation: ${analysisResults.moderation.isSafe !== null ? (analysisResults.moderation.isSafe ? 'SAFE' : analysisResults.moderation.riskLevel) : 'ERROR'}`);
+        // console.log(`   🌟 Celebrities: ${analysisResults.celebrities.totalCelebrities || 0} detected`); // removed: celebrity detection feature deprecated
+        console.log(`   📝 Text: ${analysisResults.text.totalLines || 0} lines, ${analysisResults.text.totalWords || 0} words`);
 
-        // Extract AI tags from Rekognition results (for images)
+        // Extract AI tags from ImageAnalysis results (for images)
         let aiTags = [];
 
         if (labels && labels.labels && Array.isArray(labels.labels)) {
@@ -674,7 +673,7 @@ export const handler = async (event) => {
           extractedAt: new Date().toISOString(),
           uploadedBy: userFullName,
           extractedMetadata: extractedMetadata,
-          rekognitionAnalysis: rekognitionResults
+          imageAnalysis: analysisResults
         };
         const metadataS3Key = `${assetId}-metadata.json`;
         console.log('📝 Auto-saving metadata to S3');
@@ -698,17 +697,17 @@ export const handler = async (event) => {
         
       } catch (error) {
         console.error('❌ CRITICAL: AI analysis failed completely:', error);
-        rekognitionResults.error = error.message;
+        analysisResults.error = error.message;
       }
 
-      updateExpression += `, rekognitionAnalysis = :rekognition`;
-      expressionAttributeValues[":rekognition"] = rekognitionResults;
+      updateExpression += `, imageAnalysis = :analysis`;
+      expressionAttributeValues[":analysis"] = analysisResults;
     }
 
 //  VIDEO AI ANALYSIS
 let videoAnalysisJobs = null;
 
-if (isVideo && !isMp3 && isEnabled('rekognition')) {
+if (isVideo && !isMp3 && isEnabled('analysis')) {
   console.log('🎬 STARTING VIDEO AI ANALYSIS');
 
   try {
@@ -745,10 +744,10 @@ if (isVideo && !isMp3 && isEnabled('rekognition')) {
     let transcodingResult = null;
     if (isVideo && !isMp3) {
         console.log(`🎬 VIDEO DETECTED - CHECKING TRANSCODING REQUIREMENTS`);
-        console.log(`   MediaConvert Role: ${!!process.env.MEDIACONVERT_ROLE_ARN ? 'SET' : 'MISSING'}`);
-        console.log(`   MediaConvert Endpoint: ${!!process.env.MEDIACONVERT_ENDPOINT ? 'SET' : 'MISSING'}`);
+        console.log(`   Transcode Role: ${!!process.env.TRANSCODE_ROLE_ARN ? 'SET' : 'MISSING'}`);
+        console.log(`   Transcode Endpoint: ${!!process.env.TRANSCODE_ENDPOINT ? 'SET' : 'MISSING'}`);
         
-        if (process.env.MEDIACONVERT_ROLE_ARN && process.env.MEDIACONVERT_ENDPOINT) {
+        if (process.env.TRANSCODE_ROLE_ARN && process.env.TRANSCODE_ENDPOINT) {
             try {
                 console.log(`🚀 INITIATING AUTOMATIC TRANSCODING...`);
                 
@@ -763,7 +762,7 @@ if (isVideo && !isMp3 && isEnabled('rekognition')) {
 
                 if (transcodingResult && !transcodingResult.error) {
                     // Success - add transcoding info to database
-                    updateExpression += `, mediaConvertJobId = :jobId, transcodingStatus = :transcodingStatus, transcodingStartedAt = :transcodingStartedAt, processingType = :processingType, estimatedCompletion = :estimatedCompletion, outputQualities = :outputQualities`;
+                    updateExpression += `, transcodeJobId = :jobId, transcodingStatus = :transcodingStatus, transcodingStartedAt = :transcodingStartedAt, processingType = :processingType, estimatedCompletion = :estimatedCompletion, outputQualities = :outputQualities`;
                     
                     expressionAttributeValues[":jobId"] = transcodingResult.jobId;
                     expressionAttributeValues[":transcodingStatus"] = "SUBMITTED";
@@ -792,8 +791,8 @@ if (isVideo && !isMp3 && isEnabled('rekognition')) {
             }
         } else {
             console.log(`⚠️ TRANSCODING SKIPPED - Environment variables missing`);
-            console.log(`   MEDIACONVERT_ROLE_ARN: ${process.env.MEDIACONVERT_ROLE_ARN ? 'SET' : 'MISSING'}`);
-            console.log(`   MEDIACONVERT_ENDPOINT: ${process.env.MEDIACONVERT_ENDPOINT ? 'SET' : 'MISSING'}`);
+            console.log(`   TRANSCODE_ROLE_ARN: ${process.env.TRANSCODE_ROLE_ARN ? 'SET' : 'MISSING'}`);
+            console.log(`   TRANSCODE_ENDPOINT: ${process.env.TRANSCODE_ENDPOINT ? 'SET' : 'MISSING'}`);
         }
     }
 
@@ -808,7 +807,7 @@ if (isVideo && !isMp3 && isEnabled('rekognition')) {
       })
     });
 
-    await dynamoClient.send(updateCommand);
+    await docClient.send(updateCommand);
     console.log(`✅ Database updated successfully`);
 
     const elapsed = Date.now() - startTime;
@@ -840,8 +839,8 @@ if (isVideo && !isMp3 && isEnabled('rekognition')) {
       uploadedBy: userFullName,
       processingTime: `${elapsed}ms`
     };
-    if (rekognitionResults) {
-      response.rekognitionAnalysis = rekognitionResults;
+    if (analysisResults) {
+      response.imageAnalysis = analysisResults;
     }
     if (videoAnalysisJobs && !videoAnalysisJobs.error) {
       response.videoAnalysis = {

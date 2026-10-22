@@ -3,7 +3,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import crypto from "crypto";
 import { createS3Client, publicObjectUrl } from '../../lib/storage.mjs';
 
-const s3 = createS3Client({ region: process.env.AWS_OpenPress_REGION }); // ✅ Replace with your AWS region
+const s3 = createS3Client({ region: process.env.STORAGE_REGION }); // ✅ Set STORAGE_REGION
 
 export const handler = async (event) => {
   try {
@@ -11,7 +11,7 @@ export const handler = async (event) => {
 
     const { fileName, fileType } = body;
 
-    const bucketName = process.env.S3_DAM_BUCKET_NAME; // ✅ Replace with your bucket name
+    const bucketName = process.env.DAM_BUCKET_NAME; // ✅ Replace with your bucket name
 
     if (!fileName || !fileType) {
       return {

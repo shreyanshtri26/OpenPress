@@ -3,12 +3,12 @@
 // Stores a respondent's answers and increments totalResponses on the survey.
 
 import { GetCommand, PutCommand, UpdateCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { ensureTableName, TABLE_NAME } from "./shared.mjs";
 import crypto from "crypto";
 
-const RESPONSES_TABLE = process.env.DYNAMO_SURVEY_TABLE_NAME
-  ? `${process.env.DYNAMO_SURVEY_TABLE_NAME}_responses`
+const RESPONSES_TABLE = process.env.DOC_SURVEY_TABLE_NAME
+  ? `${process.env.DOC_SURVEY_TABLE_NAME}_responses`
   : undefined;
 
 function hasMeaningfulAnswerValue(value) {
@@ -122,7 +122,7 @@ export const handler = async (event) => {
     ensureTableName();
 
     // Path: /surveys/{surveyId}/responses
-    // Lambda Function URLs use event.rawPath (not event.path)
+    // function Function URLs use event.rawPath (not event.path)
     const rawPath = event.rawPath || event.path || "";
     const pathParts = rawPath.split("/").filter(Boolean);
     // pathParts = ["surveys", "{surveyId}", "responses"]
@@ -154,7 +154,7 @@ export const handler = async (event) => {
     }
 
     // 1. Fetch survey to validate it's still active
-    const surveyResult = await dynamoClient.send(
+    const surveyResult = await docClient.send(
       new GetCommand({ TableName: TABLE_NAME, Key: { surveyId } })
     );
 
@@ -262,7 +262,7 @@ export const handler = async (event) => {
     //    or fall back to updating the survey's questionResults aggregate.
     try {
       if (RESPONSES_TABLE) {
-        await dynamoClient.send(
+        await docClient.send(
           new PutCommand({
             TableName: RESPONSES_TABLE,
             Item: responsePayload,
@@ -290,7 +290,7 @@ export const handler = async (event) => {
       ":newResponses": [responsePayload],
     };
 
-    await dynamoClient.send(
+    await docClient.send(
       new UpdateCommand({
         TableName: TABLE_NAME,
         Key: { surveyId },

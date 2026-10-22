@@ -3,7 +3,7 @@
 // Fetches a single active survey by surveyId for the reader-facing form page.
 
 import { GetCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { ensureTableName, TABLE_NAME } from "./shared.mjs";
 
 export const handler = async (event) => {
@@ -11,7 +11,7 @@ export const handler = async (event) => {
     ensureTableName();
 
     // Path: /surveys/public/{surveyId}
-    // Lambda Function URLs use event.rawPath (not event.path)
+    // function Function URLs use event.rawPath (not event.path)
     const rawPath = event.rawPath || event.path || "";
     const surveyId = event.pathParameters?.surveyId ||
       rawPath.split("/").filter(Boolean).pop();
@@ -23,7 +23,7 @@ export const handler = async (event) => {
       };
     }
 
-    const result = await dynamoClient.send(
+    const result = await docClient.send(
       new GetCommand({
         TableName: TABLE_NAME,
         Key: { surveyId },

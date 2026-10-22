@@ -1,5 +1,5 @@
 import { ScanCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { AUDIENCE_TABLE_NAME, toAudienceClientUser } from "./audienceProfileHelpers.mjs";
 
 const ALLOWED_ROLES = new Set(["super user", "admin"]);
@@ -41,7 +41,7 @@ export const handler = async (event) => {
     let exclusiveStartKey;
 
     do {
-      const result = await dynamoClient.send(
+      const result = await docClient.send(
         new ScanCommand({
           TableName: AUDIENCE_TABLE_NAME,
           ExclusiveStartKey: exclusiveStartKey,

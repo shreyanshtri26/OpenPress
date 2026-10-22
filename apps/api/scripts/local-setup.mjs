@@ -4,7 +4,8 @@
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
-import { S3Client, HeadBucketCommand, CreateBucketCommand, PutBucketPolicyCommand, PutBucketCorsCommand } from '@aws-sdk/client-s3';
+import { createS3Client } from '../lib/storage.mjs';
+import { HeadBucketCommand, CreateBucketCommand, PutBucketPolicyCommand, PutBucketCorsCommand } from '@aws-sdk/client-s3';
 import bcrypt from 'bcryptjs';
 import { execSync } from 'node:child_process';
 import { ROLES } from './roles.mjs';
@@ -14,12 +15,12 @@ if (existsSync(envFile)) process.loadEnvFile(envFile);
 const env = process.env;
 
 const BUCKETS = [
-  { name: env.S3_DAM_BUCKET_NAME, publicRead: true },
-  { name: env.S3_WEBSITE_BUCKET_NAME, publicRead: true },
-  { name: env.S3_REKOGNITION_BUCKET_NAME },
+  { name: env.DAM_BUCKET_NAME, publicRead: true },
+  { name: env.WEBSITE_BUCKET_NAME, publicRead: true },
+  { name: env.ANALYSIS_BUCKET_NAME },
 ].filter((b) => b.name);
 
-const s3 = new S3Client({ forcePathStyle: true });
+const s3 = createS3Client({ forcePathStyle: true });
 
 async function createBuckets() {
   for (const b of BUCKETS) {

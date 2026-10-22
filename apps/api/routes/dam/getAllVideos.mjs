@@ -1,7 +1,7 @@
 import { ScanCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const TABLE_NAME = process.env.DYNAMO_ASSETS_TABLE_NAME;
+const TABLE_NAME = process.env.DOC_ASSETS_TABLE_NAME;
 
 export const handler = async (event) => {
   try {
@@ -33,7 +33,7 @@ export const handler = async (event) => {
       }
     }
 
-    const result = await dynamoClient.send(
+    const result = await docClient.send(
       new ScanCommand(scanInput)
     );
 

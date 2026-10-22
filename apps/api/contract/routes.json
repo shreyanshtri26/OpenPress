@@ -115,8 +115,8 @@
   },
   {
     "method": "POST",
-    "path": "/api/postCommentsDynamo",
-    "sample": "/api/postCommentsDynamo",
+    "path": "/api/postComments",
+    "sample": "/api/postComments",
     "auth": "jwt"
   },
   {
@@ -145,8 +145,8 @@
   },
   {
     "method": "GET",
-    "path": "/api/storyDynamo",
-    "sample": "/api/storyDynamo",
+    "path": "/api/storyById",
+    "sample": "/api/storyById",
     "auth": "jwt"
   },
   {
@@ -463,8 +463,8 @@
   },
   {
     "method": "POST",
-    "path": "/loginDynamo",
-    "sample": "/loginDynamo",
+    "path": "/login",
+    "sample": "/login",
     "auth": "public"
   },
   {
@@ -721,8 +721,8 @@
   },
   {
     "method": "POST",
-    "path": "/api/debug/listS3Objects",
-    "sample": "/api/debug/listS3Objects",
+    "path": "/api/debug/listStorageObjects",
+    "sample": "/api/debug/listStorageObjects",
     "auth": "jwt"
   },
   {
@@ -745,8 +745,8 @@
   },
   {
     "method": "POST",
-    "path": "/api/getMediaconvert-endpoint",
-    "sample": "/api/getMediaconvert-endpoint",
+    "path": "/api/getTranscodeEndpoint",
+    "sample": "/api/getTranscodeEndpoint",
     "auth": "jwt"
   },
   {
@@ -871,32 +871,32 @@
   },
   {
     "method": "POST",
-    "path": "/api/rekognition/getVideoAnalysis",
-    "sample": "/api/rekognition/getVideoAnalysis",
+    "path": "/api/analysis/getVideoAnalysis",
+    "sample": "/api/analysis/getVideoAnalysis",
     "auth": "jwt"
   },
   {
     "method": "POST",
-    "path": "/api/rekognition/createFaceCollection",
-    "sample": "/api/rekognition/createFaceCollection",
+    "path": "/api/analysis/createFaceCollection",
+    "sample": "/api/analysis/createFaceCollection",
     "auth": "jwt"
   },
   {
     "method": "POST",
-    "path": "/api/rekognition/addFaceToCollection",
-    "sample": "/api/rekognition/addFaceToCollection",
+    "path": "/api/analysis/addFaceToCollection",
+    "sample": "/api/analysis/addFaceToCollection",
     "auth": "jwt"
   },
   {
     "method": "POST",
-    "path": "/api/rekognition/searchFaceByImage",
-    "sample": "/api/rekognition/searchFaceByImage",
+    "path": "/api/analysis/searchFaceByImage",
+    "sample": "/api/analysis/searchFaceByImage",
     "auth": "jwt"
   },
   {
     "method": "POST",
-    "path": "/api/rekognition/listFaceCollections",
-    "sample": "/api/rekognition/listFaceCollections",
+    "path": "/api/analysis/listFaceCollections",
+    "sample": "/api/analysis/listFaceCollections",
     "auth": "jwt"
   },
   {

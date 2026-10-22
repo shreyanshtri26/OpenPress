@@ -1,8 +1,8 @@
 import { PutCommand, ScanCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import crypto from "crypto";
 
-const TABLE_NAME = process.env.DYNAMO_CAMPAIGN_TABLE_NAME;
+const TABLE_NAME = process.env.DOC_CAMPAIGN_TABLE_NAME;
 
 // Statuses that hold a placement slot — mirrors the frontend's isBlocking check
 // in CreateCampaignView.jsx (disabledDates/isDayBlockedExternal).
@@ -92,7 +92,7 @@ export const handler = async (event) => {
     // campaign whose status still holds the slot (start now / schedule / active / draft / pause).
     const requestedSlots = getCampaignSlots(placements, jobs, startTime, endTime);
     if (requestedSlots.length > 0) {
-      const scanResult = await dynamoClient.send(new ScanCommand({ TableName: TABLE_NAME }));
+      const scanResult = await docClient.send(new ScanCommand({ TableName: TABLE_NAME }));
       const existingCampaigns = scanResult.Items || [];
 
       const conflictingCampaign = existingCampaigns.find((existing) => {
@@ -229,7 +229,7 @@ export const handler = async (event) => {
       updatedAt: now
     };
 
-    await dynamoClient.send(
+    await docClient.send(
       new PutCommand({
         TableName: TABLE_NAME,
         Item: newCampaign

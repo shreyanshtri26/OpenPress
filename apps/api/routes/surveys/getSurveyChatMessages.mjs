@@ -1,11 +1,11 @@
 import { QueryCommand } from "../../db/commands.mjs";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { createS3Client } from '../../lib/storage.mjs';
 
-const CHAT_TABLE = process.env.DYNAMO_SURVEY_CHAT_TABLE_NAME;
-const s3 = createS3Client({ region: process.env.AWS_OpenPress_REGION });
+const CHAT_TABLE = process.env.DOC_SURVEY_CHAT_TABLE_NAME;
+const s3 = createS3Client({ region: process.env.STORAGE_REGION });
 
 function getPathParts(event) {
   return (event.rawPath || event.path || "").split("/").filter(Boolean);
@@ -24,7 +24,7 @@ export const handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ message: "surveyId and sessionId are required" }) };
     }
 
-    const result = await dynamoClient.send(new QueryCommand({
+    const result = await docClient.send(new QueryCommand({
       TableName: CHAT_TABLE,
       KeyConditionExpression: "chatKey = :chatKey",
       ExpressionAttributeValues: { ":chatKey": `${surveyId}#${sessionId}` },

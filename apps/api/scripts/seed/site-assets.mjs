@@ -30,9 +30,9 @@ const FILES = [
 const TYPES = { ".png": "image/png", ".ico": "image/x-icon", ".json": "application/manifest+json" };
 
 export async function seedSiteAssets() {
-  const bucket = process.env.S3_WEBSITE_BUCKET_NAME;
-  if (!bucket) throw new Error("S3_WEBSITE_BUCKET_NAME is not set");
-  const s3 = createS3Client({ region: process.env.AWS_REGION });
+  const bucket = process.env.WEBSITE_BUCKET_NAME;
+  if (!bucket) throw new Error("WEBSITE_BUCKET_NAME is not set");
+  const s3 = createS3Client({ region: process.env.STORAGE_REGION });
   for (const name of FILES) {
     const body = await readFile(path.join(PUBLIC_DIR, name));
     await s3.send(new PutObjectCommand({

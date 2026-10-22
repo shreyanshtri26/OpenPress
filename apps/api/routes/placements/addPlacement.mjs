@@ -1,15 +1,15 @@
 import { PutCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import crypto from "crypto";
 
-const TABLE_NAME = process.env.DYNAMO_PLACEMENT_TABLE_NAME;
+const TABLE_NAME = process.env.DOC_PLACEMENT_TABLE_NAME;
 
 export const handler = async (event) => {
   if (!TABLE_NAME) {
     return {
       statusCode: 500,
       body: JSON.stringify({
-        message: "Server configuration error: DYNAMO_PLACEMENT_TABLE_NAME is not set",
+        message: "Server configuration error: DOC_PLACEMENT_TABLE_NAME is not set",
       }),
     };
   }
@@ -71,7 +71,7 @@ export const handler = async (event) => {
       updatedAt: now
     };
 
-    await dynamoClient.send(
+    await docClient.send(
       new PutCommand({
         TableName: TABLE_NAME,
         Item: newPlacement

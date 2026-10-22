@@ -17,11 +17,11 @@ import {
 } from "../pagebuilder/republishAllJob.mjs";
 import { createS3Client } from '../../lib/storage.mjs';
 
-const BUCKET_NAME = process.env.S3_WEBSITE_BUCKET_NAME;
+const BUCKET_NAME = process.env.WEBSITE_BUCKET_NAME;
 const FRONTEND_WEBSITE_URL = process.env.FRONTEND_WEBSITE_URL;
-const s3Client = createS3Client({ region: process.env.AWS_OpenPress_REGION });
+const s3Client = createS3Client({ region: process.env.STORAGE_REGION });
 
-// Match saveHtmlToS3.mjs sanitization
+// Match saveHtml.mjs sanitization
 function sanitizeForS3Key(str) {
   return str
     .toLowerCase()
@@ -89,7 +89,7 @@ export const handler = async (event) => {
       const { storyId, slug, Section, section, pendingHtmlKey } = story;
 
       try {
-        // Match saveHtmlToS3.mjs: multi-select taxonomies store Section as an array; use the first entry.
+        // Match saveHtml.mjs: multi-select taxonomies store Section as an array; use the first entry.
         let resolvedSection = Section ?? section ?? "General";
         if (Array.isArray(resolvedSection)) {
           resolvedSection = resolvedSection.find(

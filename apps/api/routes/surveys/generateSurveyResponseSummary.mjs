@@ -1,5 +1,5 @@
 import { UpdateCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { ensureTableName, TABLE_NAME } from "./shared.mjs";
 
 function getSurveyId(event) {
@@ -33,7 +33,7 @@ export const handler = async (event) => {
       generatedAt: new Date().toISOString(),
       responseCount,
     };
-    await dynamoClient.send(new UpdateCommand({
+    await docClient.send(new UpdateCommand({
       TableName: TABLE_NAME,
       Key: { surveyId },
       UpdateExpression: "SET aiResponseSummary = :aiResponseSummary, updatedAt = :updatedAt",
@@ -45,8 +45,8 @@ export const handler = async (event) => {
   } catch (error) {
     console.error("Generate survey response summary error:", error);
     return {
-      statusCode: error.name === "ConditionalCheckFailedException" ? 404 : 500,
-      body: JSON.stringify({ message: error.name === "ConditionalCheckFailedException" ? "Survey not found" : "Failed to generate survey response summary" }),
+      statusCode: error.name === "ConditionCheckFailed" ? 404 : 500,
+      body: JSON.stringify({ message: error.name === "ConditionCheckFailed" ? "Survey not found" : "Failed to generate survey response summary" }),
     };
   }
 };

@@ -1,12 +1,12 @@
 // confirmCustomThumbnail.mjs - Confirm and Activate Custom Thumbnail
 import { HeadObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { UpdateCommand, GetCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { createS3Client, keyFromObjectUrl } from '../../lib/storage.mjs';
 
-const s3Client = createS3Client({ region: process.env.AWS_OpenPress_REGION });
-const TABLE_NAME = process.env.DYNAMO_ASSETS_TABLE_NAME;
-const BUCKET_NAME = process.env.S3_DAM_BUCKET_NAME;
+const s3Client = createS3Client({ region: process.env.STORAGE_REGION });
+const TABLE_NAME = process.env.DOC_ASSETS_TABLE_NAME;
+const BUCKET_NAME = process.env.DAM_BUCKET_NAME;
 
 export const handler = async (event) => {
   try {
@@ -32,7 +32,7 @@ export const handler = async (event) => {
       Key: { assetId }
     });
 
-    const result = await dynamoClient.send(getCommand);
+    const result = await docClient.send(getCommand);
     const asset = result.Item;
 
     if (!asset) {
@@ -157,7 +157,7 @@ export const handler = async (event) => {
       ExpressionAttributeValues: expressionAttributeValues
     });
 
-    await dynamoClient.send(updateCommand);
+    await docClient.send(updateCommand);
 
     console.log("✅ Custom thumbnail confirmed and activated");
 

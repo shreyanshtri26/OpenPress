@@ -2,9 +2,9 @@ import { GetCommand } from "../../db/commands.mjs";
 import { eq } from "drizzle-orm";
 import { db } from "../../db/client.mjs";
 import { pages } from "../../db/schema.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const CAMPAIGN_TABLE = process.env.DYNAMO_CAMPAIGN_TABLE_NAME;
+const CAMPAIGN_TABLE = process.env.DOC_CAMPAIGN_TABLE_NAME;
 
 // response helper
 function json(statusCode, body) {
@@ -28,7 +28,7 @@ export const handler = async (event) => {
     /* 1️⃣ Fetch Campaign                               */
     /* ------------------------------------------------ */
 
-    const campaignRes = await dynamoClient.send(
+    const campaignRes = await docClient.send(
       new GetCommand({
         TableName: CAMPAIGN_TABLE,
         Key: { campaignId },

@@ -11,7 +11,7 @@ import { defineConfig } from 'vite';
 // reference is replaced with this environment's value — the same substitution
 // the app build performs — so published HTML is identical whether the browser
 // or the backend rendered it. No renderer settings need to be mirrored into
-// Lambda environment variables.
+// function environment variables.
 export default defineConfig({
   // Same as vite.config.ts: use this app's React 19, not the monorepo root's React 18.
   resolve: { dedupe: ['react', 'react-dom'] },
@@ -19,10 +19,10 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: false,
     copyPublicDir: false,
-    // Runs in Lambda's Node runtime, never in a browser.
+    // Runs in function's Node runtime, never in a browser.
     target: 'node20',
     // Readable stack traces in CloudWatch matter more here than bytes: this
-    // file is fetched once per warm Lambda container, not by page visitors.
+    // file is fetched once per warm function container, not by page visitors.
     minify: false,
     sourcemap: false,
     lib: {

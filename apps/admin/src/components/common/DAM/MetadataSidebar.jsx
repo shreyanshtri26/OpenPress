@@ -242,18 +242,18 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
       //   console.log("📺 Video celebrities:", celebrityNames);
       // }
 
-    } else if (apiMetadata.rekognitionAnalysis) {
+    } else if (apiMetadata.imageAnalysis) {
       console.log("📷 Found IMAGE metadata");
-      const rekognition = apiMetadata.rekognitionAnalysis;
+      const analysis = apiMetadata.imageAnalysis;
 
       if (
-        rekognition.labels?.labels &&
-        Array.isArray(rekognition.labels.labels)
+        analysis.labels?.labels &&
+        Array.isArray(analysis.labels.labels)
       ) {
-        const labelNames = rekognition.labels.labels.map((label) => label.name);
+        const labelNames = analysis.labels.labels.map((label) => label.name);
         allTags = [...allTags, ...labelNames];
 
-        const highConfidenceLabels = rekognition.labels.labels
+        const highConfidenceLabels = analysis.labels.labels
           .filter((label) => label.confidence > 90)
           .map((label) => label.name);
         autoSelectedTags = [...autoSelectedTags, ...highConfidenceLabels];
@@ -262,18 +262,18 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
       }
 
       if (
-        rekognition.text?.fullText &&
-        rekognition.text.fullText.trim() !== ""
+        analysis.text?.fullText &&
+        analysis.text.fullText.trim() !== ""
       ) {
-        allTags = [...allTags, rekognition.text.fullText];
+        allTags = [...allTags, analysis.text.fullText];
       }
 
       // Extract celebrities correctly - removed: celebrity detection feature deprecated
       // if (
-      //   rekognition?.celebrities?.celebrities &&
-      //   Array.isArray(rekognition.celebrities.celebrities)
+      //   analysis?.celebrities?.celebrities &&
+      //   Array.isArray(analysis.celebrities.celebrities)
       // ) {
-      //   allCelebrities = rekognition.celebrities.celebrities.map(
+      //   allCelebrities = analysis.celebrities.celebrities.map(
       //     (celeb) => celeb.name
       //   );
       //   console.log("🎬 Image celebrities:", allCelebrities);

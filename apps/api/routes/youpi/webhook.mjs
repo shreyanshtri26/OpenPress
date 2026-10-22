@@ -4,9 +4,9 @@
 // from the browser, which only shows a thank-you message.
 import crypto from 'node:crypto';
 import { PutCommand } from "../../db/commands.mjs";
-import dynamoClient from '../../dynamoClient.mjs';
+import docClient from '../../docClient.mjs';
 
-const TABLE = () => process.env.DYNAMO_SUPPORTERS_TABLE || 'op_supporters';
+const TABLE = () => process.env.DOC_SUPPORTERS_TABLE || 'op_supporters';
 
 export function signatureValid(rawBody, header, secret) {
   if (!secret || !header) return false;
@@ -25,7 +25,7 @@ export const handler = async (event) => {
 
   const p = JSON.parse(raw.toString('utf8'));
   if (p.event === 'SUCCESS') {
-    await dynamoClient.send(new PutCommand({
+    await docClient.send(new PutCommand({
       TableName: TABLE(),
       Item: {
         supportId: String(p.paymentId || p.orderId),

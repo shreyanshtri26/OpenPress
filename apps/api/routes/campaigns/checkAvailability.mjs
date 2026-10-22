@@ -1,7 +1,7 @@
 import { ScanCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const TABLE_NAME = process.env.DYNAMO_CAMPAIGN_TABLE_NAME;
+const TABLE_NAME = process.env.DOC_CAMPAIGN_TABLE_NAME;
 
 const IGNORE_STATUSES = new Set(["cancelled", "canceled", "archived", "deleted"]);
 
@@ -48,7 +48,7 @@ export const handler = async (event) => {
     return {
       statusCode: 500,
       body: JSON.stringify({
-        message: "Server configuration error: DYNAMO_CAMPAIGN_TABLE_NAME is not set",
+        message: "Server configuration error: DOC_CAMPAIGN_TABLE_NAME is not set",
       }),
     };
   }
@@ -78,7 +78,7 @@ export const handler = async (event) => {
       };
     }
 
-    const result = await dynamoClient.send(
+    const result = await docClient.send(
       new ScanCommand({
         TableName: TABLE_NAME,
       })

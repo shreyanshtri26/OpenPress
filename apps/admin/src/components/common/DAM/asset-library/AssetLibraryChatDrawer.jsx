@@ -205,9 +205,9 @@ const AssetLibraryChatDrawer = ({
         score += 2;
       }
 
-      // Check Rekognition labels (medium weight)
-      if (asset.rekognitionAnalysis?.labels?.labels) {
-        asset.rekognitionAnalysis.labels.labels.forEach((label) => {
+      // Check ImageAnalysis labels (medium weight)
+      if (asset.imageAnalysis?.labels?.labels) {
+        asset.imageAnalysis.labels.labels.forEach((label) => {
           if (label.name.toLowerCase().includes(lowerKeyword)) {
             score += 7;
           }
@@ -215,8 +215,8 @@ const AssetLibraryChatDrawer = ({
       }
 
       // Check detected text (low weight)
-      if (asset.rekognitionAnalysis?.text?.fullText) {
-        if (asset.rekognitionAnalysis.text.fullText.toLowerCase().includes(lowerKeyword)) {
+      if (asset.imageAnalysis?.text?.fullText) {
+        if (asset.imageAnalysis.text.fullText.toLowerCase().includes(lowerKeyword)) {
           score += 4;
         }
       }

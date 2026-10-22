@@ -1,9 +1,9 @@
 import { PutCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { randomUUID } from "crypto";
 import { generateGrounded } from "../../lib/gemini.mjs";
 
-const SEARCH_HISTORY_TABLE = process.env.DYNAMO_SEARCH_HISTORY_TABLE || 'op_searchhistory';
+const SEARCH_HISTORY_TABLE = process.env.DOC_SEARCH_HISTORY_TABLE || 'op_searchhistory';
 
 const FRESHNESS = { pd: 'past 24 hours', pw: 'past week', pm: 'past month', py: 'past year' };
 
@@ -100,7 +100,7 @@ export const handler = async (event) => {
         // Save search history to database (skip if it's just fetching previews for history feed)
         if (!isPreview) {
             try {
-                await dynamoClient.send(new PutCommand({
+                await docClient.send(new PutCommand({
                     TableName: SEARCH_HISTORY_TABLE,
                     Item: {
                         searchId: randomUUID(),

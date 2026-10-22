@@ -1,11 +1,12 @@
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { isEnabled } from "../../lib/features.mjs";
 import { PutCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { randomUUID } from "crypto";
+import { clientConfig } from "../../lib/storage.mjs";
 
-const TABLE_NAME = process.env.DYNAMO_CONTACT_US_TABLE || "op_contact_submissions";
-const sesClient = new SESClient({});
+const TABLE_NAME = process.env.DOC_CONTACT_US_TABLE || "op_contact_submissions";
+const emailClient = new SESClient(clientConfig());
 
 function escapeHtml(str) {
   return String(str || "")
@@ -21,11 +22,11 @@ function isValidEmail(value) {
 }
 
 async function sendContactEmail(item) {
-  const sender = process.env.SES_SENDER_EMAIL;
+  const sender = process.env.EMAIL_SENDER;
   const receiver = String(item.receiverEmail || "").trim();
 
   if (!sender) {
-    throw new Error("SES_SENDER_EMAIL is not configured");
+    throw new Error("EMAIL_SENDER is not configured");
   }
   if (!isValidEmail(receiver)) {
     throw new Error("A valid receiverEmail is required");
@@ -83,7 +84,7 @@ async function sendContactEmail(item) {
 
   const textBody = `Contact Form Submission\n\nFirst Name: ${item.firstName}\nLast Name: ${item.lastName}\nPhone Number: ${item.phoneNumber || ""}\nEmail: ${item.email}\nTopic: ${item.topic}\n\nMessage:\n${item.message}`;
 
-  await sesClient.send(
+  await emailClient.send(
     new SendEmailCommand({
       Source: sender,
       Destination: {
@@ -160,7 +161,7 @@ export const handler = async (event) => {
 
     console.log(`📝 Saving contact submission ${submissionId} to ${TABLE_NAME}`);
 
-    await dynamoClient.send(new PutCommand({
+    await docClient.send(new PutCommand({
       TableName: TABLE_NAME,
       Item: item
     }));

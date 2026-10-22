@@ -4,8 +4,8 @@ import { db } from "../../db/client.mjs";
 import { assets } from "../../db/schema.mjs";
 import { createS3Client } from "../../lib/storage.mjs";
 
-const BUCKET_NAME = process.env.S3_DAM_BUCKET_NAME;
-const s3 = createS3Client({ region: process.env.AWS_OpenPress_REGION });
+const BUCKET_NAME = process.env.DAM_BUCKET_NAME;
+const s3 = createS3Client({ region: process.env.STORAGE_REGION });
 
 export const handler = async (event) => {
   const headers = {

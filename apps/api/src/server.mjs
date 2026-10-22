@@ -5,7 +5,7 @@ const TEXT_TYPE = /^(text\/|application\/(json|x-www-form-urlencoded|xml|javascr
 // Neon Functions must start responding within 15 minutes; leave a 1 minute margin.
 const BUDGET_MS = 14 * 60 * 1000;
 
-export async function toLambdaEvent(request) {
+export async function toEvent(request) {
   const url = new URL(request.url);
   const headers = {};
   request.headers.forEach((value, key) => { headers[key] = value; }); // keys arrive lowercase, same as API Gateway v2
@@ -36,7 +36,7 @@ export async function toLambdaEvent(request) {
   };
 }
 
-export function fromLambdaResponse(res = {}) {
+export function fromResult(res = {}) {
   const status = res.statusCode || 200;
   const headers = new Headers();
   for (const [k, v] of Object.entries(res.headers || {})) headers.set(k, String(v));
@@ -51,10 +51,10 @@ export function fromLambdaResponse(res = {}) {
   return new Response(status === 204 || status === 304 ? null : body, { status, headers });
 }
 
-function lambdaContext() {
+function handlerContext() {
   const deadline = Date.now() + BUDGET_MS;
   const requestId = crypto.randomUUID();
-  return { getRemainingTimeInMillis: () => deadline - Date.now(), requestId, awsRequestId: requestId };
+  return { getRemainingTimeInMillis: () => deadline - Date.now(), requestId };
 }
 
 export default {
@@ -62,8 +62,8 @@ export default {
     const { pathname } = new URL(request.url);
     // ponytail: secret-in-path auth for the cron trigger; switch to parseTriggerDelivery from @neon/functions if the path ever leaks.
     if (process.env.CRON_SECRET && pathname === `/__cron/${process.env.CRON_SECRET}`) {
-      return fromLambdaResponse(await handler({ task: 'publishScheduledStories' }, lambdaContext()));
+      return fromResult(await handler({ task: 'publishScheduledStories' }, handlerContext()));
     }
-    return fromLambdaResponse(await handler(await toLambdaEvent(request), lambdaContext()));
+    return fromResult(await handler(await toEvent(request), handlerContext()));
   },
 };

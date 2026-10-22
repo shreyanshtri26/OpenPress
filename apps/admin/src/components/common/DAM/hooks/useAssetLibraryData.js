@@ -44,7 +44,7 @@ const useAssetLibraryData = ({
       }
       setError(null);
 
-      // Fetch all assets. The backend's Scan is capped at DynamoDB's internal
+      // Fetch all assets. The backend's Scan is capped at the store's internal
       // ~1MB page size and reports the rest via pagination.nextKey - previously
       // that was never followed, so on a growing table two "fetch everything"
       // calls made moments apart could each land on a different arbitrary slice

@@ -1,5 +1,5 @@
-// A DynamoDB DocumentClient look-alike backed by Postgres (table `documents`, one jsonb row per item).
-// Route handlers keep calling dynamoClient.send(new PutCommand(...)) etc.; this implements the commands and
+// A document store backed by Postgres (table `documents`, one jsonb row per item).
+// Route handlers keep calling docClient.send(new PutCommand(...)) etc.; this implements the commands and
 // expression syntax they use: Put/Get/Update/Delete/Scan/Query, Condition/Filter/KeyCondition/Update/Projection
 // expressions with attribute_exists, attribute_not_exists, begins_with, contains, size, if_not_exists, list_append,
 // arithmetic, ADD, REMOVE, comparisons, BETWEEN, IN, AND/OR/NOT, Limit + ExclusiveStartKey paging.
@@ -8,7 +8,7 @@ import { getClient } from './client.mjs';
 
 // client.mjs's `sql` export is a method-only proxy; tagged-template queries need the real client.
 const pg = () => getClient().sql;
-import { keySchemaFor } from './dynamo-tables.mjs';
+import { keySchemaFor } from './doc-tables.mjs';
 
 // ---------------- expression parsing ----------------
 const TOKEN = /\s*(?:(#[\w]+)|(:[\w]+)|([A-Za-z_][\w]*)|(<>|<=|>=|=|<|>)|([(),.[\]+-])|(\d+))/y;
@@ -219,13 +219,12 @@ function remove(item, segs) {
   }
 }
 
-// JSON cannot hold Sets (the DocumentClient marshals JS Sets to DynamoDB sets); store them as arrays.
+// JSON cannot hold Sets (Sets are stored as arrays); store them as arrays.
 const plain = (v) => JSON.parse(JSON.stringify(v, (_, x) => (x instanceof Set ? [...x] : x === undefined ? null : x)));
 
 function conditionFailed() {
   const err = new Error('The conditional request failed');
-  err.name = 'ConditionalCheckFailedException';
-  err.__type = 'com.amazonaws.dynamodb.v20120810#ConditionalCheckFailedException';
+  err.name = 'ConditionCheckFailed';
   return err;
 }
 
@@ -284,7 +283,7 @@ export function createDocStore() {
         const item = structuredClone(existing || { ...input.Key });
         const before = structuredClone(item);
         const actions = input.UpdateExpression ? parser(input.UpdateExpression, input.ExpressionAttributeNames, input.ExpressionAttributeValues).update() : [];
-        // DynamoDB evaluates every right-hand side against the item as it was before the update.
+        // Every right-hand side is evaluated against the item as it was before the update.
         const resolved = actions.map((a) => ({ ...a, value: a.v ? a.v(before) : undefined }));
         const touched = new Set();
         for (const a of resolved) {
@@ -347,7 +346,7 @@ export function createDocStore() {
     },
   };
 
-  // Limit applies before the filter (DynamoDB semantics); LastEvaluatedKey marks where to resume.
+  // Limit applies before the filter (scan semantics); LastEvaluatedKey marks where to resume.
   function page(input, items, available) {
     const limited = input.Limit ? items.slice(0, input.Limit) : items;
     const filter = input.FilterExpression ? parser(input.FilterExpression, input.ExpressionAttributeNames, input.ExpressionAttributeValues).condition() : null;

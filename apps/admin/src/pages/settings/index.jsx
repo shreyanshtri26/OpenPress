@@ -234,7 +234,7 @@ export default function AdminSettingsPage() {
     const newKey = newRoleName.toLowerCase().replace(/\s+/g, "-");
 
     try {
-      // ✅ Call Lambda API to create the role in DynamoDB
+      // ✅ Call the API to create the role
       const response = await apiFetch(`${env.backendApi}/addRole`, {
         method: "POST",
         headers: {
@@ -255,7 +255,7 @@ export default function AdminSettingsPage() {
         return;
       }
 
-      // ✅ Successfully added role to DynamoDB — now update UI
+      // ✅ Successfully added role — now update UI
       toast.success("Role created successfully!");
 
       const newRole = { key: newKey, label: newRoleName };

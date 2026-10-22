@@ -6,15 +6,15 @@ import { createS3Client, publicObjectUrl } from "../../lib/storage.mjs";
 
 // With UPLOAD_ASSETS=1 the sample images are copied into the DAM bucket, so articles can use them from the media library.
 export const seedUrl = (item) =>
-  process.env.UPLOAD_ASSETS && process.env.S3_DAM_BUCKET_NAME
-    ? publicObjectUrl(process.env.S3_DAM_BUCKET_NAME, `seed/${item.fileName}`)
+  process.env.UPLOAD_ASSETS && process.env.DAM_BUCKET_NAME
+    ? publicObjectUrl(process.env.DAM_BUCKET_NAME, `seed/${item.fileName}`)
     : item.fileUrl;
 
 async function uploadSample(s3, item) {
   const res = await fetch(item.fileUrl);
   if (!res.ok) throw new Error(`Could not download ${item.fileUrl}: ${res.status}`);
   await s3.send(new PutObjectCommand({
-    Bucket: process.env.S3_DAM_BUCKET_NAME,
+    Bucket: process.env.DAM_BUCKET_NAME,
     Key: `seed/${item.fileName}`,
     Body: Buffer.from(await res.arrayBuffer()),
     ContentType: item.fileType,

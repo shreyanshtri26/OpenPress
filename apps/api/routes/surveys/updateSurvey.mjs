@@ -1,5 +1,5 @@
 import { GetCommand, PutCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { ensureTableName, normalizeSurvey, TABLE_NAME, validateSurvey } from "./shared.mjs";
 
 export const handler = async (event) => {
@@ -16,7 +16,7 @@ export const handler = async (event) => {
       };
     }
 
-    const existingResult = await dynamoClient.send(
+    const existingResult = await docClient.send(
       new GetCommand({
         TableName: TABLE_NAME,
         Key: { surveyId },
@@ -61,7 +61,7 @@ export const handler = async (event) => {
       };
     }
 
-    await dynamoClient.send(
+    await docClient.send(
       new PutCommand({
         TableName: TABLE_NAME,
         Item: survey,
@@ -76,7 +76,7 @@ export const handler = async (event) => {
   } catch (error) {
     console.error("Update survey error:", error);
 
-    if (error.name === "ConditionalCheckFailedException") {
+    if (error.name === "ConditionCheckFailed") {
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "Survey not found" }),

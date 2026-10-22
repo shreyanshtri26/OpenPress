@@ -44,9 +44,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   console.log(`OpenPress API listening on http://localhost:${port}`);
 
   // Public site stand-in (see site-dev.mjs); skipped when storage is not configured.
-  if (process.env.S3_WEBSITE_BUCKET_NAME && process.env.PUBLIC_STORAGE_URL) {
+  if (process.env.WEBSITE_BUCKET_NAME && process.env.PUBLIC_STORAGE_URL) {
     const sitePort = Number(process.env.SITE_PORT || 8080);
-    await startSiteServer(sitePort, { storageUrl: process.env.PUBLIC_STORAGE_URL, bucket: process.env.S3_WEBSITE_BUCKET_NAME });
+    await startSiteServer(sitePort, { storageUrl: process.env.PUBLIC_STORAGE_URL, bucket: process.env.WEBSITE_BUCKET_NAME });
     console.log(`OpenPress site listening on http://localhost:${sitePort}`);
   }
 }

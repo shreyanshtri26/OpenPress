@@ -4889,7 +4889,7 @@ export function renderLoginForm(props, ctx) {
                     submitBtn.textContent = 'Logging in...';
 
                     try {
-                        const response = await fetch(\`\${backendApi}/loginDynamo\`, {
+                        const response = await fetch(\`\${backendApi}/login\`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ email, password }),

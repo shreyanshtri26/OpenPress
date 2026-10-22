@@ -1,9 +1,10 @@
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { GetCommand, UpdateCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { ensureTableName, TABLE_NAME } from "./shared.mjs";
+import { clientConfig } from "../../lib/storage.mjs";
 
-const sesClient = new SESClient({});
+const emailClient = new SESClient(clientConfig());
 
 function escapeHtml(str) {
   return String(str || "")
@@ -48,7 +49,7 @@ export const handler = async (event) => {
       };
     }
 
-    const sender = process.env.SES_SENDER_EMAIL;
+    const sender = process.env.EMAIL_SENDER;
     const finalSubject = (customSubject || emailSubject || "").trim() ||
       `Invitation to participate in survey: ${surveyTitle || "New Survey"}`;
     const providedBody = (customBody || emailBody || "").trim();
@@ -142,7 +143,7 @@ export const handler = async (event) => {
         : `You have been invited to participate in the survey: ${surveyTitle || "OpenPress Survey"}.\n\nClick the link below to respond:\n${surveyUrl}\n\nThank you!`;
 
       try {
-        await sesClient.send(
+        await emailClient.send(
           new SendEmailCommand({
             Source: sender,
             Destination: {
@@ -177,7 +178,7 @@ export const handler = async (event) => {
     // Persist invited emails list onto the survey record if surveyId is provided and TABLE_NAME is configured
     if (surveyId && TABLE_NAME && sent > 0) {
       try {
-        const surveyResult = await dynamoClient.send(
+        const surveyResult = await docClient.send(
           new GetCommand({
             TableName: TABLE_NAME,
             Key: { surveyId },
@@ -195,7 +196,7 @@ export const handler = async (event) => {
             ]),
           ].filter(Boolean);
 
-          await dynamoClient.send(
+          await docClient.send(
             new UpdateCommand({
               TableName: TABLE_NAME,
               Key: { surveyId },

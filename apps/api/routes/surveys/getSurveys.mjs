@@ -1,12 +1,12 @@
 import { ScanCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { ensureTableName, TABLE_NAME } from "./shared.mjs";
 
 export const handler = async () => {
   try {
     ensureTableName();
 
-    const result = await dynamoClient.send(
+    const result = await docClient.send(
       new ScanCommand({
         TableName: TABLE_NAME,
       })

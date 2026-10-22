@@ -38,7 +38,7 @@ function ReaderLogin() {
 
     try {
       const result = await apiFetch(
-        `${env.backendApi}/loginDynamo`,
+        `${env.backendApi}/login`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

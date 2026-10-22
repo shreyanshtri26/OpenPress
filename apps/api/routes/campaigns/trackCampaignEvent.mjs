@@ -1,7 +1,7 @@
 import { UpdateCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const TABLE_NAME = process.env.DYNAMO_CAMPAIGN_TABLE_NAME;
+const TABLE_NAME = process.env.DOC_CAMPAIGN_TABLE_NAME;
 const ALLOWED_EVENT_TYPES = new Set(["impression", "click"]);
 
 const json = (statusCode, body) => ({
@@ -49,7 +49,7 @@ export const handler = async (event) => {
 
     if (jobId) {
       // Step 1 & 2 — initialize jobMetrics and jobMetrics.{jobId} maps before nested ADD
-      await dynamoClient.send(
+      await docClient.send(
         new UpdateCommand({
           TableName: TABLE_NAME,
           Key: { campaignId },
@@ -59,7 +59,7 @@ export const handler = async (event) => {
           ConditionExpression: "attribute_exists(campaignId)",
         })
       );
-      await dynamoClient.send(
+      await docClient.send(
         new UpdateCommand({
           TableName: TABLE_NAME,
           Key: { campaignId },
@@ -77,7 +77,7 @@ export const handler = async (event) => {
       exprValues[":zero"] = 0;
     }
 
-    const updateResult = await dynamoClient.send(
+    const updateResult = await docClient.send(
       new UpdateCommand({
         TableName: TABLE_NAME,
         Key: { campaignId },
@@ -122,7 +122,7 @@ export const handler = async (event) => {
   } catch (error) {
     console.error("trackCampaignEvent error:", error);
 
-    if (error?.name === "ConditionalCheckFailedException") {
+    if (error?.name === "ConditionCheckFailed") {
       return json(404, { message: "Campaign not found" });
     }
 

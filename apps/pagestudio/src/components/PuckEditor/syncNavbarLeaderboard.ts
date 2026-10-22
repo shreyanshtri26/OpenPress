@@ -713,7 +713,7 @@ export const injectHomeNavbarIntoPageData = (
  *
  * Called once during the Home publish flow.
  */
-export const publishPwaFilesToS3 = async (): Promise<boolean> => {
+export const publishPwaFiles = async (): Promise<boolean> => {
   const token = getToken();
   if (!token) return false;
 
@@ -780,7 +780,7 @@ export const publishPwaFilesToS3 = async (): Promise<boolean> => {
     console.log('[PWA publish] PWA files uploaded to S3:', json?.data?.uploaded);
     return true;
   } catch (e) {
-    console.warn('[PWA publish] publishPwaFilesToS3 failed:', e);
+    console.warn('[PWA publish] publishPwaFiles failed:', e);
     return false;
   }
 };

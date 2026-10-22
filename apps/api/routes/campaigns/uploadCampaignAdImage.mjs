@@ -3,7 +3,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createS3Client, publicObjectUrl } from '../../lib/storage.mjs';
 
 const s3 = createS3Client({
-  region: process.env.AWS_OpenPress_REGION,
+  region: process.env.STORAGE_REGION,
 });
 
 export const handler = async (event) => {
@@ -12,7 +12,7 @@ export const handler = async (event) => {
 
     const { campaignId, placement, device, fileType } = body;
 
-    const bucketName = process.env.S3_DAM_BUCKET_NAME;
+    const bucketName = process.env.DAM_BUCKET_NAME;
 
     if (!campaignId || !placement || !device || !fileType) {
       return {

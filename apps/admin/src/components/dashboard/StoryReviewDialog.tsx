@@ -165,7 +165,7 @@ export default function StoryReviewDialog({
                 comment: newComment
             };
 
-            const res = await apiFetch(`${env.backendApi}/api/postCommentsDynamo`, {
+            const res = await apiFetch(`${env.backendApi}/api/postComments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -313,7 +313,7 @@ export default function StoryReviewDialog({
                 comment: newComment
             };
 
-            const res = await apiFetch(`${env.backendApi}/api/postCommentsDynamo`, {
+            const res = await apiFetch(`${env.backendApi}/api/postComments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

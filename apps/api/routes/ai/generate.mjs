@@ -41,7 +41,7 @@ const candidates = async () =>
     (await db.select().from(assets).orderBy(desc(assets.createdAt)).limit(300)).map((a) => ({
       assetId: a.assetId, fileName: a.fileName, url: a.fileUrl, type: a.fileType,
       caption: a.caption, summary: a.summary, tags: a.tags, category: a.category,
-      labels: a.metadata?.rekognitionAnalysis?.labels,
+      labels: a.metadata?.imageAnalysis?.labels,
     })),
   );
 

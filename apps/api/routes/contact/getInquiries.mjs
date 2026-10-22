@@ -1,7 +1,7 @@
 import { ScanCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const TABLE_NAME = process.env.DYNAMO_CONTACT_US_TABLE || "op_contact_submissions";
+const TABLE_NAME = process.env.DOC_CONTACT_US_TABLE || "op_contact_submissions";
 
 export const handler = async (event) => {
   try {
@@ -11,7 +11,7 @@ export const handler = async (event) => {
       TableName: TABLE_NAME,
     });
 
-    const response = await dynamoClient.send(command);
+    const response = await docClient.send(command);
 
     // Sort by createdAt descending
     const items = response.Items || [];

@@ -1,14 +1,26 @@
 // One place for object storage settings, so any S3-compatible store works:
-// AWS S3, Neon Object Storage (free tier) or RustFS/MinIO locally.
-//   AWS_ENDPOINT_URL_S3  custom S3 endpoint (enables path-style addressing, which Neon and RustFS need)
-//   PUBLIC_STORAGE_URL   base URL where public buckets are served, e.g. http://127.0.0.1:9000
+// Neon Object Storage (free tier), a hosted bucket, or RustFS/MinIO locally.
+//   STORAGE_ENDPOINT_URL  custom endpoint (enables path-style addressing, which Neon and RustFS need)
+//   PUBLIC_STORAGE_URL    base URL where public buckets are served, e.g. http://127.0.0.1:9000
 import { S3Client } from '@aws-sdk/client-s3';
 
-export function createS3Client(options = {}) {
-  return new S3Client({
+// Region and credentials shared by every storage/media client, read from STORAGE_* settings.
+export function clientConfig(options = {}) {
+  const accessKeyId = process.env.STORAGE_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.STORAGE_SECRET_ACCESS_KEY;
+  return {
+    ...(accessKeyId && secretAccessKey && { credentials: { accessKeyId, secretAccessKey } }),
     ...options,
-    region: options.region || process.env.AWS_REGION || 'ap-southeast-1',
-    forcePathStyle: options.forcePathStyle ?? Boolean(process.env.AWS_ENDPOINT_URL_S3),
+    region: options.region || process.env.STORAGE_REGION || 'ap-southeast-1',
+  };
+}
+
+export function createS3Client(options = {}) {
+  const endpoint = process.env.STORAGE_ENDPOINT_URL;
+  return new S3Client({
+    ...clientConfig(options),
+    ...(endpoint && { endpoint }),
+    forcePathStyle: options.forcePathStyle ?? Boolean(endpoint),
   });
 }
 

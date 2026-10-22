@@ -1,19 +1,19 @@
 // routes/dam/transcodingProcessor.mjs - FFmpeg Video Transcoding Processor
 import { GetObjectCommand, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { UpdateCommand, GetCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { spawn } from "child_process";
 import { createWriteStream, unlinkSync, statSync, existsSync, createReadStream, readdirSync } from "fs";
 import { pipeline } from "stream/promises";
 import { createS3Client, publicObjectUrl } from '../../lib/storage.mjs';
 
-const s3Client = createS3Client({ region: process.env.AWS_OpenPress_REGION });
-const TABLE_NAME = process.env.DYNAMO_ASSETS_TABLE_NAME;
-const BUCKET_NAME = process.env.S3_DAM_BUCKET_NAME;
+const s3Client = createS3Client({ region: process.env.STORAGE_REGION });
+const TABLE_NAME = process.env.DOC_ASSETS_TABLE_NAME;
+const BUCKET_NAME = process.env.DAM_BUCKET_NAME;
 const FFMPEG_PATH = "/opt/bin/ffmpeg";
 const FFPROBE_PATH = "/opt/bin/ffprobe";
 
-// ✅ Quality configurations optimized for Lambda
+// ✅ Quality configurations optimized for function
 const QUALITY_CONFIGS = {
   "360p": { 
     width: 640, 
@@ -91,7 +91,7 @@ async function processFFmpegTranscodingJob(record) {
       Key: { assetId }
     });
 
-    const result = await dynamoClient.send(getCommand);
+    const result = await docClient.send(getCommand);
     const asset = result.Item;
 
     if (!asset) {
@@ -110,10 +110,10 @@ async function processFFmpegTranscodingJob(record) {
     
     console.log(`📁 File size: ${fileSize} bytes (${(fileSize / 1024 / 1024).toFixed(2)} MB)`);
 
-    // ✅ Size check - Lambda has limited /tmp space
+    // ✅ Size check - function has limited /tmp space
     const MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024; // 2GB
     if (fileSize > MAX_FILE_SIZE) {
-      throw new Error(`File too large for Lambda processing: ${fileSize} bytes (max: ${MAX_FILE_SIZE})`);
+      throw new Error(`File too large for function processing: ${fileSize} bytes (max: ${MAX_FILE_SIZE})`);
     }
 
     // ✅ Download original video
@@ -209,7 +209,7 @@ async function processFFmpegTranscodingJob(record) {
       }
     });
 
-    await dynamoClient.send(updateCommand);
+    await docClient.send(updateCommand);
 
     const elapsed = Date.now() - startTime;
     console.log(`✅ FFmpeg transcoding completed in ${elapsed}ms`);
@@ -247,7 +247,7 @@ async function processFFmpegTranscodingJob(record) {
         }
       });
 
-      await dynamoClient.send(updateCommand);
+      await docClient.send(updateCommand);
       
       console.log(`📝 Asset ${assetId} marked as transcoding failed`);
       
@@ -428,7 +428,7 @@ async function transcodeVideoFFmpeg(inputPath, outputPath, quality, sourceMetada
   return new Promise((resolve, reject) => {
     const config = QUALITY_CONFIGS[quality];
     
-    // ✅ Optimized FFmpeg arguments for Lambda
+    // ✅ Optimized FFmpeg arguments for function
     const ffmpegArgs = [
       '-i', inputPath,
       '-c:v', 'libx264',
@@ -440,7 +440,7 @@ async function transcodeVideoFFmpeg(inputPath, outputPath, quality, sourceMetada
       '-c:a', 'aac',
       '-b:a', config.audioBitrate,
       '-movflags', '+faststart',
-      '-threads', '2', // Limit threads for Lambda
+      '-threads', '2', // Limit threads for function
       '-y', // Overwrite output
       outputPath
     ];

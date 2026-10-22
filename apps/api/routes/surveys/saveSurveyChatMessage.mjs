@@ -1,7 +1,7 @@
 import { PutCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const CHAT_TABLE = process.env.DYNAMO_SURVEY_CHAT_TABLE_NAME;
+const CHAT_TABLE = process.env.DOC_SURVEY_CHAT_TABLE_NAME;
 
 function getPathParts(event) {
   return (event.rawPath || event.path || "").split("/").filter(Boolean);
@@ -45,7 +45,7 @@ export const handler = async (event) => {
       userId: event.user?.userId || event.user?.sub || undefined,
     };
 
-    await dynamoClient.send(new PutCommand({ TableName: CHAT_TABLE, Item: item }));
+    await docClient.send(new PutCommand({ TableName: CHAT_TABLE, Item: item }));
     return { statusCode: 201, body: JSON.stringify({ message: item }) };
   } catch (error) {
     console.error("Save survey chat message error:", error);

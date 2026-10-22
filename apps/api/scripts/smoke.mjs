@@ -8,7 +8,7 @@ const checks = [
     (r) => r.status === 200 && (!origin || r.headers.get('access-control-allow-origin') === origin)],
   ['protected route rejects missing token', () => fetch(`${base}/getAllRoles`),
     async (r) => r.status === 401 && (await r.json()).message === '401 Unauthorized request'],
-  ['login rejects bad credentials without crashing', () => fetch(`${base}/loginDynamo`, {
+  ['login rejects bad credentials without crashing', () => fetch(`${base}/login`, {
       method: 'POST', headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ email: 'smoke-test@invalid.local', password: 'wrong' }) }),
     (r) => r.status >= 400 && r.status < 500],

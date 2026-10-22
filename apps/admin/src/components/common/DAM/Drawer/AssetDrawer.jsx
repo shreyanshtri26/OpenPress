@@ -158,7 +158,7 @@ const AssetDrawer = forwardRef(({
     if (!asset?.assetId && !asset?.id) return null;
 
     try {
-      // console.log("🔍 Fetching Rekognition metadata...");
+      // console.log("🔍 Fetching ImageAnalysis metadata...");
 
       const response = await apiFetch(
         `${env.backendApi}/api/extractMetadata`,
@@ -185,7 +185,7 @@ const AssetDrawer = forwardRef(({
         throw new Error(data.error);
       }
 
-      // console.log("✅ Rekognition metadata fetched:", data);
+      // console.log("✅ ImageAnalysis metadata fetched:", data);
       return data;
     } catch (err) {
       console.error('❌ Error fetching metadata:', err);
@@ -199,13 +199,13 @@ const AssetDrawer = forwardRef(({
 
     const assetId = asset?.assetId || asset?.id;
 
-    // ✅ Check if asset already has Rekognition data embedded
-    const hasRekognition = asset?.rekognitionAnalysis || asset?.analysis;
+    // ✅ Check if asset already has ImageAnalysis data embedded
+    const hasImageAnalysis = asset?.imageAnalysis || asset?.analysis;
 
-    if (hasRekognition) {
-      console.log("✅ Using embedded Rekognition data from asset");
+    if (hasImageAnalysis) {
+      console.log("✅ Using embedded ImageAnalysis data from asset");
       const metadataFromAsset = {
-        rekognitionAnalysis: asset.rekognitionAnalysis,
+        imageAnalysis: asset.imageAnalysis,
         analysis: asset.analysis,
         assetType: checkAssetType(asset),
       };

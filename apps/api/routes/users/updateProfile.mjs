@@ -1,7 +1,7 @@
 import { UpdateCommand, GetCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const TABLE_NAME = process.env.DYNAMO_AUDIENCE_TABLE_NAME || "op_audience";
+const TABLE_NAME = process.env.DOC_AUDIENCE_TABLE_NAME || "op_audience";
 
 export const handler = async (event) => {
   try {
@@ -22,7 +22,7 @@ export const handler = async (event) => {
     }
 
     // Check if user exists in audience table
-    const existingUser = await dynamoClient.send(
+    const existingUser = await docClient.send(
       new GetCommand({
         TableName: TABLE_NAME,
         Key: { email },
@@ -81,7 +81,7 @@ export const handler = async (event) => {
     // Build final UpdateExpression
     const updateExpression = `SET ${updateFields.join(", ")}`;
 
-    await dynamoClient.send(
+    await docClient.send(
       new UpdateCommand({
         TableName: TABLE_NAME,
         Key: { email },

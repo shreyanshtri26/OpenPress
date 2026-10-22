@@ -90,7 +90,7 @@ flowchart LR
 Key ideas:
 
 1. **One API, plain handlers.** Each route is a small `handler(event)` function. `src/server.mjs` adapts the standard `Request`/`Response` objects to that shape, so the same code runs on a local Node server and on Neon Functions.
-2. **Postgres for everything.** Core entities (users, roles, taxonomies, stories, articles, pages, assets) have real Drizzle tables. Everything else lives in a JSONB `documents` table behind a DynamoDB-compatible shim, so older handlers did not have to be rewritten.
+2. **Postgres for everything.** Core entities (users, roles, taxonomies, stories, articles, pages, assets) have real Drizzle tables. Everything else lives in a JSONB `documents` table behind a the document store-compatible shim, so older handlers did not have to be rewritten.
 3. **The site is static.** Publishing renders a page to HTML with the same code the editor previews with, and writes it to the website bucket. Readers never touch the API for page content.
 4. **Page Studio is shared.** `apps/pagestudio` holds the editor, blocks and renderers. The admin app imports it through the `@studio` (and `@builder`) alias and mounts it at `/build`, and the API loads a built bundle of the renderers (`publish-renderer.js`) to republish the whole site.
 
@@ -219,7 +219,7 @@ Local defaults work out of the box. The settings you are most likely to change:
 | --- | --- | --- |
 | `apps/api/.env.local` | `DATABASE_URL` | Postgres connection (Neon in production) |
 | | `JWT_SECRET` | Signing key for sign-in tokens, **change in any shared environment** |
-| | `AWS_ENDPOINT_URL_S3`, `PUBLIC_STORAGE_URL`, `S3_*_BUCKET_NAME` | Storage endpoint and bucket names |
+| | `STORAGE_ENDPOINT_URL`, `PUBLIC_STORAGE_URL`, `S3_*_BUCKET_NAME` | Storage endpoint and bucket names |
 | | `SITE_URL`, `FRONTEND_WEBSITE_URL` | Public site address used in saved URLs |
 | | `ALLOWED_ORIGINS` | Browser origins allowed to call the API |
 | `apps/admin/.env.local` | `VITE_BACKEND_API` | API address |

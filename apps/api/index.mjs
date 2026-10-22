@@ -24,10 +24,10 @@ import { handler as StoryCreate } from './routes/story/storyCreate.mjs';
 import { handler as deleteDraft } from './routes/story/deleteDrafts.mjs';
 import { handler as fetchStories } from './routes/story/fetchStory.mjs';
 import { handler as fetchStoryById } from './routes/story/fetchStoryById.mjs';
-import { handler as updateStoryDynamo } from './routes/story/updateStoryDynamo.mjs';
-import { handler as getStorybyIdDynamo } from './routes/story/getStorybyIdDynamo.mjs';
-import { handler as getStoryComments } from './routes/story/getStoryCommentsDynamo.mjs';
-import { handler as postStoryCommentsDynamo } from './routes/story/postStoryCommentsDynamo.mjs';
+import { handler as updateStoryRecord } from './routes/story/updateStoryRecord.mjs';
+import { handler as getStoryById } from './routes/story/getStoryById.mjs';
+import { handler as getStoryComments } from './routes/story/getStoryComments.mjs';
+import { handler as postStoryComments } from './routes/story/postStoryComments.mjs';
 import { handler as fetchDrafts } from './routes/story/fetchDrafts.mjs';
 import { handler as updateStory } from './routes/story/updateStory.mjs';
 import { handler as postStoryCommentAction } from './routes/story/postStoryCommentAction.mjs';
@@ -43,23 +43,23 @@ import { normalStream, streamResponse } from './routes/ai/generate.mjs';
 // Page Builder`
 import { handler as PagebuilderAutosave } from './routes/pagebuilder/autosaveStory.mjs';
 import { handler as GetPageHydrated } from './routes/pagebuilder/getPage.mjs';
-import { handler as saveHtmlToS3 } from './routes/pagebuilder/saveHtmlToS3.mjs';
-import { handler as saveAboutHtmlToS3 } from './routes/pagebuilder/saveAboutHtmlToS3.mjs';
-import { handler as saveSupportUsHtmlToS3 } from './routes/pagebuilder/saveSupportUsHtmlToS3.mjs';
+import { handler as saveHtml } from './routes/pagebuilder/saveHtml.mjs';
+import { handler as saveAboutHtml } from './routes/pagebuilder/saveAboutHtml.mjs';
+import { handler as saveSupportUsHtml } from './routes/pagebuilder/saveSupportUsHtml.mjs';
 import { handler as youpiWebhook } from './routes/youpi/webhook.mjs';
-import { handler as savePrivacyPolicyHtmlToS3 } from './routes/pagebuilder/savePrivacyPolicyHtmlToS3.mjs';
-import { handler as saveMediaCouncilHtmlToS3 } from './routes/pagebuilder/saveMediaCouncilHtmlToS3.mjs';
-import { handler as saveContactUsHtmlToS3 } from './routes/pagebuilder/saveContactUsHtmlToS3.mjs';
-import { handler as saveLoginHtmlToS3 } from './routes/pagebuilder/saveLoginHtmlToS3.mjs';
-import { handler as saveHomeHtmlToS3 } from './routes/pagebuilder/saveHomeHtmlToS3.mjs';
-import { handler as saveErrorHtmlToS3 } from './routes/pagebuilder/saveErrorHtmlToS3.mjs';
-import { handler as saveSectionHtmlToS3 } from './routes/pagebuilder/saveSectionHtmlToS3.mjs';
-import { handler as saveAuthorsHtmlToS3 } from './routes/pagebuilder/saveAuthorsHtmlToS3.mjs';
-import { handler as saveAuthorHtmlToS3 } from './routes/pagebuilder/saveAuthorHtmlToS3.mjs';
-import { handler as saveSurveyHtmlToS3 } from './routes/pagebuilder/saveSurveyHtmlToS3.mjs';
-import { handler as saveSiteMapToS3 } from './routes/pagebuilder/saveSiteMapToS3.mjs';
-import { handler as saveNewsSiteMapToS3 } from './routes/pagebuilder/saveNewsSiteMapToS3.mjs';
-import { handler as savePwaFilesToS3 } from './routes/pagebuilder/savePwaFilesToS3.mjs';
+import { handler as savePrivacyPolicyHtml } from './routes/pagebuilder/savePrivacyPolicyHtml.mjs';
+import { handler as saveMediaCouncilHtml } from './routes/pagebuilder/saveMediaCouncilHtml.mjs';
+import { handler as saveContactUsHtml } from './routes/pagebuilder/saveContactUsHtml.mjs';
+import { handler as saveLoginHtml } from './routes/pagebuilder/saveLoginHtml.mjs';
+import { handler as saveHomeHtml } from './routes/pagebuilder/saveHomeHtml.mjs';
+import { handler as saveErrorHtml } from './routes/pagebuilder/saveErrorHtml.mjs';
+import { handler as saveSectionHtml } from './routes/pagebuilder/saveSectionHtml.mjs';
+import { handler as saveAuthorsHtml } from './routes/pagebuilder/saveAuthorsHtml.mjs';
+import { handler as saveAuthorHtml } from './routes/pagebuilder/saveAuthorHtml.mjs';
+import { handler as saveSurveyHtml } from './routes/pagebuilder/saveSurveyHtml.mjs';
+import { handler as saveSiteMap } from './routes/pagebuilder/saveSiteMap.mjs';
+import { handler as saveNewsSiteMap } from './routes/pagebuilder/saveNewsSiteMap.mjs';
+import { handler as savePwaFiles } from './routes/pagebuilder/savePwaFiles.mjs';
 import { handler as forceUpdatePwaIcons } from './routes/pagebuilder/forceUpdatePwaIcons.mjs';
 import { handler as republishAll } from './routes/pagebuilder/republishAll.mjs';
 import { handler as republishAllStatus } from './routes/pagebuilder/republishAllStatus.mjs';
@@ -113,7 +113,7 @@ import { handler as createAsset } from './routes/dam/assetCreate.mjs';
 import { handler as fetchAsset } from './routes/dam/fetchAsset.mjs';
 import { handler as deleteAsset } from './routes/dam/deleteAsset.mjs';
 import { handler as updateAsset } from './routes/dam/updateAsset.mjs';
-import { handler as listS3Object } from './routes/dam/listS3Objects.mjs';
+import { handler as listS3Object } from './routes/dam/listStorageObjects.mjs';
 import { handler as generateSingleThumbnail } from './routes/dam/generateSingleThumbnail.mjs'
 import { handler as generateThumbnail } from './routes/dam/generateThumbnail.mjs';
 import { handler as uploadCustomThumbnail } from './routes/dam/uploadCustomThumbnail.mjs';
@@ -123,7 +123,7 @@ import { handler as extractMetadata } from './routes/dam/extractMetadata.mjs';
 import { handler as transcodingTriggerHandler } from './routes/dam/transcodingTrigger.mjs';
 import { handler as transcodingProcessorHandler } from './routes/dam/transcodingProcessor.mjs';
 import { handler as getQualityVariantsHandler } from './routes/dam/getQualityVariants.mjs';
-import { handler as getMediaconvertEndpoint } from './routes/dam/getMediaconvert-endpoint.mjs';
+import { handler as getTranscodeEndpoint } from './routes/dam/getTranscodeEndpoint.mjs';
 import { handler as getAssetStatus } from './routes/dam/getAssetStatus.mjs';
 import { handler as getAllVideos } from "./routes/dam/getAllVideos.mjs";
 
@@ -163,13 +163,13 @@ import { handler as deletePlacement } from './routes/placements/deletePlacement.
 import { handler as proxyUrl } from './routes/utility/proxyUrl.mjs';
 
 //AI
-import { handler as getVideoAnalysis } from './routes/rekognition/videos/getVideoAnalysis.mjs';
+import { handler as getVideoAnalysis } from './routes/analysis/videos/getVideoAnalysis.mjs';
 
 //Faces Collections
-import { handler as searchFaceByImage } from './routes/rekognition/faces/searchFaceByImage.mjs';
-import { handler as createFaceCollections } from './routes/rekognition/faces/createFaceCollections.mjs';
-import { handler as addFaceToCollection } from './routes/rekognition/faces/addFaceToCollection.mjs';
-import { handler as listFaceCollections } from './routes/rekognition/faces/listFaceCollections.mjs';
+import { handler as searchFaceByImage } from './routes/analysis/faces/searchFaceByImage.mjs';
+import { handler as createFaceCollections } from './routes/analysis/faces/createFaceCollections.mjs';
+import { handler as addFaceToCollection } from './routes/analysis/faces/addFaceToCollection.mjs';
+import { handler as listFaceCollections } from './routes/analysis/faces/listFaceCollections.mjs';
 
 // testing
 import { handler as checkFfprobe } from './routes/test/checkFfprobe.mjs';
@@ -238,8 +238,8 @@ export const handler = async (event, context) => {
     corsHeaders["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE,OPTIONS";
   }
 
-  // Public survey routes and ePaper reader auth routes are served from S3/CloudFront static pages or ePaper site (port 8080) —
-  // override to wildcard so any origin (S3 direct, CloudFront, localhost:8080) can call them.
+  // Public survey routes and ePaper reader auth routes are served from S3/CDN static pages or ePaper site (port 8080) —
+  // override to wildcard so any origin (S3 direct, CDN, localhost:8080) can call them.
   if (
     path.startsWith('/surveys/public/') ||
     path.match(/^\/surveys\/[^/]+\/responses$/) ||
@@ -263,7 +263,7 @@ export const handler = async (event, context) => {
     const publicRoutes = [
       '/pagestudio/forceUpdatePwaIcons', '/pagebuilder/forceUpdatePwaIcons',
       '/api/pagestudio/forceUpdatePwaIcons', '/api/pagebuilder/forceUpdatePwaIcons',
-      '/loginDynamo', '/forgotPassword', '/resetPassword', '/contact/submit',
+      '/login', '/forgotPassword', '/resetPassword', '/contact/submit',
       '/story/fetchReadyToPublish', '/campaigns/trackEvent', '/analytics/collect', '/youpi/webhook',
       '/story/scrapedStories', '/api/scrapedStories', '/api/scraped-stories', '/api/articles/fetchScrapedStories',
     ];
@@ -388,7 +388,7 @@ export const handler = async (event, context) => {
     }
   }
 
-  // Paid features that are not configured answer with a clear 503 instead of failing inside AWS calls.
+  // Paid features that are not configured answer with a clear 503 instead of failing inside provider calls.
   const disabledFeature = featureForRoute(path);
   if (disabledFeature && !isEnabled(disabledFeature)) {
     return applyCors(disabledResponse(disabledFeature), corsHeaders);
@@ -419,21 +419,21 @@ export const handler = async (event, context) => {
     else if (path === '/api/story/postCommentAction' && method === 'POST') response = await postStoryCommentAction(event);
     else if (path === '/api/updateStory' && method === 'PUT') {
       const storyId = event.queryStringParameters?.storyId;
-      response = await updateStoryDynamo({ ...event, storyId });
+      response = await updateStoryRecord({ ...event, storyId });
     }
     else if (path === '/api/draft' && method === 'DELETE') response = await deleteDraft(event);
     else if (path === '/api/deleteStory' && method === 'DELETE') response = await deleteStory(event);
     else if (path === '/api/deleteStoryPermanent' && method === 'DELETE') response = await deleteStoryPermanent(event);
     else if (path === '/api/editComment' && method === 'PUT') response = await editComments(event);
     else if (path === '/api/fetchDrafts' && method === 'GET') response = await fetchDrafts(event);
-    else if (path === '/api/postCommentsDynamo' && method === 'POST') response = await postStoryCommentsDynamo(event);
+    else if (path === '/api/postComments' && method === 'POST') response = await postStoryComments(event);
     else if ((path === '/api/articles/postStory' || path === '/api/saveDraft') && method === 'POST') response = await StoryCreate(event);
     else if (path === '/api/updateDraft' && method === 'PUT') {
       const storyId = event.queryStringParameters?.storyId;
-      response = await updateStoryDynamo({ ...event, storyId });
+      response = await updateStoryRecord({ ...event, storyId });
     }
     else if (path === '/story/fetchStories' && method === 'GET') response = await fetchStories(event);
-    else if (path === '/api/storyDynamo' && method === 'GET') response = await getStorybyIdDynamo(event);
+    else if (path === '/api/storyById' && method === 'GET') response = await getStoryById(event);
     else if (path === '/api/fetchStory' && method === 'GET') response = await fetchStories(event);
     else if (path === '/api/proxy' && method === 'GET') response = await proxyUrl(event);
     else if (path === '/story/fetchStoryById' && method === 'GET') response = await fetchStoryById(event);
@@ -454,23 +454,23 @@ export const handler = async (event, context) => {
     // Page Studio & Page Builder routes (supports /pagestudio/*, /pagebuilder/*, and /api/* prefixes)
     else if ((path === '/pagestudio/autosave' || path === '/pagebuilder/autosave' || path === '/api/pagestudio/autosave' || path === '/api/pagebuilder/autosave') && method === 'PUT') response = await PagebuilderAutosave(event);
     else if ((path === '/pagestudio/page' || path === '/pagebuilder/page' || path === '/api/pagestudio/page' || path === '/api/pagebuilder/page') && method === 'GET') response = await GetPageHydrated(event);
-    else if ((path === '/pagestudio/saveHtml' || path === '/pagebuilder/saveHtml' || path === '/api/pagestudio/saveHtml' || path === '/api/pagebuilder/saveHtml') && method === 'POST') response = await saveHtmlToS3(event);
-    else if ((path === '/pagestudio/saveHomeHtml' || path === '/pagebuilder/saveHomeHtml' || path === '/api/pagestudio/saveHomeHtml' || path === '/api/pagebuilder/saveHomeHtml') && method === 'POST') response = await saveHomeHtmlToS3(event);
-    else if ((path === '/pagestudio/saveErrorHtml' || path === '/pagebuilder/saveErrorHtml' || path === '/api/pagestudio/saveErrorHtml' || path === '/api/pagebuilder/saveErrorHtml') && method === 'POST') response = await saveErrorHtmlToS3(event);
-    else if ((path === '/pagestudio/saveAboutHtml' || path === '/pagebuilder/saveAboutHtml' || path === '/api/pagestudio/saveAboutHtml' || path === '/api/pagebuilder/saveAboutHtml') && method === 'POST') response = await saveAboutHtmlToS3(event);
-    else if ((path === '/pagestudio/saveSupportUsHtml' || path === '/pagebuilder/saveSupportUsHtml' || path === '/api/pagestudio/saveSupportUsHtml' || path === '/api/pagebuilder/saveSupportUsHtml') && method === 'POST') response = await saveSupportUsHtmlToS3(event);
+    else if ((path === '/pagestudio/saveHtml' || path === '/pagebuilder/saveHtml' || path === '/api/pagestudio/saveHtml' || path === '/api/pagebuilder/saveHtml') && method === 'POST') response = await saveHtml(event);
+    else if ((path === '/pagestudio/saveHomeHtml' || path === '/pagebuilder/saveHomeHtml' || path === '/api/pagestudio/saveHomeHtml' || path === '/api/pagebuilder/saveHomeHtml') && method === 'POST') response = await saveHomeHtml(event);
+    else if ((path === '/pagestudio/saveErrorHtml' || path === '/pagebuilder/saveErrorHtml' || path === '/api/pagestudio/saveErrorHtml' || path === '/api/pagebuilder/saveErrorHtml') && method === 'POST') response = await saveErrorHtml(event);
+    else if ((path === '/pagestudio/saveAboutHtml' || path === '/pagebuilder/saveAboutHtml' || path === '/api/pagestudio/saveAboutHtml' || path === '/api/pagebuilder/saveAboutHtml') && method === 'POST') response = await saveAboutHtml(event);
+    else if ((path === '/pagestudio/saveSupportUsHtml' || path === '/pagebuilder/saveSupportUsHtml' || path === '/api/pagestudio/saveSupportUsHtml' || path === '/api/pagebuilder/saveSupportUsHtml') && method === 'POST') response = await saveSupportUsHtml(event);
     else if (path === '/youpi/webhook' && method === 'POST') response = await youpiWebhook(event);
-    else if ((path === '/pagestudio/savePrivacyPolicyHtml' || path === '/pagebuilder/savePrivacyPolicyHtml' || path === '/api/pagestudio/savePrivacyPolicyHtml' || path === '/api/pagebuilder/savePrivacyPolicyHtml') && method === 'POST') response = await savePrivacyPolicyHtmlToS3(event);
-    else if ((path === '/pagestudio/saveMediaCouncilHtml' || path === '/pagebuilder/saveMediaCouncilHtml' || path === '/api/pagestudio/saveMediaCouncilHtml' || path === '/api/pagebuilder/saveMediaCouncilHtml') && method === 'POST') response = await saveMediaCouncilHtmlToS3(event);
-    else if ((path === '/pagestudio/saveContactUsHtml' || path === '/pagebuilder/saveContactUsHtml' || path === '/api/pagestudio/saveContactUsHtml' || path === '/api/pagebuilder/saveContactUsHtml') && method === 'POST') response = await saveContactUsHtmlToS3(event);
-    else if ((path === '/pagestudio/saveLoginHtml' || path === '/pagebuilder/saveLoginHtml' || path === '/api/pagestudio/saveLoginHtml' || path === '/api/pagebuilder/saveLoginHtml') && method === 'POST') response = await saveLoginHtmlToS3(event);
-    else if ((path === '/pagestudio/saveSectionHtml' || path === '/pagebuilder/saveSectionHtml' || path === '/api/pagestudio/saveSectionHtml' || path === '/api/pagebuilder/saveSectionHtml') && method === 'POST') response = await saveSectionHtmlToS3(event);
-    else if ((path === '/pagestudio/saveAuthorsHtml' || path === '/pagebuilder/saveAuthorsHtml' || path === '/api/pagestudio/saveAuthorsHtml' || path === '/api/pagebuilder/saveAuthorsHtml') && method === 'POST') response = await saveAuthorsHtmlToS3(event);
-    else if ((path === '/pagestudio/saveAuthorHtml' || path === '/pagebuilder/saveAuthorHtml' || path === '/api/pagestudio/saveAuthorHtml' || path === '/api/pagebuilder/saveAuthorHtml') && method === 'POST') response = await saveAuthorHtmlToS3(event);
-    else if ((path === '/pagestudio/saveSurveyHtml' || path === '/pagebuilder/saveSurveyHtml' || path === '/api/pagestudio/saveSurveyHtml' || path === '/api/pagebuilder/saveSurveyHtml') && method === 'POST') response = await saveSurveyHtmlToS3(event);
-    else if ((path === '/pagestudio/saveSiteMap' || path === '/pagebuilder/saveSiteMap' || path === '/api/pagestudio/saveSiteMap' || path === '/api/pagebuilder/saveSiteMap') && method === 'POST') response = await saveSiteMapToS3(event);
-    else if ((path === '/pagestudio/saveNewsSiteMap' || path === '/pagebuilder/saveNewsSiteMap' || path === '/api/pagestudio/saveNewsSiteMap' || path === '/api/pagebuilder/saveNewsSiteMap') && method === 'POST') response = await saveNewsSiteMapToS3(event);
-    else if ((path === '/pagestudio/savePwaFiles' || path === '/pagebuilder/savePwaFiles' || path === '/api/pagestudio/savePwaFiles' || path === '/api/pagebuilder/savePwaFiles') && method === 'POST') response = await savePwaFilesToS3(event);
+    else if ((path === '/pagestudio/savePrivacyPolicyHtml' || path === '/pagebuilder/savePrivacyPolicyHtml' || path === '/api/pagestudio/savePrivacyPolicyHtml' || path === '/api/pagebuilder/savePrivacyPolicyHtml') && method === 'POST') response = await savePrivacyPolicyHtml(event);
+    else if ((path === '/pagestudio/saveMediaCouncilHtml' || path === '/pagebuilder/saveMediaCouncilHtml' || path === '/api/pagestudio/saveMediaCouncilHtml' || path === '/api/pagebuilder/saveMediaCouncilHtml') && method === 'POST') response = await saveMediaCouncilHtml(event);
+    else if ((path === '/pagestudio/saveContactUsHtml' || path === '/pagebuilder/saveContactUsHtml' || path === '/api/pagestudio/saveContactUsHtml' || path === '/api/pagebuilder/saveContactUsHtml') && method === 'POST') response = await saveContactUsHtml(event);
+    else if ((path === '/pagestudio/saveLoginHtml' || path === '/pagebuilder/saveLoginHtml' || path === '/api/pagestudio/saveLoginHtml' || path === '/api/pagebuilder/saveLoginHtml') && method === 'POST') response = await saveLoginHtml(event);
+    else if ((path === '/pagestudio/saveSectionHtml' || path === '/pagebuilder/saveSectionHtml' || path === '/api/pagestudio/saveSectionHtml' || path === '/api/pagebuilder/saveSectionHtml') && method === 'POST') response = await saveSectionHtml(event);
+    else if ((path === '/pagestudio/saveAuthorsHtml' || path === '/pagebuilder/saveAuthorsHtml' || path === '/api/pagestudio/saveAuthorsHtml' || path === '/api/pagebuilder/saveAuthorsHtml') && method === 'POST') response = await saveAuthorsHtml(event);
+    else if ((path === '/pagestudio/saveAuthorHtml' || path === '/pagebuilder/saveAuthorHtml' || path === '/api/pagestudio/saveAuthorHtml' || path === '/api/pagebuilder/saveAuthorHtml') && method === 'POST') response = await saveAuthorHtml(event);
+    else if ((path === '/pagestudio/saveSurveyHtml' || path === '/pagebuilder/saveSurveyHtml' || path === '/api/pagestudio/saveSurveyHtml' || path === '/api/pagebuilder/saveSurveyHtml') && method === 'POST') response = await saveSurveyHtml(event);
+    else if ((path === '/pagestudio/saveSiteMap' || path === '/pagebuilder/saveSiteMap' || path === '/api/pagestudio/saveSiteMap' || path === '/api/pagebuilder/saveSiteMap') && method === 'POST') response = await saveSiteMap(event);
+    else if ((path === '/pagestudio/saveNewsSiteMap' || path === '/pagebuilder/saveNewsSiteMap' || path === '/api/pagestudio/saveNewsSiteMap' || path === '/api/pagebuilder/saveNewsSiteMap') && method === 'POST') response = await saveNewsSiteMap(event);
+    else if ((path === '/pagestudio/savePwaFiles' || path === '/pagebuilder/savePwaFiles' || path === '/api/pagestudio/savePwaFiles' || path === '/api/pagebuilder/savePwaFiles') && method === 'POST') response = await savePwaFiles(event);
     else if ((path === '/pagestudio/forceUpdatePwaIcons' || path === '/pagebuilder/forceUpdatePwaIcons' || path === '/api/pagestudio/forceUpdatePwaIcons' || path === '/api/pagebuilder/forceUpdatePwaIcons') && method === 'GET') response = await forceUpdatePwaIcons(event);
     else if ((path === '/pagestudio/republishAll' || path === '/pagebuilder/republishAll' || path === '/api/pagestudio/republishAll' || path === '/api/pagebuilder/republishAll') && method === 'POST') response = await republishAll(event, context);
     else if ((path === '/pagestudio/republishAll/status' || path === '/pagebuilder/republishAll/status' || path === '/api/pagestudio/republishAll/status' || path === '/api/pagebuilder/republishAll/status') && method === 'GET') response = await republishAllStatus(event);
@@ -483,7 +483,7 @@ export const handler = async (event, context) => {
     else if (path === '/ai/stream_response' && method === 'POST') response = await streamResponse(event);
 
     //Users
-    else if (path === '/loginDynamo' && method === 'POST') response = await login(event);
+    else if (path === '/login' && method === 'POST') response = await login(event);
     else if (path === '/api/getAllUsers' && method === 'GET') response = await getUsers(event);
     else if (path === '/addUser' && method === 'POST') response = await addUser(event);
     else if (path === '/getAllUsers' && method === 'GET') response = await getAllUsers(event);
@@ -530,12 +530,12 @@ export const handler = async (event, context) => {
     else if (path === '/api/uploadCustomThumbnail' && method === 'POST') response = await uploadCustomThumbnail(event);
     else if (path === '/api/confirmCustomThumbnail' && method === 'POST') response = await confirmCustomThumbnail(event);
     else if (path === '/api/selectThumbnail' && method === 'POST') response = await selectThumbnail(event);
-    else if (path === '/api/debug/listS3Objects' && method === 'POST') response = await listS3Object(event);
+    else if (path === '/api/debug/listStorageObjects' && method === 'POST') response = await listS3Object(event);
     else if (path === '/api/generateSingleThumbnail' && method === 'POST') response = await generateSingleThumbnail(event);
     else if (path === '/api/transcodingTrigger' && method === 'POST') response = await transcodingTriggerHandler(event);
     else if (path === '/api/transcodingProcessor' && method === 'POST') response = await transcodingProcessorHandler(event);
     else if (path.startsWith('/api/getQualityVariants') && method === 'GET') response = await getQualityVariantsHandler(event);
-    else if (path === '/api/getMediaconvert-endpoint' && method === 'POST') response = await getMediaconvertEndpoint(event);
+    else if (path === '/api/getTranscodeEndpoint' && method === 'POST') response = await getTranscodeEndpoint(event);
     else if (path === '/api/extractMetadata' && method === 'POST') response = await extractMetadata(event);
     else if (path.match(/^\/api\/asset\/[^\/]+\/status$/) && method === 'GET') response = await getAssetStatus(event);
     else if (path === '/api/asset/status' && method === 'GET') response = await getAssetStatus(event);
@@ -575,11 +575,11 @@ export const handler = async (event, context) => {
     else if (path === '/placement' && method === 'DELETE') response = await deletePlacement(event);
 
     //AI routing
-    else if (path === '/api/rekognition/getVideoAnalysis' && method === 'POST') response = await getVideoAnalysis(event);
-    else if (path === '/api/rekognition/createFaceCollection' && method === 'POST') response = await createFaceCollections(event);
-    else if (path === '/api/rekognition/addFaceToCollection' && method === 'POST') response = await addFaceToCollection(event);
-    else if (path === '/api/rekognition/searchFaceByImage' && method === 'POST') response = await searchFaceByImage(event);
-    else if (path === '/api/rekognition/listFaceCollections' && method === 'POST') response = await listFaceCollections(event);
+    else if (path === '/api/analysis/getVideoAnalysis' && method === 'POST') response = await getVideoAnalysis(event);
+    else if (path === '/api/analysis/createFaceCollection' && method === 'POST') response = await createFaceCollections(event);
+    else if (path === '/api/analysis/addFaceToCollection' && method === 'POST') response = await addFaceToCollection(event);
+    else if (path === '/api/analysis/searchFaceByImage' && method === 'POST') response = await searchFaceByImage(event);
+    else if (path === '/api/analysis/listFaceCollections' && method === 'POST') response = await listFaceCollections(event);
 
     // FFprobe test route
     else if (path === '/api/check-ffprobe' && method === 'GET') response = await checkFfprobe(event);

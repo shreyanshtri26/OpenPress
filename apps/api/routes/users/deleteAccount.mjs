@@ -1,7 +1,7 @@
 import { DeleteCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 
-const TABLE_NAME = process.env.DYNAMO_AUDIENCE_TABLE_NAME || "op_audience";
+const TABLE_NAME = process.env.DOC_AUDIENCE_TABLE_NAME || "op_audience";
 
 export const handler = async (event) => {
   try {
@@ -14,7 +14,7 @@ export const handler = async (event) => {
       };
     }
 
-    await dynamoClient.send(
+    await docClient.send(
       new DeleteCommand({
         TableName: TABLE_NAME,
         Key: { email },

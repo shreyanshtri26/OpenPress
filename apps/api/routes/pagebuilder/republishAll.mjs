@@ -1,10 +1,10 @@
 // POST /pagebuilder/republishAll
 // Publishes the requested pages in this invocation. The caller is not expected to
-// wait: a Lambda finishes its invocation even after the browser disconnects.
+// wait: a function finishes its invocation even after the browser disconnects.
 
 import { addRequester, createJob, isActiveJob, JOB_REASONS, JobConflictError, mergeStories, mergeTargets, parseStory, parseTargets, readJob, writeJob } from "./republishAllJob.mjs";
 import { callHandler, runRepublishAllWorker } from "./republishAllWorker.mjs";
-import { storyPublishUrl } from "./saveHtmlToS3.mjs";
+import { storyPublishUrl } from "./saveHtml.mjs";
 import { handler as getPage } from "./getPage.mjs";
 import { handler as autosavePage } from "./autosaveStory.mjs";
 import { handler as updateStoryPublishUrl } from "../story/updateStoryPublishUrl.mjs";
@@ -202,7 +202,7 @@ export const handler = async (event, context) => {
       requester: { userId: user.userId || user.id || null, email: user.email || null },
     };
 
-    // A previous run that ran out of Lambda time leaves an active job with an
+    // A previous run that ran out of function time leaves an active job with an
     // expired lease. Queue this change behind it, then carry it on from its cursor.
     if (isActiveJob(existing) && !leaseHeld(existing)) {
       if (!(await requestRerun(existing, etag, change))) {

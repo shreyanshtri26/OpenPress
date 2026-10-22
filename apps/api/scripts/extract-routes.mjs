@@ -5,7 +5,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 const src = readFileSync(new URL('../index.mjs', import.meta.url), 'utf8');
 const router = src.slice(src.indexOf('let response;'));
 
-const PUBLIC = new Set(['/pagestudio/forceUpdatePwaIcons', '/pagebuilder/forceUpdatePwaIcons', '/loginDynamo', '/forgotPassword', '/resetPassword', '/contact/submit', '/story/fetchReadyToPublish', '/campaigns/trackEvent', '/analytics/collect', '/youpi/webhook', '/taxonomy/colors']);
+const PUBLIC = new Set(['/pagestudio/forceUpdatePwaIcons', '/pagebuilder/forceUpdatePwaIcons', '/login', '/forgotPassword', '/resetPassword', '/contact/submit', '/story/fetchReadyToPublish', '/campaigns/trackEvent', '/analytics/collect', '/youpi/webhook', '/taxonomy/colors']);
 const SUPER = new Set(['POST /addUser', 'DELETE /deleteUser', 'DELETE /deleteAuthor', 'PUT /editUser', 'POST /addRole', 'DELETE /deleteRole', 'PUT /updateRole']);
 const EDITOR = new Set(['GET /surveys', 'POST /surveys', 'PUT /surveys', 'DELETE /surveys', 'POST /surveys/invite']);
 

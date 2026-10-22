@@ -7,7 +7,7 @@ const USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 
 const FORBIDDEN_HOSTNAMES = new Set(["localhost", "0.0.0.0", "::1"]);
 
-// Best-effort per-hostname throttle so a single warm Lambda container can't hammer a source
+// Best-effort per-hostname throttle so a single warm function container can't hammer a source
 // site in a tight loop. Allows short bursts (normal clicking) but caps sustained hammering.
 // Not a distributed limiter - each warm container tracks its own window.
 const RATE_LIMIT_WINDOW_MS = 2000;
@@ -51,7 +51,7 @@ function isPrivateIPv6(ip) {
         normalized === "::" ||
         normalized.startsWith("fe80") || // link-local
         normalized.startsWith("fc") || // unique local fc00::/7
-        normalized.startsWith("fd") // unique local + AWS IMDSv2 (fd00:ec2::254)
+        normalized.startsWith("fd") // unique local + cloud metadata IMDSv2 (fd00:ec2::254)
     );
 }
 
@@ -178,7 +178,7 @@ export const handler = async (event) => {
 
         // Stream the body with a hard byte cap instead of trusting Content-Length, which can be
         // absent (chunked responses) or wrong, letting a malicious/misconfigured site blow up
-        // Lambda memory.
+        // function memory.
         const reader = response.body?.getReader?.();
         if (!reader) {
             const text = await response.text();

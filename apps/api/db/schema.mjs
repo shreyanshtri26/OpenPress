@@ -161,7 +161,7 @@ export const assets = pgTable(
   ]
 );
 
-// DynamoDB-style items for features not yet given their own table (see db/doc-store.mjs).
+// Document items for features not yet given their own table (see db/doc-store.mjs).
 // pk = sorted JSON of the item's key attributes, e.g. [["campaignId","c1"]].
 export const documents = pgTable(
   'documents',

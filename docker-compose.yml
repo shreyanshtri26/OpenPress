@@ -1,14 +1,6 @@
 # Local services: Postgres (all app data) and an S3-compatible file store.
 # Start: npm run dev:infra   Data persists in Docker volumes; `docker compose down -v` wipes it.
-# DynamoDB Local is only needed to copy old data: docker compose --profile dynamo up -d
 services:
-  dynamodb:
-    profiles: ["dynamo"]
-    image: amazon/dynamodb-local:3.3.1
-    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data
-    user: root
-    ports: ["8000:8000"]
-    volumes: [dynamodb-data:/home/dynamodblocal/data]
   s3:
     # S3-compatible store (MinIO no longer publishes community images). Console: http://localhost:9001
     image: rustfs/rustfs:1.0.0
@@ -27,7 +19,6 @@ services:
     ports: ["5432:5432"]
     volumes: [postgres-data:/var/lib/postgresql/data]
 volumes:
-  dynamodb-data:
   s3-data:
   postgres-data:
 

@@ -28,19 +28,19 @@ import {
 
 import { handler as getPage } from "./getPage.mjs";
 import { handler as autosavePage } from "./autosaveStory.mjs";
-import { handler as saveAboutHtml } from "./saveAboutHtmlToS3.mjs";
-import { handler as saveSupportUsHtml } from "./saveSupportUsHtmlToS3.mjs";
-import { handler as saveAuthorHtml } from "./saveAuthorHtmlToS3.mjs";
-import { handler as saveAuthorsHtml } from "./saveAuthorsHtmlToS3.mjs";
-import { handler as saveContactUsHtml } from "./saveContactUsHtmlToS3.mjs";
-import { handler as saveErrorHtml } from "./saveErrorHtmlToS3.mjs";
-import { handler as saveHomeHtml } from "./saveHomeHtmlToS3.mjs";
-import { handler as saveHtml } from "./saveHtmlToS3.mjs";
-import { handler as saveMediaCouncilHtml } from "./saveMediaCouncilHtmlToS3.mjs";
-import { handler as savePrivacyPolicyHtml } from "./savePrivacyPolicyHtmlToS3.mjs";
-import { handler as saveSectionHtml } from "./saveSectionHtmlToS3.mjs";
-import { handler as saveSiteMap } from "./saveSiteMapToS3.mjs";
-import { handler as saveNewsSiteMap } from "./saveNewsSiteMapToS3.mjs";
+import { handler as saveAboutHtml } from "./saveAboutHtml.mjs";
+import { handler as saveSupportUsHtml } from "./saveSupportUsHtml.mjs";
+import { handler as saveAuthorHtml } from "./saveAuthorHtml.mjs";
+import { handler as saveAuthorsHtml } from "./saveAuthorsHtml.mjs";
+import { handler as saveContactUsHtml } from "./saveContactUsHtml.mjs";
+import { handler as saveErrorHtml } from "./saveErrorHtml.mjs";
+import { handler as saveHomeHtml } from "./saveHomeHtml.mjs";
+import { handler as saveHtml } from "./saveHtml.mjs";
+import { handler as saveMediaCouncilHtml } from "./saveMediaCouncilHtml.mjs";
+import { handler as savePrivacyPolicyHtml } from "./savePrivacyPolicyHtml.mjs";
+import { handler as saveSectionHtml } from "./saveSectionHtml.mjs";
+import { handler as saveSiteMap } from "./saveSiteMap.mjs";
+import { handler as saveNewsSiteMap } from "./saveNewsSiteMap.mjs";
 import { handler as getCampaigns } from "../campaigns/getCampaigns.mjs";
 import { handler as getPlacements } from "../placements/getPlacements.mjs";
 import { handler as getSectionValues } from "../taxonomy/getSectionValues.mjs";
@@ -52,13 +52,13 @@ const RENDERER_PATH = "/publish-renderer.js";
 /** Bundle API version this worker understands (see rendererEntry.ts). */
 const SUPPORTED_RENDERER_API_VERSION = 2;
 
-/** Stop this far before the Lambda would be killed, so the cursor gets saved. */
+/** Stop this far before the function would be killed, so the cursor gets saved. */
 const SAFETY_MS = 10_000;
 /** Below this much remaining time, skip the tick entirely rather than thrash. */
 const MIN_TICK_MS = 15_000;
 /** Lease horizon, renewed on every save, so a killed round frees the job soon. */
 const LEASE_MS = 2 * 60 * 1000;
-/** Used when no Lambda context is available (local test runs). */
+/** Used when no function context is available (local test runs). */
 const DEFAULT_BUDGET_MS = 5 * 60 * 1000;
 const STORY_BATCH_SIZE = 1;
 /** Same position this many ticks running means no progress is possible. */
@@ -185,7 +185,7 @@ export const loadRenderer = async (job) => {
       }
 
       const source = await res.text();
-      // CloudFront serves index.html for unknown paths, so a missing bundle is a 200.
+      // CDN serves index.html for unknown paths, so a missing bundle is a 200.
       if (source.trimStart().startsWith("<")) {
         failures.push(`${url} → HTML, not a module (bundle not deployed?)`);
         continue;
@@ -745,7 +745,7 @@ export const runRepublishAllWorker = async (context, { dedicated = false } = {})
     if (job.stalledTicks >= MAX_STALLED_TICKS) {
       job.status = "failed";
       job.error =
-        "Publishing made no progress across several runs; the Lambda timeout is likely too short for one batch.";
+        "Publishing made no progress across several runs; the function timeout is likely too short for one batch.";
       job.finishedAt = new Date().toISOString();
       recordCompletedPass(job);
       job.leaseUntil = null;

@@ -1,15 +1,15 @@
 // routes/dam/backgroundTranscoding.mjs - Background Processing Logic
 import { UpdateCommand, GetCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { GetObjectCommand, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { spawn } from "child_process";
 import { createWriteStream, unlinkSync, statSync, existsSync, createReadStream, readdirSync } from "fs";
 import { pipeline } from "stream/promises";
 import { createS3Client, publicObjectUrl } from '../../lib/storage.mjs';
 
-const s3Client = createS3Client({ region: process.env.AWS_OpenPress_REGION });
-const TABLE_NAME = process.env.DYNAMO_ASSETS_TABLE_NAME;
-const BUCKET_NAME = process.env.S3_DAM_BUCKET_NAME;
+const s3Client = createS3Client({ region: process.env.STORAGE_REGION });
+const TABLE_NAME = process.env.DOC_ASSETS_TABLE_NAME;
+const BUCKET_NAME = process.env.DAM_BUCKET_NAME;
 
 // Find FFmpeg paths
 const FFMPEG_ALTERNATIVES = ["/opt/ffmpeg", "/opt/bin/ffmpeg"];
@@ -85,7 +85,7 @@ export async function processVideoTranscoding(assetId, userId, requestedQualitie
       TableName: TABLE_NAME,
       Key: { assetId }
     });
-    const result = await dynamoClient.send(getCommand);
+    const result = await docClient.send(getCommand);
     const asset = result.Item;
 
     if (!asset) throw new Error("Asset not found");
@@ -184,7 +184,7 @@ export async function processVideoTranscoding(assetId, userId, requestedQualitie
       }
     });
 
-    await dynamoClient.send(updateCommand);
+    await docClient.send(updateCommand);
 
     console.log(`✅ Background transcoding completed for ${assetId} in ${Date.now() - startTime}ms`);
 

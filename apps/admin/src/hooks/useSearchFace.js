@@ -31,7 +31,7 @@ export const useFaceSearch = () => {
         const s3Key = extractS3Key(payload.s3Key);
 
         const response = await apiFetch(
-          `${env.backendApi}/api/rekognition/addFaceToCollection`,
+          `${env.backendApi}/api/analysis/addFaceToCollection`,
           {
             method: 'POST',
             headers: {
@@ -89,7 +89,7 @@ export const useFaceSearch = () => {
         const s3Key = extractS3Key(payload.s3Key);
 
         const response = await apiFetch(
-          `${env.backendApi}/api/rekognition/searchFaceByImage`,
+          `${env.backendApi}/api/analysis/searchFaceByImage`,
           {
             method: 'POST',
             headers: {

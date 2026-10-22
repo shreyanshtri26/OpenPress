@@ -167,8 +167,8 @@ export const performKeywordSearch = (assets, searchValue) => {
           keywordMatched = true;
         }
 
-        // Check Rekognition labels
-        if (asset.rekognitionAnalysis?.labels?.labels?.some(l =>
+        // Check ImageAnalysis labels
+        if (asset.imageAnalysis?.labels?.labels?.some(l =>
           wordBoundaryMatch(l.name, keyword)
         )) {
           score += 15;

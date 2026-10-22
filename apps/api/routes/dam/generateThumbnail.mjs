@@ -1,20 +1,19 @@
-// generateThumbnail.mjs - HYBRID APPROACH (MediaConvert + FFmpeg Fallback)
+// generateThumbnail.mjs - HYBRID APPROACH (Transcode + FFmpeg Fallback)
 import { GetCommand, UpdateCommand } from "../../db/commands.mjs";
 import { MediaConvertClient, CreateJobCommand } from "@aws-sdk/client-mediaconvert";
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { spawn } from "child_process";
 import { createWriteStream, unlinkSync, existsSync, statSync } from "fs";
 import { pipeline } from "stream/promises";
-import { createS3Client, publicObjectUrl } from '../../lib/storage.mjs';
+import { createS3Client, publicObjectUrl, clientConfig } from '../../lib/storage.mjs';
 
-const TABLE_NAME = process.env.DYNAMO_ASSETS_TABLE_NAME;
-const BUCKET_NAME = process.env.S3_DAM_BUCKET_NAME;
+const TABLE_NAME = process.env.DOC_ASSETS_TABLE_NAME;
+const BUCKET_NAME = process.env.DAM_BUCKET_NAME;
 
-const s3 = createS3Client({ region: process.env.AWS_OpenPress_REGION });
-const mediaConvertClient = new MediaConvertClient({
-  region: process.env.AWS_OpenPress_REGION,
-  endpoint: process.env.MEDIACONVERT_ENDPOINT
+const s3 = createS3Client({ region: process.env.STORAGE_REGION });
+const transcodeClient = new MediaConvertClient({ ...clientConfig(),
+  endpoint: process.env.TRANSCODE_ENDPOINT
 });
 
 const FFMPEG_PATHS = [
@@ -36,9 +35,9 @@ function findFFmpegPath() {
   return null;
 }
 
-function isMediaConvertConfigured() {
-  const configured = !!(process.env.MEDIACONVERT_ROLE_ARN && process.env.MEDIACONVERT_ENDPOINT);
-  console.log(`📋 MediaConvert configured: ${configured}`);
+function isTranscodeConfigured() {
+  const configured = !!(process.env.TRANSCODE_ROLE_ARN && process.env.TRANSCODE_ENDPOINT);
+  console.log(`📋 Transcode configured: ${configured}`);
   return configured;
 }
 
@@ -80,7 +79,7 @@ export const handler = async (event) => {
       Key: { assetId }
     });
 
-    const result = await dynamoClient.send(getCommand);
+    const result = await docClient.send(getCommand);
     const asset = result.Item;
 
     if (!asset) {
@@ -124,13 +123,13 @@ export const handler = async (event) => {
     let useMethod = method;
     
     if (method === 'auto') {
-      // Auto-detect: prefer MediaConvert if configured, fallback to FFmpeg
-      if (isMediaConvertConfigured()) {
-        useMethod = 'mediaconvert';
-        console.log(`🎯 Auto-selected: MediaConvert (configured and available)`);
+      // Auto-detect: prefer Transcode if configured, fallback to FFmpeg
+      if (isTranscodeConfigured()) {
+        useMethod = 'transcode';
+        console.log(`🎯 Auto-selected: Transcode (configured and available)`);
       } else if (findFFmpegPath()) {
         useMethod = 'ffmpeg';
-        console.log(`🎯 Auto-selected: FFmpeg (MediaConvert not configured)`);
+        console.log(`🎯 Auto-selected: FFmpeg (Transcode not configured)`);
       } else {
         useMethod = 'placeholder';
         console.log(`🎯 Auto-selected: Placeholder (no processing tools available)`);
@@ -141,8 +140,8 @@ export const handler = async (event) => {
 
     // 4️⃣ Route to appropriate method
     switch (useMethod) {
-      case 'mediaconvert':
-        return await generateWithMediaConvert(asset, assetId);
+      case 'transcode':
+        return await generateWithTranscode(asset, assetId);
       
       case 'ffmpeg':
         return await generateWithFFmpeg(asset, assetId);
@@ -156,7 +155,7 @@ export const handler = async (event) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             error: "Invalid method",
-            validMethods: ['auto', 'mediaconvert', 'ffmpeg', 'placeholder']
+            validMethods: ['auto', 'transcode', 'ffmpeg', 'placeholder']
           })
         };
     }
@@ -187,8 +186,8 @@ export const handler = async (event) => {
 // =============================================================================
 // METHOD 1: MEDIACONVERT (High Quality, Async)
 // =============================================================================
-async function generateWithMediaConvert(asset, assetId) {
-  console.log(`📸 Generating thumbnails with MediaConvert`);
+async function generateWithTranscode(asset, assetId) {
+  console.log(`📸 Generating thumbnails with Transcode`);
 
   const videoKey = asset.url.split('/').pop();
   const duration = asset.metadata?.duration || 60;
@@ -238,7 +237,7 @@ async function generateWithMediaConvert(asset, assetId) {
   });
 
   const jobSettings = {
-    Role: process.env.MEDIACONVERT_ROLE_ARN,
+    Role: process.env.TRANSCODE_ROLE_ARN,
     UserMetadata: {
       "AssetId": assetId,
       "OriginalKey": videoKey,
@@ -267,12 +266,12 @@ async function generateWithMediaConvert(asset, assetId) {
 
   try {
     const command = new CreateJobCommand(jobSettings);
-    const response = await mediaConvertClient.send(command);
+    const response = await transcodeClient.send(command);
 
-    console.log(`✅ MediaConvert job created: ${response.Job.Id}`);
+    console.log(`✅ Transcode job created: ${response.Job.Id}`);
 
     // Update database
-    await dynamoClient.send(new UpdateCommand({
+    await docClient.send(new UpdateCommand({
       TableName: TABLE_NAME,
       Key: { assetId },
       UpdateExpression: `
@@ -290,7 +289,7 @@ async function generateWithMediaConvert(asset, assetId) {
         ":started": new Date().toISOString(),
         ":timepoints": thumbnailTimes,
         ":outputLocation": outputUri,
-        ":method": "mediaconvert",
+        ":method": "transcode",
         ":updatedAt": new Date().toISOString()
       }
     }));
@@ -299,10 +298,10 @@ async function generateWithMediaConvert(asset, assetId) {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        message: "High-quality thumbnail generation initiated with MediaConvert",
+        message: "High-quality thumbnail generation initiated with Transcode",
         data: {
           assetId,
-          method: "mediaconvert",
+          method: "transcode",
           jobId: response.Job.Id,
           status: "PROCESSING",
           thumbnailCount: thumbnailTimes.length,
@@ -315,7 +314,7 @@ async function generateWithMediaConvert(asset, assetId) {
     };
 
   } catch (error) {
-    console.error(`❌ MediaConvert failed, falling back to FFmpeg:`, error);
+    console.error(`❌ Transcode failed, falling back to FFmpeg:`, error);
     // Fallback to FFmpeg
     return await generateWithFFmpeg(asset, assetId);
   }
@@ -374,7 +373,7 @@ async function generateWithFFmpeg(asset, assetId) {
     }
 
     // Update database
-    await dynamoClient.send(new UpdateCommand({
+    await docClient.send(new UpdateCommand({
       TableName: TABLE_NAME,
       Key: { assetId },
       UpdateExpression: `
@@ -450,7 +449,7 @@ async function generateWithPlaceholder(asset, assetId) {
   }
 
   // Update database
-  await dynamoClient.send(new UpdateCommand({
+  await docClient.send(new UpdateCommand({
     TableName: TABLE_NAME,
     Key: { assetId },
     UpdateExpression: `

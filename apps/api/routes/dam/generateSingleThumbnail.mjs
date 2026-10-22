@@ -1,15 +1,15 @@
 // generateSingleThumbnail.mjs - Fixed Version with Proper Error Handling
 import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { UpdateCommand, GetCommand } from "../../db/commands.mjs";
-import dynamoClient from "../../dynamoClient.mjs";
+import docClient from "../../docClient.mjs";
 import { spawn } from "child_process";
 import { createWriteStream, unlinkSync, statSync, existsSync, readFileSync } from "fs";
 import { pipeline } from "stream/promises";
 import { createS3Client, publicObjectUrl } from '../../lib/storage.mjs';
 
-const s3Client = createS3Client({ region: process.env.AWS_OpenPress_REGION });
-const TABLE_NAME = process.env.DYNAMO_ASSETS_TABLE_NAME;
-const BUCKET_NAME = process.env.S3_DAM_BUCKET_NAME;
+const s3Client = createS3Client({ region: process.env.STORAGE_REGION });
+const TABLE_NAME = process.env.DOC_ASSETS_TABLE_NAME;
+const BUCKET_NAME = process.env.DAM_BUCKET_NAME;
 const FFMPEG_PATH = "/opt/bin/ffmpeg";
 
 export const handler = async (event) => {
@@ -31,13 +31,13 @@ export const handler = async (event) => {
 
     console.log(`🎬 Generating single thumbnail for asset: ${assetId}`);
 
-    // ✅ Get asset from DynamoDB
+    // ✅ Get asset
     const getCommand = new GetCommand({
       TableName: TABLE_NAME,
       Key: { assetId }
     });
 
-    const result = await dynamoClient.send(getCommand);
+    const result = await docClient.send(getCommand);
     const asset = result.Item;
 
     if (!asset) {
@@ -91,7 +91,7 @@ export const handler = async (event) => {
 
     console.log(`✅ Thumbnail uploaded to S3: ${thumbnailUrl}`);
 
-    // ✅ Update asset in DynamoDB
+    // ✅ Update asset
     const updateCommand = new UpdateCommand({
       TableName: TABLE_NAME,
       Key: { assetId },
@@ -119,7 +119,7 @@ export const handler = async (event) => {
       }
     });
 
-    await dynamoClient.send(updateCommand);
+    await docClient.send(updateCommand);
 
     const elapsed = Date.now() - startTime;
     console.log(`✅ Single thumbnail generation completed in ${elapsed}ms`);
@@ -154,7 +154,7 @@ export const handler = async (event) => {
     // ✅ Update asset with error status
     if (body?.assetId) {
       try {
-        await dynamoClient.send(
+        await docClient.send(
           new UpdateCommand({
             TableName: TABLE_NAME,
             Key: { assetId: body.assetId },

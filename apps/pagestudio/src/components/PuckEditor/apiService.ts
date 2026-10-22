@@ -5,7 +5,7 @@ import type { Story } from './storyData'
 import { getToken } from '../../utils/auth'
 
 // The editor is gated behind these initializer fetches, and a request that is
-// accepted but never answered (a cold Lambda, a dropped connection) would
+// accepted but never answered (a cold function, a dropped connection) would
 // otherwise leave the whole PageBuilder stuck on "Loading stories…" with no
 // pending request visible to retry. Every initializer below already catches
 // failures and falls back to an empty list, so an abort degrades gracefully.

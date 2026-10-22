@@ -32,10 +32,10 @@ Request ──► src/server.mjs ──► index.mjs ──► routes/<domain>/<
             adapter             RBAC, router
 ```
 
-1. **`src/server.mjs`** exports a default `{ fetch }` (the shape Neon Functions expects). It converts a standard `Request` into the Lambda-style `event` the handlers use (headers, body, base64 for binary uploads) and converts the handler's result back into a `Response`. The raw request body is preserved byte-for-byte.
+1. **`src/server.mjs`** exports a default `{ fetch }` (the shape Neon Functions expects). It converts a standard `Request` into the plain `event` object the handlers use (headers, body, base64 for binary uploads) and converts the handler's result back into a `Response`. The raw request body is preserved byte-for-byte.
 2. **`index.mjs`** is the router. It answers CORS preflights, verifies the JWT for every route that is not public, applies role checks, and dispatches on `method + path` to a handler. Routes for a disabled optional feature answer `503` here.
 3. **`routes/*`** hold the handlers, grouped by domain. A handler receives `event` and returns `{ statusCode, headers, body }`.
-4. **`db/`** holds the Drizzle schema, the client and the *document store*, a DynamoDB-compatible layer over one JSONB table.
+4. **`db/`** holds the Drizzle schema, the client and the *document store*, a key-value layer over one JSONB table.
 5. **`lib/storage.mjs`** builds the S3 client from environment variables and turns object keys into public URLs.
 
 Because handlers are plain functions, they are easy to call directly in tests.
@@ -51,13 +51,13 @@ apps/api/
 │   └── site-dev.mjs        Serves the website bucket from its own root, like production
 ├── routes/                 Handlers, one folder per domain
 │   ├── users/  roles/  story/  articles/  taxonomy/  dam/  campaigns/
-│   ├── placements/  surveys/  contact/  pagebuilder/  rekognition/  ai/
+│   ├── placements/  surveys/  contact/  pagebuilder/  analysis/  ai/
 │   └── middleware/  utils/  utility/  test/
 ├── db/
 │   ├── schema.mjs          Drizzle tables
 │   ├── client.mjs          postgres.js client
-│   ├── doc-store.mjs       DynamoDB-compatible document store over Postgres
-│   └── dynamo-tables.mjs   Which legacy table names map to the document store
+│   ├── doc-store.mjs       Document store over Postgres
+│   └── doc-tables.mjs   Which legacy table names map to the document store
 ├── lib/
 │   ├── storage.mjs         S3-compatible client and URL helpers
 │   └── features.mjs        Optional-feature switches
@@ -65,7 +65,6 @@ apps/api/
 ├── scripts/
 │   ├── local-setup.mjs     One-time local setup
 │   ├── seed/               Sample data (users, taxonomies, assets, stories, pages, site assets)
-│   ├── copy/               One-off copy scripts from the old DynamoDB and S3 data
 │   ├── smoke.mjs           Smoke test for a running API
 │   └── extract-routes.mjs  Regenerates contract/routes.json
 ├── contract/routes.json    The frozen route list and access rules
@@ -111,13 +110,13 @@ Copy `.env.example` to `.env.local`. The dev server loads `.env.local` automatic
 
 | Variable | Purpose |
 | --- | --- |
-| `AWS_ENDPOINT_URL_S3` | S3 endpoint. Leave unset for AWS, set for Neon Object Storage or the local MinIO/RustFS container |
-| `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | Storage credentials |
-| `AWS_REGION` | AWS region (default `ap-southeast-1`) |
+| `STORAGE_ENDPOINT_URL` | S3 endpoint. Set for Neon Object Storage or the local MinIO/RustFS container |
+| `STORAGE_ACCESS_KEY_ID`, `STORAGE_SECRET_ACCESS_KEY` | Storage credentials |
+| `STORAGE_REGION` | Region (default `ap-southeast-1`) |
 | `PUBLIC_STORAGE_URL` | Base URL under which public buckets are readable (`<base>/<bucket>/<key>`) |
-| `S3_DAM_BUCKET_NAME` | Uploaded media bucket (default `openpress-dam`) |
-| `S3_WEBSITE_BUCKET_NAME` | The published website bucket (HTML, sitemaps, logos, PWA files; default `openpress-website`) |
-| `S3_REKOGNITION_BUCKET_NAME` | Bucket for optional image analysis |
+| `DAM_BUCKET_NAME` | Uploaded media bucket (default `openpress-dam`) |
+| `WEBSITE_BUCKET_NAME` | The published website bucket (HTML, sitemaps, logos, PWA files; default `openpress-website`) |
+| `ANALYSIS_BUCKET_NAME` | Bucket for optional image analysis |
 
 ### Site addresses
 
@@ -135,7 +134,7 @@ Copy `.env.example` to `.env.local`. The dev server loads `.env.local` automatic
 
 ### Optional features
 
-See [Optional features](#optional-features) below for AI (`GEMINI_API_KEY`), Search (`BRAVE_API_KEY`), Email (`SES_SENDER_EMAIL`), and MediaConvert keys. All optional features are off by default.
+See [Optional features](#optional-features) below for AI (`GEMINI_API_KEY`), Search (`BRAVE_API_KEY`), Email (`EMAIL_SENDER`), and Transcode keys. All optional features are off by default.
 
 ## Data model
 
@@ -153,7 +152,7 @@ Postgres holds all data in two forms.
 | `pages` | Page Studio pages by `page_type` (`Home`, `Section-News`, `Blog`, `About`, ...) with the Puck JSON in `data` |
 | `assets` | Media library records and metadata |
 
-**Document store** (`db/doc-store.mjs`): a single `documents` table (table name, key, JSONB item) with an implementation of the DynamoDB document-client commands (`Put`, `Get`, `Update`, `Delete`, `Scan`, `Query`, condition and update expressions, paging). Campaigns, placements, audience records, contact inquiries, search history and surveys use it, which kept those handlers unchanged during the move to Postgres.
+**Document store** (`db/doc-store.mjs`): a single `documents` table (table name, key, JSONB item) with an implementation of the document commands (`Put`, `Get`, `Update`, `Delete`, `Scan`, `Query`, condition and update expressions, paging). Campaigns, placements, audience records, contact inquiries, search history and surveys use it, which kept those handlers unchanged during the move to Postgres.
 
 > The store filters in JavaScript after reading a table. That is fine for newsroom-sized tables. If one grows large, move it to a typed table.
 
@@ -161,13 +160,13 @@ Migrations live in `drizzle/`. After changing the schema run `npm run db:generat
 
 ## Authentication and access
 
-- `POST /loginDynamo` checks the password and returns a JWT containing the user's id, email and role. Send it as `Authorization: Bearer <token>`.
+- `POST /login` checks the password and returns a JWT containing the user's id, email and role. Send it as `Authorization: Bearer <token>`.
 - Every route needs a valid token except the **public** routes in the [reference](#api-reference) (login, password reset, the published-story feed, contact form, campaign tracking and public survey pages).
 - Roles are `Super User`, `Admin`, `Editor` and `Reporter`. The router enforces:
   - user and role management (`addUser`, `editUser`, `deleteUser`, `deleteAuthor`, `addRole`, `updateRole`, `deleteRole`): **Super User** only
   - survey management: **Admin, Editor or Super User**
   - everything else: any signed-in user. Fine-grained module permissions are stored on the role and enforced by the admin app.
-- Passwords are hashed with bcrypt. Password reset creates a hashed token that is valid for 30 minutes and emails the link, so it needs the **Email** feature (`SES_SENDER_EMAIL`).
+- Passwords are hashed with bcrypt. Password reset creates a hashed token that is valid for 30 minutes and emails the link, so it needs the **Email** feature (`EMAIL_SENDER`).
 
 The Page Studio routes (`/pagestudio/*`, with `/pagebuilder/*` aliases) currently accept any signed-in user. Restricting the studio's own actions to Super Users on the server is planned.
 
@@ -192,11 +191,11 @@ Services that cost money are **off** unless configured. When off, their routes a
 
 | Feature | Turn on with | Used for |
 | --- | --- | --- |
-| Image and video analysis | `ENABLE_REKOGNITION=true` | AI tags and face search |
-| Video transcoding | `MEDIACONVERT_ENDPOINT` and `MEDIACONVERT_ROLE_ARN` | Quality variants and thumbnails |
-| Support payments (YouPI PG) | `YOUPI_WEBHOOK_SECRET`, `DYNAMO_SUPPORTERS_TABLE` | `POST /youpi/webhook` verifies the gateway's HMAC signature and stores confirmed support payments |
+| Image and video analysis | `ENABLE_IMAGE_ANALYSIS=true` | AI tags and face search |
+| Video transcoding | `TRANSCODE_ENDPOINT` and `TRANSCODE_ROLE_ARN` | Quality variants and thumbnails |
+| Support payments (YouPI PG) | `YOUPI_WEBHOOK_SECRET`, `DOC_SUPPORTERS_TABLE` | `POST /youpi/webhook` verifies the gateway's HMAC signature and stores confirmed support payments |
 | AI features (Gemini) | `GEMINI_API_KEY`, optional `GEMINI_MODEL` (default `gemini-2.5-flash`) | Story editor tools, DAM semantic search, image captions, survey summaries and chat |
-| Email | `SES_SENDER_EMAIL` | Contact-form mail and survey invitations |
+| Email | `EMAIL_SENDER` | Contact-form mail and survey invitations |
 | Web search | `BRAVE_API_KEY` and/or `GEMINI_API_KEY` | Research page. Brave first when its key is set, Gemini (Google Search grounding) otherwise or when Brave errors |
 
 No third-party tracking is added to published pages unless `VITE_GA_MEASUREMENT_ID` or `VITE_RUM_APP_MONITOR_ID` is set at build time.
@@ -209,7 +208,7 @@ No third-party tracking is added to published pages unless `VITE_GA_MEASUREMENT_
 
 | Method | Path | Access |
 | --- | --- | --- |
-| POST | `/loginDynamo` | Public |
+| POST | `/login` | Public |
 | GET | `/api/getAllUsers` | Signed in |
 | POST | `/addUser` | Super User |
 | GET | `/getAllUsers` | Signed in |
@@ -248,12 +247,12 @@ No third-party tracking is added to published pages unless `VITE_GA_MEASUREMENT_
 | DELETE | `/api/deleteStoryPermanent` | Signed in |
 | PUT | `/api/editComment` | Signed in |
 | GET | `/api/fetchDrafts` | Signed in |
-| POST | `/api/postCommentsDynamo` | Signed in |
+| POST | `/api/postComments` | Signed in |
 | POST | `/api/articles/postStory` | Signed in |
 | POST | `/api/saveDraft` | Signed in |
 | PUT | `/api/updateDraft` | Signed in |
 | GET | `/story/fetchStories` | Signed in |
-| GET | `/api/storyDynamo` | Signed in |
+| GET | `/api/storyById` | Signed in |
 | GET | `/api/fetchStory` | Signed in |
 | GET | `/story/fetchStoryById` | Signed in |
 | GET | `/story/fetchReadyToPublish` | Public |
@@ -329,7 +328,7 @@ Primary endpoints use `/pagestudio/*`; backward-compatible aliases under `/pageb
 | POST | `/api/uploadCustomThumbnail` | Signed in |
 | POST | `/api/confirmCustomThumbnail` | Signed in |
 | POST | `/api/selectThumbnail` | Signed in |
-| POST | `/api/debug/listS3Objects` | Signed in |
+| POST | `/api/debug/listStorageObjects` | Signed in |
 | POST | `/api/generateSingleThumbnail` | Signed in |
 | POST | `/api/extractMetadata` | Signed in |
 | GET | `/api/asset/status` | Signed in |
@@ -384,15 +383,15 @@ Primary endpoints use `/pagestudio/*`; backward-compatible aliases under `/pageb
 
 | Method | Path | Access |
 | --- | --- | --- |
-| any | `/story/syncStoriesToS3` | Signed in |
+| any | `/story/syncStories` | Signed in |
 | POST | `/api/transcodingTrigger` | Signed in |
 | POST | `/api/transcodingProcessor` | Signed in |
-| POST | `/api/getMediaconvert-endpoint` | Signed in |
-| POST | `/api/rekognition/getVideoAnalysis` | Signed in |
-| POST | `/api/rekognition/createFaceCollection` | Signed in |
-| POST | `/api/rekognition/addFaceToCollection` | Signed in |
-| POST | `/api/rekognition/searchFaceByImage` | Signed in |
-| POST | `/api/rekognition/listFaceCollections` | Signed in |
+| POST | `/api/getTranscodeEndpoint` | Signed in |
+| POST | `/api/analysis/getVideoAnalysis` | Signed in |
+| POST | `/api/analysis/createFaceCollection` | Signed in |
+| POST | `/api/analysis/addFaceToCollection` | Signed in |
+| POST | `/api/analysis/searchFaceByImage` | Signed in |
+| POST | `/api/analysis/listFaceCollections` | Signed in |
 | GET | `/api/utils/search` | Signed in |
 | GET | `/api/utils/search/history` | Signed in |
 | DELETE | `/api/utils/search/history` | Signed in |
