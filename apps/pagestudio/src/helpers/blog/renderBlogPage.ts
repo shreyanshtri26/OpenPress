@@ -662,7 +662,6 @@ export function renderPageFromPuckJSON(
 
   <style>
     html, body { margin:0; padding:0; }
-    body { font-family: Inter, sans-serif; background:#fff; }
     
     /* Custom font families for Tailwind CDN */
     .font-share { font-family: 'Share Tech Mono', monospace !important; font-synthesis: none; }

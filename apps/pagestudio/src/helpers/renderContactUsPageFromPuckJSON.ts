@@ -149,7 +149,6 @@ export function renderContactUsPageFromPuckJSON(
 
     <style>
       html, body { margin: 0; padding: 0; }
-      body { font-family: 'Public Sans', sans-serif; background-color: #fff; }
       .font-merriweather { font-family: 'Merriweather', serif !important; }
       .font-sans { font-family: 'Public Sans', sans-serif !important; }
       .font-share { font-family: 'Share Tech Mono', monospace !important; }

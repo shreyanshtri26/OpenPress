@@ -352,7 +352,7 @@ export function renderMastheadNavbar({
           id="navbar-logo-mark"
           src="/openpress-logo-full-nobg-trim.png"
           alt="OpenPress Logo"
-          class="h-[64px] sm:h-[96px] lg:h-[130px] w-auto object-contain absolute"
+          class="h-[64px] sm:h-[96px] lg:h-[110px] w-auto object-contain absolute"
           style="transform-origin: center;"
         />
         <!-- Compact mark: fades in as the full logo fades out on scroll -->

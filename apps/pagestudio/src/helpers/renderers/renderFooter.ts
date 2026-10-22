@@ -68,12 +68,12 @@ export function renderFooter(props: FooterProps): string {
                     </div>
 
                     <!-- Middle Compact Links -->
-                    <div class="py-3 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
+                    <div class="py-3 flex flex-col items-center md:items-start gap-2 text-center md:text-left">
                         <nav aria-label="Sections" class="flex flex-wrap items-center justify-center md:justify-start gap-x-2.5 gap-y-1 font-share uppercase tracking-wider text-[11px]">
                             <span class="font-bold text-neutral-800 text-[10px] tracking-widest mr-1">SECTIONS</span>
                             ${sectionLinks}
                         </nav>
-                        <nav aria-label="OpenPress Links" class="flex flex-wrap items-center justify-center md:justify-end gap-x-2.5 gap-y-1 text-xs">
+                        <nav aria-label="OpenPress Links" class="flex flex-wrap items-center justify-center md:justify-start gap-x-2.5 gap-y-1 text-xs">
                             ${companyLinks}
                         </nav>
                     </div>

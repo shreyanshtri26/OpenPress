@@ -31,7 +31,7 @@ html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 body { font-family: var(--op-font) !important; color: var(--op-text); background: #fff; letter-spacing: -0.011em; }
 
 @media (prefers-color-scheme: dark) {
-  body { background: #000; }
+  body { background: #1D1D1F; }
 }
 a { text-underline-offset: 3px; }
 a:hover { color: var(--op-accent); }
@@ -54,7 +54,7 @@ h2, h3 { font-weight: 600; }
 /* Navigation: frosted, sticky, quiet. */
 header { background: rgba(255, 255, 255, 0.8) !important; -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--op-line); }
 @media (prefers-color-scheme: dark) {
-  header { background: #1c1c1e !important; border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important; }
+  header { background: #262628 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important; }
 }
 header a.uppercase, header button.uppercase, header .uppercase { text-transform: none !important; letter-spacing: 0 !important; font-size: 0.875rem; font-weight: 400; color: var(--op-text); }
 header a.uppercase:hover, header button.uppercase:hover { color: var(--op-accent); }
@@ -97,7 +97,7 @@ footer .uppercase { text-transform: none !important; letter-spacing: 0 !importan
 
 /* Footer in dark mode */
 @media (prefers-color-scheme: dark) {
-  footer.op-footer, footer { background: #1c1c1e !important; color: var(--op-muted) !important; border-top-color: rgba(255, 255, 255, 0.15) !important; }
+  footer.op-footer, footer { background: #262628 !important; color: var(--op-muted) !important; border-top-color: rgba(255, 255, 255, 0.15) !important; }
   footer.op-footer .border-b, footer.op-footer .border-t { border-color: rgba(255, 255, 255, 0.12) !important; }
   footer.op-footer a { color: #d2d2d7 !important; }
   footer.op-footer a:hover { color: #ffffff !important; }
@@ -112,7 +112,7 @@ html.dark footer.op-footer, html.dark footer,
 [data-theme="dark"] footer.op-footer, [data-theme="dark"] footer,
 body.dark footer.op-footer, body.dark footer,
 body[data-theme="dark"] footer.op-footer, body[data-theme="dark"] footer {
-  background: #1c1c1e !important; color: var(--op-muted) !important; border-top-color: rgba(255, 255, 255, 0.15) !important;
+  background: #262628 !important; color: var(--op-muted) !important; border-top-color: rgba(255, 255, 255, 0.15) !important;
 }
 html.dark footer.op-footer .border-b, html.dark footer.op-footer .border-t,
 [data-theme="dark"] footer.op-footer .border-b, [data-theme="dark"] footer.op-footer .border-t,
@@ -184,13 +184,13 @@ a:hover > img { transform: scale(1.015); }
    the active one is a solid dark pill, hover is a soft grey one. */
 header { background: rgba(255, 255, 255, 0.8) !important; -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid transparent; transition: box-shadow 0.3s ease, border-color 0.3s ease; }
 @media (prefers-color-scheme: dark) {
-  header { background: #1c1c1e !important; border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important; }
+  header { background: #262628 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important; }
 }
 /* The scroll script animates a dark border and shadow onto the header inline; replace them with a hairline and a soft shadow. */
 header { border-bottom: 1px solid transparent !important; box-shadow: none !important; }
 html.op-scrolled header { border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.18) !important; background: rgba(255, 255, 255, 0.86) !important; }
 @media (prefers-color-scheme: dark) {
-  html.op-scrolled header { background: #1c1c1e !important; border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.7) !important; }
+  html.op-scrolled header { background: #262628 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.7) !important; }
 }
 
 #navbar-nav-wrap { border-top: 0 !important; border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important; margin-top: 10px !important; padding-bottom: 6px; }
@@ -299,8 +299,8 @@ html, body { overflow-x: clip; }
 
 /* ---- Navbar & Header dark theme rules ------------------------------------- */
 @media (prefers-color-scheme: dark) {
-  header { background: #1c1c1e !important; border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important; }
-  html.op-scrolled header { background: #1c1c1e !important; border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.7) !important; }
+  header { background: #262628 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important; }
+  html.op-scrolled header { background: #262628 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.7) !important; }
   header .text-black, header button.text-black, header a.text-black, header .text-slate-900 { color: #ffffff !important; }
   header svg line, header button svg line { stroke: #ffffff !important; }
 
@@ -310,14 +310,14 @@ html, body { overflow-x: clip; }
   #navbar-nav-wrap .nav-btn:has(.nav-box[style*="display: block"]) > span.relative { background: #f5f5f7 !important; color: #1d1d1f !important; font-weight: 600 !important; }
 
   /* Desktop Hamburger Dropdown */
-  #desktop-hamburger-menu { background: #1c1c1e !important; border-color: rgba(255, 255, 255, 0.15) !important; }
+  #desktop-hamburger-menu { background: #262628 !important; border-color: rgba(255, 255, 255, 0.15) !important; }
   #desktop-hamburger-menu button { color: #ffffff !important; }
   #desktop-hamburger-menu button:hover { background: rgba(255, 255, 255, 0.1) !important; }
   #desktop-hamburger-menu button.font-bold { background: rgba(255, 255, 255, 0.2) !important; color: #ffffff !important; }
 
   /* Mobile menu drawer */
-  #mobile-menu-drawer { background: #1c1c1e !important; color: #ffffff !important; }
-  #mobile-menu-drawer .bg-white { background: #1c1c1e !important; }
+  #mobile-menu-drawer { background: #262628 !important; color: #ffffff !important; }
+  #mobile-menu-drawer .bg-white { background: #262628 !important; }
   #mobile-menu-drawer .text-black, #mobile-menu-drawer span.text-black { color: #ffffff !important; }
   #mobile-menu-drawer .border-neutral-200 { border-color: rgba(255, 255, 255, 0.15) !important; }
   #mobile-menu-drawer button[data-section] { color: #ffffff !important; }
@@ -328,7 +328,7 @@ html, body { overflow-x: clip; }
   /* Account Dropdown */
   #account-dropdown-btn { color: #ffffff !important; }
   #account-dropdown-btn svg { stroke: #ffffff !important; }
-  #account-dropdown-menu { background: #1c1c1e !important; border-color: rgba(255, 255, 255, 0.15) !important; color: #ffffff !important; }
+  #account-dropdown-menu { background: #262628 !important; border-color: rgba(255, 255, 255, 0.15) !important; color: #ffffff !important; }
   #account-dropdown-menu .bg-neutral-50 { background: #2c2c2e !important; border-color: rgba(255, 255, 255, 0.15) !important; }
   #account-dropdown-menu #user-display-name { color: #ffffff !important; }
   #account-dropdown-menu #user-display-email { color: #a1a1a6 !important; }
@@ -340,11 +340,11 @@ html, body { overflow-x: clip; }
 
 /* Explicit class-based dark theme support */
 html.dark header, [data-theme="dark"] header, body.dark header, body[data-theme="dark"] header {
-  background: #1c1c1e !important; border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+  background: #262628 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
 }
 html.dark.op-scrolled header, [data-theme="dark"].op-scrolled header,
 body.dark html.op-scrolled header, body[data-theme="dark"] html.op-scrolled header {
-  background: #1c1c1e !important; border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.7) !important;
+  background: #262628 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.7) !important;
 }
 html.dark header .text-black, html.dark header button.text-black, html.dark header a.text-black, html.dark header .text-slate-900,
 [data-theme="dark"] header .text-black, [data-theme="dark"] header button.text-black, [data-theme="dark"] header a.text-black, [data-theme="dark"] header .text-slate-900,
@@ -405,7 +405,7 @@ body.dark #navbar-social-icons a:hover, body[data-theme="dark"] #navbar-social-i
 }
 html.dark #desktop-hamburger-menu, [data-theme="dark"] #desktop-hamburger-menu,
 body.dark #desktop-hamburger-menu, body[data-theme="dark"] #desktop-hamburger-menu {
-  background: #1c1c1e !important;
+  background: #262628 !important;
   border-color: rgba(255, 255, 255, 0.15) !important;
 }
 html.dark #desktop-hamburger-menu button, [data-theme="dark"] #desktop-hamburger-menu button,
@@ -423,12 +423,12 @@ body.dark #desktop-hamburger-menu button.font-bold, body[data-theme="dark"] #des
 }
 html.dark #mobile-menu-drawer, [data-theme="dark"] #mobile-menu-drawer,
 body.dark #mobile-menu-drawer, body[data-theme="dark"] #mobile-menu-drawer {
-  background: #1c1c1e !important;
+  background: #262628 !important;
   color: #ffffff !important;
 }
 html.dark #mobile-menu-drawer .bg-white, [data-theme="dark"] #mobile-menu-drawer .bg-white,
 body.dark #mobile-menu-drawer .bg-white, body[data-theme="dark"] #mobile-menu-drawer .bg-white {
-  background: #1c1c1e !important;
+  background: #262628 !important;
 }
 html.dark #mobile-menu-drawer .text-black, html.dark #mobile-menu-drawer span.text-black,
 [data-theme="dark"] #mobile-menu-drawer .text-black, [data-theme="dark"] #mobile-menu-drawer span.text-black,
@@ -467,7 +467,7 @@ body.dark #account-dropdown-btn svg, body[data-theme="dark"] #account-dropdown-b
 }
 html.dark #account-dropdown-menu, [data-theme="dark"] #account-dropdown-menu,
 body.dark #account-dropdown-menu, body[data-theme="dark"] #account-dropdown-menu {
-  background: #1c1c1e !important;
+  background: #262628 !important;
   border-color: rgba(255, 255, 255, 0.15) !important;
   color: #ffffff !important;
 }

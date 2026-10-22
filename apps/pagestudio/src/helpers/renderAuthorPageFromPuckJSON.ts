@@ -201,7 +201,6 @@ export function renderAuthorPageFromPuckJSON(
 
   <style>
     html, body { margin: 0; padding: 0; }
-    body { font-family: Inter, sans-serif; background: #fff; }
 
     .font-share { font-family: 'Share Tech Mono', monospace !important; }
     .font-lato { font-family: 'Lato', sans-serif !important; }
