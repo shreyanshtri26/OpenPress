@@ -28,6 +28,9 @@ jobs:
       - name: Write env file
         run: printf '%s\n' "$API_ENV_FILE" > .env.local
         env: { API_ENV_FILE: '${{ secrets.API_ENV_FILE }}' }
+      - name: Use current setting names
+        # Temporary: renames old keys in API_ENV_FILE; remove once the secret uses the new names.
+        run: node scripts/rename-env-keys.mjs .env.local
       - run: npm run seed:taxonomies
       - run: npm run seed:site-assets
       - run: npm run publish:login

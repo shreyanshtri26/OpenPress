@@ -35,6 +35,9 @@ jobs:
           printf '%s\n' "$API_ENV_FILE" > .env.deploy
           printf 'NEON_AUTH_BASE_URL=%s\n' "$NEON_AUTH_BASE_URL" >> .env.deploy
         env: { API_ENV_FILE: '${{ secrets.API_ENV_FILE }}', NEON_AUTH_BASE_URL: '${{ vars.NEON_AUTH_BASE_URL }}' }
+      - name: Use current setting names
+        # Temporary: renames old keys in API_ENV_FILE; remove once the secret uses the new names.
+        run: node scripts/rename-env-keys.mjs .env.deploy
       - name: Apply database migrations
         # Reads DATABASE_URL from the env file; applies only the migrations that have not run yet.
         run: node --env-file=.env.deploy ../../node_modules/drizzle-kit/bin.cjs migrate --config=drizzle.config.mjs
