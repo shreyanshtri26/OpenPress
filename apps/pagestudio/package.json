@@ -10,6 +10,7 @@
     "build": "npm run build:published-styles && tsc -b && vite build && npm run build:publish-renderer",
     "build:publish-renderer": "vite build --config vite.publish-renderer.config.ts",
     "lint": "eslint .",
+    "test": "npm run build:publish-renderer && node scripts/check-published.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

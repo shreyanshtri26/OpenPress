@@ -4,7 +4,7 @@ The backend for OpenPress: authentication, the editorial workflow, the media lib
 
 - **Runtime:** Node 24 or newer
 - **Data:** Postgres through [Drizzle ORM](https://orm.drizzle.team) and `postgres.js`
-- **Files:** any S3-compatible store (`@aws-sdk/client-s3` pointed at your endpoint)
+- **Files:** any S3-compatible object store, set with the `STORAGE_*` variables
 - **Auth:** signed JWTs (`jsonwebtoken`) and `bcryptjs` password hashes
 - **Hosting target:** Neon Functions (`neon.ts`), or any Node host
 
