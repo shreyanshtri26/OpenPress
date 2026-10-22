@@ -27,7 +27,7 @@ import { AllStoriesEmptyState } from './all-stories/AllStoriesEmptyState';
 import { AllStoriesLoading } from './all-stories/AllStoriesLoading';
 import CustomButton from '../common/CustomButton';
 import ConfirmationModal from '../common/ConfirmationModal';
-import { renderPageFromPuckJSON } from '../../../lib/renderBlogPage';
+import { renderPageFromPuckJSON } from '@builder/helpers/blog/renderBlogPage';
 import { getPublishableData } from '../../helpers/publishedSnapshot';
 import { fetchReadyToPublishStories } from '../../../lib/api/storyService';
 import { Loader2, Trash2 } from 'lucide-react';

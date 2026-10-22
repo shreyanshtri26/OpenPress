@@ -116,6 +116,11 @@ interface RenderOptions {
   currentStory?: BlogStory | null;
   authors?: any[];
   campaigns?: any[];
+  // Explicit share metadata (admin story publish); each wins over what is derived from currentStory.
+  ogTitle?: string;
+  ogImage?: string;
+  ogDescription?: string;
+  keywords?: string[];
   canonicalUrl?: string;
   publishUrl?: string;
 }
@@ -338,8 +343,8 @@ export function renderPageFromPuckJSON(
     return html.replace(/<[^>]*>?/gm, '');
   };
   const rawDescription = currentStory?.storySummary || currentStory?.description?.blocks?.[0]?.data?.text || "";
-  const ogDescription = stripHtml(rawDescription);
-  const keywords = currentStory?.keywords ?? [];
+  const ogDescription = options.ogDescription || stripHtml(rawDescription);
+  const keywords = options.keywords ?? currentStory?.keywords ?? [];
   const baseUrl = (import.meta as any).env?.VITE_CANONICAL_URL || "https://openpress.com";
   const siteName = (import.meta as any).env?.VITE_SITE_NAME || "OpenPress";
   const twitterHandle = (import.meta as any).env?.VITE_TWITTER_HANDLE || "";
@@ -558,6 +563,7 @@ export function renderPageFromPuckJSON(
    * ================================================== */
   const storyTitle = currentStory?.socialHeadline || currentStory?.title || currentStory?.headline || "";
   const ogTitle =
+    options.ogTitle ||
     (typeof window !== "undefined" && window.__PUCK_FINAL_TITLE__) ||
     storyTitle ||
     pageJson.pageType ||
@@ -565,6 +571,7 @@ export function renderPageFromPuckJSON(
   // Shares carry the story's own image (a dedicated social image wins); the OpenPress card (1200x630) is the
   // fallback for stories without one, so a preview is never a tiny or transparent logo.
   const rawOgImage =
+    options.ogImage ||
     currentStory?.socialImage ||
     currentStory?.imageUrl ||
     currentStory?.image ||

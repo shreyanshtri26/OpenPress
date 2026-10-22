@@ -493,3 +493,98 @@ html.dark #search-results .divide-gray-200 > *, [data-theme="dark"] #search-resu
 body.dark #search-results .divide-gray-200 > *, body[data-theme="dark"] #search-results .divide-gray-200 > * {
   border-color: rgba(255, 255, 255, 0.1) !important;
 }
+
+/* Dark content: the renderers hard-code white surfaces and near-black text; remap them once for every block.
+   Header, footer and the menus keep their own rules above, so they are excluded here. */
+@media (prefers-color-scheme: dark) {
+  .bg-white:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="bg-[#fff]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="bg-[#ffffff]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *) { background-color: var(--op-surface) !important; }
+  .bg-neutral-50:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .bg-neutral-100:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .bg-gray-50:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .bg-gray-100:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .bg-slate-50:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .bg-slate-100:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="bg-[#f8f9fa]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="bg-[#f5f5f7]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="bg-[#f5f5f5]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *) { background-color: #262628 !important; }
+  .text-black:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-neutral-900:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-neutral-800:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-gray-900:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-gray-800:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-slate-900:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-slate-800:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="text-[#1d1d1f]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="text-[#222]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="text-[#111]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *) { color: var(--op-text) !important; }
+  .text-neutral-700:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-neutral-600:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-gray-700:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-gray-600:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-slate-700:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-slate-600:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="text-[#555]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="text-[#6e6e73]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *) { color: #A2AAAD !important; }
+  .text-neutral-500:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-neutral-400:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-gray-500:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-gray-400:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .text-slate-500:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="text-[#86868b]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *) { color: var(--op-muted) !important; }
+  .border-black:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .border-neutral-200:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .border-neutral-300:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .border-gray-200:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .border-gray-300:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  .border-slate-200:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="border-[#e5e5ea]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="border-[#e2e2e7]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+  [class*="border-[#d2d2d7]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *) { border-color: var(--op-line) !important; }
+}
+:is(html.dark, [data-theme="dark"], body.dark) .bg-white:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="bg-[#fff]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="bg-[#ffffff]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *) { background-color: var(--op-surface) !important; }
+:is(html.dark, [data-theme="dark"], body.dark) .bg-neutral-50:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .bg-neutral-100:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .bg-gray-50:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .bg-gray-100:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .bg-slate-50:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .bg-slate-100:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="bg-[#f8f9fa]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="bg-[#f5f5f7]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="bg-[#f5f5f5]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *) { background-color: #262628 !important; }
+:is(html.dark, [data-theme="dark"], body.dark) .text-black:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-neutral-900:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-neutral-800:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-gray-900:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-gray-800:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-slate-900:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-slate-800:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="text-[#1d1d1f]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="text-[#222]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="text-[#111]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *) { color: var(--op-text) !important; }
+:is(html.dark, [data-theme="dark"], body.dark) .text-neutral-700:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-neutral-600:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-gray-700:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-gray-600:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-slate-700:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-slate-600:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="text-[#555]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="text-[#6e6e73]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *) { color: #A2AAAD !important; }
+:is(html.dark, [data-theme="dark"], body.dark) .text-neutral-500:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-neutral-400:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-gray-500:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-gray-400:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .text-slate-500:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="text-[#86868b]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *) { color: var(--op-muted) !important; }
+:is(html.dark, [data-theme="dark"], body.dark) .border-black:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .border-neutral-200:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .border-neutral-300:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .border-gray-200:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .border-gray-300:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) .border-slate-200:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="border-[#e5e5ea]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="border-[#e2e2e7]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *),
+:is(html.dark, [data-theme="dark"], body.dark) [class*="border-[#d2d2d7]"]:not(header *):not(footer *):not(#mobile-menu-drawer *):not(#account-dropdown-menu *):not(#desktop-hamburger-menu *) { border-color: var(--op-line) !important; }

@@ -1,8 +1,8 @@
 import apiFetch from "../utils/api";
 import env from "../utils/env";
-import { renderPageFromPuckJSON } from "../../lib/renderBlogPage";
+import { renderPageFromPuckJSON } from "@builder/helpers/blog/renderBlogPage";
 import { publishHomePage } from "./publishHomePage";
-import { renderHomePageFromPuckJSON } from "./renderHomePageFromPuckJSON";
+import { renderHomePageFromPuckJSON } from "@builder/helpers/renderHomePageFromPuckJSON";
 import { extractTextFromDescription, calculateReadTimeFromText } from './storyUtils';
 import { toast } from "react-hot-toast";
 import { mapBackendCampaignToFrontend } from "./campaignMapper";

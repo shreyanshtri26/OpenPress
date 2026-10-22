@@ -7,8 +7,8 @@ import MediaTab from "../../../publishTabs/MediaTab"
 import PlacementTab from "../../../publishTabs/PlacementTab";
 import { Eye, Edit, Trash2, Image as ImageIcon, ChevronDown, FileText, Compass, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { renderPageFromPuckJSON } from "../../../../../lib/renderBlogPage";
-import { renderAuthorPageFromPuckJSON, renderAuthorsListPageFromPuckJSON } from "../../../../../lib/renderAuthorPage";
+import { renderPageFromPuckJSON } from "@builder/helpers/blog/renderBlogPage";
+import { renderAuthorPageFromPuckJSON } from "@builder/helpers/renderAuthorPageFromPuckJSON";
 import { fetchReadyToPublishStories } from "../../../../../lib/api/storyService";
 import { publishHomePage } from "../../../../helpers/publishHomePage";
 import { republishStoryPages, republishAllCampaignPages } from "../../../../helpers/republishAllCampaignPages";
@@ -876,6 +876,19 @@ export default function PublishDrawer({
 
       const uniqueAuthors = Array.from(new Map(authorsToPublish.map(a => [a.userId || a.authorId || a.id, a])).values());
 
+      // The author renderer reads the navbar sections and ad campaigns from the page object.
+      const authHeaders = { "Content-Type": "application/json", ...(user?.token && { Authorization: `Bearer ${user.token}` }) };
+      let authorNavSections = [];
+      let authorNavCampaigns = [];
+      try {
+        const sectionsRes = await apiFetch(`${env.backendApi}/taxonomy/section/values`, { method: "GET", headers: authHeaders });
+        if (sectionsRes.ok) authorNavSections = (await sectionsRes.json()).values || [];
+        const campRes = await apiFetch(`${env.backendApi}/getCampaigns`, { method: "GET", headers: authHeaders });
+        if (campRes.ok) authorNavCampaigns = ((await campRes.json()).campaigns || []).map(mapBackendCampaignToFrontend);
+      } catch (error) {
+        console.warn("Failed to fetch sections/campaigns for author pages:", error);
+      }
+
       for (const author of uniqueAuthors) {
         const authorId = author.userId || author.authorId || author.id;
         const authorName = author.name || author.authorName || author.fullName;
@@ -910,6 +923,8 @@ export default function PublishDrawer({
             ...authorPageJson,
             data: getPublishableData(authorPageJson.data),
             storiesById: latestStoriesById,
+            sections: authorNavSections,
+            campaigns: authorNavCampaigns,
             authorName,
             authorId
           });

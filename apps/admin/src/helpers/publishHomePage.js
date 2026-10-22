@@ -1,6 +1,7 @@
-import { renderHomePageFromPuckJSON } from "./renderHomePageFromPuckJSON";
+// One renderer for every publish path: the same Page Studio code the publish bundle uses.
+import { renderHomePageFromPuckJSON } from "@builder/helpers/renderHomePageFromPuckJSON";
 import { extractTextFromDescription, calculateReadTimeFromText } from './storyUtils';
-import { renderPageFromPuckJSON } from "../../lib/renderBlogPage";
+import { renderPageFromPuckJSON } from "@builder/helpers/blog/renderBlogPage";
 import apiFetch from "../utils/api";
 import env from "../utils/env";
 import { mapBackendCampaignToFrontend } from "./campaignMapper";
