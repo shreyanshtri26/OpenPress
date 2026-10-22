@@ -1,0 +1,133 @@
+/* Page Studio theme: Apple-style greys for the editor chrome only.
+   Published pages have their own tokens (published-page.tailwind-entry.css); the canvas is not touched.
+   Puck's grey scale runs dark (01) to light (12), so dark mode simply reverses it. */
+.studio-shell {
+  --studio-bg: #f5f5f7;
+  --studio-surface: #ffffff;
+  --studio-surface-2: #fbfbfd;
+  --studio-line: rgba(0, 0, 0, 0.08);
+  --studio-text: #1d1d1f;
+  --studio-muted: #6e6e73;
+  --studio-accent: #0071e3;
+  --studio-accent-hover: #0077ed;
+  --studio-danger: #d70015;
+  --studio-ok: #248a3d;
+  --studio-warn: #b25000;
+  --studio-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.08);
+  --studio-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  --puck-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+  --puck-color-grey-01: #1d1d1f; --puck-color-grey-02: #2c2c2e; --puck-color-grey-03: #3a3a3c;
+  --puck-color-grey-04: #515154; --puck-color-grey-05: #6e6e73; --puck-color-grey-06: #86868b;
+  --puck-color-grey-07: #a1a1a6; --puck-color-grey-08: #c7c7cc; --puck-color-grey-09: #d9d9de;
+  --puck-color-grey-10: #e8e8ed; --puck-color-grey-11: #f5f5f7; --puck-color-grey-12: #fbfbfd;
+  --puck-color-azure-01: #003a75; --puck-color-azure-02: #00539f; --puck-color-azure-03: #0062c4;
+  --puck-color-azure-04: #0071e3; --puck-color-azure-05: #2b88e8; --puck-color-azure-06: #5aa2ee;
+  --puck-color-azure-07: #86bbf3; --puck-color-azure-08: #b0d2f7; --puck-color-azure-09: #d3e5fa;
+  --puck-color-azure-10: #e8f1fc; --puck-color-azure-11: #f2f7fe; --puck-color-azure-12: #f8fbff;
+
+  color: var(--studio-text);
+  background: var(--studio-bg);
+  font-family: var(--puck-font-family);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-color-scheme: dark) {
+  .studio-shell:not([data-studio-theme="light"]) {
+    --studio-bg: #1D1D1F; --studio-surface: #262628; --studio-surface-2: #2e2e31;
+    --studio-line: rgba(255, 255, 255, 0.12); --studio-text: #f5f5f7; --studio-muted: #A2AAAD;
+    --studio-accent: #0a84ff; --studio-accent-hover: #409cff;
+    --studio-danger: #ff453a; --studio-ok: #30d158; --studio-warn: #ff9f0a;
+    --studio-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5);
+    --puck-color-grey-01: #f5f5f7; --puck-color-grey-02: #e8e8ed; --puck-color-grey-03: #d9d9de;
+    --puck-color-grey-04: #c7c7cc; --puck-color-grey-05: #a1a1a6; --puck-color-grey-06: #86868b;
+    --puck-color-grey-07: #6e6e73; --puck-color-grey-08: #515154; --puck-color-grey-09: #3a3a3c;
+    --puck-color-grey-10: #2e2e31; --puck-color-grey-11: #262628; --puck-color-grey-12: #1D1D1F;
+    --puck-color-white: #262628; --puck-color-black: #f5f5f7;
+  }
+}
+
+/* Top bar (the Back strip in admin) */
+.studio-topbar {
+  display: flex; align-items: center; position: relative; height: 44px; flex-shrink: 0; padding: 0 16px;
+  background: color-mix(in srgb, var(--studio-surface) 80%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--studio-line); font-size: 13px;
+}
+.studio-topbar-back { color: var(--studio-muted); background: none; border: 0; cursor: pointer; font: inherit; transition: color 0.2s var(--studio-ease); }
+.studio-topbar-back:hover { color: var(--studio-text); }
+.studio-topbar-title { position: absolute; left: 50%; transform: translateX(-50%); font-weight: 600; letter-spacing: -0.01em; }
+
+/* Puck chrome */
+.studio-shell [class*="_PuckLayout"], .studio-shell [class*="_Puck_"] { background: var(--studio-bg); }
+.studio-shell [class*="_Sidebar_"], .studio-shell [class*="_SidebarSection_"] { background: var(--studio-surface); border-color: var(--studio-line); }
+.studio-shell [class*="_SidebarSection-title_"] { font-weight: 600; letter-spacing: -0.01em; }
+.studio-shell [class*="_PuckCanvas_"] { background: var(--studio-bg); }
+.studio-shell [class*="_Button--primary_"] { background: var(--studio-accent); border-radius: 980px; }
+.studio-shell [class*="_Button--primary_"]:hover { background: var(--studio-accent-hover); }
+.studio-shell [class*="_Button--secondary_"] { border-radius: 980px; border-color: var(--studio-line); }
+.studio-shell input:not([type="checkbox"]):not([type="radio"]), .studio-shell textarea, .studio-shell select {
+  border-radius: 10px; border-color: var(--studio-line);
+}
+.studio-shell input:focus-visible, .studio-shell textarea:focus-visible, .studio-shell select:focus-visible,
+.studio-btn:focus-visible { outline: 3px solid color-mix(in srgb, var(--studio-accent) 35%, transparent); outline-offset: 1px; }
+.studio-shell ::-webkit-scrollbar { width: 10px; height: 10px; }
+.studio-shell ::-webkit-scrollbar-thumb { background: var(--studio-line); border-radius: 10px; border: 3px solid transparent; background-clip: content-box; }
+
+/* Header actions */
+.studio-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
+.studio-actions-left, .studio-actions-right { display: flex; align-items: center; gap: 12px; }
+.studio-field { display: inline-flex; align-items: center; gap: 8px; }
+.studio-field-label { font-size: 12px; color: var(--studio-muted); }
+.studio-select {
+  appearance: none; -webkit-appearance: none; height: 32px; padding: 0 30px 0 12px; font: inherit; font-size: 13px;
+  color: var(--studio-text); background-color: var(--studio-surface-2); border: 1px solid var(--studio-line); border-radius: 980px;
+  cursor: pointer; transition: border-color 0.2s var(--studio-ease), background-color 0.2s var(--studio-ease);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%2386868b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+}
+.studio-select:hover { border-color: color-mix(in srgb, var(--studio-text) 25%, transparent); }
+.studio-select:disabled { opacity: 0.5; cursor: default; }
+
+.studio-btn {
+  height: 32px; padding: 0 16px; border-radius: 980px; border: 1px solid var(--studio-line); white-space: nowrap;
+  font: inherit; font-size: 13px; font-weight: 500; color: var(--studio-text); background: var(--studio-surface-2); cursor: pointer;
+  transition: background-color 0.2s var(--studio-ease), transform 0.12s var(--studio-ease), opacity 0.2s var(--studio-ease);
+}
+.studio-btn:hover:not(:disabled) { background: var(--studio-surface); border-color: color-mix(in srgb, var(--studio-text) 20%, transparent); }
+.studio-btn:active:not(:disabled) { transform: scale(0.97); }
+.studio-btn:disabled { opacity: 0.5; cursor: default; }
+.studio-btn--secondary { color: var(--studio-accent); }
+.studio-btn--primary { color: #fff; background: var(--studio-accent); border-color: transparent; }
+.studio-btn--primary:hover:not(:disabled) { background: var(--studio-accent-hover); border-color: transparent; }
+.studio-btn--primary.is-waiting { opacity: 0.5; cursor: not-allowed; }
+
+.studio-tip-host { position: relative; }
+.studio-tip {
+  display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; z-index: 9999; width: 288px; padding: 10px 14px;
+  font-size: 12px; line-height: 1.45; color: var(--studio-text); background: var(--studio-surface);
+  border: 1px solid var(--studio-line); border-radius: 12px; box-shadow: var(--studio-shadow);
+}
+.studio-tip-host:hover .studio-tip, .studio-tip-host:focus-within .studio-tip { display: block; }
+
+/* Toasts and progress */
+.studio-toast-stack { position: fixed; right: 24px; bottom: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; min-width: 320px; max-width: 440px; }
+.studio-toast, .studio-progress {
+  padding: 12px 16px; color: var(--studio-text); font-size: 13px; background: var(--studio-surface);
+  border: 1px solid var(--studio-line); border-radius: 14px; box-shadow: var(--studio-shadow);
+  animation: studio-in 0.25s var(--studio-ease);
+}
+.studio-toast { border-left: 3px solid var(--studio-accent); }
+.studio-toast--error { border-left-color: var(--studio-danger); }
+.studio-toast--success { border-left-color: var(--studio-ok); }
+.studio-toast p, .studio-toast li { color: var(--studio-muted); }
+.studio-toast-x { color: var(--studio-muted); background: none; border: 0; cursor: pointer; transition: color 0.2s var(--studio-ease); }
+.studio-toast-x:hover { color: var(--studio-text); }
+.studio-progress p, .studio-progress .tabular-nums { color: var(--studio-muted); }
+.studio-progress-track { margin-top: 8px; height: 6px; border-radius: 6px; background: var(--studio-line); overflow: hidden; }
+.studio-progress-bar { height: 100%; border-radius: 6px; background: var(--studio-accent); transition: width 0.5s var(--studio-ease); }
+.studio-progress-bar.is-warn { background: var(--studio-warn); }
+@keyframes studio-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .studio-shell *, .studio-toast, .studio-progress { animation: none !important; transition: none !important; } }
+
+.studio-banner { margin: 0 0 12px; padding: 10px 14px; font-size: 13px; color: var(--studio-muted); background: var(--studio-surface); border: 1px solid var(--studio-line); border-left: 3px solid var(--studio-warn); border-radius: 12px; }

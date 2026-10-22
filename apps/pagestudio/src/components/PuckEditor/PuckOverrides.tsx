@@ -48,20 +48,20 @@ const PublishProgress = ({ job, finished, savingPage }: { job: RepublishJob | nu
   const known = total > 0;
   const percent = known ? Math.round((done / total) * 100) : 0;
   return (
-    <div className="shadow-xl rounded-lg overflow-hidden bg-slate-900 text-white px-4 py-3" role="status" aria-live="polite">
+    <div className="studio-progress" role="status" aria-live="polite">
       <div className="flex items-baseline justify-between gap-3">
         <span className="font-semibold text-sm">
           {finished ? (job?.failedCount ? "Publish finished with errors" : "All pages published") : job ? "Publishing all pages" : `Publishing ${savingPage ?? "page"}…`}
         </span>
-        {known && <span className="text-xs tabular-nums text-white/80">{done} of {total} pages</span>}
+        {known && <span className="text-xs tabular-nums text-inherit">{done} of {total} pages</span>}
       </div>
-      <div className="mt-2 h-2 rounded-full bg-white/20 overflow-hidden">
+      <div className="studio-progress-track">
         <div
-          className={`h-full rounded-full ${finished && job?.failedCount ? "bg-amber-400" : "bg-green-400"} transition-all duration-500 ${known ? "" : "w-1/3 animate-pulse"}`}
+          className={`studio-progress-bar ${finished && job?.failedCount ? "is-warn" : ""} ${known ? "" : "w-1/3 animate-pulse"}`}
           style={known ? { width: `${percent}%` } : undefined}
         />
       </div>
-      <p className="text-[11px] text-white/70 mt-1.5">
+      <p className="text-[11px]  mt-1.5">
         {known
           ? `${percent}% done${job?.failedCount ? ` · ${job.failedCount} failed` : ""}`
           : job ? "Preparing the list of pages…" : "Saving this page, then the rest of the site."}
@@ -245,6 +245,12 @@ export function PuckHeaderActions({
     { tone: "info" | "error"; title: string; message: string } | null
   >(null);
   const [republishToasts, setRepublishToasts] = useState<RepublishToast[]>([]);
+  // Other editor modules (e.g. Preview) report problems through this event instead of alert().
+  useEffect(() => {
+    const onNotice = (e: Event) => setRepublishNotice((e as CustomEvent).detail);
+    window.addEventListener("studio:notice", onNotice);
+    return () => window.removeEventListener("studio:notice", onNotice);
+  }, []);
   // Publishing stays locked while any site-wide job is active.
   const [activeRepublishJob, setActiveRepublishJob] = useState<RepublishJob | null>(() => {
     const job = getLastKnownRepublishJob();
@@ -580,7 +586,7 @@ export function PuckHeaderActions({
       }
     } catch (error) {
       console.error("Failed to publish:", error);
-      alert("Failed to publish. Check console for details.");
+      setRepublishNotice({ tone: "error", title: "Publish failed", message: "The page could not be published. Details are in the browser console." });
     } finally {
       setIsPublishing(false);
     }
@@ -731,7 +737,7 @@ export function PuckHeaderActions({
       }
     } catch (error) {
       console.error("Failed to publish error page:", error);
-      alert("Failed to publish error page. Check console for details.");
+      setRepublishNotice({ tone: "error", title: "Publish failed", message: "Error page could not be published. Details are in the browser console." });
     } finally {
       setIsPublishing(false);
     }
@@ -886,7 +892,7 @@ export function PuckHeaderActions({
       }
     } catch (error) {
       console.error("Failed to publish section:", error);
-      alert("Failed to publish section. Check console for details.");
+      setRepublishNotice({ tone: "error", title: "Publish failed", message: "Section could not be published. Details are in the browser console." });
     } finally {
       setIsPublishing(false);
     }
@@ -1039,7 +1045,7 @@ export function PuckHeaderActions({
       }
     } catch (error) {
       console.error("Failed to publish about page:", error);
-      alert("Failed to publish about page. Check console for details.");
+      setRepublishNotice({ tone: "error", title: "Publish failed", message: "About page could not be published. Details are in the browser console." });
     } finally {
       setIsPublishing(false);
     }
@@ -1190,7 +1196,7 @@ export function PuckHeaderActions({
       }
     } catch (error) {
       console.error("Failed to publish support us page:", error);
-      alert("Failed to publish support us page. Check console for details.");
+      setRepublishNotice({ tone: "error", title: "Publish failed", message: "Support us page could not be published. Details are in the browser console." });
     } finally {
       setIsPublishing(false);
     }
@@ -1341,7 +1347,7 @@ export function PuckHeaderActions({
       }
     } catch (error) {
       console.error("Failed to publish privacy policy page:", error);
-      alert("Failed to publish privacy policy page. Check console for details.");
+      setRepublishNotice({ tone: "error", title: "Publish failed", message: "Privacy policy page could not be published. Details are in the browser console." });
     } finally {
       setIsPublishing(false);
     }
@@ -1480,7 +1486,7 @@ export function PuckHeaderActions({
       // }
     } catch (error) {
       console.error("Failed to publish Contact Us page:", error);
-      alert("Failed to publish Contact Us page. Check console for details.");
+      setRepublishNotice({ tone: "error", title: "Publish failed", message: "Contact Us page could not be published. Details are in the browser console." });
     } finally {
       setIsPublishing(false);
     }
@@ -1782,7 +1788,7 @@ export function PuckHeaderActions({
       }
     } catch (error) {
       console.error("Failed to publish AuthorsList page:", error);
-      alert("Failed to publish AuthorsList page. Check console for details.");
+      setRepublishNotice({ tone: "error", title: "Publish failed", message: "AuthorsList page could not be published. Details are in the browser console." });
     } finally {
       setIsPublishing(false);
     }
@@ -1941,7 +1947,7 @@ export function PuckHeaderActions({
       }
     } catch (error) {
       console.error("Failed to publish author page:", error);
-      alert("Failed to publish author page. Check console for details.");
+      setRepublishNotice({ tone: "error", title: "Publish failed", message: "Author page could not be published. Details are in the browser console." });
     } finally {
       setIsPublishing(false);
     }
@@ -1991,7 +1997,7 @@ export function PuckHeaderActions({
   return (
     <>
       {/* Publish toasts share one stack so they never overlap */}
-      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 min-w-[320px] max-w-[440px]">
+      <div className="studio-toast-stack">
         {(activeRepublishJob || finishedJob || isPublishing) && (
           <PublishProgress
             job={activeRepublishJob ?? finishedJob}
@@ -2000,30 +2006,30 @@ export function PuckHeaderActions({
           />
         )}
         {republishNotice && (
-          <div className="shadow-xl rounded-lg overflow-hidden">
-            <div className={`${republishNotice.tone === "error" ? "bg-red-600" : "bg-blue-600"} text-white px-4 py-3`}>
+          <div className="studio-toast-wrap">
+            <div className={`studio-toast ${republishNotice.tone === "error" ? "studio-toast--error" : "studio-toast--info"}`}>
               <div className="flex items-start justify-between gap-3">
                 <span className="font-semibold text-sm">{republishNotice.title}</span>
                 <button
                   onClick={() => setRepublishNotice(null)}
-                  className="text-white/80 hover:text-white transition-colors"
+                  className="studio-toast-x"
                   aria-label="Dismiss message"
                 >
                   ✕
                 </button>
               </div>
-              <p className="text-xs text-white/90 mt-1">{republishNotice.message}</p>
+              <p className="text-xs mt-1">{republishNotice.message}</p>
             </div>
           </div>
         )}
 
         {/* Site-wide publish results; each stays until dismissed */}
         {republishToasts.map((toast) => (
-          <div key={toast.key} className="shadow-xl rounded-lg overflow-hidden">
+          <div key={toast.key} className="studio-toast-wrap">
             <div
-              className={`${
-                toast.tone === "error" ? "bg-red-600" : toast.tone === "success" ? "bg-green-600" : "bg-blue-600"
-              } text-white px-4 py-3`}
+              className={`studio-toast ${
+                toast.tone === "error" ? "studio-toast--error" : toast.tone === "success" ? "studio-toast--success" : "studio-toast--info"
+              }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <span className="font-semibold text-sm">{toast.title}</span>
@@ -2032,17 +2038,17 @@ export function PuckHeaderActions({
                     markRepublishToastSeen(toast.key);
                     setRepublishToasts((current) => current.filter((t) => t.key !== toast.key));
                   }}
-                  className="text-white/80 hover:text-white transition-colors"
+                  className="studio-toast-x"
                   aria-label="Dismiss message"
                 >
                   ✕
                 </button>
               </div>
 
-              {toast.message && <p className="text-xs text-white/90 mt-1">{toast.message}</p>}
+              {toast.message && <p className="text-xs mt-1">{toast.message}</p>}
 
               {toast.failed && toast.failed.length > 0 && (
-                <ul className="text-xs text-white/90 max-h-40 overflow-y-auto space-y-1 mt-2">
+                <ul className="text-xs max-h-40 overflow-y-auto space-y-1 mt-2">
                   {toast.failed.map((failure, index) => (
                     <li key={`${failure.page}-${index}`}>
                       <span className="font-medium">{failure.page}</span>: {failure.reason}
@@ -2052,7 +2058,7 @@ export function PuckHeaderActions({
               )}
 
               {toast.failed && (toast.failedCount ?? 0) > toast.failed.length && (
-                <p className="text-xs text-white/70 mt-2">
+                <p className="text-xs  mt-2">
                   Showing the first {toast.failed.length} of {toast.failedCount}.
                 </p>
               )}
@@ -2061,95 +2067,71 @@ export function PuckHeaderActions({
         ))}
       </div>
 
-      <div className="flex items-center w-full justify-between">
-        {/* LEFT: Page Type Dropdown + Section Dropdown */}
-        <div className="flex items-center px-3 gap-4">
-          <div className="flex items-center">
-            <span className="text-sm text-gray-400 mr-2">Currently editing:</span>
-
-            <div className="relative inline-block border-b border-black pr-4">
-              <select
-                value={selectedPage}
-                onChange={(e) => setSelectedPage(e.target.value as PageType)}
-                className="text-sm bg-transparent focus:outline-none cursor-pointer border-none appearance-none pr-5"
-                style={{ padding: "2px 0" }}
-              >
-                <option value="Home">Home</option>
-                <option value="Videos">Videos</option>
-                <option value="VideoAuthor">Video Author</option>
-                <option value="Blog">Blog</option>
-                <option value="Section">Section</option>
-                <option value="Error">Error</option>
-                <option value="About">About</option>
-                <option value="SupportUs">Support Us</option>
-                <option value="PrivacyPolicy">Privacy Policy</option>
-                <option value="MediaCouncil">Editorial Standards</option>
-                <option value="ContactUs">Contact Us</option>
-                <option value="Author">Author</option>
-                <option value="AuthorsList">All Authors</option>
-              </select>
-
-              <span className="absolute right-0 bold text-s pointer-events-none">⌄</span>
-            </div>
-          </div>
-
-          {/* Section Dropdown - only shows when pageType is Section */}
+      <div className="studio-actions">
+        {/* LEFT: page, section and author pickers */}
+        <div className="studio-actions-left">
+          <label className="studio-field">
+            <span className="studio-field-label">Editing</span>
+            <select value={selectedPage} onChange={(e) => setSelectedPage(e.target.value as PageType)} className="studio-select">
+              <option value="Home">Home</option>
+              <option value="Videos">Videos</option>
+              <option value="VideoAuthor">Video Author</option>
+              <option value="Blog">Blog</option>
+              <option value="Section">Section</option>
+              <option value="Error">Error</option>
+              <option value="About">About</option>
+              <option value="SupportUs">Support Us</option>
+              <option value="PrivacyPolicy">Privacy Policy</option>
+              <option value="MediaCouncil">Editorial Standards</option>
+              <option value="ContactUs">Contact Us</option>
+              <option value="Author">Author</option>
+              <option value="AuthorsList">All Authors</option>
+            </select>
+          </label>
           {selectedPage === "Section" && (
-            <div className="flex items-center">
-              <span className="text-sm text-gray-400 mr-2">Section:</span>
-              <div className="relative inline-block border-b border-black pr-4">
-                <select
-                  value={activeSection || ""}
-                  onChange={(e) => setActiveSection(e.target.value || null)}
-                  disabled={loadingSections}
-                  className="text-sm bg-transparent focus:outline-none cursor-pointer border-none appearance-none pr-5"
-                  style={{ padding: "2px 0" }}
-                >
-                  {loadingSections ? (
-                    <option>Loading...</option>
-                  ) : (
-                    sections.map((section) => (
-                      <option key={section} value={section}>
-                        {section}
-                      </option>
-                    ))
-                  )}
-                </select>
-                <span className="absolute right-0 bold text-s pointer-events-none">⌄</span>
-              </div>
-            </div>
-          )}
-
-          {/* Author Dropdown - only shows when pageType is Author */}
-          {selectedPage === "Author" && (
-            <div className="flex items-center">
-              <span className="text-sm text-gray-400 mr-2">Author:</span>
-              <div className="relative inline-block border-b border-black pr-4">
-                <select
-                  value={activeAuthor || ""}
-                  onChange={(e) => setActiveAuthor(e.target.value || null)}
-                  className="text-sm bg-transparent focus:outline-none cursor-pointer border-none appearance-none pr-5"
-                  style={{ padding: "2px 0" }}
-                >
-                  <option value="">Select Author</option>
-                  {getAuthorOptions().map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
+            <label className="studio-field">
+              <span className="studio-field-label">Section</span>
+              <select
+                value={activeSection || ""}
+                onChange={(e) => setActiveSection(e.target.value || null)}
+                disabled={loadingSections}
+                className="studio-select"
+              >
+                {loadingSections ? (
+                  <option>Loading…</option>
+                ) : (
+                  sections.map((section) => (
+                    <option key={section} value={section}>
+                      {section}
                     </option>
-                  ))}
-                </select>
-                <span className="absolute right-0 bold text-s pointer-events-none">
-                  ⌄
-                </span>
-              </div>
-            </div>
+                  ))
+                )}
+              </select>
+            </label>
+          )}
+          {selectedPage === "Author" && (
+            <label className="studio-field">
+              <span className="studio-field-label">Author</span>
+              <select
+                value={activeAuthor || ""}
+                onChange={(e) => setActiveAuthor(e.target.value || null)}
+                className="studio-select"
+              >
+                <option value="">Select author</option>
+                {getAuthorOptions().map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </label>
           )}
         </div>
 
         {/* RIGHT: Save + Preview + Publish */}
-        <div className="flex items-center gap-2">
+        <div className="studio-actions-right">
           <button
-            className="px-4 py-2 bg-slate-200 text-slate-900 rounded whitespace-nowrap"
+            className="studio-btn"
             onClick={() => scheduleAutosave(appState.data as unknown as PageBuilderData)}
             disabled={saving}
           >
@@ -2157,7 +2139,7 @@ export function PuckHeaderActions({
           </button>
 
           <button
-            className="px-4 py-2 bg-blue-600 text-white rounded"
+            className="studio-btn studio-btn--secondary"
             onClick={() => handlePublish(appState.data as PageBuilderData)}
           >
             Preview
@@ -2165,11 +2147,9 @@ export function PuckHeaderActions({
 
           {/* Publish button - for Home, Section, Blog, Error, About, PrivacyPolicy, MediaCouncil, ContactUs, Author, AuthorsList, Account and Login pages */}
           {(selectedPage === "Home" || selectedPage === "Section" || selectedPage === "Blog" || selectedPage === "Error" || selectedPage === "About" || selectedPage === "SupportUs" || selectedPage === "PrivacyPolicy" || selectedPage === "MediaCouncil" || selectedPage === "ContactUs" || selectedPage === "Author" || selectedPage === "AuthorsList") && (
-            <div className="relative group">
+            <div className="studio-tip-host">
             <button
-              className={`px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50 ${
-                activeRepublishJob ? "opacity-50 cursor-not-allowed" : "hover:bg-green-700"
-              }`}
+              className={`studio-btn studio-btn--primary ${activeRepublishJob ? "is-waiting" : ""}`}
               aria-disabled={!!activeRepublishJob}
               onClick={async () => {
                 if (activeRepublishJob) return;
@@ -2218,10 +2198,10 @@ export function PuckHeaderActions({
             {activeRepublishJob && !isPublishing && (
               <div
                 role="tooltip"
-                className="absolute right-0 top-full mt-2 z-[9999] hidden group-hover:block w-72 bg-slate-900 text-white text-xs px-3 py-2 rounded shadow-lg"
+                className="studio-tip"
               >
                 <p className="font-semibold text-sm">{republishLabel(activeRepublishJob.reason)} in progress</p>
-                <p className="mt-1 text-white/90">
+                <p className="mt-1">
                   {activeRepublishJob.total
                     ? `${activeRepublishJob.done} of ${activeRepublishJob.total} pages updated. `
                     : ""}

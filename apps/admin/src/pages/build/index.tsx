@@ -2,6 +2,7 @@
 // In-app Page Studio (Super User only). The editor lives in apps/pagestudio/src and is imported through @builder.
 import { lazy, Suspense, useContext, useEffect } from 'react';
 import '@measured/puck/puck.css';
+import '@builder/styles/studio-theme.css';
 import { AuthGuard } from '@/context/AuthGuard';
 import { UserContext } from '@/context/UserContext';
 import { useRouter } from '@/hooks/useRouter';
@@ -46,12 +47,12 @@ function BuildWorkspace() {
   }
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-slate-50">
-      <div className="relative flex h-11 shrink-0 items-center border-b border-gray-200 bg-white px-4 text-sm">
-        <button type="button" onClick={() => router.push('/dashboard')} className="font-medium text-gray-700 hover:text-black">
+    <div className="studio-shell fixed inset-0 flex flex-col">
+      <div className="studio-topbar">
+        <button type="button" onClick={() => router.push('/dashboard')} className="studio-topbar-back">
           ← Back to dashboard
         </button>
-        <span className="absolute left-1/2 -translate-x-1/2 text-sm font-semibold tracking-wide text-gray-900">Page Studio</span>
+        <span className="studio-topbar-title">Page Studio</span>
         <EPaperButton className="ml-auto !py-1" />
       </div>
       <main className="flex min-h-0 flex-1 [&>*]:min-w-0 [&>*]:flex-1">

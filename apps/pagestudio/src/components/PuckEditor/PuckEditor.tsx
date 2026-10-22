@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Puck } from "@measured/puck";
+import "../../styles/studio-theme.css";
 import { type PageBuilderData, getConfigForPage, type PageType, getInitialDataForPage, sanitizeAutomaticGridMode } from "./builderConfig";
 import { savePublishedPage } from "./publishStorage";
 import { syncNavbarLeaderboardFromHome, injectHomeNavbarIntoPageData } from "./syncNavbarLeaderboard";
@@ -492,7 +493,7 @@ export function PuckEditor() {
       const payload = { ...finalData, __meta: { pageType: selectedPage, activeSection, activeAuthor } };
       const id = savePublishedPage(payload);
       if (!id) {
-        alert("Publishing unavailable. Please enable storage access.");
+        window.dispatchEvent(new CustomEvent("studio:notice", { detail: { tone: "error", title: "Preview unavailable", message: "Allow site storage in your browser to open previews." } }));
         return finalData;
       }
       // When the Home page is published, propagate any leaderboard placement
@@ -548,17 +549,18 @@ export function PuckEditor() {
 
   return (
     <ActiveSectionContext.Provider value={{ activeSection, setActiveSection, activeAuthor, setActiveAuthor }}>
+      <div className="studio-shell" style={{ display: "contents" }}>
       {pageData ? (
         <Layout>
           {hasNoStories && (
-            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
-              <p className="text-sm text-yellow-700">⚠️ No stories available from API. Dropdowns will be empty.</p>
+            <div className="studio-banner">
+              <p>⚠️ No stories available from API. Dropdowns will be empty.</p>
             </div>
           )}
           {selectedPage === "Author" || selectedPage === "AuthorsList" ? (
             authors.length === 0 && (
-              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
-                <p className="text-sm text-yellow-700">⚠️ No authors available from API. Author dropdowns may be empty.</p>
+              <div className="studio-banner">
+                <p>⚠️ No authors available from API. Author dropdowns may be empty.</p>
               </div>
             )
           ) : null
@@ -575,6 +577,7 @@ export function PuckEditor() {
       ) : (
         <p>Loading page {selectedPage}...</p>
       )}
+      </div>
     </ActiveSectionContext.Provider>
   );
 }
