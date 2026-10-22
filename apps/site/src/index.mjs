@@ -6,7 +6,7 @@ import { siteKeys } from '../../api/lib/site-keys.mjs';
 const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'X-Frame-Options': 'SAMEORIGIN',
+  'X-Frame-Options': 'ALLOWALL',
 };
 
 const fromBucket = (env, key) =>
