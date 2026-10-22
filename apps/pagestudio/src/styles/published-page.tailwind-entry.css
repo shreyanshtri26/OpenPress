@@ -54,7 +54,7 @@ h2, h3 { font-weight: 600; }
 /* Navigation: frosted, sticky, quiet. */
 header { background: rgba(255, 255, 255, 0.8) !important; -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--op-line); }
 @media (prefers-color-scheme: dark) {
-  header { background: rgba(29, 29, 31, 0.95) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important; }
+  header { background: #1c1c1e !important; border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important; }
 }
 header a.uppercase, header button.uppercase, header .uppercase { text-transform: none !important; letter-spacing: 0 !important; font-size: 0.875rem; font-weight: 400; color: var(--op-text); }
 header a.uppercase:hover, header button.uppercase:hover { color: var(--op-accent); }
@@ -112,13 +112,13 @@ a:hover > img { transform: scale(1.015); }
    the active one is a solid dark pill, hover is a soft grey one. */
 header { background: rgba(255, 255, 255, 0.8) !important; -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid transparent; transition: box-shadow 0.3s ease, border-color 0.3s ease; }
 @media (prefers-color-scheme: dark) {
-  header { background: rgba(29, 29, 31, 0.95) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important; }
+  header { background: #1c1c1e !important; border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important; }
 }
 /* The scroll script animates a dark border and shadow onto the header inline; replace them with a hairline and a soft shadow. */
 header { border-bottom: 1px solid transparent !important; box-shadow: none !important; }
 html.op-scrolled header { border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.18) !important; background: rgba(255, 255, 255, 0.86) !important; }
 @media (prefers-color-scheme: dark) {
-  html.op-scrolled header { background: rgba(29, 29, 31, 0.98) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.6) !important; }
+  html.op-scrolled header { background: #1c1c1e !important; border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.7) !important; }
 }
 
 #navbar-nav-wrap { border-top: 0 !important; border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important; margin-top: 10px !important; padding-bottom: 6px; }
@@ -133,6 +133,11 @@ html.op-scrolled #navbar-nav-wrap { border-bottom: 0 !important; padding-bottom:
 /* Menu and search: round, quiet icon buttons. */
 #desktop-hamburger-btn, #navbar-search-btn { width: 36px; height: 36px !important; padding: 0 !important; border-radius: 50%; transform: none !important; transition: background-color 0.2s ease; }
 #desktop-hamburger-btn:hover, #navbar-search-btn:hover { background: rgba(0, 0, 0, 0.06); opacity: 1 !important; }
+@media (prefers-color-scheme: dark) {
+  #desktop-hamburger-btn:hover, #navbar-search-btn:hover { background: rgba(255, 255, 255, 0.15); }
+  #desktop-hamburger-btn span { background-color: #fff !important; }
+  #desktop-hamburger-btn, #navbar-search-btn { color: #fff !important; }
+}
 #desktop-hamburger-btn span { width: 16px !important; height: 1.5px !important; border-radius: 2px; }
 
 /* Social icons: small, muted, round hover. */
@@ -216,6 +221,20 @@ html, body { overflow-x: clip; }
 
 /* Mobile menu: every control is the same rounded rectangle (the global pill rule for .bg-black must not make the active item an oval). */
 #mobile-menu-drawer button[data-section], #drawer-search-container { border-radius: 12px !important; }
+@media (prefers-color-scheme: dark) {
+  #mobile-menu-drawer { background: #1c1c1e !important; }
+  #mobile-menu-drawer .bg-white { background: #2c2c2e !important; }
+  #mobile-menu-drawer .text-black { color: #fff !important; }
+  #mobile-menu-drawer .border-neutral-200 { border-color: rgba(255, 255, 255, 0.15) !important; }
+}
 
 /* Black badges and buttons keep white text: the header-wide .uppercase colour rule must not win over text-white. */
 .bg-black.uppercase, .bg-black .uppercase { color: #fff !important; }
+
+@media (prefers-color-scheme: dark) {
+  /* Ensure all header text is white in dark mode */
+  header .text-black, header button.text-black, header a.text-black { color: #fff !important; }
+  header .text-slate-900 { color: #fff !important; }
+  /* Ensure nav box (active indicator) is visible */
+  .nav-box { border-color: rgba(255, 255, 255, 0.3) !important; background: rgba(255, 255, 255, 0.1) !important; }
+}
