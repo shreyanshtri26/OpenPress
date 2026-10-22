@@ -16,8 +16,23 @@
   --op-radius: 18px;
   --op-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --op-text: #f5f5f7;
+    --op-muted: #86868b;
+    --op-line: #424245;
+    --op-surface: #1d1d1f;
+    --op-accent: #0a84ff;
+  }
+}
+
 html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
 body { font-family: var(--op-font) !important; color: var(--op-text); background: #fff; letter-spacing: -0.011em; }
+
+@media (prefers-color-scheme: dark) {
+  body { background: #000; }
+}
 a { text-underline-offset: 3px; }
 a:hover { color: var(--op-accent); }
 
@@ -38,6 +53,9 @@ h2, h3 { font-weight: 600; }
 
 /* Navigation: frosted, sticky, quiet. */
 header { background: rgba(255, 255, 255, 0.8) !important; -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--op-line); }
+@media (prefers-color-scheme: dark) {
+  header { background: rgba(29, 29, 31, 0.95) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important; }
+}
 header a.uppercase, header button.uppercase, header .uppercase { text-transform: none !important; letter-spacing: 0 !important; font-size: 0.875rem; font-weight: 400; color: var(--op-text); }
 header a.uppercase:hover, header button.uppercase:hover { color: var(--op-accent); }
 header svg { color: var(--op-text); }
@@ -46,6 +64,11 @@ header svg { color: var(--op-text); }
 img:not([src*="logo"]):not([src*="favicon"]):not([src*="icon"]) { border-radius: var(--op-radius); }
 figure { margin-top: 1.5rem; margin-bottom: 1.5rem; }
 figcaption { color: var(--op-muted); }
+
+/* Logo: invert in dark mode for visibility */
+@media (prefers-color-scheme: dark) {
+  #navbar-logo-mark, #navbar-logo-quill { filter: invert(1); }
+}
 
 /* Article reading width and rhythm. */
 .blog-body-content { font-size: 1.1875rem; line-height: 1.65; color: var(--op-text); }
@@ -88,9 +111,15 @@ a:hover > img { transform: scale(1.015); }
    Frosted glass bar, pill-shaped controls, quiet type. Section links are title-case pills:
    the active one is a solid dark pill, hover is a soft grey one. */
 header { background: rgba(255, 255, 255, 0.8) !important; -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid transparent; transition: box-shadow 0.3s ease, border-color 0.3s ease; }
+@media (prefers-color-scheme: dark) {
+  header { background: rgba(29, 29, 31, 0.95) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important; }
+}
 /* The scroll script animates a dark border and shadow onto the header inline; replace them with a hairline and a soft shadow. */
 header { border-bottom: 1px solid transparent !important; box-shadow: none !important; }
 html.op-scrolled header { border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.18) !important; background: rgba(255, 255, 255, 0.86) !important; }
+@media (prefers-color-scheme: dark) {
+  html.op-scrolled header { background: rgba(29, 29, 31, 0.98) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.6) !important; }
+}
 
 #navbar-nav-wrap { border-top: 0 !important; border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important; margin-top: 10px !important; padding-bottom: 6px; }
 html.op-scrolled #navbar-nav-wrap { border-bottom: 0 !important; padding-bottom: 0; }
@@ -110,6 +139,9 @@ html.op-scrolled #navbar-nav-wrap { border-bottom: 0 !important; padding-bottom:
 #navbar-social-icons { gap: 2px; }
 #navbar-social-icons a { width: 34px !important; height: 34px !important; border-radius: 50%; color: var(--op-muted) !important; transition: background-color 0.2s ease, color 0.2s ease; }
 #navbar-social-icons a:hover { background: rgba(0, 0, 0, 0.06); color: var(--op-text) !important; opacity: 1 !important; }
+@media (prefers-color-scheme: dark) {
+  #navbar-social-icons a:hover { background: rgba(255, 255, 255, 0.1); }
+}
 #navbar-social-icons svg { width: 18px !important; height: 18px !important; }
 
 /* Buttons (Support us, Sign in, Become a member): Apple-style pills. */
@@ -130,6 +162,9 @@ a.block:hover { opacity: 1 !important; }
 
 /* Category chips: tinted by --chip, which a card's accent colour or the section's taxonomy colour sets. */
 [class*="border-[0.5px]"].uppercase, span.font-share.border.uppercase { border: 0 !important; background: color-mix(in srgb, var(--chip, #6e6e73) 12%, #fff); color: var(--chip, var(--op-muted)) !important; border-radius: 980px; padding: 3px 10px !important; font-size: 0.6875rem !important; font-weight: 600; letter-spacing: 0.04em; }
+@media (prefers-color-scheme: dark) {
+  [class*="border-[0.5px]"].uppercase, span.font-share.border.uppercase { background: color-mix(in srgb, var(--chip, #86868b) 12%, #000); }
+}
 p.font-share.uppercase, div.font-share.uppercase { color: var(--chip, var(--op-muted)) !important; letter-spacing: 0.04em; font-weight: 600; }
 
 /* Headlines and summaries */
@@ -140,6 +175,10 @@ p.font-share.uppercase, div.font-share.uppercase { color: var(--chip, var(--op-m
 /* Cards with a text panel over the image (main / story card): floating rounded panel. */
 .relative.w-full.block.bg-white > div[class*="-mt-[50px]"] { border-radius: 20px; box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.18); }
 .relative.w-full.block.bg-white { transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1); }
+@media (prefers-color-scheme: dark) {
+  .relative.w-full.block.bg-white { background: #1d1d1f !important; }
+  .relative.w-full.block.bg-white > div[class*="-mt-[50px]"] { background: #1d1d1f !important; }
+}
 .relative.w-full.block.bg-white:hover { transform: translateY(-3px); }
 
 /* List-style cards (showcase, featured, story sub, bottom): hairline rows, rounded hover wash. */
@@ -147,6 +186,9 @@ p.font-share.uppercase, div.font-share.uppercase { color: var(--chip, var(--op-m
 [class*="hover:bg-gray-50"]:hover { background-color: var(--op-surface) !important; }
 .recommend-card-content { padding-top: 10px; }
 .flex.flex-col.lg\:flex-row.bg-white.border-b { border-radius: 16px; transition: background-color 0.2s ease; }
+@media (prefers-color-scheme: dark) {
+  .flex.flex-col.lg\:flex-row.bg-white.border-b { background: #1d1d1f !important; }
+}
 
 /* Tables (most popular): soft rounded outline. */
 table.border-collapse td, table.border-collapse th { border-color: var(--op-line) !important; }
@@ -161,6 +203,9 @@ html, body { overflow-x: clip; }
 
 /* Share button on articles: a quiet pill. */
 [data-puck-share], [data-puck-share-card-button] { border-radius: 980px !important; overflow: hidden; border-color: var(--op-line) !important; background: #fff !important; transition: background-color 0.2s ease; }
+@media (prefers-color-scheme: dark) {
+  [data-puck-share], [data-puck-share-card-button] { background: #1d1d1f !important; }
+}
 [data-puck-share]:hover, [data-puck-share-card-button]:hover { background: var(--op-surface) !important; }
 
 
