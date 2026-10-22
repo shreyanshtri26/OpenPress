@@ -42,7 +42,7 @@ export function renderMultimediaGrid(
 
   return `
 <section id="${base}" class="w-full bg-white px-0 py-8 lg:pt-8 lg:px-16 lg:pb-12 relative ${className}">
-  <div class="mx-auto w-full max-w-7xl px-0 lg:px-8 relative pb-4">
+  <div class="mx-auto w-full max-w-7xl px-4 lg:px-8 relative pb-4">
     <div class="absolute inset-0 pointer-events-none">
       ${hasLeft && hasRight ? `<div class="absolute left-1/2 hidden lg:block" style="top:0;bottom:18px;border-left:1px solid #d2d2d7"></div>` : ''}
       <div class="hidden lg:block mx-8 absolute left-0 right-0 -bottom-5" style="border-bottom:1px solid gray"></div>
@@ -51,7 +51,7 @@ export function renderMultimediaGrid(
       <div class="lg:col-span-6">
         <div class="w-full h-full bg-white overflow-hidden min-h-[300px]">${left}</div>
       </div>
-      <div class="lg:col-span-6 grid grid-cols-2 lg:grid-rows-2 gap-4 lg:gap-7 relative">
+      <div class="lg:col-span-6 grid grid-cols-2 lg:grid-rows-2 gap-4 lg:gap-6 relative">
         ${hasRight ? `<div class="absolute inset-0 pointer-events-none"><div class="absolute top-0 bottom-[52.5%] left-1/2" style="border-left:1px solid #d2d2d7"></div><div class="absolute top-[52.5%] bottom-0 left-1/2" style="border-left:1px solid #d2d2d7"></div><div class="absolute top-1/2 left-0 right-0" style="border-top:1px solid #d2d2d7"></div></div>` : ''}
         <div>${r0}</div>
         <div>${r1}</div>

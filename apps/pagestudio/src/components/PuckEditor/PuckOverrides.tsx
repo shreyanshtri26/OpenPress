@@ -44,9 +44,11 @@ const REPUBLISH_LABELS: Record<string, string> = {
 // Live "pages published / total pages" card for the site-wide publish.
 const PublishProgress = ({ job, finished, savingPage }: { job: RepublishJob | null; finished: boolean; savingPage: string | null }) => {
   const total = job?.total ?? 0;
-  const done = finished && !job?.failedCount ? total || job?.done || 0 : Math.min(job?.done ?? 0, total || job?.done || 0);
-  const known = total > 0;
-  const percent = known ? Math.round((done / total) * 100) : 0;
+  const doneNum = job?.done ?? 0;
+  const totalNum = total || doneNum || 0;
+  const done = finished && !job?.failedCount ? totalNum : Math.min(doneNum, totalNum);
+  const known = totalNum > 0 && !isNaN(totalNum);
+  const percent = known && totalNum > 0 ? Math.round((done / totalNum) * 100) : 0;
   return (
     <div className="studio-progress" role="status" aria-live="polite">
       <div className="flex items-baseline justify-between gap-3">

@@ -52,8 +52,7 @@ function BuildWorkspace() {
         <button type="button" onClick={() => router.push('/dashboard')} className="studio-topbar-back">
           ← Back to dashboard
         </button>
-        <span className="studio-topbar-title">Page Studio</span>
-        <EPaperButton className="ml-auto !py-1" />
+        <EPaperButton />
       </div>
       <main className="flex min-h-0 flex-1 [&>*]:min-w-0 [&>*]:flex-1">
         <Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading builder…</div>}>

@@ -11,6 +11,7 @@ const FILES = [
   "openpress-logo-full.png",
   "openpress-logo-full-nobg.png",
   "openpress-logo-full-nobg-trim.png",
+  "openpress-logo-full-white.png",
   "openpress-quill-nobg.png",
   "openpress-quill-nobg-trim.png",
   "openpress-logo.png",

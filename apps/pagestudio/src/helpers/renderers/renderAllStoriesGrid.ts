@@ -39,9 +39,9 @@ export function renderAllStoriesGrid(
   if (!hasAny) return ''
 
   return `
-<section id="${id ?? ''}" class="w-full bg-white sm:pt-6 px-4 sm:px-8 lg:px-16 ${className}">
-  <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-[8%]">
+<section id="${id ?? ''}" class="w-full bg-white sm:pt-6 px-0 lg:px-16 ${className}">
+  <div class="mx-auto w-full max-w-7xl px-4 lg:px-8">
+    <div class="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:justify-between">
       <div class="w-full lg:w-[59.5%] flex-shrink-0">${left}</div>
       <div class="w-full lg:w-[32.5%] flex-shrink-0 flex flex-col">
         <div>${rt1}</div>

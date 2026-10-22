@@ -8,7 +8,7 @@ import { existsSync } from 'node:fs';
 const bundle = path.resolve(import.meta.dirname, '../dist/publish-renderer.js');
 const { renderHomePage } = await import(pathToFileURL(bundle).href);
 
-const data = { content: [{ type: 'AtlanticNavbar', props: { id: 'nav' } }, { type: 'Footer', props: { id: 'foot' } }] };
+const data = { content: [{ type: 'AtlanticNavbar', props: { id: 'nav' } }, { type: 'Footer', props: { id: 'foot' } }, { type: 'ThumbnailGrid', props: { id: 'tg' } }], zones: { 'tg:thumbnail-grid-box-0': [{ type: 'StoryCard', props: { id: 'c0' } }] } };
 const { html } = renderHomePage(data, { storiesById: {}, sections: ['HOME'], campaigns: [] });
 
 // Markup only: comments, <script> and <style> bodies often mention tag names in prose.

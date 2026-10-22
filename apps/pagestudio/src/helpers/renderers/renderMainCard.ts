@@ -48,12 +48,12 @@ export function renderMainCard(
   <img
     src="${escapeHtml(displayImage)}"
     alt="${escapeHtml(displayTitle)}"
-    class="h-[250px] sm:h-[300px] lg:h-[400px] w-full object-cover"
+    class="aspect-[3/2] w-full object-cover"
     loading="lazy"
   />
 
-  <div class="relative mx-auto -mt-[50px] sm:-mt-[50px] lg:-mt-[50px] w-[90%] md:w-[95%] bg-white p-3 sm:p-4 z-10">
-    <div class="p-2 sm:p-4">
+  <div class="w-full bg-white">
+    <div class="pt-3">
       ${displayLabel
       ? `<p class="text-black font-share border-black border-[0.5px] text-[9px] sm:text-[10px]
                       lg:text-[11px] uppercase tracking-wide px-1 py-1 w-fit">

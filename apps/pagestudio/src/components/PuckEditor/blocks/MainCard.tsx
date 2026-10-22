@@ -119,14 +119,14 @@ export const MainCard: React.FC<MainCardProps> = ({
         key={displayImage}
         src={displayImage}
         alt={displayTitle}
-        className={`h-[250px] sm:h-[300px] lg:h-[400px] w-full object-cover transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"
+        className={`aspect-[3/2] w-full object-cover transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"
           }`}
         loading="lazy"
       />
 
       {/* Text overlay */}
-      <div className="relative mx-auto -mt-[50px] sm:-mt-[50px] lg:-mt-[50px] w-[90%] md:w-[95%] bg-white p-3 sm:p-4 z-10">
-        <div className="p-2 sm:p-4">
+      <div className="w-full bg-white">
+        <div className="pt-3">
           <p
             ref={labelRef}
 

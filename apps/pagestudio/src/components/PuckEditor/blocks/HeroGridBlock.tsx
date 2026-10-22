@@ -63,15 +63,15 @@ export function HeroGridBlock({
   return (
     <AutoCardAssignmentsContext.Provider value={isAutomatic ? { storyIdsByCardId } : null}>
     <section id={id} className={`w-full bg-white lg:pt-12 pt-4 px-0 lg:px-16 pb-0 mb-0 ${className}`}>
-      <div className="relative mx-auto w-full max-w-7xl px-0 lg:px-8 pb-4">
+      <div className="relative mx-auto w-full max-w-7xl px-4 lg:px-8 pb-4">
         {/* Vertical dotted lines between columns */}
         <div className="absolute inset-0 pointer-events-none">
           <div
-            className="hidden lg:block absolute top-0 bottom-[1rem] left-[calc((25%)+0.75rem)]"
+            className="hidden lg:block absolute top-0 bottom-[1rem] left-[calc(25%-0.375rem)]"
             style={{ borderLeft: '1px solid #d2d2d7' }}
           />
           <div
-            className="hidden lg:block absolute top-0 bottom-[1rem] left-[calc((75%)-0.75rem)]"
+            className="hidden lg:block absolute top-0 bottom-[1rem] left-[calc(75%+0.375rem)]"
             style={{ borderLeft: '1px solid #d2d2d7' }}
           />
         </div>

@@ -7,7 +7,7 @@
     "check": "node --check index.mjs && node --check src/server.mjs",
     "routes:extract": "node scripts/extract-routes.mjs",
     "smoke": "node scripts/smoke.mjs",
-    "dev": "node --watch src/dev.mjs",
+    "dev": "node --watch-path=src --watch-path=lib --watch-path=routes --watch-path=db src/dev.mjs",
     "setup": "node scripts/local-setup.mjs",
     "db:generate": "drizzle-kit generate --config=drizzle.config.mjs",
     "db:migrate": "drizzle-kit migrate --config=drizzle.config.mjs",

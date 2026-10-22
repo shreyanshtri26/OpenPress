@@ -107,7 +107,7 @@ export const StoryCard: React.FC<StoryCardProps> = ({
 
   return (
     <div
-      className={`relative w-full h-auto min-h-[400px] sm:min-h-[500px] lg:h-[600px] bg-white overflow-hidden ${publishUrl ? 'cursor-pointer hover:opacity-90' : ''} transition-opacity`}
+      className={`relative w-full h-auto bg-white ${publishUrl ? 'cursor-pointer hover:opacity-90' : ''} transition-opacity`}
       onClick={handleClick}
       role={publishUrl ? "button" : undefined}
       tabIndex={publishUrl ? 0 : undefined}
@@ -118,20 +118,20 @@ export const StoryCard: React.FC<StoryCardProps> = ({
         }
       }}
     >
-      <div className="relative w-full max-w-full md:max-w-full xl:max-w-[750px] mx-auto aspect-video">
+      <div className="relative w-full">
         {/* Image area */}
         <img
           key={displayImage}
           src={displayImage}
           alt={displayTitle}
-          className={`h-[250px] sm:h-[300px] lg:h-[400px] w-full object-cover transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"
+          className={`aspect-[4/3] w-full object-cover transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"
             }`}
           loading="lazy"
         />
 
         {/* Overlay text box */}
-        <div className="w-full h-auto xl:h-[191px] top-[200px] sm:top-[250px] lg:top-[350px] bg-white absolute p-3 sm:p-4 xl:p-0">
-          <div className="py-2 sm:py-4">
+        <div className="w-full bg-white">
+          <div className="pt-3">
             {/* Editable Label */}
             <p
               ref={labelRef}

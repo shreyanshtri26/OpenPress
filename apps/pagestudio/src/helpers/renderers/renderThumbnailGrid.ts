@@ -81,7 +81,7 @@ export function renderThumbnailGrid(
   id="${id ?? ''}"
   class="w-full bg-white pt-6 px-0 lg:px-16 lg:pb-6 relative ${className}"
 >
-  <div class="mx-auto w-full max-w-7xl px-0 lg:px-8 relative pb-0 thumbnail-grid ${isMobile2x2 ? 'thumbnail-grid-mobile-2x2' : 'thumbnail-grid-mobile-single'}">
+  <div class="mx-auto w-full max-w-7xl px-4 lg:px-8 relative pb-0 thumbnail-grid ${isMobile2x2 ? 'thumbnail-grid-mobile-2x2' : 'thumbnail-grid-mobile-single'}">
 
     <!-- Mobile plus-type border (only for 2x2 layout) -->
     ${isMobile2x2 ? `

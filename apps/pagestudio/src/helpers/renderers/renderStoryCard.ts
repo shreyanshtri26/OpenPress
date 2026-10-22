@@ -60,20 +60,20 @@ export function renderStoryCard(props: StoryCardProps, ctx: RenderContext): stri
 
   return `
 <${Tag}
-  class="relative w-full h-auto min-h-[400px] sm:min-h-[500px] lg:h-[600px] bg-white overflow-hidden block ${publishUrl ? 'cursor-pointer hover:opacity-90' : ''
+  class="relative w-full h-auto bg-white block ${publishUrl ? 'cursor-pointer hover:opacity-90' : ''
     } transition-opacity"
   ${actionAttr}
 >
-  <div class="relative w-full max-w-full xl:max-w-[750px] mx-auto aspect-video">
+  <div class="relative w-full">
     <img
       src="${escapeHtml(image)}"
       alt="${escapeHtml(title)}"
-      class="h-[250px] sm:h-[300px] lg:h-[400px] w-full object-cover"
+      class="aspect-[4/3] w-full object-cover"
       loading="lazy"
     />
 
-    <div class="w-full h-auto xl:h-[191px] top-[200px] sm:top-[250px] lg:top-[350px] bg-white absolute p-3 sm:p-4 xl:p-0">
-      <div class="py-2 sm:py-4">
+    <div class="w-full bg-white">
+      <div class="pt-3">
         <p class="text-black font-share border-black border-[0.5px] text-[9px] sm:text-[10px] lg:text-[11px] uppercase tracking-wide px-1 py-1 w-fit">
           ${escapeHtml(label)}
         </p>

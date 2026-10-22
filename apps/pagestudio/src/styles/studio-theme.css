@@ -1,49 +1,101 @@
-/* Page Studio theme: Apple-style greys for the editor chrome only.
-   Published pages have their own tokens (published-page.tailwind-entry.css); the canvas is not touched.
-   One flat Apple grey (#f5f5f7) everywhere, light only: no dark mode. */
+/* Page Studio theme: Premium Apple Design System
+   Inspired by macOS, iOS, and Apple's Human Interface Guidelines
+   Sophisticated greys, subtle elevations, and refined interactions */
 .studio-shell {
-  --studio-bg: #f5f5f7;
-  --studio-surface: #f5f5f7;
-  --studio-surface-2: #f5f5f7;
-  --studio-line: rgba(0, 0, 0, 0.08);
-  --studio-text: #1d1d1f;
-  --studio-muted: #6e6e73;
-  --studio-accent: #0071e3;
-  --studio-accent-hover: #0077ed;
-  --studio-danger: #d70015;
-  --studio-ok: #248a3d;
-  --studio-warn: #b25000;
-  --studio-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.08);
-  --studio-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  /* Premium Apple Grey Palette */
+  --studio-bg: #f5f5f7; /* System Gray 6 */
+  --studio-surface: #ffffff; /* System Background */
+  --studio-surface-2: #f2f2f7; /* System Gray 6 Light */
+  --studio-elevated: #ffffff; /* Elevated System Background */
+  --studio-line: rgba(0, 0, 0, 0.1); /* Subtler borders */
+  --studio-text: #1d1d1f; /* System Label */
+  --studio-muted: #8e8e93; /* System Gray */
+  --studio-accent: #007aff; /* System Blue */
+  --studio-accent-hover: #0056cc; /* Deeper blue for hover */
+  --studio-accent-text: #ffffff; /* White text on accent */
+  --studio-danger: #ff3b30; /* System Red */
+  --studio-ok: #34c759; /* System Green */
+  --studio-warn: #ff9500; /* System Orange */
+  
+  /* Premium Shadows & Animations */
+  --studio-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 10px 15px -3px rgba(0, 0, 0, 0.07),
+    0 1px 3px rgba(0, 0, 0, 0.03);
+  --studio-shadow-lg: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.08),
+    0 10px 10px -5px rgba(0, 0, 0, 0.02);
+  --studio-ease: cubic-bezier(0.4, 0, 0.2, 1); /* Apple's standard easing */
+  --studio-ease-out: cubic-bezier(0, 0, 0.2, 1); /* For elements leaving screen */
+  --studio-ease-in: cubic-bezier(0.4, 0, 1, 1); /* For elements entering screen */
 
-  --puck-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
-  --puck-color-grey-01: #1d1d1f; --puck-color-grey-02: #2c2c2e; --puck-color-grey-03: #3a3a3c;
-  --puck-color-grey-04: #515154; --puck-color-grey-05: #6e6e73; --puck-color-grey-06: #86868b;
-  --puck-color-grey-07: #a1a1a6; --puck-color-grey-08: #c7c7cc; --puck-color-grey-09: #d9d9de;
-  --puck-color-grey-10: #e8e8ed; --puck-color-grey-11: #f5f5f7; --puck-color-grey-12: #f5f5f7;
-  --puck-color-azure-01: #003a75; --puck-color-azure-02: #00539f; --puck-color-azure-03: #0062c4;
-  --puck-color-azure-04: #0071e3; --puck-color-azure-05: #2b88e8; --puck-color-azure-06: #5aa2ee;
-  --puck-color-azure-07: #86bbf3; --puck-color-azure-08: #b0d2f7; --puck-color-azure-09: #d3e5fa;
-  --puck-color-azure-10: #e8f1fc; --puck-color-azure-11: #f2f7fe; --puck-color-azure-12: #f8fbff;
+  /* Apple System Font Stack */
+  --puck-font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+  
+  /* Refined Grey Scale */
+  --puck-color-grey-01: #1d1d1f; --puck-color-grey-02: #2c2c2e; 
+  --puck-color-grey-03: #3a3a3c; --puck-color-grey-04: #48484a;
+  --puck-color-grey-05: #636366; --puck-color-grey-06: #8e8e93;
+  --puck-color-grey-07: #aeaeb2; --puck-color-grey-08: #c7c7cc;
+  --puck-color-grey-09: #d1d1d6; --puck-color-grey-10: #e5e5ea;
+  --puck-color-grey-11: #f2f2f7; --puck-color-grey-12: #ffffff;
+  
+  /* Apple Blue Palette */
+  --puck-color-azure-01: #0040dd; --puck-color-azure-02: #0055ff;
+  --puck-color-azure-03: #007aff; --puck-color-azure-04: #2b95ff;
+  --puck-color-azure-05: #5aafff; --puck-color-azure-06: #7fc3ff;
+  --puck-color-azure-07: #a4d7ff; --puck-color-azure-08: #c7e5ff;
+  --puck-color-azure-09: #e1f0ff; --puck-color-azure-10: #f0f8ff;
+  --puck-color-azure-11: #f8fbff; --puck-color-azure-12: #ffffff;
 
-  --puck-color-white: #f5f5f7;
+  --puck-color-white: #ffffff;
   color-scheme: light;
   color: var(--studio-text);
   background: var(--studio-bg);
   font-family: var(--puck-font-family);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-smooth: always;
 }
 
-/* Top bar (the Back strip in admin) */
+/* Premium Apple Top Bar */
 .studio-topbar {
-  display: flex; align-items: center; position: relative; height: 44px; flex-shrink: 0; padding: 0 16px;
-  background: color-mix(in srgb, var(--studio-surface) 80%, transparent);
-  -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid var(--studio-line); font-size: 13px;
+  display: flex; 
+  align-items: center; 
+  position: relative; 
+  height: 52px; 
+  flex-shrink: 0; 
+  padding: 0 20px;
+  background: color-mix(in srgb, var(--studio-surface) 85%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(30px); 
+  backdrop-filter: saturate(180%) blur(30px);
+  border-bottom: 1px solid var(--studio-line); 
+  font-size: 14px;
+  font-weight: 500;
 }
-.studio-topbar-back { color: var(--studio-muted); background: none; border: 0; cursor: pointer; font: inherit; transition: color 0.2s var(--studio-ease); }
-.studio-topbar-back:hover { color: var(--studio-text); }
-.studio-topbar-title { position: absolute; left: 50%; transform: translateX(-50%); font-weight: 600; letter-spacing: -0.01em; }
+.studio-topbar-back { 
+  color: var(--studio-accent); 
+  background: none; 
+  border: 0; 
+  cursor: pointer; 
+  font: inherit; 
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s var(--studio-ease); 
+}
+.studio-topbar-back:hover { 
+  color: var(--studio-accent-hover); 
+  background: color-mix(in srgb, var(--studio-accent) 8%, transparent);
+}
+.studio-topbar-title { 
+  position: absolute; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  font-weight: 600; 
+  letter-spacing: -0.02em;
+  font-size: 15px;
+  color: var(--studio-text);
+}
 
 /* Puck chrome */
 .studio-shell [class*="_PuckLayout"], .studio-shell [class*="_Puck_"] { background: var(--studio-bg); }
@@ -53,46 +105,180 @@
 .studio-shell [class*="_Button--primary_"] { background: var(--studio-accent); border-radius: 980px; }
 .studio-shell [class*="_Button--primary_"]:hover { background: var(--studio-accent-hover); }
 .studio-shell [class*="_Button--secondary_"] { border-radius: 980px; border-color: var(--studio-line); }
-.studio-shell input:not([type="checkbox"]):not([type="radio"]), .studio-shell textarea, .studio-shell select {
-  border-radius: 10px; border-color: var(--studio-line);
+/* Apple-style Form Elements */
+.studio-shell input:not([type="checkbox"]):not([type="radio"]), 
+.studio-shell textarea, 
+.studio-shell select {
+  border-radius: 10px; 
+  border: 1px solid var(--studio-line);
+  background: var(--studio-surface);
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--studio-text);
+  transition: all 0.2s var(--studio-ease);
+  -webkit-appearance: none;
+  appearance: none;
 }
-.studio-shell input:focus-visible, .studio-shell textarea:focus-visible, .studio-shell select:focus-visible,
-.studio-btn:focus-visible { outline: 3px solid color-mix(in srgb, var(--studio-accent) 35%, transparent); outline-offset: 1px; }
+.studio-shell input:not([type="checkbox"]):not([type="radio"]):hover, 
+.studio-shell textarea:hover, 
+.studio-shell select:hover {
+  border-color: color-mix(in srgb, var(--studio-text) 30%, transparent);
+  background: color-mix(in srgb, var(--studio-surface) 95%, var(--studio-bg) 5%);
+}
+.studio-shell input:focus-visible, 
+.studio-shell textarea:focus-visible, 
+.studio-shell select:focus-visible,
+.studio-btn:focus-visible { 
+  outline: none;
+  border-color: var(--studio-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 25%, transparent);
+}
+.studio-shell input::placeholder,
+.studio-shell textarea::placeholder {
+  color: var(--studio-muted);
+  opacity: 0.8;
+}
+
+/* Apple-style Select Dropdown */
+.studio-select {
+  appearance: none; 
+  -webkit-appearance: none; 
+  height: 36px; 
+  padding: 0 40px 0 14px; 
+  font: inherit; 
+  font-size: 14px;
+  color: var(--studio-text); 
+  background-color: var(--studio-surface); 
+  border: 1px solid var(--studio-line); 
+  border-radius: 10px;
+  cursor: pointer; 
+  transition: all 0.2s var(--studio-ease);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%238e8e93' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 5l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; 
+  background-position: right 14px center;
+  background-size: 12px;
+}
+.studio-select:hover { 
+  border-color: color-mix(in srgb, var(--studio-text) 40%, transparent); 
+  background-color: color-mix(in srgb, var(--studio-surface) 95%, var(--studio-bg) 5%);
+}
+.studio-select:focus-visible {
+  border-color: var(--studio-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 25%, transparent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23007aff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 5l4 4 4-4'/%3E%3C/svg%3E");
+}
 .studio-shell ::-webkit-scrollbar { width: 10px; height: 10px; }
 .studio-shell ::-webkit-scrollbar-thumb { background: var(--studio-line); border-radius: 10px; border: 3px solid transparent; background-clip: content-box; }
 
-/* Header actions */
-.studio-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
-.studio-actions-left, .studio-actions-right { display: flex; align-items: center; gap: 12px; }
-.studio-field { display: inline-flex; align-items: center; gap: 8px; }
-.studio-field-label { font-size: 12px; color: var(--studio-muted); }
-.studio-select {
-  appearance: none; -webkit-appearance: none; height: 32px; padding: 0 30px 0 12px; font: inherit; font-size: 13px;
-  color: var(--studio-text); background-color: var(--studio-surface-2); border: 1px solid var(--studio-line); border-radius: 980px;
-  cursor: pointer; transition: border-color 0.2s var(--studio-ease), background-color 0.2s var(--studio-ease);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%2386868b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 12px center;
+/* Header actions with proper Apple alignment */
+.studio-actions { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  gap: 16px; 
+  width: 100%; 
+  padding: 0 4px;
 }
-.studio-select:hover { border-color: color-mix(in srgb, var(--studio-text) 25%, transparent); }
-.studio-select:disabled { opacity: 0.5; cursor: default; }
+.studio-actions-left, .studio-actions-right { 
+  display: flex; 
+  align-items: center; 
+  gap: 16px; 
+}
+.studio-field { 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 10px; 
+  min-height: 36px;
+}
+.studio-field-label { 
+  font-size: 13px; 
+  color: var(--studio-muted); 
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
 
+/* Premium Apple Buttons */
 .studio-btn {
-  height: 32px; padding: 0 16px; border-radius: 980px; border: 1px solid var(--studio-line); white-space: nowrap;
-  font: inherit; font-size: 13px; font-weight: 500; color: var(--studio-text); background: var(--studio-surface-2); cursor: pointer;
-  transition: background-color 0.2s var(--studio-ease), transform 0.12s var(--studio-ease), opacity 0.2s var(--studio-ease);
+  height: 36px; padding: 0 20px; border-radius: 10px; border: 1px solid transparent; white-space: nowrap;
+  font: inherit; font-size: 14px; font-weight: 500; letter-spacing: -0.01em; color: var(--studio-text); 
+  background: var(--studio-surface-2); cursor: pointer;
+  transition: all 0.2s var(--studio-ease);
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow: hidden;
 }
-.studio-btn:hover:not(:disabled) { background: var(--studio-surface); border-color: color-mix(in srgb, var(--studio-text) 20%, transparent); }
-.studio-btn:active:not(:disabled) { transform: scale(0.97); }
-.studio-btn:disabled { opacity: 0.5; cursor: default; }
-.studio-btn--secondary { color: var(--studio-accent); }
-.studio-btn--primary { color: #fff; background: var(--studio-accent); border-color: transparent; }
-.studio-btn--primary:hover:not(:disabled) { background: var(--studio-accent-hover); border-color: transparent; }
-.studio-btn--primary.is-waiting { opacity: 0.5; cursor: not-allowed; }
+.studio-btn:hover:not(:disabled) { 
+  background: color-mix(in srgb, var(--studio-surface-2) 80%, var(--studio-text) 5%);
+  border-color: color-mix(in srgb, var(--studio-line) 80%, var(--studio-text) 20%);
+  transform: translateY(-1px);
+  box-shadow: var(--studio-shadow);
+}
+.studio-btn:active:not(:disabled) { 
+  transform: translateY(0px); 
+  background: color-mix(in srgb, var(--studio-surface-2) 90%, var(--studio-text) 10%);
+  transition-duration: 0.1s;
+}
+.studio-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.studio-btn--secondary { 
+  color: var(--studio-accent); 
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--studio-accent) 30%, transparent);
+}
+.studio-btn--secondary:hover:not(:disabled) { 
+  background: color-mix(in srgb, var(--studio-accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--studio-accent) 60%, transparent);
+}
+.studio-btn--primary { 
+  color: var(--studio-accent-text); 
+  background: var(--studio-accent); 
+  border-color: transparent;
+  font-weight: 600;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--studio-accent) 30%, transparent);
+}
+.studio-btn--primary:hover:not(:disabled) { 
+  background: var(--studio-accent-hover); 
+  border-color: transparent;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--studio-accent) 40%, transparent);
+  transform: translateY(-1px);
+}
+.studio-btn--primary:active:not(:disabled) { 
+  background: color-mix(in srgb, var(--studio-accent) 90%, #000000 10%);
+  transform: translateY(0px);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--studio-accent) 30%, transparent);
+}
+.studio-btn--primary.is-waiting { 
+  opacity: 0.8; 
+  cursor: wait;
+  background: color-mix(in srgb, var(--studio-accent) 80%, var(--studio-bg) 20%);
+}
+
+/* Apple-style pill buttons */
+.studio-btn--pill {
+  border-radius: 20px;
+  padding: 0 16px;
+  height: 32px;
+  font-size: 13px;
+}
+
+/* Apple-style plain buttons (like in menus) */
+.studio-btn--plain {
+  background: transparent;
+  border: none;
+  height: auto;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: var(--studio-text);
+}
+.studio-btn--plain:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--studio-text) 5%, transparent);
+  transform: none;
+  box-shadow: none;
+}
 
 .studio-tip-host { position: relative; }
 .studio-tip {
   display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; z-index: 9999; width: 288px; padding: 10px 14px;
-  font-size: 12px; line-height: 1.45; color: var(--studio-text); background: var(--studio-surface);
+  font-size: 12px; line-height: 1.45; color: var(--studio-text); background: var(--studio-elevated);
   border: 1px solid var(--studio-line); border-radius: 12px; box-shadow: var(--studio-shadow);
 }
 .studio-tip-host:hover .studio-tip, .studio-tip-host:focus-within .studio-tip { display: block; }
@@ -100,7 +286,7 @@
 /* Toasts and progress */
 .studio-toast-stack { position: fixed; right: 24px; bottom: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; min-width: 320px; max-width: 440px; }
 .studio-toast, .studio-progress {
-  padding: 12px 16px; color: var(--studio-text); font-size: 13px; background: var(--studio-surface);
+  padding: 12px 16px; color: var(--studio-text); font-size: 13px; background: var(--studio-elevated);
   border: 1px solid var(--studio-line); border-radius: 14px; box-shadow: var(--studio-shadow);
   animation: studio-in 0.25s var(--studio-ease);
 }
@@ -118,3 +304,48 @@
 @media (prefers-reduced-motion: reduce) { .studio-shell *, .studio-toast, .studio-progress { animation: none !important; transition: none !important; } }
 
 .studio-banner { margin: 0 0 12px; padding: 10px 14px; font-size: 13px; color: var(--studio-muted); background: var(--studio-surface); border: 1px solid var(--studio-line); border-left: 3px solid var(--studio-warn); border-radius: 12px; }
+
+/* Layout and type. Sizes are px so the chrome looks the same whatever the browser's root font size is. */
+.studio-shell { font-size: 13px; line-height: 1.4; }
+.studio-topbar { height: 36px; padding: 0 12px; }
+.studio-topbar a, .studio-topbar-epaper {
+  display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 12px !important; margin-left: auto;
+  font-size: 12px; font-weight: 500; line-height: 1; color: var(--studio-text) !important; background: transparent !important; border: 1px solid var(--studio-line) !important;
+  border-radius: 980px; box-shadow: none; text-decoration: none; transition: background-color 0.2s var(--studio-ease);
+}
+.studio-topbar a:hover { background: var(--studio-surface-2) !important; }
+.studio-topbar a img { height: 12px; width: 12px; }
+
+/* Puck header: one slim row under the topbar */
+.studio-shell [class*="_PuckHeader_"] { height: 48px; min-height: 48px; background: var(--studio-surface); border-bottom: 1px solid var(--studio-line); }
+.studio-shell [class*="_PuckHeader-title"], .studio-shell [class*="_Heading--xs"] { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+.studio-shell [class*="_PuckHeader-inner"] { padding-inline: 12px; gap: 8px; }
+.studio-shell [class*="_PuckHeader-tools"] { gap: 8px; font-size: 13px; }
+.studio-shell [class*="_Button"] { font-size: 13px; min-height: 28px; padding-inline: 14px; }
+.studio-shell [class*="_IconButton"] { color: var(--studio-text); }
+.studio-shell [class*="_IconButton--disabled"] { color: var(--studio-muted); opacity: 0.5; }
+
+/* Sidebars */
+.studio-shell [class*="_SidebarSection-title"] { padding: 12px 16px; font-size: 14px; }
+.studio-shell [class*="_SidebarSection-content"] { padding: 4px 12px 12px; }
+.studio-shell [class*="_ComponentList-title"] {
+  padding: 12px 4px 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--studio-muted);
+}
+.studio-shell [class*="_ComponentList-content"] { display: flex; flex-direction: column; gap: 4px; padding-bottom: 8px; }
+.studio-shell [class*="_DrawerItem_"] {
+  height: 34px; padding: 0 10px 0 12px; font-size: 13px; color: var(--studio-text);
+  background: var(--studio-surface-2); border: 0; border-radius: 8px; transition: background-color 0.15s var(--studio-ease);
+}
+.studio-shell [class*="_DrawerItem_"]:hover { background: var(--studio-elevated); }
+.studio-shell [class*="_DrawerItem-name"] { font-size: 13px; line-height: 1.2; }
+
+/* Canvas: the viewport bar belongs to the workspace, not a second band */
+.studio-shell [class*="_ViewportControls_"] { background: var(--studio-bg); font-size: 12px; color: var(--studio-text); }
+.studio-shell [class*="_PuckCanvas-inner"] { background: var(--studio-bg); }
+
+/* Fields */
+.studio-shell label, .studio-shell [class*="_InputLabel"] { font-size: 12px; font-weight: 600; color: var(--studio-text); }
+.studio-shell input:not([type="checkbox"]):not([type="radio"]), .studio-shell textarea, .studio-shell select {
+  font-size: 13px; color: var(--studio-text); background: var(--studio-surface-2);
+}
+.studio-shell input::placeholder, .studio-shell textarea::placeholder { color: var(--studio-muted); opacity: 0.8; }
