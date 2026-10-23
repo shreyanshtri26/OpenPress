@@ -1,4 +1,4 @@
-// Standalone ePaper Reader Login Page renderer.
+// Standalone OpenPress Reader Login Page renderer.
 // Features Google OAuth / Google Sign-In, Neon Auth sync, and strict table isolation from CMS staff.
 
 import { PUBLISHED_PAGE_STYLES } from "../../generated/publishedPageStyles";

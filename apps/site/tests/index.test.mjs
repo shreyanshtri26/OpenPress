@@ -68,3 +68,16 @@ test('serves the sign-in page itself, wired to the proxy and the API', async () 
   const bare = await (await worker.fetch(new Request('https://site.test/login'), env)).text();
   assert.doesNotMatch(bare, /__NEON_AUTH_PROXY__ = true/);
 });
+
+test('the manifest is served to phones only, from the deploy and never the bucket', async () => {
+  const assets = { '/manifest.json': '{"name":"OpenPress"}', '/pwa-screenshot-mobile.png': 'NEW' };
+  const withAssets = { ...env, ASSETS: { fetch: async (req) => { const p = new URL(req.url).pathname; return p in assets ? new Response(assets[p], { headers: { 'content-type': 'text/plain' } }) : new Response('no', { status: 404 }); } } };
+  const phone = await worker.fetch(new Request('https://site.test/manifest.json', { headers: { 'user-agent': 'Mozilla/5.0 (Linux; Android 14) Mobile Safari' } }), withAssets);
+  assert.equal(phone.status, 200);
+  assert.equal(phone.headers.get('content-type'), 'application/manifest+json');
+  assert.match(phone.headers.get('vary'), /User-Agent/);
+  assert.equal(await phone.text(), '{"name":"OpenPress"}');
+  const desktop = await worker.fetch(new Request('https://site.test/manifest.json', { headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0) Chrome/120' } }), withAssets);
+  assert.equal(desktop.status, 404);
+  assert.equal(await (await worker.fetch(new Request('https://site.test/pwa-screenshot-mobile.png'), withAssets)).text(), 'NEW');
+});

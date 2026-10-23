@@ -2,7 +2,7 @@
   "id": "/",
   "name": "OpenPress | Free, independent news for everyone",
   "short_name": "OpenPress",
-  "description": "OpenPress is an open-source newsroom CMS and publishing platform.",
+  "description": "Free, independent news from OpenPress. Read the latest stories anywhere.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -48,13 +48,6 @@
       "type": "image/png",
       "form_factor": "narrow",
       "label": "OpenPress homepage on mobile — independent news"
-    },
-    {
-      "src": "/pwa-screenshot-desktop.png",
-      "sizes": "1280x800",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "OpenPress homepage on desktop — independent news"
     }
   ],
   "related_applications": [],

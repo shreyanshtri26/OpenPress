@@ -24,6 +24,30 @@ const respond = (upstream, status) => {
   return { headers, status };
 };
 
+// The ePaper is an installable app on phones only. The app files ship with each deploy (copied into dist by the Deploy Site
+// workflow) and are read through the ASSETS binding, so an old copy left in the bucket can never be shown. Without a
+// manifest a desktop browser has nothing to install; Vary keeps caches from handing the phone's manifest to a desktop.
+const PWA_FILES = new Set(['/sw.js', '/pwa-screenshot-mobile.png', '/pwa-screenshot-desktop.png', '/pwa-icon-192.png', '/pwa-icon-192-maskable.png', '/pwa-icon-512.png', '/pwa-icon-512-maskable.png']);
+const isPhone = (request) =>
+  request.headers.get('sec-ch-ua-mobile') === '?1' || /Android|iPhone|iPad|iPod|Mobile/i.test(request.headers.get('user-agent') || '');
+
+async function pwaFile(request, env, pathname) {
+  if (!env.ASSETS) return null;
+  if (pathname === '/manifest.json') {
+    const vary = { vary: 'User-Agent, Sec-CH-UA-Mobile', 'cache-control': 'no-store' };
+    if (!isPhone(request)) return new Response('Not found', { status: 404, headers: vary });
+    const asset = await env.ASSETS.fetch(new Request(new URL('/manifest.json', request.url)));
+    if (!asset.ok) return null;
+    const headers = new Headers(asset.headers);
+    headers.set('content-type', 'application/manifest+json');
+    for (const [key, value] of Object.entries(vary)) headers.set(key, value);
+    return new Response(request.method === 'HEAD' ? null : asset.body, { status: 200, headers });
+  }
+  if (!PWA_FILES.has(pathname)) return null;
+  const asset = await env.ASSETS.fetch(request);
+  return asset.ok ? asset : null;
+}
+
 // The reader sign-in page is built here from the current code, so deploying the site updates it (no separate publish
 // step, no stale login.html in the bucket). It talks to Neon Auth through the /_neon proxy below.
 function loginPage(request, env) {
@@ -66,6 +90,10 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === NEON_PREFIX || url.pathname.startsWith(`${NEON_PREFIX}/`)) return proxyNeonAuth(request, env, url.pathname, url.search);
     if (!env.BUCKET_ORIGIN) return new Response('Site is not configured (BUCKET_ORIGIN).', { status: 500 });
+    if (request.method === 'GET' || request.method === 'HEAD') {
+      const pwa = await pwaFile(request, env, url.pathname);
+      if (pwa) return pwa;
+    }
     if ((url.pathname === '/login' || url.pathname === '/login.html') && (request.method === 'GET' || request.method === 'HEAD')) return loginPage(request, env);
     if (request.method !== 'GET' && request.method !== 'HEAD') return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET, HEAD' } });
 

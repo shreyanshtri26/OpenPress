@@ -395,11 +395,11 @@ export function renderMastheadNavbar({
 
           <div id="account-dropdown-menu" class="hidden absolute right-0 mt-1 w-56 bg-white border border-neutral-300 shadow-xl rounded-xl overflow-hidden z-[60]">
             <div class="px-4 py-3 bg-neutral-50 border-b border-neutral-200">
-              <div id="user-display-name" class="font-bold text-xs uppercase tracking-wider text-neutral-900 font-share truncate">ePaper Reader</div>
+              <div id="user-display-name" class="font-bold text-xs uppercase tracking-wider text-neutral-900 font-share truncate">OpenPress Reader</div>
               <div id="user-display-email" class="text-[11px] text-neutral-500 truncate mt-0.5">reader@openpress.com</div>
               <div class="mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                ePaper Subscriber
+                OpenPress Member
               </div>
             </div>
             <div class="py-1">
@@ -495,7 +495,7 @@ export function renderMastheadNavbar({
                 <div id="drawer-reader-initial" class="op-menu__reader-initial">?</div>
                 <img id="drawer-reader-picture" class="op-menu__reader-picture hidden" src="" alt="" />
                 <div class="op-menu__reader-text">
-                  <div id="drawer-reader-name" class="op-menu__reader-name">ePaper Reader</div>
+                  <div id="drawer-reader-name" class="op-menu__reader-name">OpenPress Reader</div>
                   <div id="drawer-reader-email" class="op-menu__reader-email"></div>
                 </div>
               </div>

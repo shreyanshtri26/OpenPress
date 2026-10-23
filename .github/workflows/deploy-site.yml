@@ -32,6 +32,8 @@ jobs:
         working-directory: apps/site
         run: |
           mkdir -p dist && cp src/index.mjs dist/_worker.js
+          # The ePaper's installable-app files come from the repo, not from whatever the bucket holds.
+          cp ../admin/public/manifest.json ../admin/public/sw.js ../admin/public/pwa-screenshot-mobile.png ../admin/public/pwa-screenshot-desktop.png ../admin/public/pwa-icon-*.png dist/
           sed -i 's|^BUCKET_ORIGIN = .*|BUCKET_ORIGIN = "${{ vars.SITE_BUCKET_ORIGIN }}"|' wrangler.toml
           sed -i 's|^NEON_AUTH_BASE_URL = .*|NEON_AUTH_BASE_URL = "${{ vars.NEON_AUTH_BASE_URL }}"|' wrangler.toml
           sed -i 's|^API_URL = .*|API_URL = "${{ vars.API_URL }}"|' wrangler.toml

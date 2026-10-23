@@ -178,7 +178,7 @@ import { handler as webSearch } from './routes/utils/webSearch.mjs';
 import { handler as getSearchHistory } from './routes/utils/getSearchHistory.mjs';
 import { handler as deleteSearchHistory } from './routes/utils/deleteSearchHistory.mjs';
 
-// ePaper Reader Auth
+// OpenPress Reader Auth
 import { handler as epaperSyncReader } from './routes/epaper/syncReader.mjs';
 import { handler as epaperGetReaderProfile } from './routes/epaper/getReaderProfile.mjs';
 import { handler as epaperLogoutReader } from './routes/epaper/logoutReader.mjs';
@@ -585,7 +585,7 @@ export const handler = async (event, context) => {
     else if (path === '/api/utils/search/history' && method === 'GET') response = await getSearchHistory(event);
     else if (path === '/api/utils/search/history' && method === 'DELETE') response = await deleteSearchHistory(event);
 
-    // ePaper Reader Auth
+    // OpenPress Reader Auth
     else if ((path === '/epaper/auth/sync' || path === '/api/epaper/auth/sync') && method === 'POST') response = await epaperSyncReader(event);
     else if ((path === '/epaper/auth/me' || path === '/api/epaper/auth/me') && method === 'GET') response = await epaperGetReaderProfile(event);
     else if ((path === '/epaper/auth/logout' || path === '/api/epaper/auth/logout') && method === 'POST') response = await epaperLogoutReader(event);

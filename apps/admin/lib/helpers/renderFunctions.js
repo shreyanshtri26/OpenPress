@@ -525,11 +525,11 @@ export function renderAtlanticNavbar({
 
           <div id="account-dropdown-menu" class="hidden absolute right-0 mt-1 w-56 bg-white border border-neutral-300 shadow-xl rounded-xl overflow-hidden z-[60]">
             <div class="px-4 py-3 bg-neutral-50 border-b border-neutral-200">
-              <div id="user-display-name" class="font-bold text-xs uppercase tracking-wider text-neutral-900 font-share truncate">ePaper Reader</div>
+              <div id="user-display-name" class="font-bold text-xs uppercase tracking-wider text-neutral-900 font-share truncate">OpenPress Reader</div>
               <div id="user-display-email" class="text-[11px] text-neutral-500 truncate mt-0.5">reader@openpress.com</div>
               <div class="mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                ePaper Subscriber
+                OpenPress Member
               </div>
             </div>
             <div class="py-1">
@@ -632,9 +632,9 @@ export function renderAtlanticNavbar({
               <div id="drawer-reader-initial" class="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm shrink-0">?</div>
               <img id="drawer-reader-picture" class="w-10 h-10 rounded-full object-cover hidden shrink-0 border border-neutral-300" src="" alt="" />
               <div class="flex-1 min-w-0">
-                <div id="drawer-reader-name" class="font-bold text-sm text-neutral-900 truncate">ePaper Reader</div>
+                <div id="drawer-reader-name" class="font-bold text-sm text-neutral-900 truncate">OpenPress Reader</div>
                 <div id="drawer-reader-email" class="text-xs text-neutral-500 truncate"></div>
-                <span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 rounded-full">Subscriber</span>
+                <span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 rounded-full">OpenPress Member</span>
               </div>
             </div>
             <button onclick="closeMobileMenu(); handleLogout();" type="button" class="mt-3 w-full py-2 px-3 text-xs font-semibold text-red-600 bg-white border border-neutral-300 rounded-lg hover:bg-red-50 text-center transition cursor-pointer">

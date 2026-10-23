@@ -2,7 +2,6 @@
 import { createContext, useContext, useMemo, useState, useEffect } from 'react';
 import { SideBar } from './SideBar';
 import { PageStudioButton, EPaperButton } from '../common/ToolbarLinks';
-import PWAInstall from '../elements/PWAInstall';
 
 const AdminLayoutContext = createContext(undefined);
 
@@ -92,7 +91,6 @@ export const AdminDashboardLayout = ({
         <div className="op-admin flex-1 flex flex-col min-h-0 min-w-0">
           <TopActions />
           <main className="op-sheet">{children}</main>
-          <PWAInstall />
         </div>
       </div>
     </AdminLayoutContext.Provider>
