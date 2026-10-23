@@ -22,7 +22,7 @@ jobs:
       api: ${{ steps.f.outputs.api }}
       web: ${{ steps.f.outputs.web }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: f
         uses: dorny/paths-filter@v3
         with:
@@ -54,7 +54,7 @@ jobs:
       CRON_SECRET: ci-only-cron-secret
       ALLOWED_ORIGINS: http://localhost:5173
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with: { node-version-file: .nvmrc, cache: npm }
       - run: npm ci
@@ -73,7 +73,7 @@ jobs:
     if: needs.changes.outputs.web == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with: { node-version-file: .nvmrc, cache: npm }
       - run: npm ci
