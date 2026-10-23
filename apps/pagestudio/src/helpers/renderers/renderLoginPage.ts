@@ -158,15 +158,6 @@ export function renderLoginPageHtml(props: LoginPageProps = {}): string {
           </button>
         </div>
       </div>
-
-      <!-- Strict Table Isolation Disclaimer -->
-      <div class="mt-6 pt-5 border-t border-neutral-100 text-center space-y-2">
-        <p class="text-[11px] text-neutral-500 leading-normal">
-          Strict Public Reader Access. Internal OpenPress CMS staff (Super Users, Admins, Editors, and Journalists) log in via the 
-          <a href="http://localhost:5173/login" class="font-semibold text-neutral-900 underline hover:text-black">CMS Dashboard</a>.
-        </p>
-      </div>
-
     </div>
   </main>
 
