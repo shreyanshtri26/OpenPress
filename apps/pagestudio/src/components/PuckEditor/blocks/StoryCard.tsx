@@ -79,8 +79,8 @@ export const StoryCard: React.FC<StoryCardProps> = ({
     ? story?.headline || propTitle || "Headline goes here"
     : propTitle || story?.headline || "Headline goes here";
   const displayDescription = isAutomatic
-    ? story?.summary || propDescription || "A short summary of the story appears here."
-    : propDescription || story?.summary || "A short summary of the story appears here.";
+    ? story?.summary || propDescription || (story ? "" : "A short summary of the story appears here.")
+    : propDescription || story?.summary || (story ? "" : "A short summary of the story appears here.");
 
   const html = (displayDescription || "")
     .split(/(<[^>]+>)/g)
@@ -107,7 +107,7 @@ export const StoryCard: React.FC<StoryCardProps> = ({
 
   return (
     <div
-      className={`relative w-full h-auto bg-white ${publishUrl ? 'cursor-pointer hover:opacity-90' : ''} transition-opacity`}
+      className={`relative w-full h-auto bg-white ${publishUrl ? 'cursor-pointer' : ''} group`}
       onClick={handleClick}
       role={publishUrl ? "button" : undefined}
       tabIndex={publishUrl ? 0 : undefined}
@@ -120,14 +120,16 @@ export const StoryCard: React.FC<StoryCardProps> = ({
     >
       <div className="relative w-full">
         {/* Image area */}
-        <img
-          key={displayImage}
-          src={displayImage}
-          alt={displayTitle}
-          className={`aspect-[16/10] w-full object-cover transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"
-            }`}
-          loading="lazy"
-        />
+        <div className="overflow-hidden bg-slate-100">
+          <img
+            key={displayImage}
+            src={displayImage}
+            alt={displayTitle}
+            className={`aspect-[16/10] w-full object-cover transition-all duration-500 group-hover:scale-[1.03] ${imageLoaded ? "opacity-100" : "opacity-0"
+              }`}
+            loading="lazy"
+          />
+        </div>
 
         {/* Overlay text box */}
         <div className="w-full bg-white">
@@ -136,7 +138,7 @@ export const StoryCard: React.FC<StoryCardProps> = ({
             <p
               ref={labelRef}
               // contentEditable
-              className="text-black font-share border-black border-[0.5px] text-[9px] sm:text-[10px] lg:text-[11px] uppercase tracking-wide px-1 py-1 w-fit align-center"
+              className="text-black font-share border-black border-[0.5px] text-[9px] sm:text-[10px] lg:text-[11px] uppercase tracking-[0.12em] px-1.5 py-1 w-fit align-center"
               suppressContentEditableWarning
             >
               {displayLabel}
@@ -146,7 +148,7 @@ export const StoryCard: React.FC<StoryCardProps> = ({
             <h2
               ref={titleRef}
               // contentEditable
-              className="text-[1.5rem] sm:text-3xl lg:text-[37px] mt-2 font-extrabold font-libre text-black leading-tight sm:leading-[2rem] lg:leading-[2.5rem] mb-2 outline-none focus:ring-0"
+              className="text-[1.5rem] sm:text-3xl lg:text-[37px] mt-2 font-extrabold font-libre text-black leading-tight sm:leading-[2rem] lg:leading-[2.5rem] mb-2 line-clamp-4 group-hover:underline decoration-1 underline-offset-4 outline-none focus:ring-0"
               suppressContentEditableWarning
             >
               {displayTitle}
@@ -156,7 +158,7 @@ export const StoryCard: React.FC<StoryCardProps> = ({
             <p
               ref={descriptionRef}
               // contentEditable
-              className="text-black text-sm sm:text-base lg:text-[17px] font-[Merriweather] line-clamp-3 text-left outline-none focus:ring-0"
+              className="text-neutral-700 text-sm sm:text-base lg:text-[17px] leading-relaxed font-[Merriweather] line-clamp-3 text-left outline-none focus:ring-0"
               suppressContentEditableWarning
               dangerouslySetInnerHTML={{ __html: normalizedDescription }}
             />

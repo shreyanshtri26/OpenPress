@@ -78,27 +78,27 @@ export function HeroGridBlock({
         {/* Main grid layout */}
         <div className="relative z-10 grid grid-cols-1 gap-4 sm:gap-5 lg:gap-x-6 gap-y-2 lg:grid-cols-12">
           {/* Left column */}
-          <div className="order-2 lg:order-1 lg:col-span-3 flex flex-col gap-3 relative">
-            <div className="h-auto order-1 lg:order-none [&_h3]:text-[1.5rem] lg:[&_h3]:text-[20px] sm:[&_h3]:text-lg">
+          <div className="order-2 lg:order-1 lg:col-span-3 min-w-0 flex flex-col gap-3 relative">
+            <div className="h-auto order-1 lg:order-none [&_h2]:text-[1.35rem] [&_h2]:leading-[1.2] sm:[&_h2]:text-xl lg:[&_h2]:text-[22px]">
               {renderSlot(0, 'left-0', 'h-full')}
             </div>
             <hr className="border-t border-dotted border-black mb-3 flex-shrink-0 order-2 lg:order-none" />
-            <div className="h-auto order-3 lg:order-none [&_h3]:text-[1.5rem] lg:[&_h3]:text-[20px] sm:[&_h3]:text-lg">
+            <div className="h-auto order-3 lg:order-none [&_h2]:text-[1.35rem] [&_h2]:leading-[1.2] sm:[&_h2]:text-xl lg:[&_h2]:text-[22px]">
               {renderSlot(1, 'left-1', 'h-full')}
             </div>
           </div>
           {/* Center column */}
-          <div className="order-1 lg:order-2 lg:col-span-6 px-0 lg:px-2 grid grid-rows-[minmax(6rem,min-content)] relative">
-            <div className="h-auto">{renderSlot(2, 'center-0', 'h-full min-h-[20rem]')}</div>
+          <div className="order-1 lg:order-2 lg:col-span-6 min-w-0 px-0 lg:px-2 lg:flex lg:flex-col relative">
+            <div className="lg:flex-1 lg:flex lg:flex-col lg:[&_[data-puck-dnd]]:flex-1 lg:[&_[data-puck-dnd]]:flex lg:[&_[data-puck-dnd]]:flex-col lg:[&_a]:flex-1 lg:[&_a]:flex lg:[&_a]:flex-col lg:[&_img]:flex-1 lg:[&_img]:min-h-[20rem] lg:[&_img]:aspect-auto">{renderSlot(2, 'center-0', 'h-full min-h-[20rem] lg:flex lg:flex-col lg:flex-1')}</div>
             <hr className="border-t border-dotted border-black my-4 lg:hidden" />
           </div>
           {/* Right column */}
-          <div className="order-3 lg:order-3 lg:col-span-3 flex flex-col gap-3 relative">
-            <div className="h-auto order-1 lg:order-none [&_h3]:text-[1.5rem] lg:[&_h3]:text-[20px] sm:[&_h3]:text-lg">
+          <div className="order-3 lg:order-3 lg:col-span-3 min-w-0 flex flex-col gap-3 relative">
+            <div className="h-auto order-1 lg:order-none [&_h2]:text-[1.35rem] [&_h2]:leading-[1.2] sm:[&_h2]:text-xl lg:[&_h2]:text-[22px]">
               {renderSlot(3, 'right-0', 'h-full')}
             </div>
             <hr className="border-t border-dotted border-black mb-3 flex-shrink-0 order-2 lg:order-none" />
-            <div className="h-auto order-3 lg:order-none [&_h3]:text-[1.5rem] lg:[&_h3]:text-[20px] sm:[&_h3]:text-lg">
+            <div className="h-auto order-3 lg:order-none [&_h2]:text-[1.35rem] [&_h2]:leading-[1.2] sm:[&_h2]:text-xl lg:[&_h2]:text-[22px]">
               {renderSlot(4, 'right-1', 'h-full')}
             </div>
             <hr className="border-t border-dotted border-black my-4 lg:hidden order-4" />

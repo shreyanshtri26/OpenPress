@@ -470,13 +470,21 @@ export function getThumbnailGridTaxonomyGroups(): { taxonomyName: string; values
   return cachedThumbnailGridTaxonomyGroups
 }
 
-// Generate options for dropdown
+// "NEWS · Headline · 12 Jan" - the section and date tell stories with similar headlines apart in the picker.
+export function storyOptionLabel(story: { headline: string; category?: string; section?: string; publishedAt?: string; createdAt?: string }): string {
+  const kind = (story.section || story.category || '').toUpperCase()
+  const when = new Date(story.publishedAt || story.createdAt || '')
+  const date = Number.isNaN(when.getTime()) ? '' : when.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+  return [kind, story.headline, date].filter(Boolean).join(' · ')
+}
+
+// Generate options for dropdown, newest first
 export function getStoryOptions(): { label: string; value: string }[] {
-  const stories = getStories()
+  const stories = [...getStories()].sort((a, b) => new Date(b.publishedAt || b.createdAt || 0).getTime() - new Date(a.publishedAt || a.createdAt || 0).getTime())
   return [
     { label: '--- Select Story ---', value: '' },
     ...stories.map((story) => ({
-      label: story.headline,
+      label: storyOptionLabel(story),
       value: story.id,
     }))
   ];

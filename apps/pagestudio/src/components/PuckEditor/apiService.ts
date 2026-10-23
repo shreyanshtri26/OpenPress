@@ -110,8 +110,8 @@ function transformApiStory(apiStory: ApiStory): Story | null {
     return null
   }
 
-  let summary = 'No description available'
-  let fullDescription = 'No description available'
+  let summary = ''
+  let fullDescription = ''
 
   let descObj = apiStory.description;
   if (typeof descObj === 'string') {

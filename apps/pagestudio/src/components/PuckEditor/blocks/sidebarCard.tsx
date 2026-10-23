@@ -33,8 +33,8 @@ export function SidebarStoryCard({ storyId, isFirst, isLast }: SidebarStoryCardP
 
   if (!story) {
     return (
-      <article className="p-4 border border-slate-200 rounded">
-        <p className="text-slate-500 text-sm">No story selected</p>
+      <article className="p-4 border border-dashed border-slate-300 rounded">
+        <p className="text-slate-500 text-sm">Pick a story for this card</p>
       </article>
     )
   }
@@ -60,8 +60,11 @@ export function SidebarStoryCard({ storyId, isFirst, isLast }: SidebarStoryCardP
         isLast ? 'pb-0' : '',
       ].filter(Boolean).join(' ')}
     >
-      <div className="flex overflow-hidden items-center justify-between gap-5">
-        <div className="flex flex-col">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          {story.category && (
+            <span className="font-share text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">{story.category}</span>
+          )}
           {isEditing ? (
             <input
               type="text"
@@ -70,31 +73,30 @@ export function SidebarStoryCard({ storyId, isFirst, isLast }: SidebarStoryCardP
               onBlur={handleBlur}
               onKeyDown={handleKeyDown}
               autoFocus
-              className="font-cormorant-garamond text-xl font-semibold leading-snug text-slate-900 mb-4 border border-slate-300 px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="font-libre text-[17px] font-bold leading-snug text-slate-900 border border-slate-300 px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-slate-400"
             />
           ) : (
             <h3
               ref={headlineRef}
               onClick={handleHeadlineClick}
-              className="font-cormorant-garamond text-xl font-semibold leading-snug text-slate-900 mb-4 cursor-pointer hover:bg-slate-50 rounded px-2 py-1 transition-colors"
+              className="font-libre text-[17px] font-bold leading-snug text-slate-900 line-clamp-3 cursor-pointer"
             >
               {headline}
             </h3>
           )}
-          <p className="font-jetbrains-mono text-black uppercase text-[12px] font-medium">
-            {story.author}
-          </p>
+          {story.author && <p className="font-share text-slate-600 uppercase text-[11px] tracking-wide">{story.author}</p>}
         </div>
 
         <img
           src={story.imageUrl}
           alt={story.imageAlt}
-          className="h-20 w-50 object-cover shadow-sm md:h-20"
+          className="h-[72px] w-24 flex-none rounded-sm object-cover"
           loading="lazy"
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
         />
       </div>
 
-      {!isLast && <div className="w-full border-t border-slate-300 my-5" />}
+      {!isLast && <div className="w-full border-t border-slate-200 my-5" />}
     </article>
   )
 }

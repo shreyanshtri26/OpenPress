@@ -10,7 +10,7 @@ import { MainCard, type MainCardProps } from './blocks/MainCard'
 import FeaturedCardLayout, { type FeaturedCardProps } from './blocks/FeaturedCard'
 import StorySubCard from './blocks/StorySubCard'
 import { MultimediaCard, type MultimediaCardProps } from './blocks/MultimediaCard'
-import { getStories, getStoryOptions, findStoryById } from './storyData'
+import { getStories, getStoryOptions, findStoryById, storyOptionLabel } from './storyData'
 import blogBlocks from './blogBuilder/BlogCardConfig'
 import Border, { type BorderProps } from './blocks/border'
 import { ErrorCard, type ErrorCardProps } from './blocks/ErrorCard'
@@ -313,7 +313,7 @@ const rawCardBlocks: Record<string, any> = {
           const stories = getStories()
           return stories.length
             ? stories.map((s) => ({
-              label: s.headline,
+              label: storyOptionLabel(s),
               value: s.id,
             }))
             : [{ label: "Loading stories...", value: "" }]
@@ -517,7 +517,7 @@ const rawCardBlocks: Record<string, any> = {
           const stories = getStories();
           return stories.length
             ? stories.map((s) => ({
-              label: s.headline,
+              label: storyOptionLabel(s),
               value: s.id,
             }))
             : [{ label: 'Loading stories...', value: '' }];

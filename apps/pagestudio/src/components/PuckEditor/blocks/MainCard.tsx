@@ -77,7 +77,7 @@ export const MainCard: React.FC<MainCardProps> = ({
   const displayImage = story?.imageUrl || imageUrl;
   const displayLabel = story?.category || label;
   const displayTitle = story?.headline || title || "";
-  const displayDescription = story?.summary || description;
+  const displayDescription = story ? (story.summary || '') : description;
 
   const html = (displayDescription || "")
     .split(/(<[^>]+>)/g) // keep tags intact

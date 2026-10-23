@@ -3,7 +3,10 @@ import { createRoot } from 'react-dom/client'
 import { act } from 'react'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
-vi.mock('react-icons/io', () => ({ IoIosPlayCircle: () => null }))
+vi.mock('react-icons/io', async () => {
+  const { createElement } = await import('react')
+  return { IoIosPlayCircle: () => createElement('svg', { 'data-play': '1' }) }
+})
 
 // jsdom has no ResizeObserver and some editor modules touch it while loading.
 vi.hoisted(() => {
@@ -94,6 +97,17 @@ describe.each(CARDS)('%s: editor and published page agree', (type, propsFor) => 
     if (/Card$/.test(type) && type !== 'StorySubCard' && type !== 'SidebarStoryCard' && type !== 'MultimediaCard') {
       expect(words(pub).toLowerCase()).toContain(section.toLowerCase())
       expect(words(ed.host).toLowerCase()).toContain(section.toLowerCase())
+    }
+    // the Multimedia card draws a play icon over its image and a VIDEOS label, in both versions
+    if (type === 'MultimediaCard') {
+      expect(ed.host.querySelector('svg[data-play]')).not.toBeNull()
+      expect(pub.querySelector('svg path')).not.toBeNull()
+      expect(words(pub)).toContain('VIDEOS')
+      expect(words(ed.host)).toContain('VIDEOS')
+    }
+    // the Side and Sub cards: whatever category line one shows, the other shows too
+    if (type === 'StorySubCard' || type === 'SidebarStoryCard') {
+      expect(words(ed.host).toLowerCase().includes(section.toLowerCase())).toBe(words(pub).toLowerCase().includes(section.toLowerCase()))
     }
     // every story image the published card shows is shown by the editor card too (and the other way round)
     const story = (srcs(pub).filter((s) => s.startsWith('/img/')))

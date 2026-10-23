@@ -56,29 +56,32 @@ export function renderStoryCard(props: StoryCardProps, ctx: RenderContext): stri
 
   return `
 <${Tag}
-  class="relative w-full h-auto bg-white block ${publishUrl ? 'cursor-pointer hover:opacity-90' : ''
-    } transition-opacity"
+  class="relative w-full h-auto bg-white block ${publishUrl ? 'cursor-pointer' : ''
+    } group"
   ${actionAttr}
 >
   <div class="relative w-full">
-    <img
-      src="${escapeHtml(image)}"
-      alt="${escapeHtml(title)}"
-      class="aspect-[16/10] w-full object-cover"
-      loading="lazy"
-    />
+    <div class="overflow-hidden bg-slate-100">
+      <img
+        src="${escapeHtml(image)}"
+        alt="${escapeHtml(title)}"
+        class="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        loading="lazy"
+        onerror="this.src='/openpress-share.png'"
+      />
+    </div>
 
     <div class="w-full bg-white">
       <div class="pt-3">
-        <p class="text-black font-share border-black border-[0.5px] text-[9px] sm:text-[10px] lg:text-[11px] uppercase tracking-wide px-1 py-1 w-fit">
+        <p class="text-black font-share border-black border-[0.5px] text-[9px] sm:text-[10px] lg:text-[11px] uppercase tracking-[0.12em] px-1.5 py-1 w-fit">
           ${escapeHtml(label)}
         </p>
 
-        <h2 class="text-[1.5rem] sm:text-3xl lg:text-[37px] mt-2 font-extrabold font-libre text-black leading-tight sm:leading-[2rem] lg:leading-[2.5rem] mb-2">
+        <h2 class="text-[1.5rem] sm:text-3xl lg:text-[37px] mt-2 font-extrabold font-libre text-black leading-tight sm:leading-[2rem] lg:leading-[2.5rem] mb-2 line-clamp-4 group-hover:underline decoration-1 underline-offset-4">
           ${escapeHtml(title)}
         </h2>
 
-        ${normalizedDescription ? `<p class="text-black text-sm sm:text-base lg:text-[17px] font-[Merriweather] line-clamp-3 text-left">
+        ${normalizedDescription ? `<p class="text-neutral-700 text-sm sm:text-base lg:text-[17px] leading-relaxed font-[Merriweather] line-clamp-3 text-left">
           ${normalizedDescription}
         </p>` : ''}
       </div>

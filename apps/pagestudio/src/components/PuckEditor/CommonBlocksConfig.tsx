@@ -391,7 +391,6 @@ export const commonBlocks: Record<string, any> = {
       heading: { label: 'Heading', type: 'text', placeholder: 'ADVERTISEMENT' },
       infoLabel: { label: 'Info label', type: 'text', placeholder: 'About this advertisement' },
       brandName: { label: 'Brand name', type: 'text', placeholder: 'PROFERLO' },
-      items: { label: 'Grid items', type: 'slot' },
     },
     defaultProps: {
       id: 'advertisement-grid',
@@ -399,7 +398,7 @@ export const commonBlocks: Record<string, any> = {
       infoLabel: 'About this advertisement',
       brandName: 'PROFERLO',
     } as AdvertisementGridProps,
-    render: (props: AdvertisementGridProps) => <AdvertisementGridBlock {...props} />,
+    render: (props: AdvertisementGridProps & { puck?: any }) => <AdvertisementGridBlock {...props} />,
   },
   ThumbnailGrid: {
     label: 'Thumbnail grid',

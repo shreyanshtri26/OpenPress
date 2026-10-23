@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "test": "vitest run && npm run build:publish-renderer && node scripts/check-published.mjs",
     "preview": "vite preview",
-    "test:unit": "vitest run"
+    "test:unit": "vitest run",
+    "check:puck": "node scripts/check-puck-canvas.mjs"
   },
   "dependencies": {
     "@measured/puck": "^0.20.2",

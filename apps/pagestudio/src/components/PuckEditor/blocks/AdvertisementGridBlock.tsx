@@ -5,12 +5,10 @@ export type AdvertisementGridProps = {
   heading: string
   infoLabel?: string
   brandName?: string
-  items?: ReactNode
+  puck?: { renderDropZone?: (zoneProps: { zone: string; className?: string }) => ReactNode }
 }
 
-export function AdvertisementGridBlock({ id, heading, infoLabel, brandName, items: Items }: AdvertisementGridProps) {
-  const Slot = Items as unknown as React.ComponentType<{ className?: string }>
-
+export function AdvertisementGridBlock({ id, heading, infoLabel, brandName, puck }: AdvertisementGridProps) {
   return (
     <section id={id} className="op-container py-8">
       {/* Heading */}
@@ -29,28 +27,18 @@ export function AdvertisementGridBlock({ id, heading, infoLabel, brandName, item
         <span className="h-px flex-1 bg-slate-200" aria-hidden />
       </div>
 
-      {/* Grid (drop area) */}
+      {/* Grid (drop area). The zone name matches renderAdvertisementGrid, so what is dropped here is what gets published. */}
       <div className="mt-6">
-        <Slot
-          className="
-            grid
-            grid-cols-1
-            sm:grid-cols-2
-            lg:grid-cols-4
-            gap-x-8 gap-y-12
-            rounded-xl
-            
-          
-            p-6
-            min-h-[200px]
-          "
-        />
+        {puck?.renderDropZone?.({
+          zone: 'advertisement-grid-items',
+          className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 rounded-xl p-6 min-h-[200px]',
+        })}
       </div>
 
       {/* Footer */}
       {brandName && (
         <div className="mt-6 flex flex-col items-center gap-3">
-          <span className="font-jetbrains-mono text-xs font-semibold uppercase tracking-[0.45em] text-slate-700">
+          <span className="font-share text-xs font-semibold uppercase tracking-[0.45em] text-slate-700">
             {brandName}
           </span>
           <span className="h-px w-full bg-slate-200" aria-hidden />
