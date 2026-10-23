@@ -349,7 +349,7 @@ export function PuckHeaderActions({
         if (done) {
           shownJobIdRef.current = done.jobId;
           setFinishedJob(done);
-          window.setTimeout(() => setFinishedJob(null), 6000);
+          window.setTimeout(() => setFinishedJob(null), 3000);
         }
       }
       setActiveRepublishJob(job?.isActive ? job : null);
@@ -547,6 +547,14 @@ export function PuckHeaderActions({
       if (!response.ok) {
         throw new Error(result?.message || "Failed to upload HTML");
       }
+
+      // Show success notification
+      setRepublishNotice({
+        tone: "success",
+        title: "Home page published",
+        message: "Your changes are now live.",
+      });
+      setTimeout(() => setRepublishNotice(null), 3000);
 
       // Publish PWA static files (manifest.json, sw.js, screenshots) to S3
       // so the live site always has the latest PWA metadata. Runs silently.
@@ -749,6 +757,14 @@ export function PuckHeaderActions({
         throw new Error(result?.message || "Failed to upload Error HTML");
       }
 
+      // Show success notification
+      setRepublishNotice({
+        tone: "success",
+        title: "Error page published",
+        message: "Your changes are now live.",
+      });
+      setTimeout(() => setRepublishNotice(null), 3000);
+
       try {
         await fetch(`${base}/pagestudio/saveSiteMap`, {
           method: "POST",
@@ -901,6 +917,14 @@ export function PuckHeaderActions({
         throw new Error(result?.message || "Failed to upload Section HTML");
       }
 
+      // Show success notification
+      setRepublishNotice({
+        tone: "success",
+        title: "Section page published",
+        message: "Your changes are now live.",
+      });
+      setTimeout(() => setRepublishNotice(null), 3000);
+
       try {
         await fetch(`${base}/pagestudio/saveSiteMap`, {
           method: "POST",
@@ -1051,6 +1075,14 @@ export function PuckHeaderActions({
         throw new Error(result?.message || "Failed to upload About HTML");
       }
 
+      // Show success notification
+      setRepublishNotice({
+        tone: "success",
+        title: "About page published",
+        message: "Your changes are now live.",
+      });
+      setTimeout(() => setRepublishNotice(null), 3000);
+
       try {
         await fetch(`${base}/pagestudio/saveSiteMap`, {
           method: "POST",
@@ -1198,6 +1230,14 @@ export function PuckHeaderActions({
       if (!response.ok) {
         throw new Error(result?.message || "Failed to upload Support Us HTML");
       }
+
+      // Show success notification
+      setRepublishNotice({
+        tone: "success",
+        title: "Support Us page published",
+        message: "Your changes are now live.",
+      });
+      setTimeout(() => setRepublishNotice(null), 3000);
 
       try {
         await fetch(`${base}/pagestudio/saveSiteMap`, {
@@ -1349,6 +1389,14 @@ export function PuckHeaderActions({
         throw new Error(result?.message || "Failed to upload Privacy Policy HTML");
       }
 
+      // Show success notification
+      setRepublishNotice({
+        tone: "success",
+        title: "Privacy Policy page published",
+        message: "Your changes are now live.",
+      });
+      setTimeout(() => setRepublishNotice(null), 3000);
+
       try {
         await fetch(`${base}/pagestudio/saveSiteMap`, {
           method: "POST",
@@ -1487,6 +1535,14 @@ export function PuckHeaderActions({
       if (!response.ok) {
         throw new Error("Failed to save Contact Us HTML to backend");
       }
+
+      // Show success notification
+      setRepublishNotice({
+        tone: "success",
+        title: "Contact Us page published",
+        message: "Your changes are now live.",
+      });
+      setTimeout(() => setRepublishNotice(null), 3000);
 
       // try {
       //   await fetch(`${base}/pagestudio/saveSiteMap`, {
@@ -1638,6 +1694,14 @@ export function PuckHeaderActions({
         throw new Error(result?.message || "Failed to upload Media Council HTML");
       }
 
+      // Show success notification
+      setRepublishNotice({
+        tone: "success",
+        title: "Editorial Standards page published",
+        message: "Your changes are now live.",
+      });
+      setTimeout(() => setRepublishNotice(null), 3000);
+
       try {
         await fetch(`${base}/pagestudio/saveSiteMap`, {
           method: "POST",
@@ -1785,6 +1849,14 @@ export function PuckHeaderActions({
       if (!response.ok) {
         throw new Error(result?.message || "Failed to upload AuthorsList HTML");
       }
+
+      // Show success notification
+      setRepublishNotice({
+        tone: "success",
+        title: "All Authors page published",
+        message: "Your changes are now live.",
+      });
+      setTimeout(() => setRepublishNotice(null), 3000);
 
       try {
         await fetch(`${base}/pagestudio/saveSiteMap`, {
@@ -1943,6 +2015,14 @@ export function PuckHeaderActions({
       if (!response.ok) {
         throw new Error(result?.message || "Failed to upload author HTML");
       }
+
+      // Show success notification
+      setRepublishNotice({
+        tone: "success",
+        title: "Author page published",
+        message: "Your changes are now live.",
+      });
+      setTimeout(() => setRepublishNotice(null), 3000);
 
       try {
         await fetch(`${base}/pagestudio/saveSiteMap`, {

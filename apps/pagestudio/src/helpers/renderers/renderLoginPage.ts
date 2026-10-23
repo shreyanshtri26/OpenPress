@@ -66,13 +66,6 @@ export function renderLoginPageHtml(props: LoginPageProps = {}): string {
           <img src="/openpress-quill-nobg-trim.png" alt="" class="h-7 w-auto invert" />
         </div>
         <h1 class="text-2xl font-bold font-merriweather text-neutral-900 tracking-tight">Sign In to OpenPress</h1>
-        <p class="text-xs text-neutral-500 mt-1.5 font-share leading-relaxed">
-          Sign in to your reader account powered by Neon Auth to access subscriber editions and personalized features.
-        </p>
-        <div class="mt-3 inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          Public Reader Access
-        </div>
       </div>
 
       <!-- Already Logged In State Banner (hidden by default) -->
