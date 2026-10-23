@@ -1,6 +1,6 @@
 // components/common/DAM/AssetTab/AssetTagsField.jsx
 import React from "react";
-import TagBox from "@/components/ui/dx/tag-box";
+import TagBox from "@/components/ui/kit/tag-box";
 
 export default function AssetTagsField({
   availableTags,

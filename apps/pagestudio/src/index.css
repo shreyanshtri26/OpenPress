@@ -91,3 +91,8 @@ input[type="search"]::-webkit-search-results-decoration {
     line-height: 1.15 !important;
   }
 }
+
+/* Same container the published pages use (see styles/published-page.tailwind-entry.css). */
+.op-container { width: 100%; max-width: 80rem; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+@media (min-width: 640px) { .op-container { padding-left: 1.5rem; padding-right: 1.5rem; } }
+@media (min-width: 1024px) { .op-container { padding-left: 2rem; padding-right: 2rem; } }

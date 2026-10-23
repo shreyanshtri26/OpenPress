@@ -1,4 +1,4 @@
-// Drop-in for devextreme/pdf_exporter's exportDataGrid, using jspdf-autotable (MIT).
+// Drop-in for the widget library pdf_exporter's exportDataGrid, using jspdf-autotable (MIT).
 import autoTable from 'jspdf-autotable';
 
 const text = (v) => (v instanceof Date ? v.toLocaleDateString() : String(v ?? ''));

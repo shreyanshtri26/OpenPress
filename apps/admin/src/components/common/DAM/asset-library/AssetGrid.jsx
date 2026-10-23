@@ -8,7 +8,7 @@ import CardView, {
   SearchPanel,
   Selection,
   Sorting,
-} from '@/components/ui/dx/card-view';
+} from '@/components/ui/kit/card-view';
 
 import AssetCard from './AssetCard';
 import EmptyState from './EmptyState';
@@ -64,9 +64,9 @@ const AssetGrid = ({
   // CardView is remounted (via its `key`) whenever a filter changes, which can
   // happen while its container is mid-reflow (e.g. the date-filter dropdown
   // collapsing), so it can initialize with a stale/zero layout. CardView is a
-  // DataGrid-family widget, so per DevExtreme's guidance the correct recovery
+  // DataGrid-family widget, so per the kit's guidance the correct recovery
   // call is `updateDimensions()`. Do NOT call `repaint()` here - for widgets
-  // using a custom cardRender template, repaint() is what triggers DevExtreme's
+  // using a custom cardRender template, repaint() is what triggers the kit's
   // React 18/19 bug where each card is rendered twice.
   useEffect(() => {
     const instance = cardViewRef?.current?.instance?.();

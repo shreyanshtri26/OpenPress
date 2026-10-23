@@ -18,8 +18,9 @@ import { LeaderboardAdBlock } from './blocks/LeaderboardAdBlock'
 import { InStoryAdBlock } from './blocks/InStoryAdBlock'
 import { SidebarAdBlock } from './blocks/SidebarAdBlock'
 import { SpotlightAdBlock } from './blocks/SpotlightAdBlock'
+import { PopupAdBlock } from './blocks/PopupAdBlock'
 
-import { getLeaderboardAdOptions, getSidebarAdOptions, getInStoryAdOptions, getSpotlightAdOptions, findAdById, getLiveAd, getAdOptions, getPlacementDimensions } from './campaignData'
+import { getLeaderboardAdOptions, getSidebarAdOptions, getInStoryAdOptions, getSpotlightAdOptions, getPopupAdOptions, findAdById, getLiveAd, getAdOptions, getPlacementDimensions } from './campaignData'
 
 import { FallbackStorySelect } from './fields/FallbackStorySelect'
 import { ThumbnailGridCategorySelect } from './fields/ThumbnailGridCategorySelect'
@@ -138,6 +139,19 @@ export const commonBlocks: Record<string, any> = {
         fallbackBlock={props.fallbackBlock}
       />;
     },
+  },
+  PopupAd: {
+    label: 'Popup Ad',
+    fields: {
+      id: { label: 'Section ID', type: 'text' },
+      adId: {
+        label: 'Select Popup Campaign',
+        type: 'select',
+        get options() { return getPopupAdOptions(); },
+      },
+    },
+    defaultProps: { id: 'popup-ad', adId: 'auto' },
+    render: (props: { id?: string; adId?: string }) => <PopupAdBlock id={props.id} adId={props.adId} />,
   },
   InStoryAd: {
     label: 'In-Story Ad (300x250)',

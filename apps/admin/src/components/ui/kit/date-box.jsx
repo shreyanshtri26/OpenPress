@@ -43,7 +43,7 @@ export function DateBox({
   const attr = fromElementAttr(elementAttr);
 
   return (
-    <div {...attr} className={cx('dx-datebox', className, attr.className)} style={{ width, ...attr.style }}>
+    <div {...attr} className={cx('kit-datebox', className, attr.className)} style={{ width, ...attr.style }}>
       <input
         type={INPUT_TYPE[type] || 'date'}
         className={cx(fieldClass, 'cursor-pointer')}

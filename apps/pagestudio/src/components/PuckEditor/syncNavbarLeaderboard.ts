@@ -1,4 +1,4 @@
-import type { PageBuilderData, PageType } from './builderConfig';
+import type { PageStudioData, PageType } from './builderConfig';
 import { getPublishableData, getInitialDataForPage } from './builderConfig';
 import { getPlacements, initializePlacements } from './campaignData';
 import { getToken } from '../../utils/auth';
@@ -25,12 +25,12 @@ import { FLAT_PAGE_TARGETS } from '../../publish/publishContext';
 // v2: the signature format changed (canonicalized, key-order independent), so
 // the key is bumped rather than compared against v1 values — a stale-format
 // mismatch would otherwise force one bogus site-wide republish per browser.
-const HOME_CHROME_SIGNATURE_KEY = 'pagebuilder:home-shared-chrome-signature:v2';
+const HOME_CHROME_SIGNATURE_KEY = 'pagestudio:home-shared-chrome-signature:v2';
 const HOME_CHROME_SIGNATURE_PAGE_TYPE = 'HomeChromeSignatureV2';
 // The chrome as last propagated to the other pages' stored data. Separate from
 // the published signature above: this one tracks editor-data sync, that one
 // tracks published HTML.
-const HOME_CHROME_SYNCED_KEY = 'pagebuilder:home-shared-chrome-synced:v1';
+const HOME_CHROME_SYNCED_KEY = 'pagestudio:home-shared-chrome-synced:v1';
 
 const readSyncedSignature = (): string | null => {
   if (typeof window === 'undefined') return null;
@@ -62,7 +62,7 @@ const PAGE_TYPES_TO_SYNC: PageType[] = [
 // or propagate layouts must therefore wait for it, and bail out entirely if it
 // never arrives, rather than acting on a layout they cannot resolve.
 const ensurePlacementsResolvable = async (
-  data: PageBuilderData
+  data: PageStudioData
 ): Promise<boolean> => {
   if (!needsPlacementsRegistry(data)) return true;
 
@@ -78,7 +78,7 @@ const ensurePlacementsResolvable = async (
 
 const fetchPageRecord = async (
   pageType: PageType
-): Promise<{ pageId?: string; data: PageBuilderData | null } | null> => {
+): Promise<{ pageId?: string; data: PageStudioData | null } | null> => {
   const token = getToken();
   if (!token) return null;
   const base = import.meta.env.VITE_BACKEND_API;
@@ -94,7 +94,7 @@ const fetchPageRecord = async (
     const json = await res.json();
     const data =
       json?.data && typeof json.data === 'object' && Object.keys(json.data).length > 0
-        ? (json.data as PageBuilderData)
+        ? (json.data as PageStudioData)
         : null;
     return { pageId: json?.pageId, data };
   } catch {
@@ -105,7 +105,7 @@ const fetchPageRecord = async (
 const saveAutosave = async (
   pageType: PageType,
   pageId: string | undefined,
-  data: PageBuilderData & { publishedSnapshot?: PageBuilderData }
+  data: PageStudioData & { publishedSnapshot?: PageStudioData }
 ): Promise<void> => {
   const token = getToken();
   if (!token) return;
@@ -130,7 +130,7 @@ const saveAutosave = async (
 // exact key and write back to the same key.
 const fetchPageRecordByKey = async (
   pageTypeKey: string
-): Promise<{ pageId?: string; data: PageBuilderData | null } | null> => {
+): Promise<{ pageId?: string; data: PageStudioData | null } | null> => {
   const token = getToken();
   if (!token) return null;
   const base = import.meta.env.VITE_BACKEND_API;
@@ -146,7 +146,7 @@ const fetchPageRecordByKey = async (
     const json = await res.json();
     const data =
       json?.data && typeof json.data === 'object' && Object.keys(json.data).length > 0
-        ? (json.data as PageBuilderData)
+        ? (json.data as PageStudioData)
         : null;
     return { pageId: json?.pageId, data };
   } catch {
@@ -157,7 +157,7 @@ const fetchPageRecordByKey = async (
 const saveAutosaveByKey = async (
   pageTypeKey: string,
   pageId: string | undefined,
-  data: PageBuilderData & { publishedSnapshot?: PageBuilderData }
+  data: PageStudioData & { publishedSnapshot?: PageStudioData }
 ): Promise<void> => {
   const token = getToken();
   if (!token) return;
@@ -184,7 +184,7 @@ const saveAutosaveByKey = async (
  * saved target page.
  */
 export const syncNavbarLeaderboardFromHome = async (
-  homeData: PageBuilderData
+  homeData: PageStudioData
 ): Promise<void> => {
   if (!homeData) return;
   // Never propagate a layout derived from an unresolved placements registry —
@@ -234,7 +234,7 @@ export const syncNavbarLeaderboardFromHome = async (
  * `Section-<name>`, `Author-<id>`, or `Blog` in the comparison.
  */
 export const hasHomeNavbarLeaderboardChanged = async (
-  homeData: PageBuilderData,
+  homeData: PageStudioData,
   _extraKeys: string[] = []
 ): Promise<boolean> => {
   // A layout read before the placements registry loads is not comparable —
@@ -287,7 +287,7 @@ export const hasHomeNavbarLeaderboardChanged = async (
  * than propagate a layout that is missing a real leaderboard.
  */
 export const getHomeChromeLayoutForPublish = async (
-  homeData: PageBuilderData
+  homeData: PageStudioData
 ): Promise<HomeChromeLayout | null> => {
   if (!homeData) return null;
   if (!(await ensurePlacementsResolvable(homeData))) {
@@ -306,7 +306,7 @@ export const getSavedHomeChromeLayout = async (): Promise<HomeChromeLayout | nul
 };
 
 export const markHomeNavbarLeaderboardPublished = async (
-  homeData: PageBuilderData
+  homeData: PageStudioData
 ): Promise<void> => {
   if (!(await ensurePlacementsResolvable(homeData))) return;
   const signature = getHomeChromeSignature(homeData, getPlacements());
@@ -323,7 +323,7 @@ export const markHomeNavbarLeaderboardPublished = async (
   try {
     const record = await fetchPageRecordByKey(HOME_CHROME_SIGNATURE_PAGE_TYPE);
     const pageId = record?.pageId;
-    const data: PageBuilderData = {
+    const data: PageStudioData = {
       root: { props: { title: hashSignature(signature) } },
       content: [],
     };
@@ -405,7 +405,7 @@ const fetchReadyToPublishStories = async (): Promise<any[]> => {
 // In-browser bulk publish helpers.
 //
 // Home publish no longer calls these: when Home's shared chrome changes it
-// POSTs /pagebuilder/republishAll instead, and the backend worker republishes
+// POSTs /pagestudio/republishAll instead, and the backend worker republishes
 // every page from the same renderers (see src/publish/rendererEntry.ts), so
 // the admin does not have to keep the tab open. They are kept here, unused,
 // as the in-browser equivalent of that job.
@@ -418,7 +418,7 @@ const fetchReadyToPublishStories = async (): Promise<any[]> => {
  * Intended to run only when Home's shared chrome has actually changed.
  */
 export const publishAllNavbarPagesHtml = async (
-  homeData: PageBuilderData,
+  homeData: PageStudioData,
   ctx: BulkPublishContext
 ): Promise<void> => {
   const placements = getPlacements();
@@ -473,10 +473,10 @@ export const publishAllNavbarPagesHtml = async (
 /**
  * For every section: fetch its saved `Section-<name>` Puck JSON, inject
  * Home's shared chrome, persist via autosave, and publish HTML through
- * `/pagebuilder/saveSectionHtml`.
+ * `/pagestudio/saveSectionHtml`.
  */
 export const publishAllSectionPagesHtml = async (
-  homeData: PageBuilderData,
+  homeData: PageStudioData,
   sectionsList: string[],
   ctx: BulkPublishContext
 ): Promise<void> => {
@@ -532,10 +532,10 @@ export const publishAllSectionPagesHtml = async (
 /**
  * For every author: fetch its saved `Author-<id>` Puck JSON, inject Home's
  * shared chrome, persist via autosave, and publish HTML through
- * `/pagebuilder/saveAuthorHtml`.
+ * `/pagestudio/saveAuthorHtml`.
  */
 export const publishAllAuthorPagesHtml = async (
-  homeData: PageBuilderData,
+  homeData: PageStudioData,
   ctx: BulkPublishContext
 ): Promise<void> => {
   const placements = getPlacements();
@@ -601,11 +601,11 @@ export const publishAllAuthorPagesHtml = async (
  * Blog uses a single `Blog` Puck JSON template applied per published story.
  * On a shared chrome change we fetch the template, inject the new layout,
  * autosave, then re-render & push HTML for every published story through
- * `/pagebuilder/saveHtml`. Stories are processed in small batches to avoid
+ * `/pagestudio/saveHtml`. Stories are processed in small batches to avoid
  * hammering the backend.
  */
 export const publishAllBlogStoriesHtml = async (
-  homeData: PageBuilderData,
+  homeData: PageStudioData,
   allStories: any[],
   ctx: BulkPublishContext,
   batchSize: number = 25
@@ -692,9 +692,9 @@ export const publishAllBlogStoriesHtml = async (
  * reflected immediately — even before autosave/publish has run.
  */
 export const injectHomeNavbarIntoPageData = (
-  pageData: PageBuilderData,
-  homeData: PageBuilderData
-): PageBuilderData => {
+  pageData: PageStudioData,
+  homeData: PageStudioData
+): PageStudioData => {
   const placements = getPlacements();
   const layout = extractHomeChromeLayout(homeData, placements);
   if (!layout || !layout.navbar) return pageData;

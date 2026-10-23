@@ -58,7 +58,7 @@ describe('DataGrid', () => {
     expect(firstCells()).toEqual(['Bilal']);
   });
 
-  it('filter row filters and reports DevExtreme-style option changes', () => {
+  it('filter row filters and reports kit-style option changes', () => {
     const onOptionChanged = vi.fn();
     const ref = createRef();
     render(

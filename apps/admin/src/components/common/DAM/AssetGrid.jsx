@@ -8,7 +8,7 @@ import CardView, {
   SearchPanel,
   Selection,
   Sorting,
-} from '@/components/ui/dx/card-view';
+} from '@/components/ui/kit/card-view';
 
 import AssetCard from './AssetCard';
 import EmptyState from './EmptyState';

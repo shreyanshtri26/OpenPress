@@ -8,6 +8,8 @@
    over the editorial (serif / mono / dotted) utility classes used by blocks.
    ========================================================================== */
 :root {
+  color-scheme: light dark;
+  --op-bg: #ffffff;
   --op-text: #1d1d1f;
   --op-muted: #6e6e73;
   --op-line: #d2d2d7;
@@ -19,20 +21,18 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --op-bg: #1d1d1f;
     --op-text: #f5f5f7;
     --op-muted: #86868b;
     --op-line: #424245;
-    --op-surface: #1d1d1f;
+    --op-surface: #262628;
     --op-accent: #0a84ff;
   }
 }
 
 html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
-body { font-family: var(--op-font) !important; color: var(--op-text); background: #fff; letter-spacing: -0.011em; }
+body { font-family: var(--op-font) !important; color: var(--op-text); background: var(--op-bg); letter-spacing: -0.011em; }
 
-@media (prefers-color-scheme: dark) {
-  body { background: #1D1D1F; }
-}
 a { text-underline-offset: 3px; }
 a:hover { color: var(--op-accent); }
 
@@ -71,12 +71,6 @@ figcaption { color: var(--op-muted); }
     filter: brightness(0) invert(1) !important;
   }
 }
-html.dark #navbar-logo-mark, html.dark #navbar-logo-quill, html.dark #footer-logo-mark, html.dark .op-footer-logo, html.dark footer img[src*="logo"],
-[data-theme="dark"] #navbar-logo-mark, [data-theme="dark"] #navbar-logo-quill, [data-theme="dark"] #footer-logo-mark, [data-theme="dark"] .op-footer-logo, [data-theme="dark"] footer img[src*="logo"],
-body.dark #navbar-logo-mark, body.dark #navbar-logo-quill, body.dark #footer-logo-mark, body.dark .op-footer-logo, body.dark footer img[src*="logo"],
-body[data-theme="dark"] #navbar-logo-mark, body[data-theme="dark"] #navbar-logo-quill, body[data-theme="dark"] #footer-logo-mark, body[data-theme="dark"] .op-footer-logo, body[data-theme="dark"] footer img[src*="logo"] {
-  filter: brightness(0) invert(1) !important;
-}
 
 /* Article reading width and rhythm. */
 .blog-body-content { font-size: 1.1875rem; line-height: 1.65; color: var(--op-text); }
@@ -107,56 +101,6 @@ footer .uppercase { text-transform: none !important; letter-spacing: 0 !importan
   footer.op-footer .text-\[\#555\], footer.op-footer .text-\[\#555\] a { color: #a1a1a6 !important; }
   footer.op-footer .text-\[\#555\] a:hover { color: #ffffff !important; }
   footer.op-footer p.font-medium, footer.op-footer .text-\[\#6e6e73\], footer.op-footer .text-\[\#86868b\] { color: #86868b !important; }
-}
-html.dark footer.op-footer, html.dark footer,
-[data-theme="dark"] footer.op-footer, [data-theme="dark"] footer,
-body.dark footer.op-footer, body.dark footer,
-body[data-theme="dark"] footer.op-footer, body[data-theme="dark"] footer {
-  background: #262628 !important; color: var(--op-muted) !important; border-top-color: rgba(255, 255, 255, 0.15) !important;
-}
-html.dark footer.op-footer .border-b, html.dark footer.op-footer .border-t,
-[data-theme="dark"] footer.op-footer .border-b, [data-theme="dark"] footer.op-footer .border-t,
-body.dark footer.op-footer .border-b, body.dark footer.op-footer .border-t,
-body[data-theme="dark"] footer.op-footer .border-b, body[data-theme="dark"] footer.op-footer .border-t {
-  border-color: rgba(255, 255, 255, 0.12) !important;
-}
-html.dark footer.op-footer a, [data-theme="dark"] footer.op-footer a,
-body.dark footer.op-footer a, body[data-theme="dark"] footer.op-footer a {
-  color: #d2d2d7 !important;
-}
-html.dark footer.op-footer a:hover, [data-theme="dark"] footer.op-footer a:hover,
-body.dark footer.op-footer a:hover, body[data-theme="dark"] footer.op-footer a:hover {
-  color: #ffffff !important;
-}
-html.dark footer.op-footer p, [data-theme="dark"] footer.op-footer p,
-body.dark footer.op-footer p, body[data-theme="dark"] footer.op-footer p {
-  color: #a1a1a6 !important;
-}
-html.dark footer.op-footer span, [data-theme="dark"] footer.op-footer span,
-body.dark footer.op-footer span, body[data-theme="dark"] footer.op-footer span {
-  color: rgba(255, 255, 255, 0.3) !important;
-}
-html.dark footer.op-footer span.font-bold, html.dark footer.op-footer .text-neutral-800,
-[data-theme="dark"] footer.op-footer span.font-bold, [data-theme="dark"] footer.op-footer .text-neutral-800,
-body.dark footer.op-footer span.font-bold, body.dark footer.op-footer .text-neutral-800,
-body[data-theme="dark"] footer.op-footer span.font-bold, body[data-theme="dark"] footer.op-footer .text-neutral-800 {
-  color: #f5f5f7 !important;
-}
-html.dark footer.op-footer .text-\[\#555\], html.dark footer.op-footer .text-\[\#555\] a,
-[data-theme="dark"] footer.op-footer .text-\[\#555\], [data-theme="dark"] footer.op-footer .text-\[\#555\] a,
-body.dark footer.op-footer .text-\[\#555\], body.dark footer.op-footer .text-\[\#555\] a,
-body[data-theme="dark"] footer.op-footer .text-\[\#555\], body[data-theme="dark"] footer.op-footer .text-\[\#555\] a {
-  color: #a1a1a6 !important;
-}
-html.dark footer.op-footer .text-\[\#555\] a:hover, [data-theme="dark"] footer.op-footer .text-\[\#555\] a:hover,
-body.dark footer.op-footer .text-\[\#555\] a:hover, body[data-theme="dark"] footer.op-footer .text-\[\#555\] a:hover {
-  color: #ffffff !important;
-}
-html.dark footer.op-footer p.font-medium, html.dark footer.op-footer .text-\[\#6e6e73\], html.dark footer.op-footer .text-\[\#86868b\],
-[data-theme="dark"] footer.op-footer p.font-medium, [data-theme="dark"] footer.op-footer .text-\[\#6e6e73\], [data-theme="dark"] footer.op-footer .text-\[\#86868b\],
-body.dark footer.op-footer p.font-medium, body.dark footer.op-footer .text-\[\#6e6e73\], body.dark footer.op-footer .text-\[\#86868b\],
-body[data-theme="dark"] footer.op-footer p.font-medium, body[data-theme="dark"] footer.op-footer .text-\[\#6e6e73\], body[data-theme="dark"] footer.op-footer .text-\[\#86868b\] {
-  color: #86868b !important;
 }
 
 /* Cards: calm hover. */
@@ -339,157 +283,8 @@ html, body { overflow-x: clip; }
 }
 
 /* Explicit class-based dark theme support */
-html.dark header, [data-theme="dark"] header, body.dark header, body[data-theme="dark"] header {
-  background: #262628 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
-}
-html.dark.op-scrolled header, [data-theme="dark"].op-scrolled header,
-body.dark html.op-scrolled header, body[data-theme="dark"] html.op-scrolled header {
-  background: #262628 !important; border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important; box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.7) !important;
-}
-html.dark header .text-black, html.dark header button.text-black, html.dark header a.text-black, html.dark header .text-slate-900,
-[data-theme="dark"] header .text-black, [data-theme="dark"] header button.text-black, [data-theme="dark"] header a.text-black, [data-theme="dark"] header .text-slate-900,
-body.dark header .text-black, body.dark header button.text-black, body.dark header a.text-black, body.dark header .text-slate-900,
-body[data-theme="dark"] header .text-black, body[data-theme="dark"] header button.text-black, body[data-theme="dark"] header a.text-black, body[data-theme="dark"] header .text-slate-900 {
-  color: #ffffff !important;
-}
-html.dark header svg line, html.dark header button svg line,
-[data-theme="dark"] header svg line, [data-theme="dark"] header button svg line,
-body.dark header svg line, body.dark header button svg line,
-body[data-theme="dark"] header svg line, body[data-theme="dark"] header button svg line {
-  stroke: #ffffff !important;
-}
-html.dark #navbar-nav-wrap .nav-btn > span.relative,
-[data-theme="dark"] #navbar-nav-wrap .nav-btn > span.relative,
-body.dark #navbar-nav-wrap .nav-btn > span.relative,
-body[data-theme="dark"] #navbar-nav-wrap .nav-btn > span.relative {
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-html.dark #navbar-nav-wrap .nav-btn:hover > span.relative,
-[data-theme="dark"] #navbar-nav-wrap .nav-btn:hover > span.relative,
-body.dark #navbar-nav-wrap .nav-btn:hover > span.relative,
-body[data-theme="dark"] #navbar-nav-wrap .nav-btn:hover > span.relative {
-  background: rgba(255, 255, 255, 0.15) !important;
-  color: #ffffff !important;
-}
-html.dark #navbar-nav-wrap .nav-btn:has(.nav-box[style*="display: block"]) > span.relative,
-[data-theme="dark"] #navbar-nav-wrap .nav-btn:has(.nav-box[style*="display: block"]) > span.relative,
-body.dark #navbar-nav-wrap .nav-btn:has(.nav-box[style*="display: block"]) > span.relative,
-body[data-theme="dark"] #navbar-nav-wrap .nav-btn:has(.nav-box[style*="display: block"]) > span.relative {
-  background: #f5f5f7 !important;
-  color: #1d1d1f !important;
-  font-weight: 600 !important;
-}
-html.dark #desktop-hamburger-btn span, [data-theme="dark"] #desktop-hamburger-btn span,
-body.dark #desktop-hamburger-btn span, body[data-theme="dark"] #desktop-hamburger-btn span {
-  background-color: #ffffff !important;
-}
-html.dark #desktop-hamburger-btn, html.dark #navbar-search-btn,
-[data-theme="dark"] #desktop-hamburger-btn, [data-theme="dark"] #navbar-search-btn,
-body.dark #desktop-hamburger-btn, body.dark #navbar-search-btn,
-body[data-theme="dark"] #desktop-hamburger-btn, body[data-theme="dark"] #navbar-search-btn {
-  color: #ffffff !important;
-}
-html.dark #navbar-search-btn svg, [data-theme="dark"] #navbar-search-btn svg,
-body.dark #navbar-search-btn svg, body[data-theme="dark"] #navbar-search-btn svg {
-  stroke: #ffffff !important;
-  color: #ffffff !important;
-}
-html.dark #navbar-social-icons a, [data-theme="dark"] #navbar-social-icons a,
-body.dark #navbar-social-icons a, body[data-theme="dark"] #navbar-social-icons a {
-  color: #a1a1a6 !important;
-}
-html.dark #navbar-social-icons a:hover, [data-theme="dark"] #navbar-social-icons a:hover,
-body.dark #navbar-social-icons a:hover, body[data-theme="dark"] #navbar-social-icons a:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
-  color: #ffffff !important;
-}
-html.dark #desktop-hamburger-menu, [data-theme="dark"] #desktop-hamburger-menu,
-body.dark #desktop-hamburger-menu, body[data-theme="dark"] #desktop-hamburger-menu {
-  background: #262628 !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
-}
-html.dark #desktop-hamburger-menu button, [data-theme="dark"] #desktop-hamburger-menu button,
-body.dark #desktop-hamburger-menu button, body[data-theme="dark"] #desktop-hamburger-menu button {
-  color: #ffffff !important;
-}
-html.dark #desktop-hamburger-menu button:hover, [data-theme="dark"] #desktop-hamburger-menu button:hover,
-body.dark #desktop-hamburger-menu button:hover, body[data-theme="dark"] #desktop-hamburger-menu button:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-}
-html.dark #desktop-hamburger-menu button.font-bold, [data-theme="dark"] #desktop-hamburger-menu button.font-bold,
-body.dark #desktop-hamburger-menu button.font-bold, body[data-theme="dark"] #desktop-hamburger-menu button.font-bold {
-  background: rgba(255, 255, 255, 0.2) !important;
-  color: #ffffff !important;
-}
-html.dark #mobile-menu-drawer, [data-theme="dark"] #mobile-menu-drawer,
-body.dark #mobile-menu-drawer, body[data-theme="dark"] #mobile-menu-drawer {
-  background: #262628 !important;
-  color: #ffffff !important;
-}
-html.dark #mobile-menu-drawer .bg-white, [data-theme="dark"] #mobile-menu-drawer .bg-white,
-body.dark #mobile-menu-drawer .bg-white, body[data-theme="dark"] #mobile-menu-drawer .bg-white {
-  background: #262628 !important;
-}
-html.dark #mobile-menu-drawer .text-black, html.dark #mobile-menu-drawer span.text-black,
-[data-theme="dark"] #mobile-menu-drawer .text-black, [data-theme="dark"] #mobile-menu-drawer span.text-black,
-body.dark #mobile-menu-drawer .text-black, body.dark #mobile-menu-drawer span.text-black,
-body[data-theme="dark"] #mobile-menu-drawer .text-black, body[data-theme="dark"] #mobile-menu-drawer span.text-black {
-  color: #ffffff !important;
-}
-html.dark #mobile-menu-drawer .border-neutral-200, [data-theme="dark"] #mobile-menu-drawer .border-neutral-200,
-body.dark #mobile-menu-drawer .border-neutral-200, body[data-theme="dark"] #mobile-menu-drawer .border-neutral-200 {
-  border-color: rgba(255, 255, 255, 0.15) !important;
-}
-html.dark #mobile-menu-drawer button[data-section], [data-theme="dark"] #mobile-menu-drawer button[data-section],
-body.dark #mobile-menu-drawer button[data-section], body[data-theme="dark"] #mobile-menu-drawer button[data-section] {
-  color: #ffffff !important;
-}
-html.dark #mobile-menu-drawer button[data-section]:hover, [data-theme="dark"] #mobile-menu-drawer button[data-section]:hover,
-body.dark #mobile-menu-drawer button[data-section]:hover, body[data-theme="dark"] #mobile-menu-drawer button[data-section]:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-}
-html.dark #mobile-menu-drawer button[data-section].bg-neutral-100, [data-theme="dark"] #mobile-menu-drawer button[data-section].bg-neutral-100,
-body.dark #mobile-menu-drawer button[data-section].bg-neutral-100, body[data-theme="dark"] #mobile-menu-drawer button[data-section].bg-neutral-100 {
-  background: rgba(255, 255, 255, 0.2) !important;
-  color: #ffffff !important;
-}
-html.dark #mobile-menu-drawer button svg, [data-theme="dark"] #mobile-menu-drawer button svg,
-body.dark #mobile-menu-drawer button svg, body[data-theme="dark"] #mobile-menu-drawer button svg {
-  stroke: #ffffff !important;
-}
-html.dark #account-dropdown-btn, [data-theme="dark"] #account-dropdown-btn,
-body.dark #account-dropdown-btn, body[data-theme="dark"] #account-dropdown-btn {
-  color: #ffffff !important;
-}
-html.dark #account-dropdown-btn svg, [data-theme="dark"] #account-dropdown-btn svg,
-body.dark #account-dropdown-btn svg, body[data-theme="dark"] #account-dropdown-btn svg {
-  stroke: #ffffff !important;
-}
-html.dark #account-dropdown-menu, [data-theme="dark"] #account-dropdown-menu,
-body.dark #account-dropdown-menu, body[data-theme="dark"] #account-dropdown-menu {
-  background: #262628 !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
-  color: #ffffff !important;
-}
-html.dark #account-dropdown-menu .bg-neutral-50, [data-theme="dark"] #account-dropdown-menu .bg-neutral-50,
-body.dark #account-dropdown-menu .bg-neutral-50, body[data-theme="dark"] #account-dropdown-menu .bg-neutral-50 {
-  background: #2c2c2e !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
-}
-html.dark #account-dropdown-menu #user-display-name, [data-theme="dark"] #account-dropdown-menu #user-display-name,
-body.dark #account-dropdown-menu #user-display-name, body[data-theme="dark"] #account-dropdown-menu #user-display-name {
-  color: #ffffff !important;
-}
-html.dark #account-dropdown-menu #user-display-email, [data-theme="dark"] #account-dropdown-menu #user-display-email,
-body.dark #account-dropdown-menu #user-display-email, body[data-theme="dark"] #account-dropdown-menu #user-display-email {
-  color: #a1a1a6 !important;
-}
-html.dark #search-overlay, [data-theme="dark"] #search-overlay,
-body.dark #search-overlay, body[data-theme="dark"] #search-overlay {
-  background: #121212 !important;
-  color: #ffffff !important;
-}
-html.dark #search-results .divide-gray-200 > *, [data-theme="dark"] #search-results .divide-gray-200 > *,
-body.dark #search-results .divide-gray-200 > *, body[data-theme="dark"] #search-results .divide-gray-200 > * {
-  border-color: rgba(255, 255, 255, 0.1) !important;
-}
+
+/* One page container: every block (grids, headings, rules, footer) shares the same width and gutters so edges line up. */
+.op-container { width: 100%; max-width: 80rem; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+@media (min-width: 640px) { .op-container { padding-left: 1.5rem; padding-right: 1.5rem; } }
+@media (min-width: 1024px) { .op-container { padding-left: 2rem; padding-right: 2rem; } }

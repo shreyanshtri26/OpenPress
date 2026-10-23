@@ -25,7 +25,7 @@ export function renderSectionBottomGrid(
 
   return `
     <section id="${props.id ?? ''}" class="w-full bg-white pt-8 lg:pr-24 pb-12 ${props.className ?? ''}">
-        <div class="mx-auto w-full max-w-7xl">
+        <div class="op-container">
             <div class="flex flex-col lg:flex-row gap-8 lg:gap-0">
 
                 <!-- LEFT COLUMN - Only Top Bar -->

@@ -2,6 +2,7 @@
 import { type Config, type Data, type ExtractConfigParams } from '@measured/puck';
 import { getPublishableData as getPublishableDataImpl } from '../../publish/publishedSnapshot';
 import { cardBlocks } from './CardBlocksConfig';
+import { buildLibraryCategories } from './libraryGroups';
 import { commonBlocks } from './CommonBlocksConfig';
 import videoAuthorBlocks from './videoAuthorBuilder/videoAuthorConfig';
 import videoBlocks from './videoBuilder/videoConfig';
@@ -292,26 +293,18 @@ export const getConfigForPage = (pageType: PageType) => {
     components = withoutAutomaticMode(components);
   }
 
-  // Dynamically group components into categories
-  const placementKeys = Object.keys(components).filter(key => key.startsWith('Ad_'));
-  const otherKeys = Object.keys(components).filter(key => !placementKeys.includes(key));
+  // Group the page's blocks into named library sections (see libraryGroups.ts).
+  const categories = buildLibraryCategories(Object.keys(components));
 
   return {
     components,
-    categories: {
-      Placements: {
-        components: placementKeys,
-      },
-      Others: {
-        components: otherKeys,
-      },
-    },
+    categories,
   } as Config<any>;
 }
 
 // types and initial data remain the same
 type ConfigParams = ExtractConfigParams<typeof config>
-export type PageBuilderData = Data<ConfigParams['props'], ConfigParams['rootProps']>
+export type PageStudioData = Data<ConfigParams['props'], ConfigParams['rootProps']>
 
 // A page's stored `data` optionally carries a `publishedSnapshot`: a full,
 // self-contained copy of the data as of the last explicit "Publish" click
@@ -327,12 +320,12 @@ export type PageBuilderData = Data<ConfigParams['props'], ConfigParams['rootProp
 // renderer bundle can use it without importing this file (and with it the whole
 // Puck editor config) into Node. Re-exported here for existing callers.
 export function getPublishableData(
-  data: (PageBuilderData & { publishedSnapshot?: PageBuilderData }) | null | undefined
-): PageBuilderData | null | undefined {
+  data: (PageStudioData & { publishedSnapshot?: PageStudioData }) | null | undefined
+): PageStudioData | null | undefined {
   return getPublishableDataImpl(data);
 }
 
-export const getInitialDataForPage = (pageType: PageType): PageBuilderData => {
+export const getInitialDataForPage = (pageType: PageType): PageStudioData => {
   if (pageType === 'ContactUs') {
     return {
       root: { props: { title: 'Contact Us' } },
@@ -394,6 +387,16 @@ export const getInitialDataForPage = (pageType: PageType): PageBuilderData => {
       ],
     };
   }
+  if (pageType === 'Error') {
+    return {
+      root: { props: { title: 'Page not found' } },
+      content: [
+        { type: 'AtlanticNavbar', props: { id: 'error-navbar' } },
+        { type: 'ErrorCard', props: { id: 'error-card' } },
+        { type: 'Footer', props: { id: 'error-footer' } },
+      ],
+    };
+  }
   if (pageType === 'AuthorsList') {
     return {
       root: { props: { title: 'Our Team' } },
@@ -407,9 +410,9 @@ export const getInitialDataForPage = (pageType: PageType): PageBuilderData => {
   return initialData;
 };
 
-export const initialData: PageBuilderData = {
+export const initialData: PageStudioData = {
   root: {
-    props: { title: 'Media landing page' },
+    props: { title: 'Page Studio' },
   },
   content: [
     {
@@ -421,4 +424,12 @@ export const initialData: PageBuilderData = {
       props: { id: 'thumbnail-grid' },
     },
   ],
+}
+
+const LEGACY_DEFAULT_TITLE = 'Media landing page';
+
+/** Pages saved before the rename carry the old default title; give them the current one. Other titles are left alone. */
+export function renameLegacyTitle<T extends { root?: { props?: Record<string, unknown> } }>(data: T): T {
+  if (data?.root?.props?.title !== LEGACY_DEFAULT_TITLE) return data;
+  return { ...data, root: { ...data.root, props: { ...data.root.props, title: 'Page Studio' } } };
 }

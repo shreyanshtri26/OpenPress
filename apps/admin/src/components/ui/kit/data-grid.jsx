@@ -1,4 +1,4 @@
-// DevExtreme-compatible DataGrid (free). Implements the subset this app uses: columns (cellRender, lookup, format,
+// Native DataGrid (free). Implements the subset this app uses: columns (cellRender, lookup, format,
 // calculateCellValue, initial sort), header sorting, search panel, filter row, paging/pager, selection, column chooser,
 // export via onExporting + ./excel-exporter / ./pdf-exporter, CustomStore data sources, buttons columns and row editing.
 // ponytail: no grouping/group panel and no header-filter popups — add when someone needs them.
@@ -224,7 +224,7 @@ export const DataGrid = forwardRef(function DataGrid(props, ref) {
     setEdit(next);
   };
 
-  // ---- the DevExtreme-like component handle ----
+  // ---- the kit component handle ----
   const latest = useRef({});
   latest.current = { columns, processed, rows, selectedKeys, pageRows, pagingEnabled, pagerVisible };
   const handle = useMemo(() => ({

@@ -21,7 +21,7 @@ export function renderAdvertisementGrid(
   })
 
   return `
-    <section id="${props.id ?? ''}" class="mx-auto w-full max-w-[85%] px-6 py-8">
+    <section id="${props.id ?? ''}" class="op-container py-8">
 
       <!-- Heading -->
       <div class="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">

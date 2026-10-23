@@ -1,3 +1,4 @@
+import { isCampaignStatusServing } from '../core/campaignStatus'
 // ─── Popup Ad — full-page overlay/modal ad ─────────────────────────────────
 // Unlike Spotlight/Leaderboard/Sidebar/InStory (which live inside a specific
 // Puck zone), a Popup Ad floats above the entire page, so it is NOT rendered
@@ -11,13 +12,11 @@
 
 export function resolveActivePopupCampaign(campaigns: any[] = []): { job: any; campaign: any } {
   const now = new Date()
-  const INACTIVE = new Set(['paused', 'pause', 'draft', 'stopped', 'ended', 'cancelled', 'canceled'])
   let popupJob: any = null
   let popupCampaign: any = null
 
   for (const camp of campaigns) {
-    const st = (camp.status || '').toLowerCase().replace(/[\s_-]+/g, '_')
-    if (INACTIVE.has(st)) continue
+    if (!isCampaignStatusServing(camp.status)) continue
     if (!camp.jobs) continue
 
     for (const job of camp.jobs) {
@@ -225,4 +224,19 @@ export function buildPopupAdHtml(job: any, campaign: any): string {
   }
 })();
 </script>`
+}
+
+// The popup for a page. A page that places a PopupAd block gets exactly that popup (rendered by the block, so nothing is
+// injected here); every other page gets the live Popup campaign automatically, once.
+export function popupAdHtmlFor(campaigns: any[] = [], pageData?: unknown): string {
+  if (pageData && JSON.stringify(pageData).includes('"type":"PopupAd"')) return ''
+  const { job, campaign } = resolveActivePopupCampaign(campaigns)
+  return job ? buildPopupAdHtml(job, campaign) : ''
+}
+
+// The PopupAd block: the chosen campaign's popup, or the live one for 'auto'.
+export function renderPopupAdBlock(props: { adId?: string }, campaigns: any[] = []): string {
+  const picked = props.adId && props.adId !== 'auto' ? campaigns.filter(c => c.campaignId === props.adId) : campaigns
+  const { job, campaign } = resolveActivePopupCampaign(picked)
+  return job ? buildPopupAdHtml(job, campaign) : ''
 }

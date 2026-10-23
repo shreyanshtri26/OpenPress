@@ -64,8 +64,8 @@ export function AllStoriesGrid({
 
   return (
     <AutoCardAssignmentsContext.Provider value={isAutomatic ? { storyIdsByCardId } : null}>
-    <section id={id} className={`w-full bg-white sm:pt-6 px-0 lg:px-16 ${className}`}>
-      <div className="mx-auto w-full max-w-7xl px-4 lg:px-8">
+    <section id={id} className={`w-full bg-white sm:pt-6 ${className}`}>
+      <div className="op-container">
         <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:justify-between">
           {/* Left column */}
           <div className="w-full lg:w-[59.5%] flex-shrink-0">

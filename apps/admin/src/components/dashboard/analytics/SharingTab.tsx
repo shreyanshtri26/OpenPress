@@ -15,13 +15,13 @@ import DataGrid, {
     Pager,
     FilterPanel,
     FilterBuilderPopup,
-} from '@/components/ui/dx/data-grid';
-import { exportDataGrid as exportDataGridXLSX } from '@/components/ui/dx/excel-exporter';
-import { exportDataGrid as exportDataGridPDF } from '@/components/ui/dx/pdf-exporter';
+} from '@/components/ui/kit/data-grid';
+import { exportDataGrid as exportDataGridXLSX } from '@/components/ui/kit/excel-exporter';
+import { exportDataGrid as exportDataGridPDF } from '@/components/ui/kit/pdf-exporter';
 import { Workbook } from 'exceljs';
 import { jsPDF } from 'jspdf';
 import { saveAs } from 'file-saver';
-import PieChart, { Series as PieSeries, Label as PieLabel, Connector, Animation } from '@/components/ui/dx/pie-chart';
+import PieChart, { Series as PieSeries, Label as PieLabel, Connector, Animation } from '@/components/ui/kit/pie-chart';
 import { Card, CardTitle, KpiTile, ProgressBar } from './AnalyticsUIComponents';
 import { BAR_COLORS, fetchAggregated } from '../../../utils/analyticsUtils';
 import { SharingEvent, SharingByPlatformItem, SharingByUserItem } from '../../../types/analytics';

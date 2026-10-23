@@ -6,6 +6,7 @@
 import { useMemo } from 'react';
 import { createUsePuck } from '@measured/puck';
 import { ChevronDown } from 'lucide-react';
+import { StudioDropdown } from './StudioDropdown';
 import { getLatestStoryOptions } from '../storyData';
 
 interface FallbackStorySelectProps {
@@ -106,17 +107,13 @@ export function FallbackStorySelect({ value, onChange, label }: FallbackStorySel
           {label}
         </span>
       )}
-      <select
-        className="fallback-story-select__input"
+      <StudioDropdown
+        variant="field"
         value={value ?? ''}
-        onChange={(e) => onChange(e.target.value)}
-      >
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
+        onChange={(v) => onChange(String(v ?? ''))}
+        ariaLabel={label ?? 'Fallback story'}
+        options={options.map((opt) => ({ label: opt.label, value: opt.value }))}
+      />
       <style>{`
         .fallback-story-select {
           display: flex;
@@ -135,33 +132,6 @@ export function FallbackStorySelect({ value, onChange, label }: FallbackStorySel
           display: flex;
           margin-inline-end: 4px;
           padding-inline-start: 4px;
-        }
-        .fallback-story-select__input {
-          appearance: none;
-          background: var(--puck-color-white) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%23c3c3c3'><polygon points='0,0 100,0 50,50'/></svg>") no-repeat;
-          background-size: 12px;
-          background-position: calc(100% - 12px) calc(50% + 3px);
-          border-width: 1px;
-          border-style: solid;
-          border-color: var(--puck-color-grey-09);
-          border-radius: 4px;
-          box-sizing: border-box;
-          cursor: pointer;
-          font-family: inherit;
-          font-size: 14px;
-          padding: 12px 15px;
-          transition: border-color 50ms ease-in;
-          width: 100%;
-          max-width: 100%;
-        }
-        .fallback-story-select__input:hover {
-          background-color: var(--puck-color-azure-12);
-          background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%235a5a5a'><polygon points='0,0 100,0 50,50'/></svg>");
-          border-color: var(--puck-color-grey-05);
-        }
-        .fallback-story-select__input:focus {
-          border-color: var(--puck-color-grey-05);
-          outline: 2px solid var(--puck-color-azure-05);
         }
       `}</style>
     </div>

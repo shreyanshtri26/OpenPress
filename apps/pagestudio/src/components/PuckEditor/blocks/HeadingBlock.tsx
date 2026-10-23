@@ -30,25 +30,10 @@ export function HeadingBlock({
   const alignClass =
     align === 'center' ? 'text-center' : align === 'right' ? 'text-right' : 'text-left'
 
-  const isHomePage = typeof window !== 'undefined' && (() => {
-    const { pathname, hash, search } = window.location;
-    if (search) {
-      const params = new URLSearchParams(search);
-      const pageType = params.get('pageType') || params.get('page');
-      if (pageType) return pageType.toLowerCase() === 'home';
-    }
-    if (hash) {
-      if (hash === '#/' || hash === '#' || hash === '#/home') return true;
-      if (hash.startsWith('#/published/home')) return true;
-      if (hash.startsWith('#/published/')) return false;
-    }
-    const cleanPath = pathname.replace(/\/$/, '');
-    return cleanPath === '' || cleanPath === '/home' || cleanPath === '/published/home';
-  })();
 
   return (
-    <section id={id} className="bg-white italic font-libre franklin w-full px-4 sm:px-8 lg:px-16 pt-6">
-      <div className={`mx-auto w-full max-w-7xl ${isHomePage ? 'px-0 sm:px-6 lg:px-8' : 'px-4 sm:px-6 lg:px-8'}`}>
+    <section id={id} className="bg-white italic font-libre franklin w-full pt-6">
+      <div className="op-container">
         <Tag className={`${sizeClasses[size]} ${alignClass}`}>{text}</Tag>
       </div>
     </section>

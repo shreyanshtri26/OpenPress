@@ -1,8 +1,8 @@
 // components/common/DAM/AssetTab/AssetFormFields.jsx
 import React from "react";
-import TextBox from "@/components/ui/dx/text-box";
-import TextArea from "@/components/ui/dx/text-area";
-import SelectBox from "@/components/ui/dx/select-box";
+import TextBox from "@/components/ui/kit/text-box";
+import TextArea from "@/components/ui/kit/text-area";
+import SelectBox from "@/components/ui/kit/select-box";
 
 const categoryOptions = [
   { id: "news", name: "News" },

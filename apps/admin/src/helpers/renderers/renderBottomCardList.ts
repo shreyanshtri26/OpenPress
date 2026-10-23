@@ -41,7 +41,7 @@ export function renderBottomCardList(props: BottomCardListProps, ctx: RenderCont
       )
       : rawStories);
 
-  // Sort by proposedFilingDate (newest to oldest) - Synced with Page Builder
+  // Sort by proposedFilingDate (newest to oldest) - Synced with Page Studio
   const sortedStories = [...filteredStories].sort((a, b: any) => {
     const dateA = new Date(a.proposedFilingDate || a.publishDate || a.publishedAt || a.createdAt || a.updatedAt || 0).getTime()
     const dateB = new Date(b.proposedFilingDate || b.publishDate || b.publishedAt || b.createdAt || b.updatedAt || 0).getTime()

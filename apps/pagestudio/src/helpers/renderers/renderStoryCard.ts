@@ -68,7 +68,7 @@ export function renderStoryCard(props: StoryCardProps, ctx: RenderContext): stri
     <img
       src="${escapeHtml(image)}"
       alt="${escapeHtml(title)}"
-      class="aspect-[4/3] w-full object-cover"
+      class="aspect-[16/10] w-full object-cover"
       loading="lazy"
     />
 

@@ -1,4 +1,4 @@
-// Drop-in for devextreme/excel_exporter's exportDataGrid, writing a kit DataGrid into an exceljs worksheet.
+// Drop-in for the widget library excel_exporter's exportDataGrid, writing a kit DataGrid into an exceljs worksheet.
 export function exportDataGrid({ component, worksheet, selectedRowsOnly = false, autoFilterEnabled = false, customizeCell }) {
   const { columns, rows } = component.getExportData(selectedRowsOnly);
   worksheet.addRow(columns.map((c) => c.caption));

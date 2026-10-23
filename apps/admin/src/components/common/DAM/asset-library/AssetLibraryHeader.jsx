@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import TextBox from '@/components/ui/dx/text-box';
-import SelectBox from '@/components/ui/dx/select-box';
+import TextBox from '@/components/ui/kit/text-box';
+import SelectBox from '@/components/ui/kit/select-box';
 import toast from 'react-hot-toast'; // ✅ ADDED
 import CustomCalendar from '../../CustomCalendar';
 import { withSelectedDisabled } from '../utils/selectOptions';
@@ -68,7 +68,7 @@ export const AssetLibraryDesktopHeader = ({
       const target = event.target;
       if (
         customDateRangeRef.current?.contains(target) ||
-        target.closest?.('.dx-overlay-content')
+        target.closest?.('.kit-popup-overlay')
       ) {
         return;
       }

@@ -12,9 +12,9 @@ import BackToDashboardButton from '../common/BackToDashboardButton';
 import env from '@/utils/env';
 import apiFetch from '../../utils/api';
 // Import DevExpress components
-import TextBox from '@/components/ui/dx/text-box';
-import SelectBox from '@/components/ui/dx/select-box';
-import DateRangeBox from '@/components/ui/dx/date-range-box';
+import TextBox from '@/components/ui/kit/text-box';
+import SelectBox from '@/components/ui/kit/select-box';
+import DateRangeBox from '@/components/ui/kit/date-range-box';
 import CustomButton from "../../components/common/CustomButton";
 
 type MediaLibraryView = 'library' | 'upload' | 'detail';
@@ -72,7 +72,7 @@ export default function MediaLibrary({ onBack }: MediaLibraryProps) {
   const [showCustomDate, setShowCustomDate] = useState<boolean>(false);
   const [dateRangeValue, setDateRangeValue] = useState<any[]>([null, null]);
 
-  // Custom dropdown arrow template for DevExtreme SelectBox
+  // Custom dropdown arrow template for the grid kit SelectBox
   const accordionArrowTemplate = (_: unknown, buttonElement: HTMLElement) => {
     buttonElement.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21"
@@ -200,96 +200,8 @@ export default function MediaLibrary({ onBack }: MediaLibraryProps) {
     <>
       <style>{`
         /* Relume-style DevExpress component styling */
-        .relume-filter-container .dx-textbox {
-          border: 1px solid #d1d5db !important;
-          border-radius: 6px !important;
-          background: white !important;
-          height: 40px !important;
-          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-          transition: all 0.2s ease !important;
-        }
-
-        .relume-filter-container .dx-selectbox {
-          border: 1px solid #d1d5db !important;
-          border-radius: 6px !important;
-          background: white !important;
-          height: 42px !important;
-          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-          transition: all 0.2s ease !important;
-        }
-
-        .relume-filter-container .dx-texteditor-input-container {
-          padding: 0 12px !important;
-        }
-
-        .relume-filter-container .dx-texteditor-input {
-          font-size: 14px !important;
-          color: #374151 !important;
-          background: transparent !important;
-          border: none !important;
-          outline: none !important;
-          height: 100% !important;
-          padding: 0 !important;
-        }
-
-        .relume-filter-container .dx-placeholder {
-          color: #9ca3af !important;
-          font-size: 14px !important;
-        }
-
-        .relume-filter-container .dx-dropdowneditor-button {
-          border: none !important;
-          background: transparent !important;
-          width: 32px !important;
-        }
-
-        .relume-filter-container .dx-dropdowneditor-button .dx-icon {
-          color: #6b7280 !important;
-          font-size: 16px !important;
-        }
-
-        .relume-filter-container .dx-dropdowneditor-button:hover .dx-icon {
-          color: #374151 !important;
-        }
 
         /* Dropdown list styling */
-        .dx-overlay-content .dx-list {
-          border: 1px solid #d1d5db !important;
-          border-radius: 8px !important;
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-          background: white !important;
-        }
-
-        .dx-overlay-content .dx-list-item {
-          background-color: white !important;
-          padding: 12px 16px !important;
-          font-size: 14px !important;
-          color: #374151 !important;
-          border-bottom: 1px solid #f3f4f6 !important;
-          transition: background-color 0.2s ease !important;
-        }
-
-        .dx-overlay-content .dx-list-item:hover {
-          background-color: #f9fafb !important;
-        }
-
-        .dx-overlay-content .dx-list-item.dx-list-item-selected {
-          background-color: white !important;
-          color: #374151 !important;
-          font-weight: 400 !important;
-        }
-
-        .dx-overlay-content .dx-list-item.dx-state-hover {
-          background-color: #f9fafb !important;
-        }
-
-        .dx-overlay-content .dx-list-item-content {
-          background-color: transparent !important;
-        }
-
-        .dx-overlay-content .dx-list-item:last-child {
-          border-bottom: none !important;
-        }
 
         /* Search input styling */
         .search-input input {
@@ -310,24 +222,6 @@ export default function MediaLibrary({ onBack }: MediaLibraryProps) {
         }
 
         /* Strip DateRangeBox's own border — the wrapper div provides bottom border */
-        .custom-date-picker-box.dx-daterangebox,
-        .custom-date-picker-box.dx-editor-outlined {
-          border: none !important;
-          border-radius: 0 !important;
-          box-shadow: none !important;
-          background: transparent !important;
-        }
-
-        .custom-date-picker-box.dx-daterangebox.dx-state-focused,
-        .custom-date-picker-box.dx-daterangebox.dx-state-active {
-          border: none !important;
-          box-shadow: none !important;
-        }
-
-        .custom-date-picker-box .dx-texteditor-container {
-          border: none !important;
-          background: transparent !important;
-        }
       `}</style>
 
       <div className="flex-1 flex flex-col min-h-0 bg-white">

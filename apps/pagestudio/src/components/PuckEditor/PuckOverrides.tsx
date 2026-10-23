@@ -1,6 +1,10 @@
+import { StudioDropdown } from './fields/StudioDropdown';
+import { StudioHeader, HeaderPortal } from './StudioHeader';
+import { describeSave, type SaveStatus } from './saveStatus';
+import { validatePageForPublish, blockingIssues } from './validatePage';
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useGetPuck } from "@measured/puck";
-import { type PageBuilderData, type PageType } from "./builderConfig";
+import { type PageStudioData, type PageType } from "./builderConfig";
 import { renderHomePageFromPuckJSON } from "../../helpers/renderHomePageFromPuckJSON";
 import { renderErrorPageFromPuckJSON } from "../../helpers/renderErrorPageFromPuckJSON";
 import { renderSupportUsPageFromPuckJSON } from "../../helpers/renderSupportUsPageFromPuckJSON";
@@ -136,12 +140,29 @@ const republishToastsFor = (job: RepublishJob): RepublishToast[] => {
   return toasts;
 };
 
+const PAGE_OPTIONS = [
+  { label: "Home", value: "Home" },
+  { label: "Videos", value: "Videos" },
+  { label: "Video Author", value: "VideoAuthor" },
+  { label: "Blog", value: "Blog" },
+  { label: "Section", value: "Section" },
+  { label: "Error", value: "Error" },
+  { label: "About", value: "About" },
+  { label: "Support Us", value: "SupportUs" },
+  { label: "Privacy Policy", value: "PrivacyPolicy" },
+  { label: "Editorial Standards", value: "MediaCouncil" },
+  { label: "Contact Us", value: "ContactUs" },
+  { label: "Author", value: "Author" },
+  { label: "All Authors", value: "AuthorsList" },
+];
+
 interface HeaderProps {
   selectedPage: PageType;
   setSelectedPage: (page: PageType) => void;
-  scheduleAutosave: (data: PageBuilderData) => void;
-  handlePublish: (data: PageBuilderData, skipPreview?: boolean) => any;
-  saving: boolean;
+  scheduleAutosave: (data: PageStudioData) => void;
+  handlePublish: (data: PageStudioData, skipPreview?: boolean) => any;
+  saveStatus: SaveStatus;
+  saveNow: () => void;
   activeSection: string | null;
   setActiveSection: (section: string | null) => void;
   activeAuthor: string | null;
@@ -221,14 +242,23 @@ const getStoryTaxonomyCategory = (story: Story): string => {
 export function PuckHeaderActions({
   selectedPage,
   setSelectedPage,
-  scheduleAutosave,
+
   handlePublish,
-  saving,
+  saveStatus,
+  saveNow,
   activeSection,
   setActiveSection,
   activeAuthor,
   setActiveAuthor,
 }: HeaderProps) {
+  const saving = saveStatus.state === 'saving';
+  // Re-render once a second while showing "Saved Ns ago" so the label does not go stale.
+  const [, tick] = useState(0);
+  useEffect(() => {
+    if (saveStatus.state !== 'saved') return;
+    const id = window.setInterval(() => tick((n) => n + 1), 5000);
+    return () => window.clearInterval(id);
+  }, [saveStatus]);
   // Read editor state on demand (in click handlers) so every edit does not re-render the header.
   const getPuck = useGetPuck();
   const appState = {
@@ -2069,80 +2099,78 @@ export function PuckHeaderActions({
         ))}
       </div>
 
-      <div className="studio-actions">
-        {/* LEFT: page, section and author pickers */}
+      {/* LEFT cell: page, section and author pickers */}
+      <HeaderPortal slot="left">
         <div className="studio-actions-left">
           <label className="studio-field">
             <span className="studio-field-label">Editing</span>
-            <select value={selectedPage} onChange={(e) => setSelectedPage(e.target.value as PageType)} className="studio-select">
-              <option value="Home">Home</option>
-              <option value="Videos">Videos</option>
-              <option value="VideoAuthor">Video Author</option>
-              <option value="Blog">Blog</option>
-              <option value="Section">Section</option>
-              <option value="Error">Error</option>
-              <option value="About">About</option>
-              <option value="SupportUs">Support Us</option>
-              <option value="PrivacyPolicy">Privacy Policy</option>
-              <option value="MediaCouncil">Editorial Standards</option>
-              <option value="ContactUs">Contact Us</option>
-              <option value="Author">Author</option>
-              <option value="AuthorsList">All Authors</option>
-            </select>
+            <StudioDropdown
+              variant="toolbar"
+              ariaLabel="Page being edited"
+              value={selectedPage}
+              onChange={(v) => setSelectedPage(v as PageType)}
+              options={PAGE_OPTIONS}
+            />
           </label>
           {selectedPage === "Section" && (
             <label className="studio-field">
               <span className="studio-field-label">Section</span>
-              <select
+              <StudioDropdown
+                variant="toolbar"
+                ariaLabel="Section"
                 value={activeSection || ""}
-                onChange={(e) => setActiveSection(e.target.value || null)}
-                disabled={loadingSections}
-                className="studio-select"
-              >
-                {loadingSections ? (
-                  <option>Loading…</option>
-                ) : (
-                  sections.map((section) => (
-                    <option key={section} value={section}>
-                      {section}
-                    </option>
-                  ))
-                )}
-              </select>
+                onChange={(v) => setActiveSection((v as string) || null)}
+                disabled={loadingSections && !activeSection && sections.length === 0}
+                placeholder={loadingSections ? "Loading…" : "No sections"}
+                options={Array.from(new Set([...(activeSection ? [activeSection] : []), ...sections])).map((n) => ({ label: n, value: n }))}
+              />
             </label>
           )}
           {selectedPage === "Author" && (
             <label className="studio-field">
               <span className="studio-field-label">Author</span>
-              <select
+              <StudioDropdown
+                variant="toolbar"
+                ariaLabel="Author"
                 value={activeAuthor || ""}
-                onChange={(e) => setActiveAuthor(e.target.value || null)}
-                className="studio-select"
-              >
-                <option value="">Select author</option>
-                {getAuthorOptions().map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+                onChange={(v) => setActiveAuthor((v as string) || null)}
+                options={(() => {
+                  const list = getAuthorOptions().map((o) => ({ label: o.label, value: o.value }));
+                  if (activeAuthor && !list.some((o) => o.value === activeAuthor)) list.unshift({ label: activeAuthor, value: activeAuthor });
+                  return [{ label: "Select author", value: "" }, ...list];
+                })()}
+              />
             </label>
           )}
         </div>
+      </HeaderPortal>
 
-        {/* RIGHT: Save + Preview + Publish */}
+      {/* RIGHT cell: save status, Save, Preview, Publish */}
+      <HeaderPortal slot="right">
         <div className="studio-actions-right">
+          <span
+            className={`studio-save-status studio-save-status--${saveStatus.state}`}
+            role="status"
+            aria-live="polite"
+            title={saveStatus.state === 'error' ? `Save failed: ${saveStatus.message}` : describeSave(saveStatus)}
+          >
+            <span className="studio-save-status__dot" aria-hidden="true" />
+            <span className="studio-save-status__text">{describeSave(saveStatus)}</span>
+          </span>
+
           <button
             className="studio-btn"
-            onClick={() => scheduleAutosave(appState.data as unknown as PageBuilderData)}
+            onClick={saveNow}
             disabled={saving}
+            title="Save draft (Ctrl+S)"
           >
-            {saving ? "Saving…" : "Save draft"}
+            {saveStatus.state === 'error' ? "Retry save" : saving ? "Saving…" : "Save draft"}
           </button>
 
           <button
             className="studio-btn studio-btn--secondary"
-            onClick={() => handlePublish(appState.data as PageBuilderData)}
+            onClick={() => handlePublish(appState.data as PageStudioData)}
+            title="Open a preview in a new tab"
           >
             Preview
           </button>
@@ -2151,7 +2179,9 @@ export function PuckHeaderActions({
           {(selectedPage === "Home" || selectedPage === "Section" || selectedPage === "Blog" || selectedPage === "Error" || selectedPage === "About" || selectedPage === "SupportUs" || selectedPage === "PrivacyPolicy" || selectedPage === "MediaCouncil" || selectedPage === "ContactUs" || selectedPage === "Author" || selectedPage === "AuthorsList") && (
             <div className="studio-tip-host">
             <button
-              className={`studio-btn studio-btn--primary ${activeRepublishJob ? "is-waiting" : ""}`}
+              className={`studio-btn studio-btn--primary studio-btn--publish ${activeRepublishJob ? "is-waiting" : ""}`}
+              data-save={saveStatus.state}
+              data-publishing={isPublishing || activeRepublishJob ? "true" : undefined}
               aria-disabled={!!activeRepublishJob}
               onClick={async () => {
                 if (activeRepublishJob) return;
@@ -2186,6 +2216,17 @@ export function PuckHeaderActions({
                   Section: handlePublishSectionToFile,
                 };
 
+                // Stop on problems that would publish a broken or unsafe page; nothing is sent to the server.
+                const blockers = blockingIssues(validatePageForPublish(appState.data));
+                if (blockers.length) {
+                  setRepublishNotice({
+                    tone: "error",
+                    title: "Fix this before publishing",
+                    message: blockers.map((i) => i.message).join(" "),
+                  });
+                  return;
+                }
+
                 const handler = publishHandlers[selectedPage];
                 if (handler) {
                   // Home and Blog start their own site-wide job; any other page publishes itself and then the rest.
@@ -2215,29 +2256,42 @@ export function PuckHeaderActions({
             </div>
           )}
         </div>
-      </div>
+      </HeaderPortal>
     </>
   );
 }
 
+// The title shown in the middle of the header: the page being edited.
+const PAGE_LABELS = new Map(PAGE_OPTIONS.map((o) => [o.value, o.label]));
+const headerTitleFor = (page: PageType, section: string | null, author: string | null) => {
+  const base = PAGE_LABELS.get(page) ?? page;
+  const detail = page === "Section" ? section : page === "Author" ? author : null;
+  return detail ? `${base} · ${detail}` : base;
+};
+
 export const PuckOverrides = (
   selectedPage: PageType,
   setSelectedPage: (page: PageType) => void,
-  scheduleAutosave: (data: PageBuilderData) => void,
-  handlePublish: (data: PageBuilderData) => void,
-  saving: boolean,
+  scheduleAutosave: (data: PageStudioData) => void,
+  handlePublish: (data: PageStudioData) => void,
+  saveStatus: SaveStatus,
+  saveNow: () => void,
   activeSection: string | null,
   setActiveSection: (section: string | null) => void,
   activeAuthor: string | null,
   setActiveAuthor: (author: string | null) => void,
 ) => ({
+  header: ({ actions }: { actions: React.ReactNode }) => (
+    <StudioHeader title={headerTitleFor(selectedPage, activeSection, activeAuthor)} actions={actions} />
+  ),
   headerActions: () => (
     <PuckHeaderActions
       selectedPage={selectedPage}
       setSelectedPage={setSelectedPage}
       scheduleAutosave={scheduleAutosave}
       handlePublish={handlePublish}
-      saving={saving}
+      saveStatus={saveStatus}
+      saveNow={saveNow}
       activeSection={activeSection}
       setActiveSection={setActiveSection}
       activeAuthor={activeAuthor}

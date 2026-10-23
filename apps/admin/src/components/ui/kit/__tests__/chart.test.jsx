@@ -45,7 +45,7 @@ describe('parseChart', () => {
 });
 
 describe('tooltipLines', () => {
-  it('turns DevExtreme tooltip markup into safe text lines, keeping bold', () => {
+  it('turns the grid kit tooltip markup into safe text lines, keeping bold', () => {
     expect(tooltipLines('<b>Mobile</b><br/>12 responses (40.0%)')).toEqual([
       { text: 'Mobile', bold: true },
       { text: '12 responses (40.0%)', bold: false },

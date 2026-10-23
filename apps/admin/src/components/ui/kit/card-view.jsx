@@ -1,4 +1,4 @@
-// DevExtreme-compatible CardView (free): responsive card grid with paging, cardRender and noDataRender.
+// Native CardView (free): responsive card grid with paging, cardRender and noDataRender.
 import { Children, forwardRef, isValidElement, useImperativeHandle, useState } from 'react';
 import { cx, toArray } from './_shared';
 import { Column, Pager, Paging, SearchPanel, Selection, Sorting } from './data-grid';

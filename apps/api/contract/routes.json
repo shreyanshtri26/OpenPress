@@ -192,21 +192,9 @@
     "auth": "jwt"
   },
   {
-    "method": "PUT",
-    "path": "/pagebuilder/autosave",
-    "sample": "/pagebuilder/autosave",
-    "auth": "jwt"
-  },
-  {
     "method": "GET",
     "path": "/pagestudio/page",
     "sample": "/pagestudio/page",
-    "auth": "jwt"
-  },
-  {
-    "method": "GET",
-    "path": "/pagebuilder/page",
-    "sample": "/pagebuilder/page",
     "auth": "jwt"
   },
   {
@@ -217,20 +205,8 @@
   },
   {
     "method": "POST",
-    "path": "/pagebuilder/saveHtml",
-    "sample": "/pagebuilder/saveHtml",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
     "path": "/pagestudio/saveHomeHtml",
     "sample": "/pagestudio/saveHomeHtml",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
-    "path": "/pagebuilder/saveHomeHtml",
-    "sample": "/pagebuilder/saveHomeHtml",
     "auth": "jwt"
   },
   {
@@ -241,32 +217,14 @@
   },
   {
     "method": "POST",
-    "path": "/pagebuilder/saveErrorHtml",
-    "sample": "/pagebuilder/saveErrorHtml",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
     "path": "/pagestudio/saveAboutHtml",
     "sample": "/pagestudio/saveAboutHtml",
     "auth": "jwt"
   },
   {
     "method": "POST",
-    "path": "/pagebuilder/saveAboutHtml",
-    "sample": "/pagebuilder/saveAboutHtml",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
     "path": "/pagestudio/saveSupportUsHtml",
     "sample": "/pagestudio/saveSupportUsHtml",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
-    "path": "/pagebuilder/saveSupportUsHtml",
-    "sample": "/pagebuilder/saveSupportUsHtml",
     "auth": "jwt"
   },
   {
@@ -283,20 +241,8 @@
   },
   {
     "method": "POST",
-    "path": "/pagebuilder/savePrivacyPolicyHtml",
-    "sample": "/pagebuilder/savePrivacyPolicyHtml",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
     "path": "/pagestudio/saveMediaCouncilHtml",
     "sample": "/pagestudio/saveMediaCouncilHtml",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
-    "path": "/pagebuilder/saveMediaCouncilHtml",
-    "sample": "/pagebuilder/saveMediaCouncilHtml",
     "auth": "jwt"
   },
   {
@@ -307,20 +253,8 @@
   },
   {
     "method": "POST",
-    "path": "/pagebuilder/saveContactUsHtml",
-    "sample": "/pagebuilder/saveContactUsHtml",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
     "path": "/pagestudio/saveLoginHtml",
     "sample": "/pagestudio/saveLoginHtml",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
-    "path": "/pagebuilder/saveLoginHtml",
-    "sample": "/pagebuilder/saveLoginHtml",
     "auth": "jwt"
   },
   {
@@ -331,20 +265,8 @@
   },
   {
     "method": "POST",
-    "path": "/pagebuilder/saveSectionHtml",
-    "sample": "/pagebuilder/saveSectionHtml",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
     "path": "/pagestudio/saveAuthorsHtml",
     "sample": "/pagestudio/saveAuthorsHtml",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
-    "path": "/pagebuilder/saveAuthorsHtml",
-    "sample": "/pagebuilder/saveAuthorsHtml",
     "auth": "jwt"
   },
   {
@@ -355,20 +277,8 @@
   },
   {
     "method": "POST",
-    "path": "/pagebuilder/saveAuthorHtml",
-    "sample": "/pagebuilder/saveAuthorHtml",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
     "path": "/pagestudio/saveSurveyHtml",
     "sample": "/pagestudio/saveSurveyHtml",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
-    "path": "/pagebuilder/saveSurveyHtml",
-    "sample": "/pagebuilder/saveSurveyHtml",
     "auth": "jwt"
   },
   {
@@ -379,20 +289,8 @@
   },
   {
     "method": "POST",
-    "path": "/pagebuilder/saveSiteMap",
-    "sample": "/pagebuilder/saveSiteMap",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
     "path": "/pagestudio/saveNewsSiteMap",
     "sample": "/pagestudio/saveNewsSiteMap",
-    "auth": "jwt"
-  },
-  {
-    "method": "POST",
-    "path": "/pagebuilder/saveNewsSiteMap",
-    "sample": "/pagebuilder/saveNewsSiteMap",
     "auth": "jwt"
   },
   {
@@ -402,21 +300,9 @@
     "auth": "jwt"
   },
   {
-    "method": "POST",
-    "path": "/pagebuilder/savePwaFiles",
-    "sample": "/pagebuilder/savePwaFiles",
-    "auth": "jwt"
-  },
-  {
     "method": "GET",
     "path": "/pagestudio/forceUpdatePwaIcons",
     "sample": "/pagestudio/forceUpdatePwaIcons",
-    "auth": "public"
-  },
-  {
-    "method": "GET",
-    "path": "/pagebuilder/forceUpdatePwaIcons",
-    "sample": "/pagebuilder/forceUpdatePwaIcons",
     "auth": "public"
   },
   {
@@ -426,21 +312,9 @@
     "auth": "jwt"
   },
   {
-    "method": "POST",
-    "path": "/pagebuilder/republishAll",
-    "sample": "/pagebuilder/republishAll",
-    "auth": "jwt"
-  },
-  {
     "method": "GET",
     "path": "/pagestudio/republishAll/status",
     "sample": "/pagestudio/republishAll/status",
-    "auth": "jwt"
-  },
-  {
-    "method": "GET",
-    "path": "/pagebuilder/republishAll/status",
-    "sample": "/pagebuilder/republishAll/status",
     "auth": "jwt"
   },
   {
@@ -543,12 +417,6 @@
     "method": "DELETE",
     "path": "/api/pagestudio/deleteAccount",
     "sample": "/api/pagestudio/deleteAccount",
-    "auth": "jwt"
-  },
-  {
-    "method": "DELETE",
-    "path": "/api/pagebuilder/deleteAccount",
-    "sample": "/api/pagebuilder/deleteAccount",
     "auth": "jwt"
   },
   {

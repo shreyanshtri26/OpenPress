@@ -1,4 +1,4 @@
-// Starts the API and the admin app (the page builder is served by admin at /build) together with prefixed output. Ctrl+C stops all.
+// Starts the API and the admin app (Page Studio is served by admin at /build) together with prefixed output. Ctrl+C stops all.
 // Needs `npm run dev:infra` (Docker) and `npm run setup:local` once beforehand.
 import { spawn, spawnSync, execSync } from 'node:child_process';
 
@@ -62,4 +62,4 @@ process.on('SIGINT', stop);
 process.on('SIGTERM', stop);
 process.on('exit', () => children.forEach(killTree));
 
-console.log('API http://localhost:3001  |  Admin http://localhost:5173  |  Page Builder http://localhost:5173/build  |  Site http://localhost:8080');
+console.log('API http://localhost:3001  |  Admin http://localhost:5173  |  Page Studio http://localhost:5173/build  |  Site http://localhost:8080');

@@ -223,8 +223,8 @@ export function ThumbnailGridBlock({
 
   return (
     <AutoCardAssignmentsContext.Provider value={isAutomatic ? { storyIdsByCardId } : null}>
-    <section ref={sectionRef} id={id} className={`w-full bg-white pt-6 px-0 lg:px-16 lg:pb-6 relative thumbnail-grid-section ${className}`}>
-      <div className={`mx-auto w-full max-w-7xl px-4 lg:px-8 relative pb-0 thumbnail-grid ${isMobile2x2 ? 'thumbnail-grid-mobile-2x2' : 'thumbnail-grid-mobile-single'}`}>
+    <section ref={sectionRef} id={id} className={`w-full bg-white pt-6 lg:pb-6 relative thumbnail-grid-section ${className}`}>
+      <div className={`op-container relative pb-0 thumbnail-grid ${isMobile2x2 ? 'thumbnail-grid-mobile-2x2' : 'thumbnail-grid-mobile-single'}`}>
         {/* Mobile plus-type border — only for 2x2 layout */}
         {isMobile2x2 && (
           <div className="lg:hidden absolute inset-0 pointer-events-none">

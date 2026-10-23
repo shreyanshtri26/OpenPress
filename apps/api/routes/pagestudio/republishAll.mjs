@@ -1,4 +1,4 @@
-// POST /pagebuilder/republishAll
+// POST /pagestudio/republishAll
 // Publishes the requested pages in this invocation. The caller is not expected to
 // wait: a function finishes its invocation even after the browser disconnects.
 

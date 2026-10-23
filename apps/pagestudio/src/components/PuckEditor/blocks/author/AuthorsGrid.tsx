@@ -8,7 +8,7 @@ export function AuthorsGrid({ title = "The Voices Behind OpenPress" }: AuthorsGr
     const authors = getAuthors();
 
     return (
-        <div className="w-full relative py-16 px-4 sm:px-6 lg:px-8">
+        <div className="op-container relative py-16">
             {/* Background Layer - Decreased height */}
             <div className="absolute inset-0 h-[361px] bg-graph-paper -z-10"></div>
             <div className="max-w-5xl mx-auto">

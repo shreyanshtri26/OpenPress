@@ -1,4 +1,5 @@
 // src/components/PuckEditor/campaignData.ts
+import { isCampaignStatusServing } from '../../helpers/core/campaignStatus';
 import { fetchCampaigns, fetchPlacements, type ApiCampaign, type ApiPlacement } from './apiService';
 
 export type Creative = {
@@ -31,6 +32,8 @@ export type Campaign = {
 };
 
 let liveCampaigns: Campaign[] = [];
+// Campaigns that have a Popup Ad job (raw API ids/labels), for the Popup Ad block's picker.
+let popupCampaignOptions: { value: string; label: string }[] = [];
 let livePlacements: ApiPlacement[] = [];
 
 // Global, session-scoped data — not page-specific and nothing invalidates it
@@ -70,6 +73,9 @@ export const initializeCampaigns = async (): Promise<Campaign[]> => {
     campaignsInFlight = fetchCampaigns()
         .then((apiCampaigns) => {
             liveCampaigns = apiCampaigns.map(transformApiCampaign);
+            popupCampaignOptions = apiCampaigns
+                .filter(c => isCampaignStatusServing(c.status) && (c.jobs ?? []).some(j => (j.adFormat || j.ad_format || '').toLowerCase() === 'popup'))
+                .map(c => ({ value: c.campaignId, label: `${c.advertiserName} — ${c.campaignName}` }));
             console.log("Campaigns initialized:", liveCampaigns.length);
             return liveCampaigns;
         })
@@ -256,6 +262,8 @@ export const getAdOptions = (placementName: string) => {
         });
     return options;
 };
+
+export const getPopupAdOptions = () => [{ label: 'Auto (Dynamic Delivery)', value: 'auto' }, ...popupCampaignOptions];
 
 export const getLeaderboardAdOptions = () => getAdOptions('Leaderboard');
 export const getSidebarAdOptions = () => getAdOptions('Sidebar');

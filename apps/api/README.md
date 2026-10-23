@@ -51,7 +51,7 @@ apps/api/
 │   └── site-dev.mjs        Serves the website bucket from its own root, like production
 ├── routes/                 Handlers, one folder per domain
 │   ├── users/  roles/  story/  articles/  taxonomy/  dam/  campaigns/
-│   ├── placements/  surveys/  contact/  pagebuilder/  analysis/  ai/
+│   ├── placements/  surveys/  contact/  pagestudio/  analysis/  ai/
 │   └── middleware/  utils/  utility/  test/
 ├── db/
 │   ├── schema.mjs          Drizzle tables
@@ -168,7 +168,7 @@ Migrations live in `drizzle/`. After changing the schema run `npm run db:generat
   - everything else: any signed-in user. Fine-grained module permissions are stored on the role and enforced by the admin app.
 - Passwords are hashed with bcrypt. Password reset creates a hashed token that is valid for 30 minutes and emails the link, so it needs the **Email** feature (`EMAIL_SENDER`).
 
-The Page Studio routes (`/pagestudio/*`, with `/pagebuilder/*` aliases) currently accept any signed-in user. Restricting the studio's own actions to Super Users on the server is planned.
+The Page Studio routes (`/pagestudio/*`) currently accept any signed-in user. Restricting the studio's own actions to Super Users on the server is planned.
 
 ## Publishing pipeline
 
@@ -176,12 +176,12 @@ Page content is rendered by the Page Studio code (`apps/pagestudio`), then writt
 
 | Step | Endpoint | Result |
 | --- | --- | --- |
-| Save a story page | `POST /pagestudio/saveHtml` (alias `/pagebuilder/saveHtml`) | `<section>/<slug>.html` in the website bucket |
+| Save a story page | `POST /pagestudio/saveHtml` | `<section>/<slug>.html` in the website bucket |
 | Save a page | `POST /pagestudio/saveHomeHtml`, `saveSectionHtml`, `saveAboutHtml`, ... | `home.html`, `<section>/index.html`, `about/index.html`, ... |
 | Sitemaps and PWA files | `saveSiteMap`, `saveNewsSiteMap`, `savePwaFiles` | `sitemap.xml`, `news-sitemap.xml`, `manifest.json`, `sw.js` |
 | Site-wide republish | `POST /pagestudio/republishAll` (then poll `GET /pagestudio/republishAll/status`) | Every published page rebuilt |
 
-**The republish worker** (`routes/pagebuilder/republishAllWorker.mjs`) loads `publish-renderer.js` (built from `apps/pagestudio` by `npm run build -w apps/pagestudio`), then re-renders each page that carries a `publishedSnapshot`, every section, the stories and the sitemaps. The bundle is read from `PUBLISH_RENDERER_FILE` locally and downloaded from an allowed https origin when deployed.
+**The republish worker** (`routes/pagestudio/republishAllWorker.mjs`) loads `publish-renderer.js` (built from `apps/pagestudio` by `npm run build -w apps/pagestudio`), then re-renders each page that carries a `publishedSnapshot`, every section, the stories and the sitemaps. The bundle is read from `PUBLISH_RENDERER_FILE` locally and downloaded from an allowed https origin when deployed.
 
 Section and story folders use one slug rule, so `Arts & Culture` is `arts-culture` everywhere. A section page shares its folder with the stories in it.
 
@@ -221,7 +221,7 @@ No third-party tracking is added to published pages unless `VITE_GA_MEASUREMENT_
 | POST | `/uploadUserImage` | Signed in |
 | PUT | `/updateProfile` | Signed in |
 | DELETE | `/deleteAccount` | Signed in |
-| DELETE | `/api/pagestudio/deleteAccount` (alias `/api/pagebuilder/deleteAccount`) | Signed in |
+| DELETE | `/api/pagestudio/deleteAccount` | Signed in |
 | GET | `/api/audience/profile` | Signed in |
 | GET | `/api/audience/users` | Signed in |
 
@@ -291,7 +291,7 @@ No third-party tracking is added to published pages unless `VITE_GA_MEASUREMENT_
 | GET | `/taxonomy/section/values` | Signed in |
 
 #### Page Studio and publishing
-Primary endpoints use `/pagestudio/*`; backward-compatible aliases under `/pagebuilder/*` are also supported.
+Page Studio endpoints use `/pagestudio/*`.
 
 | Method | Path | Access |
 | --- | --- | --- |

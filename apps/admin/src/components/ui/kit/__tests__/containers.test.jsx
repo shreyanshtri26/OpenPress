@@ -31,10 +31,10 @@ describe('Popup', () => {
   it('closes on outside click only when hideOnOutsideClick', () => {
     const onHiding = vi.fn();
     const { rerender } = render(<Popup visible onHiding={onHiding}>x</Popup>);
-    fireEvent.mouseDown(screen.getByTestId('dx-popup-overlay'));
+    fireEvent.mouseDown(screen.getByTestId('kit-popup-overlay'));
     expect(onHiding).not.toHaveBeenCalled();
     rerender(<Popup visible hideOnOutsideClick onHiding={onHiding}>x</Popup>);
-    fireEvent.mouseDown(screen.getByTestId('dx-popup-overlay'));
+    fireEvent.mouseDown(screen.getByTestId('kit-popup-overlay'));
     expect(onHiding).toHaveBeenCalledTimes(1);
   });
 });

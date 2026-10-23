@@ -3,7 +3,7 @@ import { and, eq, like, sql as dsql } from "drizzle-orm";
 import { db, sql } from "../../db/client.mjs";
 import { pages, taxonomies } from "../../db/schema.mjs";
 
-// Page Builder layouts for local development. Cards reference the stories from `seed/stories.mjs` by id;
+// Page Studio layouts for local development. Cards reference the stories from `seed/stories.mjs` by id;
 // each card's title and image are filled in by the editor/publisher from the story itself.
 // Cards live in named zones: "<block id>:<zone name>" (see HeroGridBlock, SectionGrid, ...).
 const STORY = (n) => `seed-story-${String(n).padStart(2, "0")}`;

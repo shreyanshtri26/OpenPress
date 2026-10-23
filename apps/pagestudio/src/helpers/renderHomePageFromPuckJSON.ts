@@ -1,10 +1,11 @@
 import { PUBLISHED_PAGE_STYLES } from "../generated/publishedPageStyles";
 import { ComponentRegistry } from './registry/ComponentRegistry';
+import { publicCampaignsJson } from './core/campaignStatus';
 import { getClientAdScript } from './renderers/clientAdScript';
 import type { RenderContext } from './core/renderTypes';
 import { renderDynamicAd } from './renderers/renderDynamicAd';
 import { renderSpotlightAd } from './renderers/renderSpotlightAd';
-import { resolveActivePopupCampaign, buildPopupAdHtml } from './renderers/renderPopupAd';
+import { popupAdHtmlFor } from './renderers/renderPopupAd';
 import { replaceUnpublishedStories } from './renderers/automaticGridZones';
 import { analyticsTags } from './analyticsTags';
 
@@ -129,8 +130,7 @@ export function renderHomePageFromPuckJSON(
    * Popup Ad — page-wide overlay, injected once here (not as a Puck block,
    * since it floats above the whole page rather than living in a zone).
    * -------------------------------------------------- */
-  const { job: popupJob, campaign: popupCampaign } = resolveActivePopupCampaign(campaigns ?? []);
-  const popupAdHtml = popupJob ? buildPopupAdHtml(popupJob, popupCampaign) : '';
+  const popupAdHtml = popupAdHtmlFor(campaigns ?? [], data);
 
   /* --------------------------------------------------
    * HTML escape (meta only)
@@ -174,7 +174,9 @@ export function renderHomePageFromPuckJSON(
   ${analyticsTags()}
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#ffffff" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1d1d1f" media="(prefers-color-scheme: dark)" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -251,7 +253,7 @@ export function renderHomePageFromPuckJSON(
     <script>
       (function() {
         // Safe stringification for campaigns
-        const campaigns = ${JSON.stringify(campaigns || []).replace(/</g, '\\u003c')};
+        const campaigns = ${publicCampaignsJson(campaigns || [])};
         ${getClientAdScript('sidebar')}
       })();
     </script>

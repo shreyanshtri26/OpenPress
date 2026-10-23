@@ -6,7 +6,7 @@ import CardView, {
   SearchPanel,
   Selection,
   Sorting,
-} from "@/components/ui/dx/card-view";
+} from "@/components/ui/kit/card-view";
 import { FileText, Music, Play, Trash2 } from "lucide-react";
 import PropTypes from "prop-types";
 import AssetModalStyles from "./AssetModalStyles";

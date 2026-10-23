@@ -1,5 +1,5 @@
 // src/components/publishTabs/PlacementTab.jsx
-import Accordion from '@/components/ui/dx/accordion';
+import Accordion from '@/components/ui/kit/accordion';
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import CustomCalendar from '../common/CustomCalendar';
@@ -197,7 +197,7 @@ const PlacementTab = ({
 
 
 
-  // Simplified state management using DevExtreme's selectedItems approach
+  // Simplified state management using the kit's selectedItems approach
   const [selectedItems, setSelectedItems] = useState([]);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [showPublishDropdown, setShowPublishDropdown] = useState(false);
@@ -262,9 +262,7 @@ const PlacementTab = ({
       if (showPublishDropdown &&
         publishDropdownRef.current &&
         !publishDropdownRef.current.contains(event.target) &&
-        !event.target.closest('.dx-datebox') &&
-        !event.target.closest('.dx-calendar') &&
-        !event.target.closest('.dx-overlay-wrapper')) {
+        !event.target.closest('.kit-datebox')) {
         setShowPublishDropdown(false);
       }
     };
@@ -284,8 +282,8 @@ const PlacementTab = ({
     }
 
     const isAccordionClick =
-      e.target.closest(".dx-accordion") ||
-      e.target.closest(".dx-accordion-item");
+      e.target.closest(".kit-accordion") ||
+      e.target.closest(".kit-accordion-item");
 
     if (!isAccordionClick && isCalendarOpen) {
       setSelectedItems(prev => prev.filter(item => item.field !== "Publish Date"));
@@ -910,14 +908,14 @@ const PlacementTab = ({
       {/* Global Styles */}
       <style jsx global>{`
         /* Accordion styling to look like SelectBox */
-        .dx-accordion {
+        .kit-accordion {
           border: none !important;
           padding: 0 !important;
           margin: 0 !important;
         }
 
 
-        .dx-accordion-item {
+        .kit-accordion-item {
           border: none !important;
           margin-bottom: 0 !important;
           position: relative;
@@ -927,27 +925,7 @@ const PlacementTab = ({
         }
 
 
-        .dx-accordion-item-title {
-          border: none !important;
-          border-radius: 4px !important;
-          padding: 12px 0 !important;
-          background: white !important;
-          min-height: 40px !important;
-          display: flex !important;
-          align-items: center !important;
-          cursor: pointer !important;
-        }
-
-
         /* Hide accordion arrow */
-        .dx-accordion-item-title::after {
-          display: none !important;
-        }
-
-
-        .dx-accordion-item-opened .dx-accordion-item-title {
-          border: none !important;
-        }
 
         .publish-mode {
   margin-bottom: 10px;
@@ -971,31 +949,10 @@ const PlacementTab = ({
 }
 
 
-        .dx-accordion-item-body {
-          border: none !important;
-          border-top: none !important;
-          border-radius: 0 0 4px 4px !important;
-          padding: 0 !important;
-          margin: 0 !important;
-          height: auto !important;
-        }
-
-
         /* Collapsed state - no extra height */
-        .dx-accordion-item:not(.dx-accordion-item-opened) .dx-accordion-item-body {
-          height: 0 !important;
-          overflow: hidden !important;
-          padding: 0 !important;
-          margin: 0 !important;
-        }
 
 
         /* Opened state */
-        .dx-accordion-item-opened .dx-accordion-item-body {
-          height: auto !important;
-          overflow: visible !important;
-          padding: 8px 0 0 0 !important;
-        }
 
 
         .accordion-title-wrapper {
@@ -1093,40 +1050,17 @@ const PlacementTab = ({
           pointer-events: none;
         }
 
-        .dx-texteditor, .dx-texteditor-input {
-          border-radius: 0 !important;
-        }
-
-
-        .custom-textarea .dx-texteditor:hover {
-          background: #f9fafb !important;
-        }
-
-
-        .custom-textarea .dx-texteditor-input {
-          font-family: 'Inter', sans-serif !important;
-          font-size: 15px !important;
-          padding: 12px !important;
-        }
-
 
         /* Calendar Container */
 .calendar-container {
   padding: 8px 0px;
 }
 
-.calendar-container .dx-datebox {
+.calendar-container .kit-datebox {
   width: 100% !important;
 }
 
 /* Hide the input of DateBox */
-.dx-datebox .dx-dropdowneditor-input-wrapper {
-  display: none;
-}
-
-.dx-datebox .dx-dropdowneditor-button {
-  display: none !important;
-}
 
 /* Single letter week labels */
 table[role="grid"] thead th {

@@ -1,7 +1,7 @@
-// Site-wide republish worker. Runs inside the POST /pagebuilder/republishAll
+// Site-wide republish worker. Runs inside the POST /pagestudio/republishAll
 // invocation, which keeps going after the browser disconnects.
 //
-// Rendering uses the PageBuilder's published renderer bundle and saving goes
+// Rendering uses the Page Studio's published renderer bundle and saving goes
 // through the existing route handlers, so output matches an editor publish.
 // Work is time-boxed and records a cursor, so a run that does not fit in one
 // invocation resumes where it stopped. It must never throw.
@@ -47,7 +47,7 @@ import { handler as getSectionValues } from "../taxonomy/getSectionValues.mjs";
 import { handler as getAuthors } from "../users/getAuthors.mjs";
 import { handler as fetchReadyToPublish } from "../story/fetchReadyToPublish.mjs";
 
-/** Renderer bundle published next to the PageBuilder app. */
+/** Renderer bundle published next to the Page Studio app. */
 const RENDERER_PATH = "/publish-renderer.js";
 /** Bundle API version this worker understands (see rendererEntry.ts). */
 const SUPPORTED_RENDERER_API_VERSION = 2;
@@ -143,14 +143,14 @@ const importRenderer = async (source, label) => {
 
 /**
  * Loads the renderer bundle. In local development PUBLISH_RENDERER_FILE points at the built
- * file (apps/pagebuilder/dist/publish-renderer.js). Otherwise it is fetched from the request's
+ * file (apps/pagestudio/dist/publish-renderer.js). Otherwise it is fetched from the request's
  * origin, falling back to the allow-list; only https origins in ALLOWED_ORIGINS are ever fetched.
  */
 export const loadRenderer = async (job) => {
   let localFile = process.env.PUBLISH_RENDERER_FILE;
   if (localFile && !existsSync(localFile)) {
     const fallbacks = [
-      localFile.replace('pagebuilder', 'pagestudio'),
+      localFile,
       path.resolve(process.cwd(), '../pagestudio/dist/publish-renderer.js'),
       path.resolve(process.cwd(), 'apps/pagestudio/dist/publish-renderer.js'),
       path.resolve(process.cwd(), '../admin/dist/publish-renderer.js'),

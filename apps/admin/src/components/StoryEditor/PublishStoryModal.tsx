@@ -1,9 +1,9 @@
 // src/components/StoryEditor/PublishStoryModal.tsx
 
 import React, { useContext } from 'react';
-import { SelectBox } from '@/components/ui/dx/select-box';
+import { SelectBox } from '@/components/ui/kit/select-box';
 import apiFetch from '../../utils/api';
-import { DateBox } from '@/components/ui/dx/date-box';
+import { DateBox } from '@/components/ui/kit/date-box';
 import { Check, Pause, Send, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { UserContext } from '../../context/UserContext';

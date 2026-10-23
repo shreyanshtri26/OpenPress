@@ -17,7 +17,7 @@ import DataGrid, {
     Pager,
     FilterPanel,
     FilterBuilderPopup,
-} from '@/components/ui/dx/data-grid';
+} from '@/components/ui/kit/data-grid';
 import { createGridExportHandler } from '../../utils/dataGridExport';
 import CreateCampaignView from '../../components/campaigns/CreateCampaignView';
 import CampaignCalendar, { CampaignStatusLegend } from '../../components/campaigns/CampaignCalendar';
@@ -39,7 +39,7 @@ const DUMMY_CAMPAIGNS = [
 // A campaign holds an array of placements, so there is no single value to group
 // by. Collapse the list into one label — campaigns running the same set of
 // placements group together. Declared at module scope so its identity is stable
-// across renders; an inline closure makes DevExtreme rebuild the column.
+// across renders; an inline closure makes the grid kit rebuild the column.
 const calculatePlacementsValue = (rowData) => {
     const jobs = rowData?.jobs || [];
     return jobs.length ? jobs.map((j) => j.placement).join(', ') : 'None';
@@ -350,14 +350,14 @@ export default function CampaignsManager() {
         }
     };
 
-    // DevExtreme counts group rows against the page size, so expanding a group
+    // the grid kit counts group rows against the page size, so expanding a group
     // fills the page with that group's rows and pushes the remaining groups
     // onto the next page. Turn paging off while a grouping is applied so the
     // whole tree stays browsable, and restore it when grouping is cleared.
     //
     // This is done imperatively rather than through React state on purpose: a
     // re-render re-creates the inline cellRender/calculateCellValue closures on
-    // the <Column> children, which makes DevExtreme rebuild the columns and
+    // the <Column> children, which makes the grid kit rebuild the columns and
     // drop the groupIndex the user just set — the drop appears to bounce back.
     const onGridOptionChanged = useCallback((e) => {
         if (!e.fullName || !e.fullName.includes('groupIndex')) return;
@@ -384,27 +384,6 @@ export default function CampaignsManager() {
     return (
         <div className="flex flex-1 flex-col overflow-hidden bg-white">
             <style>{`
-                .campaigns-datagrid .dx-datagrid-pager,
-                .campaigns-datagrid .dx-datagrid-bottom-content {
-                    background-color: #fff !important;
-                    border-top: none !important;
-                    box-shadow: none !important;
-                    margin-top: 0 !important;
-                }
-
-                .campaigns-datagrid .dx-datagrid-rowsview .dx-row:last-child > td {
-                    border-bottom: none !important;
-                }
-
-                .campaigns-datagrid .dx-datagrid-headers .dx-header-row td {
-                    font-weight: 600 !important;
-                    color: #111827 !important;
-                }
-
-                .campaigns-datagrid .dx-datagrid-rowsview .dx-row > td {
-                    font-weight: 400 !important;
-                    color: #000 !important;
-                }
             `}</style>
             {currentView === 'library' && (
                 <>
@@ -420,7 +399,7 @@ export default function CampaignsManager() {
                             <div className="flex items-center justify-between">
                                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Campaign Hub</h1>
                                 <button
-                                    className="bg-black text-white px-4 py-2 text-sm font-semibold hover:bg-gray-800 transition-colors"
+                                    className="rounded-full bg-[#1d1d1f] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#3a3a3c]"
                                     onClick={() => setCurrentView('create')}
                                 >
                                     Create Campaign
@@ -429,12 +408,12 @@ export default function CampaignsManager() {
 
                             {/* Tab switcher */}
                             <div className="flex items-center justify-between flex-wrap gap-3">
-                                <div className="flex gap-0 border border-gray-300 rounded overflow-hidden w-fit">
+                                <div className="flex gap-0 border border-gray-200 rounded-full overflow-hidden w-fit bg-white">
                                     <button
                                         onClick={() => setCampaignTab('calendar')}
                                         className={`px-5 py-2 text-sm font-semibold transition-colors ${
                                             campaignTab === 'calendar'
-                                                ? 'bg-black text-white'
+                                                ? 'bg-[#1d1d1f] text-white'
                                                 : 'bg-white text-gray-600 hover:bg-gray-50'
                                         }`}
                                     >
@@ -444,7 +423,7 @@ export default function CampaignsManager() {
                                         onClick={() => setCampaignTab('table')}
                                         className={`px-5 py-2 text-sm font-semibold transition-colors border-l border-gray-300 ${
                                             campaignTab === 'table'
-                                                ? 'bg-black text-white'
+                                                ? 'bg-[#1d1d1f] text-white'
                                                 : 'bg-white text-gray-600 hover:bg-gray-50'
                                         }`}
                                     >
@@ -467,7 +446,7 @@ export default function CampaignsManager() {
                             )}
 
                             {/* Campaigns Grid (table view) */}
-                            {campaignTab === 'table' && <div className="bg-white border border-black overflow-hidden">
+                            {campaignTab === 'table' && <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
                                 <DataGrid
                                     dataSource={campaignsWithStatusValue}
                                     showBorders={false}

@@ -123,7 +123,7 @@ const postRepublishAll = async (
       // The backend loads the published-page renderer bundle from this
       // origin, and only accepts it if it is an allowed https origin. On
       // localhost it is neither, so it is left out and the backend falls
-      // back to its own allow-list (i.e. the deployed PageBuilder site).
+      // back to its own allow-list (i.e. the deployed Page Studio site).
       rendererOrigin:
         window.location.protocol === 'https:' ? window.location.origin : undefined,
     }),

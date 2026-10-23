@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export const ContactUs = ({ receiverEmail }: { receiverEmail?: string }) => {
     const [submitted, setSubmitted] = useState(false);
@@ -11,9 +11,9 @@ export const ContactUs = ({ receiverEmail }: { receiverEmail?: string }) => {
         message: ''
     });
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+    // Reported through the studio toast (the editor canvas must never open browser dialogs or scroll the page).
+    const notify = (message: string) =>
+        window.dispatchEvent(new CustomEvent('studio:notice', { detail: { tone: 'error', title: 'Message not sent', message } }));
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -41,14 +41,13 @@ export const ContactUs = ({ receiverEmail }: { receiverEmail?: string }) => {
 
             if (response.ok) {
                 setSubmitted(true);
-                window.scrollTo(0, 0);
             } else {
                 const errorData = await response.json();
-                alert(`Error: ${errorData.message || 'Something went wrong'}`);
+                notify(errorData.message || 'Something went wrong');
             }
         } catch (error) {
             console.error('Submission error:', error);
-            alert('Failed to send message. Please try again later.');
+            notify('Failed to send message. Please try again later.');
         }
     };
 

@@ -23,7 +23,7 @@ export function Popup({
 
   return createPortal(
     <div
-      data-testid="dx-popup-overlay"
+      data-testid="kit-popup-overlay"
       className={cx('fixed inset-0 z-[1000] flex items-center justify-center p-4', wrapperAttr?.class)}
       style={{ backgroundColor: shading ? shadingColor || 'rgba(0,0,0,0.45)' : 'transparent' }}
       onMouseDown={(event) => { if (hideOnOutsideClick && event.target === event.currentTarget) onHiding?.({}); }}

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { cx, readExpr, toArray } from './_shared';
 import { triggerHaptic } from '@/utils/appleMotion';
 
-// Controlled through selectedItems or selectedItemKeys (like DevExtreme), otherwise keeps its own state.
+// Controlled through selectedItems or selectedItemKeys (like the grid kit), otherwise keeps its own state.
 export function Accordion({
   dataSource, items, keyExpr, displayExpr, selectedItems, selectedItemKeys, multiple = false, collapsible = false,
   onSelectionChanged, itemTitleRender, itemRender, className, height,
@@ -40,7 +40,7 @@ export function Accordion({
   };
 
   return (
-    <div className={cx('dx-accordion space-y-2.5', className)} style={height && height !== 'auto' ? { height, overflow: 'auto' } : undefined}>
+    <div className={cx('kit-accordion space-y-2.5', className)} style={height && height !== 'auto' ? { height, overflow: 'auto' } : undefined}>
       {list.map((item, i) => {
         const itemKey = typeof keyOf(item, i) === 'object' ? `acc-${i}` : String(keyOf(item, i) ?? i);
         const open = openKeys.includes(keyOf(item, i));
@@ -48,7 +48,7 @@ export function Accordion({
           <div
             key={itemKey}
             className={cx(
-              'dx-accordion-item rounded-xl border border-black/[0.08] bg-white overflow-hidden shadow-xs transition-all duration-200',
+              'kit-accordion-item rounded-xl border border-black/[0.08] bg-white overflow-hidden shadow-xs transition-all duration-200',
               open && 'border-black/20 shadow-sm'
             )}
           >
@@ -78,7 +78,7 @@ export function Accordion({
               </svg>
             </button>
             {open && (
-              <div className="dx-item-content pt-3 pb-3.5 px-3.5 border-t border-black/[0.05] bg-gray-50/30">
+              <div className="kit-item-content pt-3 pb-3.5 px-3.5 border-t border-black/[0.05] bg-gray-50/30">
                 {itemRender ? itemRender(item) : null}
               </div>
             )}

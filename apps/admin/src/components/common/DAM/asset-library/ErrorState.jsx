@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import Button from '@/components/ui/dx/button';
+import Button from '@/components/ui/kit/button';
 import { AlertTriangle } from 'lucide-react';
 
 const ErrorState = ({ message = 'An unexpected error occurred.', onRetry }) => (

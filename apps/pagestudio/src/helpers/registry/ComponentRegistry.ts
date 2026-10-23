@@ -14,6 +14,7 @@ import { renderInStoryAd } from '../renderers/renderInStoryAd'
 import { renderLeaderboardAd } from '../renderers/renderLeaderboardAd'
 import { renderSidebarAd } from '../renderers/renderSidebarAd'
 import { renderSpotlightAd } from '../renderers/renderSpotlightAd'
+import { renderPopupAdBlock } from '../renderers/renderPopupAd'
 import { renderShowcaseCard } from '../renderers/renderShowcaseCard'
 import { renderHoverCard } from '../renderers/renderHoverCard'
 import { renderStoryCard } from '../renderers/renderStoryCard'
@@ -241,6 +242,8 @@ export const ComponentRegistry: Record<
       desktopDimensions: props.desktopDimensions,
       mobileDimensions: props.mobileDimensions,
     }, ctx),
+
+  PopupAd: (props, ctx) => renderPopupAdBlock({ adId: props.adId }, ctx.campaigns ?? []),
 
   SpotlightAd: (props, ctx) =>
     renderSpotlightAd({

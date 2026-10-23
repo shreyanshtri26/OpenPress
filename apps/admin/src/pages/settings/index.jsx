@@ -424,66 +424,19 @@ export default function AdminSettingsPage() {
           background-color: transparent;
         }
 
-        .settings-role-accordion .dx-accordion-item {
+        .settings-role-accordion .kit-accordion-item {
           border-left: 0;
           border-right: 0;
           border-top: 1px solid #000;
         }
 
-        .settings-role-accordion .dx-accordion-item:last-of-type {
+        .settings-role-accordion .kit-accordion-item:last-of-type {
           border-bottom: 1px solid #000;
         }
 
-        .settings-role-accordion .dx-accordion-item .dx-accordion-item-title {
-          padding: 16px;
-          font-size: 1rem;
-          background-color: transparent !important;
-          border: none !important;
-          box-shadow: none !important;
-          outline: none !important;
-        }
-
         /* ✅ Keep borders always black, even on hover or focus */
-        .settings-role-accordion .dx-accordion-item.dx-state-hover,
-        .settings-role-accordion .dx-accordion-item.dx-state-active,
-        .settings-role-accordion .dx-accordion-item.dx-state-focused {
-          outline: none !important;
-          box-shadow: none !important;
-          background-color: transparent !important;
-        }
-
-        .settings-role-accordion .dx-accordion-item .dx-accordion-item-title.dx-state-hover,
-        .settings-role-accordion .dx-accordion-item .dx-accordion-item-title.dx-state-active,
-        .settings-role-accordion .dx-accordion-item .dx-accordion-item-title.dx-state-focused {
-          background-color: transparent !important;
-          border-color: #000 !important;
-          box-shadow: none !important;
-          outline: none !important;
-        }
-
-        .settings-role-accordion .dx-accordion-item-body {
-          background-color: #fff;
-        }
-
-        .dx-datagrid .dx-link {
-          color: #000 !important;
-        }
-
-        .dx-datagrid-focus-overlay {
-            border: 2px solid #000 !important;
-        }
 
         /* Consistency for Tabs */
-        .allstories-datagrid .dx-datagrid-addrow-button,
-        .allstories-datagrid .dx-command-edit .dx-link-add,
-        .placement-datagrid .dx-datagrid-addrow-button,
-        .placement-datagrid .dx-command-edit .dx-link-add {
-          display: none !important;
-        }
-        .allstories-datagrid .dx-datagrid-rowsview tbody tr.dx-data-row:last-child > td,
-        .placement-datagrid .dx-datagrid-rowsview tbody tr.dx-data-row:last-child > td {
-          border-bottom: 0 !important;
-        }
       `}</style>
 
       <AuthGuard allowedRoles={["admin", "editor", "journalist"]}>

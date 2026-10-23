@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { initializeThumbnailGridTaxonomyOptions } from '../storyData'
+import { StudioDropdown } from './StudioDropdown'
 
 type ThumbnailGridCategorySelectProps = {
   value: string
@@ -45,28 +46,17 @@ export function ThumbnailGridCategorySelect({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      <select
+      <StudioDropdown
+        variant="field"
         value={value ?? ''}
-        onChange={(event) => onChange(event.target.value)}
-        style={{
-          width: '100%',
-          padding: '6px 8px',
-          border: '1px solid #ccc',
-          borderRadius: 4,
-          fontSize: 14,
-          background: '#fff',
-          color: '#333',
-          cursor: 'pointer',
-        }}
-      >
-        <option value="">Off</option>
-        {isLoading && options.length === 0 ? <option value="">Loading taxonomy values...</option> : null}
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+        onChange={(v) => onChange(String(v ?? ''))}
+        ariaLabel="Category"
+        options={[
+          { label: 'Off', value: '' },
+          ...(isLoading && options.length === 0 ? [{ label: 'Loading taxonomy values…', value: '__loading', disabled: true }] : []),
+          ...options.map((option) => ({ label: option.label, value: option.value })),
+        ]}
+      />
     </div>
   )
 }

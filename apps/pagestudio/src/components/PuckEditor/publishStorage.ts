@@ -1,6 +1,6 @@
-import type { PageBuilderData } from './builderConfig'
+import type { PageStudioData } from './builderConfig'
 
-const STORAGE_KEY = 'page-builder:published-pages'
+const STORAGE_KEY = 'pagestudio:published-pages'
 
 const createId = () => {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -24,7 +24,7 @@ const getStorage = () => {
 }
 
 type StoredPage = {
-  data: PageBuilderData
+  data: PageStudioData
   createdAt: string
 }
 
@@ -62,7 +62,7 @@ const newestPages = (pages: StoredPages, keep: number): StoredPages =>
       .slice(0, keep)
   )
 
-export const savePublishedPage = (data: PageBuilderData) => {
+export const savePublishedPage = (data: PageStudioData) => {
   const storage = getStorage()
 
 
@@ -91,7 +91,7 @@ export const savePublishedPage = (data: PageBuilderData) => {
   return null
 }
 
-export const loadPublishedPage = (id: string): PageBuilderData | null => {
+export const loadPublishedPage = (id: string): PageStudioData | null => {
   const storage = getStorage()
 
   if (!storage) {

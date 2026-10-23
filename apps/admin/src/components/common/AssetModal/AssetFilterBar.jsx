@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import SelectBox from '@/components/ui/dx/select-box';
-import TextBox from '@/components/ui/dx/text-box';
+import SelectBox from '@/components/ui/kit/select-box';
+import TextBox from '@/components/ui/kit/text-box';
 import PropTypes from 'prop-types';
 import CustomButton from '../CustomButton';
 import CustomCalendar from '../CustomCalendar';

@@ -31,7 +31,7 @@ describe('Sortable (native drag and drop)', () => {
     fireEvent.drop(screen.getByText('X'));
     expect(onAdd).toHaveBeenLastCalledWith(expect.objectContaining({ fromData: 0, fromIndex: 1, toData: 1, toIndex: 0 }));
     fireEvent.dragStart(screen.getByText('A'));
-    fireEvent.drop(screen.getAllByTestId('dx-sortable')[2]);
+    fireEvent.drop(screen.getAllByTestId('kit-sortable')[2]);
     expect(onAdd).toHaveBeenLastCalledWith(expect.objectContaining({ fromData: 0, fromIndex: 0, toData: 2, toIndex: 0 }));
   });
 

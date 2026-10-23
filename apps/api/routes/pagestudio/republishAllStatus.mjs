@@ -1,4 +1,4 @@
-// GET /pagebuilder/republishAll/status
+// GET /pagestudio/republishAll/status
 // How the editor polls progress and learns how a run ended.
 
 import { publicJob, readJob } from "./republishAllJob.mjs";

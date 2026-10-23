@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { TextBox } from "@/components/ui/dx/text-box";
-import { TextArea } from "@/components/ui/dx/text-area";
+import { TextBox } from "@/components/ui/kit/text-box";
+import { TextArea } from "@/components/ui/kit/text-area";
 import CustomCalendar from "../common/CustomCalendar";
 import toast from 'react-hot-toast';
 import env from '@/utils/env';
@@ -124,9 +124,7 @@ export default function StoryTab({ storyData, hasEditPermission, onFieldChange, 
       if (showPublishDropdown &&
         publishDropdownRef.current &&
         !publishDropdownRef.current.contains(event.target) &&
-        !event.target.closest('.dx-datebox') &&
-        !event.target.closest('.dx-calendar') &&
-        !event.target.closest('.dx-overlay-wrapper')) {
+        !event.target.closest('.kit-datebox')) {
         setShowPublishDropdown(false);
       }
     };
@@ -183,18 +181,6 @@ export default function StoryTab({ storyData, hasEditPermission, onFieldChange, 
     <>
       <style>
         {`
-          .custom-textarea.dx-texteditor.dx-editor-outlined {
-            border-radius: 0px;
-            border: 1px solid #000000 !important;
-          }
-          .custom-textarea .dx-texteditor:hover {
-            background: #f9fafb !important;
-          }
-          .custom-textarea .dx-texteditor-input {
-            font-family: 'Inter', sans-serif !important;
-            font-size: 15px !important;
-            padding: 12px !important;
-          }
           .publish-dropdown-item {
             font-family: 'Inter', sans-serif !important;
             font-size: 15px !important;

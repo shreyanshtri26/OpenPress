@@ -248,7 +248,7 @@ export default function DashboardSidebar({ onCollapseChange }) {
     </aside>
   ), [opened, navigationItems, handleToggle, user, handleLogout, router]);
 
-  // ✅ Fixed: Simplified return structure without DevExtreme Drawer
+  // ✅ Fixed: Simplified return structure without the grid kit Drawer
   return (
     <div
       className={`transition-all duration-300 ease-in-out ${opened ? 'w-64' : 'w-20'}`}

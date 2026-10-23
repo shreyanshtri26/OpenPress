@@ -1,9 +1,9 @@
 import React from 'react';
-import { TextBox } from '@/components/ui/dx/text-box';
-import { Switch } from '@/components/ui/dx/switch';
-import { NumberBox } from '@/components/ui/dx/number-box';
-import { SelectBox } from '@/components/ui/dx/select-box';
-import { Validator, RequiredRule, PatternRule } from '@/components/ui/dx/validator';
+import { TextBox } from '@/components/ui/kit/text-box';
+import { Switch } from '@/components/ui/kit/switch';
+import { NumberBox } from '@/components/ui/kit/number-box';
+import { SelectBox } from '@/components/ui/kit/select-box';
+import { Validator, RequiredRule, PatternRule } from '@/components/ui/kit/validator';
 
 const Field = ({ label, required, children }) => (
     <label className="block">
@@ -117,44 +117,6 @@ export default function BasicInfoForm({ formData, onFieldChange }) {
                 </div>
             )}
             <style>{`
-                .dx-form {
-                    font-family: 'Inter', sans-serif !important;
-                }
-
-                .dx-field-item-label-text {
-                    font-size: 0.875rem !important;
-                    line-height: 1.25rem;
-                    font-weight: 500 !important;
-                    color: #9ca3af !important;
-                }
-
-                .dx-texteditor.dx-editor-outlined {
-                    border: 1px solid #e5e7eb !important;
-                    border-radius: 0 !important;
-                }
-
-                .dx-texteditor.dx-state-focused.dx-editor-outlined {
-                    border-color: #000000 !important;
-                }
-
-                .dx-texteditor-input {
-                    font-family: 'Inter', sans-serif !important;
-                    font-size: 14px !important;
-                    color: #111827 !important;
-                    padding: 8px 12px !important;
-                }
-
-                .dx-switch-on .dx-switch-container:before,
-                .dx-switch-on .dx-switch-handle {
-                    background-color: #000000 !important;
-                }
-                
-                .dx-form .dx-field-item-content .dx-texteditor,
-                .dx-form .dx-field-item-content .dx-dropdowneditor,
-                .dx-form .dx-field-item-content .dx-selectbox,
-                .dx-form .dx-field-item-content .dx-numberbox {
-                    border-radius: 0 !important;
-                }
             `}</style>
         </div>
     );

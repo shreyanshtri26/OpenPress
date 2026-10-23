@@ -1765,7 +1765,7 @@ function renderComponent(block, zones, storiesById, ctx = {}) {
 
   let renderer = ComponentRegistry[type];
 
-  // Fallback for dynamically generated Ad components from PageBuilder
+  // Fallback for dynamically generated Ad components from Page Studio
   if (!renderer && type.startsWith('Ad_')) {
     if (type.toLowerCase().includes('spotlight')) {
       // Spotlight Ad blocks → scroll-experience renderer
@@ -4609,7 +4609,7 @@ export function renderBottomCardList(props, storiesById) {
   // In OpenPress, we use storiesById as the library of stories for initial render.
   const rawStories = Object.values(storiesById || {});
 
-  // Support author filtering by authorId or authorName (integrated from openPress-PageBuilder)
+  // Support author filtering by authorId or authorName (integrated from openPress-Page Studio)
   const filteredStories = (props?.authorId || props?.authorName)
     ? rawStories.filter((s) => {
       const sAuthorId = (s.authorId || '').trim().toLowerCase();

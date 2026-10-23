@@ -12,7 +12,7 @@ import DataGrid, {
     Selection,
     FilterPanel,
     FilterBuilderPopup,
-} from '@/components/ui/dx/data-grid';
+} from '@/components/ui/kit/data-grid';
 import { UserContext } from "../../context/UserContext";
 import apiFetch from "../../utils/api";
 import env from "@/utils/env";
@@ -328,13 +328,6 @@ const AuthorsTab = ({ onRegisterAddAuthor }) => {
         <>
             <div className="mt-6 bg-white border border-black overflow-hidden">
                 <style jsx global>{`
-                    .allstories-datagrid .dx-datagrid-addrow-button,
-                    .allstories-datagrid .dx-command-edit .dx-link-add {
-                    display: none !important;
-                    }
-                    .allstories-datagrid .dx-datagrid-rowsview tbody tr.dx-data-row:last-child > td {
-                    border-bottom: 0 !important;
-                    }
                 `}</style>
 
                 <DataGrid

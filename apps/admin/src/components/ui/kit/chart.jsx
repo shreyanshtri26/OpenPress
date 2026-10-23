@@ -1,4 +1,4 @@
-// DevExtreme-style <Chart>/<PieChart> markup rendered with Recharts (MIT).
+// kit-style <Chart>/<PieChart> markup rendered with Recharts (MIT).
 // Children (<Series>, <ValueAxis>, <Label>, ...) are configuration markers that render nothing.
 import { Children, isValidElement } from 'react';
 import {
@@ -64,7 +64,7 @@ function parseProps(props) {
 
 export const parseChart = (element) => parseProps(element.props);
 
-// DevExtreme tooltips return small HTML strings ("<b>x</b><br/>y"); keep the line breaks and bold, drop all other markup.
+// the grid kit tooltips return small HTML strings ("<b>x</b><br/>y"); keep the line breaks and bold, drop all other markup.
 export function tooltipLines(text) {
   return String(text ?? '')
     .split(/<br\s*\/?>/i)

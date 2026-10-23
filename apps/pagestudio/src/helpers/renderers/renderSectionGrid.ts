@@ -63,8 +63,8 @@ export function renderSectionGrid(
   if (!hasAny) return ''
 
   return `
-    <section id="${props.id ?? ''}" class="w-full bg-white lg:pt-8 px-4 lg:px-16 pb-12 ${props.className ?? ''}">
-      <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="${props.id ?? ''}" class="w-full bg-white lg:pt-8 pb-12 ${props.className ?? ''}">
+      <div class="op-container">
         <div class="flex flex-col lg:flex-row gap-8 lg:gap-0">
 
           <!-- LEFT COLUMN - Only Top Bar -->

@@ -51,6 +51,17 @@ function useRoute() {
   return route;
 }
 
+// Public URL -> the page record it previews. Every fixed page the live site serves must be listed here.
+const FIXED_PAGE_IDS: Record<string, string> = {
+  '/about': 'about',
+  '/privacy-policy': 'privacy-policy',
+  '/contact-us': 'contact-us',
+  '/media-council': 'media-council',
+  '/support-us': 'support-us',
+  '/error': 'error',
+  '/404': 'error',
+};
+
 function App() {
   const route = useRoute();
 
@@ -65,8 +76,9 @@ function App() {
     return <PublishedPage pageId={pageId} />;
   }
 
-  if (route === '/about' || route === '/about.html') {
-    return <PublishedPage pageId="about" />;
+  const fixedPage = FIXED_PAGE_IDS[route.replace(/\.html$/, '').replace(/\/$/, '')];
+  if (fixedPage) {
+    return <PublishedPage pageId={fixedPage} />;
   }
 
   if (route.startsWith('/authors/')) {
@@ -77,26 +89,6 @@ function App() {
 
   if (route === '/authors') {
     return <Authors />;
-  }
-
-  if (route === '/privacy-policy') {
-    return <PublishedPage pageId="privacy-policy" />;
-  }
-
-  if (route === '/contact-us') {
-    return <PublishedPage pageId="contact-us" />;
-  }
-
-  if (route === '/media-council') {
-    return <PublishedPage pageId="media-council" />;
-  }
-
-  if (route === '/privacy-policy') {
-    return <PublishedPage pageId="privacy-policy" />
-  }
-
-  if (route === '/media-council') {
-    return <PublishedPage pageId="media-council" />
   }
 
   if (route === '/login' || route === '/login.html') {

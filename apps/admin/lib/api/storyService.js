@@ -1,6 +1,6 @@
 /**
  * Fetch stories from the API and transform them for use in render functions.
- * Mirroring the logic from Pagebuilder's apiService.ts and storyData.ts.
+ * Mirroring the logic from Page Studio's apiService.ts and storyData.ts.
  */
 
 import apiFetch from '../../src/utils/api';

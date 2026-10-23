@@ -7,7 +7,7 @@ import PieChart, {
   Legend as PieLegend,
   Tooltip as PieTooltip,
   Animation as PieAnimation,
-} from '@/components/ui/dx/pie-chart';
+} from '@/components/ui/kit/pie-chart';
 import {
   Chart,
   Series as ChartSeries,
@@ -18,7 +18,7 @@ import {
   Label as ChartLabel,
   Animation as ChartAnimation,
   Grid as ChartGrid,
-} from '@/components/ui/dx/chart';
+} from '@/components/ui/kit/chart';
 import { AllStoriesHeader } from '../dashboard/all-stories/AllStoriesHeader';
 import { AdminMobileSidebarToggle } from '../SideBar/AdminDashboardLayout';
 import type { Survey, SurveyAIResponseSummary, SurveyQuestion } from './SurveysManager';

@@ -1,8 +1,10 @@
 import { PUBLISHED_PAGE_STYLES } from "../generated/publishedPageStyles";
 import { ComponentRegistry } from './registry/ComponentRegistry';
+import { publicCampaignsJson } from './core/campaignStatus';
 import { getClientAdScript } from './renderers/clientAdScript';
 import type { RenderContext } from './core/renderTypes';
 import { renderDynamicAd } from './renderers/renderDynamicAd';
+import { popupAdHtmlFor } from './renderers/renderPopupAd';
 import { analyticsTags } from './analyticsTags';
 
 type PuckBlock = {
@@ -116,7 +118,9 @@ export function renderMediaCouncilPageFromPuckJSON(
   ${analyticsTags()}
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#ffffff" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1d1d1f" media="(prefers-color-scheme: dark)" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -180,10 +184,11 @@ export function renderMediaCouncilPageFromPuckJSON(
   <script>
       (function() {
         // Safe stringification for campaigns
-        const campaigns = ${JSON.stringify(campaigns || []).replace(/</g, '\\u003c')};
+        const campaigns = ${publicCampaignsJson(campaigns || [])};
         ${getClientAdScript('sidebar-rectangle')}
       })();
     </script>
+${popupAdHtmlFor(campaigns, data)}
 </body>
 </html>
   `;

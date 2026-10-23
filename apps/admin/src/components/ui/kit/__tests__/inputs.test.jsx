@@ -13,7 +13,7 @@ import { Validator, RequiredRule, PatternRule } from '../validator';
 afterEach(cleanup);
 
 describe('TextBox', () => {
-  it('emits DevExtreme-style { value, previousValue } on change', () => {
+  it('emits kit-style { value, previousValue } on change', () => {
     const onValueChanged = vi.fn();
     render(<TextBox value="a" placeholder="Title" onValueChanged={onValueChanged} />);
     fireEvent.change(screen.getByPlaceholderText('Title'), { target: { value: 'ab' } });

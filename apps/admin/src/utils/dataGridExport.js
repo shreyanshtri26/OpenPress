@@ -1,7 +1,7 @@
-// Shared exporter for DevExtreme DataGrids across the app.
+// Shared exporter for the grid kit DataGrids across the app.
 // Attach as the DataGrid's `onExporting` handler and set `<Export enabled={true} formats={['xlsx', 'pdf']} allowExportSelectedData />`.
-import { exportDataGrid as exportDataGridToExcel } from '@/components/ui/dx/excel-exporter';
-import { exportDataGrid as exportDataGridToPdf } from '@/components/ui/dx/pdf-exporter';
+import { exportDataGrid as exportDataGridToExcel } from '@/components/ui/kit/excel-exporter';
+import { exportDataGrid as exportDataGridToPdf } from '@/components/ui/kit/pdf-exporter';
 import { Workbook } from 'exceljs';
 import { jsPDF } from 'jspdf';
 import { saveAs } from 'file-saver';

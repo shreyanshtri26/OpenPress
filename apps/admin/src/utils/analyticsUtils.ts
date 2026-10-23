@@ -6,35 +6,10 @@ import apiFetch from "@/utils/api";
 // Reports are served by our own API (/analytics/*, see apps/api/routes/analytics); VITE_USER_DASHBOARD_API_URL overrides that.
 export const API_BASE = (import.meta.env.VITE_USER_DASHBOARD_API_URL || `${import.meta.env.VITE_BACKEND_API ?? ''}/analytics`).replace(/\/$/, '');
 
-// ─── Shared styles (DevExtreme overrides) ────────────────────────────────────
+// ─── Shared styles (the grid kit overrides) ────────────────────────────────────
 
 export const DX_OVERRIDES = `
-  .dx-toolbar-items-container { top: 5px !important; right: 10px !important;}
-  .dx-datagrid { border: none !important; }
-  .dx-datagrid-headers { background-color: #ffffff !important; color: #111827 !important; font-weight: 600 !important; }
-  .dx-datagrid-rowsview .dx-row-alt { background-color: #ffffff !important; }
-  .dx-datagrid-borderless { border: none !important; }
-  .dx-texteditor.dx-editor-filled { background-color: transparent !important; border: none !important; }
-  .dx-texteditor.dx-state-focused:after { display: none !important; }
-  .dx-texteditor-input { font-size: 13px !important; font-weight: 600 !important; color: #1e293b !important; padding: 0 4px !important; }
-  .dx-dropdowneditor-button { background: transparent !important; }
-  .dx-texteditor-buttons-container { border: none !important; }
-  .dx-placeholder { font-weight: 400 !important; }
-  .dx-borderless { border: none !important; background: transparent !important; }
-  .dx-borderless .dx-texteditor-container { border: none !important; background: transparent !important; }
-  .dx-texteditor.dx-state-hover { border-color: transparent !important; }
-  .dx-texteditor.dx-state-focused { border-color: transparent !important; box-shadow: none !important; }
-  .dx-overlay-wrapper, .dx-popup-wrapper, .dx-dropdowneditor-overlay { z-index: 999999 !important; }
-  .dx-tooltip-wrapper .dx-overlay-content { 
-    background-color: #ffffff !important; 
-    border: 1px solid #000000 !important; 
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
-    border-radius: 6px !important;
-  }
-  .dx-tooltip-wrapper .dx-popover-arrow:after { 
-    background-color: #ffffff !important; 
-    border: 1px solid #000000 !important; 
-  }
+  .kit-borderless { border: none !important; background: transparent !important; }
 `;
 
 // ─── Color constants ──────────────────────────────────────────────────────────

@@ -426,7 +426,7 @@ const GLOBAL_CSS = `
   line-height: 1.6;
   font-weight: 400;
   color: #0f172a;
-  background-color: #f8fafc;
+  background-color: var(--op-bg, #ffffff);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -451,7 +451,7 @@ a:hover {
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: var(--op-bg, #ffffff);
   color: inherit;
 }
 
@@ -505,6 +505,7 @@ export function generateExportHTML(
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
   <title>${title}</title>
 
   <!-- Google Fonts -->
@@ -523,7 +524,7 @@ export function generateExportHTML(
     ${COMPONENT_CSS}
   </style>
 </head>
-<body style="margin: 0; padding: 0; background: #ffffff;">
+<body style="margin: 0; padding: 0;">
   <div id="root">
     ${renderedHTML}
   </div>

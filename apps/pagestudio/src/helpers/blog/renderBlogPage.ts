@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { PUBLISHED_PAGE_STYLES } from "../../generated/publishedPageStyles";
+import { publicCampaignsJson } from '../core/campaignStatus';
 import {
   renderMastheadNavbar,
   renderBlogGrid,
@@ -17,7 +18,7 @@ import {
 } from "./renderFunctions";
 import { renderSectionGrid } from '../renderers/renderSectionGrid';
 import { renderSectionBottomGrid } from '../renderers/renderSectionBottomGrid';
-import { resolveActivePopupCampaign, buildPopupAdHtml } from '../renderers/renderPopupAd';
+import { popupAdHtmlFor } from '../renderers/renderPopupAd';
 import { getClientAdScript } from '../renderers/clientAdScript';
 import { renderFooter } from "../renderers/renderFooter";
 import { renderBorder } from "../renderers/renderBorder";
@@ -489,10 +490,7 @@ export function renderPageFromPuckJSON(
    * Popup Ad — page-wide overlay, injected once here (not as a Puck block,
    * since it floats above the whole page rather than living in a zone).
    * ================================================== */
-  const { job: popupJob, campaign: popupCampaign } = resolveActivePopupCampaign(
-    options.campaigns || (pageJson as any)?.campaigns || []
-  );
-  const popupAdHtml = popupJob ? buildPopupAdHtml(popupJob, popupCampaign) : '';
+  const popupAdHtml = popupAdHtmlFor(options.campaigns || (pageJson as any)?.campaigns || [], pageJson);
 
   /**
    * Safely stringify JSON for inclusion in a <script> tag.
@@ -600,7 +598,9 @@ export function renderPageFromPuckJSON(
     ${analyticsTags()}
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <meta name="theme-color" content="#ffffff" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1d1d1f" media="(prefers-color-scheme: dark)" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -699,7 +699,7 @@ export function renderPageFromPuckJSON(
 
   <script>
     (function() {
-      const campaigns = ${JSON.stringify(options.campaigns || (pageJson as any)?.campaigns || []).replace(/</g, '\\u003c')};
+      const campaigns = ${publicCampaignsJson(options.campaigns || (pageJson as any)?.campaigns || [])};
       ${getClientAdScript('sidebar-rectangle')}
     })();
   </script>

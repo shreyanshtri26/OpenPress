@@ -1,5 +1,5 @@
 import "cropperjs/dist/cropper.css";
-import { Popup } from "@/components/ui/dx/popup";
+import { Popup } from "@/components/ui/kit/popup";
 import { useEffect, useRef, useState } from "react";
 import apiFetch from '../../utils/api';
 import CustomButton from "./CustomButton";
@@ -284,73 +284,9 @@ const FeaturedImageCropper = ({ storyId, onCropped, AssetSelectorComponent, imag
     display: none !important; /* hide desktop thumbnails on mobile */
   }
 }
-
-      	.custom-flat-popup .dx-overlay-wrapper {
-          background: rgba(255, 255, 255, 0.93) !important;
-          z-index: 0 !important;
-        }
-
-        .custom-flat-popup .dx-overlay-content {
-          border: 1px solid #171718 !important;
-          border-radius: 0 !important;
-          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3) !important;
-          background: #fff !important;
-          max-height: 97vh !important;
-          top: 50% !important;
-          left: 50% !important;
-          transform: translate(-50%, -50%) !important;
-        }
-
-        .custom-flat-popup .dx-popup-content {
-          padding: 0 !important;
-          background: #fff !important;
-        }
         /* Popup title color */
-        .custom-flat-popup .dx-popup-title {
-          color: #070505ff !important; /* black title */
-          padding-left: 45px !important;
-          padding-top: 1rem !important;
-          padding-bottom: 1rem !important;
-        }
-
-        .custom-flat-popup:has(.focal-editor-active) .dx-popup-title {
-          display: none !important;
-        }
-
-        .custom-flat-popup .dx-toolbar {
-          min-height: 63px !important;  /* reduces header height */
-        }
-
-        .custom-flat-popup
-          .dx-widget.dx-button.dx-button-mode-text.dx-button-normal.dx-button-has-icon.dx-closebutton {
-          padding-right: 27px !important;
-          box-shadow: none !important;
-          background: none !important;
-        }
 
         /* Mobile responsive styles */
-        @media (max-width: 768px) {
-          .custom-flat-popup .dx-popup-title {
-            padding-left: 1rem !important;
-            padding-right: 2.5rem !important;
-            font-size: 1rem !important;
-          }
-
-          .custom-flat-popup .dx-overlay-content {
-            margin: 0 !important;
-            max-width: 95vw !important;
-            max-height: 90vh !important;
-          }
-
-          .custom-flat-popup .dx-popup-content {
-            height: 100% !important;
-            max-height: calc(90vh - 63px) !important;
-          }
-
-          .custom-flat-popup .dx-toolbar {
-            min-height: 50px !important;
-          }
-        }
 
       `}</style>
 

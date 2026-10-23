@@ -16,14 +16,14 @@ import DataGrid, {
     Selection,
     FilterPanel,
     FilterBuilderPopup,
-} from '@/components/ui/dx/data-grid';
-import { exportDataGrid as exportDataGridXLSX } from '@/components/ui/dx/excel-exporter';
-import { exportDataGrid as exportDataGridPDF } from '@/components/ui/dx/pdf-exporter';
+} from '@/components/ui/kit/data-grid';
+import { exportDataGrid as exportDataGridXLSX } from '@/components/ui/kit/excel-exporter';
+import { exportDataGrid as exportDataGridPDF } from '@/components/ui/kit/pdf-exporter';
 import { Workbook } from 'exceljs';
 import { jsPDF } from 'jspdf';
 import { saveAs } from 'file-saver';
-import CustomStore from '@/components/ui/dx/custom-store';
-import { Chart, Series, ArgumentAxis, ValueAxis, Legend, Tooltip, Label, Animation } from '@/components/ui/dx/chart';
+import CustomStore from '@/components/ui/kit/custom-store';
+import { Chart, Series, ArgumentAxis, ValueAxis, Legend, Tooltip, Label, Animation } from '@/components/ui/kit/chart';
 import { Card, CardTitle, Badge, ProgressBar } from './AnalyticsUIComponents';
 import { BAR_COLORS, fetchAggregated } from '../../../utils/analyticsUtils';
 import env from '../../../utils/env';

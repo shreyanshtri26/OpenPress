@@ -4,7 +4,6 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { DateBox } from '@/components/ui/dx/date-box';
 import { CAMPAIGN_STATUS_LOOKUP } from './constants';
 
 const STATUS_COLORS = [
@@ -18,13 +17,6 @@ const STATUS_COLORS = [
     { bg: 'bg-pink-500',   text: 'text-white' },
     { bg: 'bg-teal-500',   text: 'text-white' },
     { bg: 'bg-orange-500', text: 'text-white' },
-];
-
-// Devextreme scheduler views — mirrors the Monier scheduler board.
-const views = [
-    { type: 'day', name: 'Day', startDayHour: 0, endDayHour: 24, cellDuration: 30, maxAppointmentsPerCell: 'unlimited' },
-    { type: 'week', name: 'Week', startDayHour: 0, endDayHour: 24, cellDuration: 30, maxAppointmentsPerCell: 'unlimited' },
-    { type: 'month', name: 'Month', maxAppointmentsPerCell: 2 },
 ];
 
 // Our view names -> FullCalendar views (the board's own toolbar drives view and date).
@@ -63,7 +55,7 @@ const STATUS_FILTER_OPTIONS = [
 // Rendered by CampaignsManager next to the Calendar/Table tab switcher (calendar tab only).
 export function CampaignStatusLegend() {
     return (
-        <div className="flex items-center gap-2 rounded-none border border-gray-300 bg-white px-3 py-1.5">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-gray-300 bg-white px-3 py-1.5">
             {STATUS_RESOURCE_DATA.map((status) => (
                 <div key={status.id} className="flex items-center gap-1.5 whitespace-nowrap text-[11px] font-semibold text-gray-600">
                     <span className={`h-2.5 w-2.5 rounded-sm ${status.swatchClass}`} />
@@ -117,6 +109,7 @@ function getEffectiveStatus(cp) {
     return status || 'draft';
 }
 
+const fmtDay = (d) => d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
 const fmtTime = (d) => d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
 
 // Keeps the same array/object reference across renders when its serialized content hasn't
@@ -130,65 +123,38 @@ function useStableValue(value, getKey) {
     return ref.current.value;
 }
 
-const schedulerBoardClass = `
-    campaign-calendar-scheduler flex h-full flex-col overflow-hidden rounded-none border border-black bg-white
-    [&_*]:box-border
-    [&_.dx-scheduler-header]:!hidden
-    [&_.dx-scheduler-date-table-cell]:!border-b [&_.dx-scheduler-date-table-cell]:!border-r [&_.dx-scheduler-date-table-cell]:!border-gray-200
-    [&_.dx-scheduler-work-space-month_.dx-scheduler-date-table-row]:!h-[150px]
-    [&_.dx-scheduler-work-space-month_.dx-scheduler-date-table-cell]:!h-[150px]
-    [&_.dx-scheduler-work-space-day_.dx-scheduler-cell-sizes-vertical]:!h-8
-    [&_.dx-scheduler-work-space-week_.dx-scheduler-cell-sizes-vertical]:!h-8
-    [&_.dx-scheduler-header-panel-cell]:!border-b [&_.dx-scheduler-header-panel-cell]:!border-r [&_.dx-scheduler-header-panel-cell]:!border-gray-200
-    [&_.dx-scheduler-header-panel-cell]:!bg-gray-50 [&_.dx-scheduler-header-panel-cell]:!text-[13px] [&_.dx-scheduler-header-panel-cell]:!font-semibold [&_.dx-scheduler-header-panel-cell]:!text-gray-700
-    [&_.dx-scheduler-header-panel-cell::after]:!border-gray-200 [&_.dx-scheduler-header-panel-cell::before]:!border-gray-200
-    [&_.dx-scheduler-header-panel-cell.dx-state-active]:!bg-gray-50 [&_.dx-scheduler-header-panel-cell.dx-state-active]:!shadow-none [&_.dx-scheduler-header-panel-cell.dx-state-active]:!outline-none
-    [&_.dx-scheduler-header-panel-cell.dx-state-focused]:!bg-gray-50 [&_.dx-scheduler-header-panel-cell.dx-state-focused]:!shadow-none [&_.dx-scheduler-header-panel-cell.dx-state-focused]:!outline-none
-    [&_.dx-scheduler-work-space-day_.dx-scheduler-time-panel-cell]:!h-8
-    [&_.dx-scheduler-work-space-week_.dx-scheduler-time-panel-cell]:!h-8
-    [&_.dx-scheduler-work-space-day_.dx-scheduler-time-panel-cell]:!border-b [&_.dx-scheduler-work-space-day_.dx-scheduler-time-panel-cell]:!border-dashed [&_.dx-scheduler-work-space-day_.dx-scheduler-time-panel-cell]:!border-gray-300
-    [&_.dx-scheduler-work-space-week_.dx-scheduler-time-panel-cell]:!border-b [&_.dx-scheduler-work-space-week_.dx-scheduler-time-panel-cell]:!border-dashed [&_.dx-scheduler-work-space-week_.dx-scheduler-time-panel-cell]:!border-gray-300
-    [&_.dx-scheduler-work-space-week_.dx-scheduler-time-panel]:!w-12 [&_.dx-scheduler-work-space-week_.dx-scheduler-time-panel]:!min-w-12
-    [&_.dx-scheduler-work-space-day_.dx-scheduler-time-panel]:!w-12 [&_.dx-scheduler-work-space-day_.dx-scheduler-time-panel]:!min-w-12
-    [&_.dx-scheduler-time-panel-cell]:!whitespace-nowrap [&_.dx-scheduler-time-panel-cell]:!border-b [&_.dx-scheduler-time-panel-cell]:!border-gray-200
-    [&_.dx-scheduler-time-panel-cell]:!pr-1 [&_.dx-scheduler-time-panel-cell]:!text-right [&_.dx-scheduler-time-panel-cell]:!text-[10px] [&_.dx-scheduler-time-panel-cell]:!font-medium [&_.dx-scheduler-time-panel-cell]:!text-gray-400
-    [&_.dx-scheduler-date-table-cell.dx-scheduler-date-table-cell-current]:!bg-gray-100
-    [&_.dx-scheduler-date-time-indicator]:!h-0.5 [&_.dx-scheduler-date-time-indicator]:!bg-black
-    [&_.dx-scheduler-date-time-indicator::before]:!h-2 [&_.dx-scheduler-date-time-indicator::before]:!w-2 [&_.dx-scheduler-date-time-indicator::before]:!rounded-full [&_.dx-scheduler-date-time-indicator::before]:!bg-black
-    [&_.dx-scheduler-header-panel]:!border-0 [&_.dx-scheduler-header-panel]:!shadow-none
-    [&_.dx-scheduler-header-row]:!border-0 [&_.dx-scheduler-header-row]:!shadow-none
-    [&_.dx-scheduler-header-panel-container]:!border-0 [&_.dx-scheduler-header-panel-container]:!shadow-none
-    [&_.dx-scheduler-header-scrollable]:!border-0 [&_.dx-scheduler-header-scrollable]:!shadow-none
-    [&_.dx-scheduler-all-day-panel]:!min-h-[42px] [&_.dx-scheduler-all-day-panel]:!bg-gray-50
-    [&_.dx-scheduler-all-day-appointment]:!h-6
-    [&_.dx-scheduler-all-day-title]:!text-[11px] [&_.dx-scheduler-all-day-title]:!font-medium [&_.dx-scheduler-all-day-title]:!text-gray-400
-    [&_.dx-scheduler-appointment]:![container-type:size] [&_.dx-scheduler-appointment]:!m-px [&_.dx-scheduler-appointment]:!rounded-none
-    [&_.dx-scheduler-appointment]:!border-0 [&_.dx-scheduler-appointment]:!border-l-[3px] [&_.dx-scheduler-appointment]:!border-l-[rgba(255,255,255,0.35)]
-    [&_.dx-scheduler-appointment]:!shadow-[0_1px_2px_rgba(0,0,0,0.08)] [&_.dx-scheduler-appointment]:!transition-shadow
-    [&_.dx-scheduler-appointment:hover]:!shadow-[0_2px_6px_rgba(0,0,0,0.16)]
-    [&_.dx-scheduler-appointment-content]:!block [&_.dx-scheduler-appointment-content]:!h-full [&_.dx-scheduler-appointment-content]:!overflow-hidden [&_.dx-scheduler-appointment-content]:!p-0
-    [&_.dx-scheduler-work-space-month_.dx-scheduler-appointment]:!h-[34px]
-    [&_.dx-scheduler-work-space-week_.dx-scheduler-appointment-collector]:!hidden [&_.dx-scheduler-work-space-week_.dx-scheduler-appointment-collector]:!invisible [&_.dx-scheduler-work-space-week_.dx-scheduler-appointment-collector]:!pointer-events-none
-    [&_.dx-scheduler-work-space-week_.dx-scheduler-appointment-collector-content]:!hidden [&_.dx-scheduler-work-space-week_.dx-scheduler-appointment-collector-content]:!invisible [&_.dx-scheduler-work-space-week_.dx-scheduler-appointment-collector-content]:!pointer-events-none
-    [&_.dx-scheduler-work-space-day_.dx-scheduler-appointment-collector]:!hidden [&_.dx-scheduler-work-space-day_.dx-scheduler-appointment-collector]:!invisible [&_.dx-scheduler-work-space-day_.dx-scheduler-appointment-collector]:!pointer-events-none
-    [&_.dx-scheduler-work-space-day_.dx-scheduler-appointment-collector-content]:!hidden [&_.dx-scheduler-work-space-day_.dx-scheduler-appointment-collector-content]:!invisible [&_.dx-scheduler-work-space-day_.dx-scheduler-appointment-collector-content]:!pointer-events-none
-    [&_.dx-scheduler-work-space-week_.dx-scheduler-appointment]:!min-w-0
-    [&_.dx-scheduler-work-space-day_.dx-scheduler-appointment]:!min-w-0
-    [&_.dx-scheduler-work-space-week_.campaign-appt-title]:!text-[11px] [&_.dx-scheduler-work-space-week_.campaign-appt-title]:!font-semibold [&_.dx-scheduler-work-space-week_.campaign-appt-title]:!leading-[1.3]
-    [&_.dx-scheduler-work-space-day_.campaign-appt-title]:!text-[11px] [&_.dx-scheduler-work-space-day_.campaign-appt-title]:!font-semibold [&_.dx-scheduler-work-space-day_.campaign-appt-title]:!leading-[1.3]
-    [&_.dx-scheduler-work-space-week_.campaign-appt-time]:!text-[10px] [&_.dx-scheduler-work-space-week_.campaign-appt-time]:!leading-[1.2]
-    [&_.dx-scheduler-work-space-day_.campaign-appt-time]:!text-[10px] [&_.dx-scheduler-work-space-day_.campaign-appt-time]:!leading-[1.2]
-    [&_.dx-scheduler-work-space-week_.campaign-appt-placement]:!text-[9px]
-    [&_.dx-scheduler-work-space-day_.campaign-appt-placement]:!text-[9px]
-    [&_.dx-scheduler-work-space-week_.campaign-appt-inner]:!gap-0 [&_.dx-scheduler-work-space-week_.campaign-appt-inner]:!px-[5px] [&_.dx-scheduler-work-space-week_.campaign-appt-inner]:!py-0.5
-    [&_.dx-scheduler-work-space-day_.campaign-appt-inner]:!gap-0 [&_.dx-scheduler-work-space-day_.campaign-appt-inner]:!px-[5px] [&_.dx-scheduler-work-space-day_.campaign-appt-inner]:!py-0.5
-    [&_.dx-scheduler-container_*]:!box-border
+const schedulerBoardClass = 'campaign-calendar-scheduler flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white';
+
+// FullCalendar theming: hairlines, soft header, status-tinted events with a solid left edge.
+const CALENDAR_CSS = `
+.campaign-calendar-scheduler .fc {
+  --fc-border-color: #e5e5ea; --fc-page-bg-color: #fff; --fc-neutral-bg-color: #f5f5f7;
+  --fc-today-bg-color: rgba(0, 113, 227, 0.06); --fc-now-indicator-color: #ff3b30;
+  --fc-event-border-color: transparent; font-size: 13px; color: #1d1d1f;
+}
+.campaign-calendar-scheduler .fc-theme-standard td, .campaign-calendar-scheduler .fc-theme-standard th, .campaign-calendar-scheduler .fc-theme-standard .fc-scrollgrid { border-color: #e5e5ea; }
+.campaign-calendar-scheduler .fc-scrollgrid { border: 0; }
+.campaign-calendar-scheduler .fc-col-header-cell { background: #fafafa; padding: 8px 0; }
+.campaign-calendar-scheduler .fc-col-header-cell-cushion { color: #6e6e73; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; }
+.campaign-calendar-scheduler .fc-daygrid-day-number { padding: 6px 8px; font-size: 12px; font-weight: 500; color: #3a3a3c; text-decoration: none; }
+.campaign-calendar-scheduler .fc-day-today .fc-daygrid-day-number { margin: 4px; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #1d1d1f; color: #fff; }
+.campaign-calendar-scheduler .fc-day-other .fc-daygrid-day-number { color: #c7c7cc; }
+.campaign-calendar-scheduler .fc-timegrid-slot { height: 32px; }
+.campaign-calendar-scheduler .fc-timegrid-slot-label-cushion { font-size: 10px; font-weight: 500; color: #8e8e93; }
+.campaign-calendar-scheduler .fc-timegrid-slot-minor { border-top-style: dashed; }
+.campaign-calendar-scheduler .fc-event { margin: 1px 2px; border: 0; border-left: 3px solid var(--fc-event-border-color, transparent); border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); cursor: pointer; transition: box-shadow 0.15s ease; }
+.campaign-calendar-scheduler .fc-event:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.14); z-index: 5; }
+.campaign-calendar-scheduler .fc-daygrid-event { min-height: 34px; }
+.campaign-calendar-scheduler .fc-daygrid-more-link { margin: 2px 4px; font-size: 11px; font-weight: 600; color: #0071e3; }
+.campaign-calendar-scheduler .fc-popover { border-radius: 12px; border: 1px solid #e5e5ea; box-shadow: 0 12px 32px rgba(0,0,0,0.14); overflow: hidden; }
+.campaign-calendar-scheduler .fc-popover-header { background: #fafafa; font-size: 12px; font-weight: 600; }
+.campaign-calendar-scheduler .fc-scroller { scrollbar-width: thin; }
 `;
 
-const controlButtonClass = 'flex h-8 cursor-pointer items-center rounded-none border border-gray-300 bg-white px-3.5 text-[13px] font-semibold text-gray-900 transition hover:border-black hover:bg-gray-50';
-const navButtonClass = 'flex cursor-pointer items-center rounded-none border-0 bg-transparent p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900';
-const searchInputClass = 'h-8 w-[180px] rounded-none border border-gray-300 bg-white py-0 pl-8 pr-3 text-[13px] text-gray-900 transition placeholder:text-gray-400 focus:border-black focus:outline-none focus:ring-2 focus:ring-gray-200 max-[1400px]:w-[150px] max-[1200px]:w-[130px] max-[1200px]:text-xs';
-const filterSelectClass = 'h-8 max-w-[170px] cursor-pointer rounded-none border border-gray-300 bg-white px-2.5 text-[13px] font-medium text-gray-900 focus:border-black focus:outline-none max-[1400px]:max-w-[140px] max-[1200px]:max-w-[110px] max-[1200px]:text-xs';
+const controlButtonClass = 'flex h-8 cursor-pointer items-center rounded-full border border-gray-200 bg-white px-3.5 text-[13px] font-semibold text-gray-900 transition hover:border-gray-400 hover:bg-gray-50';
+const navButtonClass = 'flex cursor-pointer items-center rounded-full border-0 bg-transparent p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900';
+const searchInputClass = 'h-8 w-[180px] rounded-full border border-gray-200 bg-white py-0 pl-8 pr-3 text-[13px] text-gray-900 transition placeholder:text-gray-400 focus:border-[#0071e3] focus:outline-none focus:ring-2 focus:ring-gray-200 max-[1400px]:w-[150px] max-[1200px]:w-[130px] max-[1200px]:text-xs';
+const filterSelectClass = 'h-8 max-w-[170px] cursor-pointer rounded-full border border-gray-200 bg-white px-2.5 text-[13px] font-medium text-gray-900 focus:border-[#0071e3] focus:outline-none max-[1400px]:max-w-[140px] max-[1200px]:max-w-[110px] max-[1200px]:text-xs';
 
 // Custom appointment card — mirrors Monier's scheduler appointment render.
 const renderAppointment = (model) => {
@@ -198,7 +164,7 @@ const renderAppointment = (model) => {
     const end = appt.endDate ? new Date(appt.endDate) : null;
     const timeStr = start && end ? `${fmtTime(start)} – ${fmtTime(end)}` : '';
     const placement = appt.placement || '';
-    const isRejected = appt.statusValue === 'rejected';
+    const isRejected = false; // tinted cards keep dark text for every status
 
     return (
         <div className="campaign-appt-inner flex h-full flex-col justify-between gap-px overflow-hidden px-1.5 py-0.5">
@@ -210,6 +176,46 @@ const renderAppointment = (model) => {
         </div>
     );
 };
+
+const HOVER_W = 300;
+
+// Detail card shown while the pointer is over a calendar appointment (position: fixed so the board's overflow can't clip it).
+function CampaignHoverCard({ hover }) {
+    if (!hover) return null;
+    const { appt, rect } = hover;
+    const cp = appt.campaign || {};
+    const job = (cp.jobs || []).find((j) => formatPlacementName(j?.placement) === appt.placement) || {};
+    const status = CAMPAIGN_STATUS_LOOKUP[appt.statusValue];
+    const color = STATUS_RESOURCE_COLORS[appt.statusValue] || '#9ca3af';
+    const format = (job.adFormat || job.ad_format || '').toString();
+    const left = Math.max(8, Math.min(window.innerWidth - HOVER_W - 8, rect.left + (rect.right - rect.left) / 2 - HOVER_W / 2));
+    const below = window.innerHeight - rect.bottom > 230;
+    const style = below ? { top: rect.bottom + 8, left } : { bottom: window.innerHeight - rect.top + 8, left };
+    const sameDay = fmtDay(appt.startDate) === fmtDay(appt.endDate);
+
+    return (
+        <div role="tooltip" style={{ ...style, width: HOVER_W }} className="pointer-events-none fixed z-[1000] rounded-2xl border border-gray-200 bg-white p-4 shadow-[0_12px_32px_rgba(0,0,0,0.16)]">
+            <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-gray-900">{appt.text}</p>
+                    {cp.advertiser && <p className="mt-0.5 truncate text-xs text-gray-500">{cp.advertiser}</p>}
+                </div>
+                <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-800" style={{ background: `color-mix(in srgb, ${color} 18%, #fff)` }}>
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: color }} />
+                    {status?.label || appt.statusValue}
+                </span>
+            </div>
+            <dl className="mt-3 space-y-1.5 text-xs">
+                <div className="flex justify-between gap-3"><dt className="text-gray-500">Placement</dt><dd className="font-medium text-gray-900">{appt.placement}</dd></div>
+                {format && <div className="flex justify-between gap-3"><dt className="text-gray-500">Format</dt><dd className="font-medium capitalize text-gray-900">{format}</dd></div>}
+                <div className="flex justify-between gap-3"><dt className="text-gray-500">Runs</dt><dd className="text-right font-medium text-gray-900">{sameDay ? fmtDay(appt.startDate) : `${fmtDay(appt.startDate)} – ${fmtDay(appt.endDate)}`}</dd></div>
+                <div className="flex justify-between gap-3"><dt className="text-gray-500">Time</dt><dd className="font-medium text-gray-900">{fmtTime(appt.startDate)} – {fmtTime(appt.endDate)}</dd></div>
+                {cp.priority && <div className="flex justify-between gap-3"><dt className="text-gray-500">Priority</dt><dd className="font-medium capitalize text-gray-900">{String(cp.priority).replace(/_/g, ' ')}</dd></div>}
+            </dl>
+            <p className="mt-3 border-t border-gray-100 pt-2 text-[11px] text-gray-400">Click to open campaign</p>
+        </div>
+    );
+}
 
 export default function CampaignCalendar({ campaigns = [], placementNames = [], onCampaignClick, loading = false, onCreateCampaign, onRefresh }) {
     const [currentDate, setCurrentDate] = useState(getStartOfToday);
@@ -389,13 +395,21 @@ export default function CampaignCalendar({ campaigns = [], placementNames = [], 
         return list;
     }, [calendarEvents, selectedPlacements, statusFilter, searchQuery]);
 
+    // Hover card: which appointment and where it is, set by FullCalendar's eventMouseEnter/Leave.
+    const [hover, setHover] = useState(null);
+    const showHover = useCallback((info) => {
+        const r = info.el.getBoundingClientRect();
+        setHover({ appt: info.event.extendedProps.appt, rect: { top: r.top, bottom: r.bottom, left: r.left, right: r.right } });
+    }, []);
+    const hideHover = useCallback(() => setHover(null), []);
+
     const calendarRef = useRef(null);
     const calendarFcEvents = useMemo(() => dataSource.map((ev) => ({
         id: String(ev.id),
         title: ev.text,
         start: ev.startDate,
         end: ev.endDate,
-        backgroundColor: STATUS_RESOURCE_COLORS[ev.statusValue] || '#9ca3af',
+        backgroundColor: `color-mix(in srgb, ${STATUS_RESOURCE_COLORS[ev.statusValue] || '#9ca3af'} 16%, #ffffff)`,
         borderColor: STATUS_RESOURCE_COLORS[ev.statusValue] || '#9ca3af',
         extendedProps: { appt: ev },
     })), [dataSource]);
@@ -406,7 +420,15 @@ export default function CampaignCalendar({ campaigns = [], placementNames = [], 
     }, [currentView, currentDate]);
 
     const displayDate = useMemo(() => new Date(currentDate), [currentDate]);
-    const handleDateChange = useCallback((e) => setCurrentDate(new Date(e.value)), []);
+    // Native date input: value is a local YYYY-MM-DD, never a UTC-shifted ISO string.
+    const dateInputValue = useMemo(() => {
+        const d = displayDate;
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }, [displayDate]);
+    const handleDateChange = useCallback((e) => {
+        const [y, m, d] = e.target.value.split('-').map(Number);
+        if (y && m && d) setCurrentDate(new Date(y, m - 1, d));
+    }, []);
 
     const navigateDate = useCallback((dir) => {
         setCurrentDate((prevDate) => {
@@ -446,15 +468,16 @@ export default function CampaignCalendar({ campaigns = [], placementNames = [], 
 
     return (
         <div className="flex flex-col gap-4 overflow-y-auto pb-8">
+            <style>{CALENDAR_CSS}</style>
             <div className="h-[calc(100vh-300px)] min-h-[700px]">
                 <div className={schedulerBoardClass}>
                     <div className="flex h-[52px] shrink-0 items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 max-[1200px]:gap-2 max-[1200px]:px-3 max-[1024px]:h-auto max-[1024px]:flex-wrap max-[1024px]:px-3 max-[1024px]:py-2">
                         <div className="flex flex-nowrap items-center gap-3 max-[1400px]:gap-2 max-[1024px]:flex-1 max-[1024px]:flex-wrap">
-                            <div className="flex h-8 items-stretch rounded-none border border-gray-300 bg-white p-0.5">
+                            <div className="flex h-8 items-stretch rounded-full border border-gray-200 bg-white p-0.5">
                                 {['day', 'week', 'month'].map((v) => (
                                     <button
                                         key={v}
-                                        className={`flex cursor-pointer items-center whitespace-nowrap rounded-none border-0 px-3.5 text-[13px] font-semibold transition max-[1400px]:px-2.5 max-[1400px]:py-1.5 max-[1200px]:px-2 max-[1200px]:text-xs ${currentView === v ? 'bg-black text-white' : 'bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'}`}
+                                        className={`flex cursor-pointer items-center whitespace-nowrap rounded-full border-0 px-3.5 text-[13px] font-semibold transition max-[1400px]:px-2.5 max-[1400px]:py-1.5 max-[1200px]:px-2 max-[1200px]:text-xs ${currentView === v ? 'bg-[#1d1d1f] text-white' : 'bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900'}`}
                                         onClick={() => setCurrentView(v)}
                                     >
                                         {v.charAt(0).toUpperCase() + v.slice(1)}
@@ -478,11 +501,15 @@ export default function CampaignCalendar({ campaigns = [], placementNames = [], 
                                     ))}
                                 </select>
                             </div>
-                            <div className="flex h-8 items-center gap-1 rounded-none border border-gray-300 bg-white p-0.5">
+                            <div className="flex h-8 items-center gap-0.5 rounded-full border border-gray-200 bg-white p-0.5">
                                 <button className={navButtonClass} onClick={() => navigateDate(-1)}><ChevronLeft size={18} /></button>
-                                <div className="whitespace-nowrap text-sm font-semibold text-gray-900 [&_.dx-texteditor-input]:!p-0 [&_.dx-texteditor-input]:!text-sm [&_.dx-texteditor-input]:!font-semibold [&_.dx-texteditor-input]:!text-gray-900 [&_.dx-texteditor.dx-editor-underlined]:!border-0">
-                                    <DateBox value={displayDate} onValueChanged={handleDateChange} type="date" displayFormat="MMM dd, yyyy" stylingMode="underlined" width={140} />
-                                </div>
+                                <input
+                                    type="date"
+                                    aria-label="Go to date"
+                                    value={dateInputValue}
+                                    onChange={handleDateChange}
+                                    className="!m-0 !h-7 !w-[132px] !cursor-pointer !rounded-full !border-0 !bg-transparent !px-2 !py-0 text-center text-[13px] font-semibold text-gray-900 hover:!bg-gray-100 focus:!bg-gray-100 focus:!outline-none focus:!ring-0"
+                                />
                                 <button className={navButtonClass} onClick={() => navigateDate(1)}><ChevronRight size={18} /></button>
                             </div>
                         </div>
@@ -523,7 +550,7 @@ export default function CampaignCalendar({ campaigns = [], placementNames = [], 
                                         placeholder="Search placements..."
                                         value={placementSearchQuery}
                                         onChange={(e) => setPlacementSearchQuery(e.target.value)}
-                                        className="h-7 w-full rounded-none border border-gray-300 bg-white py-0 pl-7 pr-2 text-xs text-gray-900 transition placeholder:text-xs placeholder:text-gray-400 focus:border-black focus:outline-none"
+                                        className="h-7 w-full rounded-xl border border-gray-300 bg-white py-0 pl-7 pr-2 text-xs text-gray-900 transition placeholder:text-xs placeholder:text-gray-400 focus:border-[#0071e3] focus:outline-none"
                                     />
                                 </div>
                             </div>
@@ -573,8 +600,12 @@ export default function CampaignCalendar({ campaigns = [], placementNames = [], 
                                 eventContent={(arg) => renderAppointment(arg.event.extendedProps.appt)}
                                 eventClick={(info) => { info.jsEvent.preventDefault(); handleAppointmentClick({ appointmentData: info.event.extendedProps.appt }); }}
                                 dateClick={(info) => { if (info.jsEvent.detail >= 2) handleAppointmentFormOpening({}); }}
+                                eventMouseEnter={showHover}
+                                eventMouseLeave={hideHover}
                                 moreLinkContent={(arg) => appointmentCollectorRender({ appointmentCount: arg.num })}
                             />
+
+                            <CampaignHoverCard hover={hover} />
 
                             {showInitialLoader && (
                                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70">
@@ -588,21 +619,21 @@ export default function CampaignCalendar({ campaigns = [], placementNames = [], 
 
             {/* Placement status summary */}
             {/*
-            <div className="border border-gray-200 rounded-none bg-white p-4">
+            <div className="border border-gray-200 rounded-xl bg-white p-4">
                 <div className="flex items-center justify-between mb-3">
                     <h3 className="text-sm font-semibold text-gray-900">Placement Status</h3>
                     <span className="text-xs text-gray-500">Total: {allPlacementNames.length}</span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="border border-gray-200 bg-gray-50 rounded-none p-3">
+                    <div className="border border-gray-200 bg-gray-50 rounded-xl p-3">
                         <div className="flex items-center justify-between mb-2">
                             <p className="text-xs font-semibold text-gray-900 uppercase tracking-wide">Running</p>
                             <span className="text-xs font-semibold text-gray-700">{activePlacementNames.length}</span>
                         </div>
                         <div className="flex flex-wrap gap-1.5">
                             {activePlacementNames.length > 0 ? activePlacementNames.map((name) => (
-                                <span key={`active-${name}`} className="text-[11px] font-medium text-white bg-black border border-black px-2 py-1 rounded-none">
+                                <span key={`active-${name}`} className="text-[11px] font-medium text-white bg-[#1d1d1f] px-2.5 py-1 rounded-full">
                                     {name}
                                 </span>
                             )) : (
@@ -611,14 +642,14 @@ export default function CampaignCalendar({ campaigns = [], placementNames = [], 
                         </div>
                     </div>
 
-                    <div className="border border-gray-200 bg-gray-50 rounded-none p-3">
+                    <div className="border border-gray-200 bg-gray-50 rounded-xl p-3">
                         <div className="flex items-center justify-between mb-2">
                             <p className="text-xs font-semibold text-gray-900 uppercase tracking-wide">Not Running</p>
                             <span className="text-xs font-semibold text-gray-700">{inactiveOrMissingPlacementNames.length}</span>
                         </div>
                         <div className="flex flex-wrap gap-1.5">
                             {inactiveOrMissingPlacementNames.length > 0 ? inactiveOrMissingPlacementNames.map((name) => (
-                                <span key={`inactive-${name}`} className="text-[11px] font-medium text-black bg-white border border-gray-200 px-2 py-1 rounded-none">
+                                <span key={`inactive-${name}`} className="text-[11px] font-medium text-gray-700 bg-white border border-gray-200 px-2.5 py-1 rounded-full">
                                     {name}
                                 </span>
                             )) : (

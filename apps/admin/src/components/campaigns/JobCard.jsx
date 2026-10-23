@@ -1,6 +1,6 @@
-import SelectBox from '@/components/ui/dx/select-box';
-import { TextBox } from '@/components/ui/dx/text-box';
-import { PatternRule, Validator } from '@/components/ui/dx/validator';
+import SelectBox from '@/components/ui/kit/select-box';
+import { TextBox } from '@/components/ui/kit/text-box';
+import { PatternRule, Validator } from '@/components/ui/kit/validator';
 import { ChevronDown, ChevronUp, Code, Eye, Images, Loader2, Monitor, Plus, Smartphone, Star, Trash2, Upload, X } from 'lucide-react';
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -610,7 +610,7 @@ export default function JobCard({ job, onUpdate, onPlacementChange, onDelete, on
                                 used, which is how every existing campaign behaves.
                                 Uses the same editor and URL pattern as the campaign's
                                 Landing Page URL in Basic Info, minus the RequiredRule
-                                so it stays optional. DevExtreme skips a PatternRule on
+                                so it stays optional. the grid kit skips a PatternRule on
                                 an empty value, so blank passes validation. */}
                             <div className="mt-4">
                                 <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">

@@ -43,7 +43,7 @@ export function renderFooter(props: FooterProps): string {
     return `
         <div class="mt-10 sm:mt-14 relative clear-both">
             <footer ${id ? `id="${id}"` : ""} class="op-footer w-full bg-[#f8f9fa] text-[#6e6e73] border-t border-[#e2e2e7]">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
+                <div class="op-container py-5 sm:py-6">
                     <!-- Top Compact Row: Logo, Mission, Social -->
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-6 pb-4 border-b border-[#e5e5ea]">
                         <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 sm:gap-4 text-center sm:text-left">

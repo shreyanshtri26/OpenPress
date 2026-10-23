@@ -16,7 +16,7 @@ import DataGrid, {
     Selection,
     FilterPanel,
     FilterBuilderPopup,
-} from '@/components/ui/dx/data-grid';
+} from '@/components/ui/kit/data-grid';
 import { ROLE_OPTIONS, STATUS_OPTIONS } from "./constants";
 import { UserContext } from "../../context/UserContext";
 import toast from "react-hot-toast";

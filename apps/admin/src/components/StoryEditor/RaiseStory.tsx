@@ -19,7 +19,7 @@ import ReviewDrawer from '../../components/common/DAM/Drawer/ReviewDrawer';
 import PublishDrawer from '../../components/common/DAM/Drawer/PublishDrawer';
 import FeaturedImageCropper from "../../components/common/FeaturedImageCropper";
 import AssetModal from "../../components/common/AssetModal";
-import { Popup } from '@/components/ui/dx/popup';
+import { Popup } from '@/components/ui/kit/popup';
 import { checkStoryPermission } from '../../utils/storyPermissions';
 import env from '@/utils/env';
 type InlineImageMeta = { url: string; caption?: string };
@@ -443,7 +443,7 @@ export default function RaiseStory({
   }
 
 
-  // Custom dropdown arrow template for DevExtreme SelectBox
+  // Custom dropdown arrow template for the grid kit SelectBox
   const accordionArrowTemplate = (_?: unknown, buttonElement?: HTMLElement | null) => {
     if (!buttonElement) {
       return;
@@ -992,7 +992,7 @@ export default function RaiseStory({
         const isTitleFocused = activeElement === titleRef.current;
 
         // Check if focus is inside the Publish Drawer or any other input/textarea
-        const isInDrawer = activeElement?.closest('.dx-drawer-content, .dx-popup-content');
+        const isInDrawer = activeElement?.closest('.kit-popup-overlay');
         const isInInput = activeElement instanceof HTMLInputElement ||
           activeElement instanceof HTMLTextAreaElement ||
           (activeElement as HTMLElement)?.isContentEditable;
@@ -2229,35 +2229,6 @@ export default function RaiseStory({
         }
 
         .hide-plus-button {
-          display: none !important;
-        }
-
-        .custom-flat-popup .dx-overlay-content {
-          border: 1px solid #171718 !important;
-          border-radius: 0 !important;
-          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3) !important;
-          background: #fff !important;
-          max-height: 97vh !important;
-          top: 50% !important;
-          left: 50% !important;
-          transform: translate(-50%, -50%) !important;
-        }
-
-        .custom-flat-popup .dx-popup-content {
-          padding: 0 !important;
-          background: #fff !important;
-          overflow: hidden !important;
-        }
-
-        .custom-flat-popup .dx-popup-title {
-          color: #070505 !important;
-          padding-left: 1.5rem !important;
-          padding-top: 1rem !important;
-          padding-bottom: 1rem !important;
-          border-bottom: 1px solid #e5e7eb !important;
-        }
-
-        .custom-flat-popup:has(.focal-editor-active) .dx-popup-title {
           display: none !important;
         }
 

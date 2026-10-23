@@ -41,8 +41,8 @@ export function renderMultimediaGrid(
   if (!hasAny) return ''
 
   return `
-<section id="${base}" class="w-full bg-white px-0 py-8 lg:pt-8 lg:px-16 lg:pb-12 relative ${className}">
-  <div class="mx-auto w-full max-w-7xl px-4 lg:px-8 relative pb-4">
+<section id="${base}" class="w-full bg-white py-8 lg:pt-8 lg:pb-12 relative ${className}">
+  <div class="op-container relative pb-4">
     <div class="absolute inset-0 pointer-events-none">
       ${hasLeft && hasRight ? `<div class="absolute left-1/2 hidden lg:block" style="top:0;bottom:18px;border-left:1px solid #d2d2d7"></div>` : ''}
       <div class="hidden lg:block mx-8 absolute left-0 right-0 -bottom-5" style="border-bottom:1px solid gray"></div>

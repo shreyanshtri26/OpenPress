@@ -2,9 +2,9 @@
 //
 // `npm run build` builds this entry a second time, as a single self-contained
 // ESM file at `dist/publish-renderer.js`, with this environment's VITE_* values
-// baked in exactly as they are baked into the app itself. The PageBuilder
+// baked in exactly as they are baked into the app itself. The Page Studio
 // deploy uploads it alongside the app, and the backend republish-all worker
-// imports it at runtime from the PageBuilder origin.
+// imports it at runtime from the Page Studio origin.
 //
 // Everything the worker needs to turn stored Puck JSON into the same HTML the
 // editor would produce is exposed here, so the worker itself contains no
@@ -38,7 +38,7 @@ import { getPublishableData } from './publishedSnapshot';
 /**
  * Bumped only on a breaking change to this module's exports. The worker refuses
  * a bundle whose version it does not recognise, so a backend that is older than
- * the deployed PageBuilder fails loudly instead of rendering half a page.
+ * the deployed Page Studio fails loudly instead of rendering half a page.
  */
 export const RENDERER_API_VERSION = 2;
 

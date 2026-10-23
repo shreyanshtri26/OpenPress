@@ -50,7 +50,7 @@ export function renderAuthorsGrid(props: {
   `).join('')
 
     return `
-    <div class="w-full relative py-16 px-4 sm:px-6 lg:px-8">
+    <div class="op-container relative py-16">
         <!-- Background Layer - Decreased height -->
         <div class="absolute inset-0 h-[361px] bg-graph-paper -z-10"></div>
         <div class="max-w-5xl mx-auto">

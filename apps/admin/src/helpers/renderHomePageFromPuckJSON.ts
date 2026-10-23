@@ -72,7 +72,7 @@ export function renderHomePageFromPuckJSON(
 
     let renderer = ComponentRegistry[type];
 
-    // Fallback for dynamically generated Ad components from PageBuilder
+    // Fallback for dynamically generated Ad components from Page Studio
     if (!renderer && type.startsWith('Ad_')) {
       if (type.toLowerCase().includes('spotlight')) {
         renderer = (p: any, c: any) => renderSpotlightAd(

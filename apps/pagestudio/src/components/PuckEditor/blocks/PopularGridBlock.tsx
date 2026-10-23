@@ -59,8 +59,8 @@ export function PopularGridBlock({
 
   return (
     <AutoCardAssignmentsContext.Provider value={isAutomatic ? { storyIdsByCardId } : null}>
-    <section id={id} className={`w-full bg-white lg:pt-6 px-0 lg:px-16 pb-10 relative ${className}`}>
-      <div className="relative mx-auto w-full max-w-7xl px-4 lg:px-8 pb-4">
+    <section id={id} className={`w-full bg-white lg:pt-6 pb-10 relative ${className}`}>
+      <div className="relative op-container pb-4">
 
 
         {/* ✅ Horizontal line (same as HeroGrid) */}

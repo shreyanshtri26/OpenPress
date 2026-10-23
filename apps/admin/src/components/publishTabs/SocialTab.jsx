@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { TextBox } from "@/components/ui/dx/text-box";
-import { TextArea } from "@/components/ui/dx/text-area";
+import { TextBox } from "@/components/ui/kit/text-box";
+import { TextArea } from "@/components/ui/kit/text-area";
 import toast from 'react-hot-toast';
 
 const SocialTab = ({ storyData, hasEditPermission, storyDetails, onFieldChange, description }) => {
@@ -101,13 +101,6 @@ const SocialTab = ({ storyData, hasEditPermission, storyDetails, onFieldChange, 
 
             {/* Inline CSS for styling */}
             <style>{`
-                .dx-placeholder{
-                    color: #9ca3af !important; /* gray-400 */
-                }
-                .dx-texteditor.dx-editor-outlined{
-                    border-radius:0px;
-                    border: 1px solid #000000 !important;
-                }
                 
             `}</style>
         </div>

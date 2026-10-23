@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
-import TextBox from "@/components/ui/dx/text-box";
-import TextArea from "@/components/ui/dx/text-area";
-import SelectBox from "@/components/ui/dx/select-box";
-import TagBox from "@/components/ui/dx/tag-box";
+import TextBox from "@/components/ui/kit/text-box";
+import TextArea from "@/components/ui/kit/text-area";
+import SelectBox from "@/components/ui/kit/select-box";
+import TagBox from "@/components/ui/kit/tag-box";
 import env from '@/utils/env';
 import apiFetch from '../../../utils/api';
 import { buildImagePayload } from "./utils/imagePayload";
@@ -397,37 +397,8 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
             padding-left: 4px;
           }
           
-          .asset-tab-container .dx-textbox,
-          .asset-tab-container .dx-textarea,
-          .asset-tab-container .dx-selectbox,
-          .asset-tab-container .dx-tagbox {
-            border: 1px solid #000000 !important;
-            border-radius: 0px !important;
-          }
-          
-          .asset-tab-container .dx-texteditor-container {
-            border: none !important;
-            border-bottom: none !important;
-          }
-          
-          .asset-tab-container .dx-texteditor-input-container {
-            border: none !important;
-          }
-          
-          .asset-tab-container .dx-placeholder::before {
-            color: #999999;
-          }
-          
           .asset-tab-container .form-field + .form-field {
             border-top: none;
-          }
-          
-          .asset-tab-container .dx-empty-message {
-            display: none !important;
-          }
-          
-          .asset-tab-container .dx-list-empty-message {
-            display: none !important;
           }
           
           .asset-tab-container hr,

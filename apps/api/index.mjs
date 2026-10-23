@@ -40,30 +40,30 @@ import { handler as analyticsReport } from './routes/analytics/report.mjs';
 // AI (Gemini)
 import { normalStream, streamResponse } from './routes/ai/generate.mjs';
 
-// Page Builder`
-import { handler as PagebuilderAutosave } from './routes/pagebuilder/autosaveStory.mjs';
-import { handler as GetPageHydrated } from './routes/pagebuilder/getPage.mjs';
-import { handler as saveHtml } from './routes/pagebuilder/saveHtml.mjs';
-import { handler as saveAboutHtml } from './routes/pagebuilder/saveAboutHtml.mjs';
-import { handler as saveSupportUsHtml } from './routes/pagebuilder/saveSupportUsHtml.mjs';
+// Page Studio`
+import { handler as PageStudioAutosave } from './routes/pagestudio/autosaveStory.mjs';
+import { handler as GetPageHydrated } from './routes/pagestudio/getPage.mjs';
+import { handler as saveHtml } from './routes/pagestudio/saveHtml.mjs';
+import { handler as saveAboutHtml } from './routes/pagestudio/saveAboutHtml.mjs';
+import { handler as saveSupportUsHtml } from './routes/pagestudio/saveSupportUsHtml.mjs';
 import { handler as youpiWebhook } from './routes/youpi/webhook.mjs';
-import { handler as savePrivacyPolicyHtml } from './routes/pagebuilder/savePrivacyPolicyHtml.mjs';
-import { handler as saveMediaCouncilHtml } from './routes/pagebuilder/saveMediaCouncilHtml.mjs';
-import { handler as saveContactUsHtml } from './routes/pagebuilder/saveContactUsHtml.mjs';
-import { handler as saveLoginHtml } from './routes/pagebuilder/saveLoginHtml.mjs';
-import { handler as saveHomeHtml } from './routes/pagebuilder/saveHomeHtml.mjs';
-import { handler as saveErrorHtml } from './routes/pagebuilder/saveErrorHtml.mjs';
-import { handler as saveSectionHtml } from './routes/pagebuilder/saveSectionHtml.mjs';
-import { handler as saveAuthorsHtml } from './routes/pagebuilder/saveAuthorsHtml.mjs';
-import { handler as saveAuthorHtml } from './routes/pagebuilder/saveAuthorHtml.mjs';
-import { handler as saveSurveyHtml } from './routes/pagebuilder/saveSurveyHtml.mjs';
-import { handler as saveSiteMap } from './routes/pagebuilder/saveSiteMap.mjs';
-import { handler as saveNewsSiteMap } from './routes/pagebuilder/saveNewsSiteMap.mjs';
-import { handler as savePwaFiles } from './routes/pagebuilder/savePwaFiles.mjs';
-import { handler as forceUpdatePwaIcons } from './routes/pagebuilder/forceUpdatePwaIcons.mjs';
-import { handler as republishAll } from './routes/pagebuilder/republishAll.mjs';
-import { handler as republishAllStatus } from './routes/pagebuilder/republishAllStatus.mjs';
-import { runRepublishAllWorker } from './routes/pagebuilder/republishAllWorker.mjs';
+import { handler as savePrivacyPolicyHtml } from './routes/pagestudio/savePrivacyPolicyHtml.mjs';
+import { handler as saveMediaCouncilHtml } from './routes/pagestudio/saveMediaCouncilHtml.mjs';
+import { handler as saveContactUsHtml } from './routes/pagestudio/saveContactUsHtml.mjs';
+import { handler as saveLoginHtml } from './routes/pagestudio/saveLoginHtml.mjs';
+import { handler as saveHomeHtml } from './routes/pagestudio/saveHomeHtml.mjs';
+import { handler as saveErrorHtml } from './routes/pagestudio/saveErrorHtml.mjs';
+import { handler as saveSectionHtml } from './routes/pagestudio/saveSectionHtml.mjs';
+import { handler as saveAuthorsHtml } from './routes/pagestudio/saveAuthorsHtml.mjs';
+import { handler as saveAuthorHtml } from './routes/pagestudio/saveAuthorHtml.mjs';
+import { handler as saveSurveyHtml } from './routes/pagestudio/saveSurveyHtml.mjs';
+import { handler as saveSiteMap } from './routes/pagestudio/saveSiteMap.mjs';
+import { handler as saveNewsSiteMap } from './routes/pagestudio/saveNewsSiteMap.mjs';
+import { handler as savePwaFiles } from './routes/pagestudio/savePwaFiles.mjs';
+import { handler as forceUpdatePwaIcons } from './routes/pagestudio/forceUpdatePwaIcons.mjs';
+import { handler as republishAll } from './routes/pagestudio/republishAll.mjs';
+import { handler as republishAllStatus } from './routes/pagestudio/republishAllStatus.mjs';
+import { runRepublishAllWorker } from './routes/pagestudio/republishAllWorker.mjs';
 
 //Users
 import { handler as login } from './routes/users/login.mjs';
@@ -261,9 +261,7 @@ export const handler = async (event, context) => {
   // JWT AUTH LOGIC
   try {
     const publicRoutes = [
-      '/pagestudio/forceUpdatePwaIcons', '/pagebuilder/forceUpdatePwaIcons',
-      '/api/pagestudio/forceUpdatePwaIcons', '/api/pagebuilder/forceUpdatePwaIcons',
-      '/login', '/forgotPassword', '/resetPassword', '/contact/submit',
+      '/pagestudio/forceUpdatePwaIcons', '/api/pagestudio/forceUpdatePwaIcons', '/login', '/forgotPassword', '/resetPassword', '/contact/submit',
       '/story/fetchReadyToPublish', '/campaigns/trackEvent', '/analytics/collect', '/youpi/webhook',
       '/story/scrapedStories', '/api/scrapedStories', '/api/scraped-stories', '/api/articles/fetchScrapedStories',
     ];
@@ -451,29 +449,29 @@ export const handler = async (event, context) => {
     else if (path === '/contact/submit' && method === 'POST') response = await submitContactForm(event);
     else if (path === '/contact/inquiries' && method === 'GET') response = await getInquiries(event);
 
-    // Page Studio & Page Builder routes (supports /pagestudio/*, /pagebuilder/*, and /api/* prefixes)
-    else if ((path === '/pagestudio/autosave' || path === '/pagebuilder/autosave' || path === '/api/pagestudio/autosave' || path === '/api/pagebuilder/autosave') && method === 'PUT') response = await PagebuilderAutosave(event);
-    else if ((path === '/pagestudio/page' || path === '/pagebuilder/page' || path === '/api/pagestudio/page' || path === '/api/pagebuilder/page') && method === 'GET') response = await GetPageHydrated(event);
-    else if ((path === '/pagestudio/saveHtml' || path === '/pagebuilder/saveHtml' || path === '/api/pagestudio/saveHtml' || path === '/api/pagebuilder/saveHtml') && method === 'POST') response = await saveHtml(event);
-    else if ((path === '/pagestudio/saveHomeHtml' || path === '/pagebuilder/saveHomeHtml' || path === '/api/pagestudio/saveHomeHtml' || path === '/api/pagebuilder/saveHomeHtml') && method === 'POST') response = await saveHomeHtml(event);
-    else if ((path === '/pagestudio/saveErrorHtml' || path === '/pagebuilder/saveErrorHtml' || path === '/api/pagestudio/saveErrorHtml' || path === '/api/pagebuilder/saveErrorHtml') && method === 'POST') response = await saveErrorHtml(event);
-    else if ((path === '/pagestudio/saveAboutHtml' || path === '/pagebuilder/saveAboutHtml' || path === '/api/pagestudio/saveAboutHtml' || path === '/api/pagebuilder/saveAboutHtml') && method === 'POST') response = await saveAboutHtml(event);
-    else if ((path === '/pagestudio/saveSupportUsHtml' || path === '/pagebuilder/saveSupportUsHtml' || path === '/api/pagestudio/saveSupportUsHtml' || path === '/api/pagebuilder/saveSupportUsHtml') && method === 'POST') response = await saveSupportUsHtml(event);
+    // Page Studio routes (/pagestudio/* and /api/pagestudio/*)
+    else if ((path === '/pagestudio/autosave' || path === '/api/pagestudio/autosave') && method === 'PUT') response = await PageStudioAutosave(event);
+    else if ((path === '/pagestudio/page' || path === '/api/pagestudio/page') && method === 'GET') response = await GetPageHydrated(event);
+    else if ((path === '/pagestudio/saveHtml' || path === '/api/pagestudio/saveHtml') && method === 'POST') response = await saveHtml(event);
+    else if ((path === '/pagestudio/saveHomeHtml' || path === '/api/pagestudio/saveHomeHtml') && method === 'POST') response = await saveHomeHtml(event);
+    else if ((path === '/pagestudio/saveErrorHtml' || path === '/api/pagestudio/saveErrorHtml') && method === 'POST') response = await saveErrorHtml(event);
+    else if ((path === '/pagestudio/saveAboutHtml' || path === '/api/pagestudio/saveAboutHtml') && method === 'POST') response = await saveAboutHtml(event);
+    else if ((path === '/pagestudio/saveSupportUsHtml' || path === '/api/pagestudio/saveSupportUsHtml') && method === 'POST') response = await saveSupportUsHtml(event);
     else if (path === '/youpi/webhook' && method === 'POST') response = await youpiWebhook(event);
-    else if ((path === '/pagestudio/savePrivacyPolicyHtml' || path === '/pagebuilder/savePrivacyPolicyHtml' || path === '/api/pagestudio/savePrivacyPolicyHtml' || path === '/api/pagebuilder/savePrivacyPolicyHtml') && method === 'POST') response = await savePrivacyPolicyHtml(event);
-    else if ((path === '/pagestudio/saveMediaCouncilHtml' || path === '/pagebuilder/saveMediaCouncilHtml' || path === '/api/pagestudio/saveMediaCouncilHtml' || path === '/api/pagebuilder/saveMediaCouncilHtml') && method === 'POST') response = await saveMediaCouncilHtml(event);
-    else if ((path === '/pagestudio/saveContactUsHtml' || path === '/pagebuilder/saveContactUsHtml' || path === '/api/pagestudio/saveContactUsHtml' || path === '/api/pagebuilder/saveContactUsHtml') && method === 'POST') response = await saveContactUsHtml(event);
-    else if ((path === '/pagestudio/saveLoginHtml' || path === '/pagebuilder/saveLoginHtml' || path === '/api/pagestudio/saveLoginHtml' || path === '/api/pagebuilder/saveLoginHtml') && method === 'POST') response = await saveLoginHtml(event);
-    else if ((path === '/pagestudio/saveSectionHtml' || path === '/pagebuilder/saveSectionHtml' || path === '/api/pagestudio/saveSectionHtml' || path === '/api/pagebuilder/saveSectionHtml') && method === 'POST') response = await saveSectionHtml(event);
-    else if ((path === '/pagestudio/saveAuthorsHtml' || path === '/pagebuilder/saveAuthorsHtml' || path === '/api/pagestudio/saveAuthorsHtml' || path === '/api/pagebuilder/saveAuthorsHtml') && method === 'POST') response = await saveAuthorsHtml(event);
-    else if ((path === '/pagestudio/saveAuthorHtml' || path === '/pagebuilder/saveAuthorHtml' || path === '/api/pagestudio/saveAuthorHtml' || path === '/api/pagebuilder/saveAuthorHtml') && method === 'POST') response = await saveAuthorHtml(event);
-    else if ((path === '/pagestudio/saveSurveyHtml' || path === '/pagebuilder/saveSurveyHtml' || path === '/api/pagestudio/saveSurveyHtml' || path === '/api/pagebuilder/saveSurveyHtml') && method === 'POST') response = await saveSurveyHtml(event);
-    else if ((path === '/pagestudio/saveSiteMap' || path === '/pagebuilder/saveSiteMap' || path === '/api/pagestudio/saveSiteMap' || path === '/api/pagebuilder/saveSiteMap') && method === 'POST') response = await saveSiteMap(event);
-    else if ((path === '/pagestudio/saveNewsSiteMap' || path === '/pagebuilder/saveNewsSiteMap' || path === '/api/pagestudio/saveNewsSiteMap' || path === '/api/pagebuilder/saveNewsSiteMap') && method === 'POST') response = await saveNewsSiteMap(event);
-    else if ((path === '/pagestudio/savePwaFiles' || path === '/pagebuilder/savePwaFiles' || path === '/api/pagestudio/savePwaFiles' || path === '/api/pagebuilder/savePwaFiles') && method === 'POST') response = await savePwaFiles(event);
-    else if ((path === '/pagestudio/forceUpdatePwaIcons' || path === '/pagebuilder/forceUpdatePwaIcons' || path === '/api/pagestudio/forceUpdatePwaIcons' || path === '/api/pagebuilder/forceUpdatePwaIcons') && method === 'GET') response = await forceUpdatePwaIcons(event);
-    else if ((path === '/pagestudio/republishAll' || path === '/pagebuilder/republishAll' || path === '/api/pagestudio/republishAll' || path === '/api/pagebuilder/republishAll') && method === 'POST') response = await republishAll(event, context);
-    else if ((path === '/pagestudio/republishAll/status' || path === '/pagebuilder/republishAll/status' || path === '/api/pagestudio/republishAll/status' || path === '/api/pagebuilder/republishAll/status') && method === 'GET') response = await republishAllStatus(event);
+    else if ((path === '/pagestudio/savePrivacyPolicyHtml' || path === '/api/pagestudio/savePrivacyPolicyHtml') && method === 'POST') response = await savePrivacyPolicyHtml(event);
+    else if ((path === '/pagestudio/saveMediaCouncilHtml' || path === '/api/pagestudio/saveMediaCouncilHtml') && method === 'POST') response = await saveMediaCouncilHtml(event);
+    else if ((path === '/pagestudio/saveContactUsHtml' || path === '/api/pagestudio/saveContactUsHtml') && method === 'POST') response = await saveContactUsHtml(event);
+    else if ((path === '/pagestudio/saveLoginHtml' || path === '/api/pagestudio/saveLoginHtml') && method === 'POST') response = await saveLoginHtml(event);
+    else if ((path === '/pagestudio/saveSectionHtml' || path === '/api/pagestudio/saveSectionHtml') && method === 'POST') response = await saveSectionHtml(event);
+    else if ((path === '/pagestudio/saveAuthorsHtml' || path === '/api/pagestudio/saveAuthorsHtml') && method === 'POST') response = await saveAuthorsHtml(event);
+    else if ((path === '/pagestudio/saveAuthorHtml' || path === '/api/pagestudio/saveAuthorHtml') && method === 'POST') response = await saveAuthorHtml(event);
+    else if ((path === '/pagestudio/saveSurveyHtml' || path === '/api/pagestudio/saveSurveyHtml') && method === 'POST') response = await saveSurveyHtml(event);
+    else if ((path === '/pagestudio/saveSiteMap' || path === '/api/pagestudio/saveSiteMap') && method === 'POST') response = await saveSiteMap(event);
+    else if ((path === '/pagestudio/saveNewsSiteMap' || path === '/api/pagestudio/saveNewsSiteMap') && method === 'POST') response = await saveNewsSiteMap(event);
+    else if ((path === '/pagestudio/savePwaFiles' || path === '/api/pagestudio/savePwaFiles') && method === 'POST') response = await savePwaFiles(event);
+    else if ((path === '/pagestudio/forceUpdatePwaIcons' || path === '/api/pagestudio/forceUpdatePwaIcons') && method === 'GET') response = await forceUpdatePwaIcons(event);
+    else if ((path === '/pagestudio/republishAll' || path === '/api/pagestudio/republishAll') && method === 'POST') response = await republishAll(event, context);
+    else if ((path === '/pagestudio/republishAll/status' || path === '/api/pagestudio/republishAll/status') && method === 'GET') response = await republishAllStatus(event);
 
 
     // auxi bot
@@ -495,7 +493,7 @@ export const handler = async (event, context) => {
     else if (path === '/resetPassword' && method === 'POST') response = await resetPassword(event);
     else if (path === '/uploadUserImage' && method === 'POST') response = await uploadUserImage(event);
     else if (path === '/updateProfile' && method === 'PUT') response = await updateProfile(event);
-    else if ((path === '/deleteAccount' || path === '/api/pagestudio/deleteAccount' || path === '/api/pagebuilder/deleteAccount') && method === 'DELETE') response = await deleteAccount(event);
+    else if ((path === '/deleteAccount' || path === '/api/pagestudio/deleteAccount') && method === 'DELETE') response = await deleteAccount(event);
     else if (path === '/api/audience/profile' && method === 'GET') response = await getAudienceProfile(event);
     else if (path === '/api/audience/users' && method === 'GET') response = await getAudienceUsers(event);
 

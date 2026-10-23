@@ -1,11 +1,11 @@
 import React, { useCallback, useState, useEffect, useContext } from 'react';
-import ScrollView from '@/components/ui/dx/scroll-view';
-import Sortable from '@/components/ui/dx/sortable';
+import ScrollView from '@/components/ui/kit/scroll-view';
+import Sortable from '@/components/ui/kit/sortable';
 import toast from 'react-hot-toast';
 import { Dialog } from "@headlessui/react";
 import { UserContext } from '../../context/UserContext';
 
-// Helper functions for DevExtreme Sortable
+// Helper functions for the grid kit Sortable
 function getLists(statusArray, taskArray) {
   const tasksMap = taskArray.reduce((result, task) => {
     if (result[task.status]) {
@@ -59,7 +59,7 @@ const Card = ({ story, user, handleReviewStory, timeAgo }) => {
 
   return (
     <div
-      className="dx-card story-card"
+      className="kit-card story-card"
       onClick={handleCardClick}
       style={{
         backgroundColor: 'white',

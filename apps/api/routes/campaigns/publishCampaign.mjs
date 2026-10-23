@@ -47,7 +47,7 @@ export const handler = async (event) => {
     /* 2️⃣ Fetch Home Page JSON                         */
     /* ------------------------------------------------ */
 
-    // Page Builder pages live in Postgres.
+    // Page Studio pages live in Postgres.
     const allPages = await db.select().from(pages);
     
     const targetPages = allPages.filter(page => {

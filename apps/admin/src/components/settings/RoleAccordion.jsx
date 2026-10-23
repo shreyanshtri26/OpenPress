@@ -1,6 +1,6 @@
 // src/components/settings/RoleAccordion.jsx
 
-import Accordion from "@/components/ui/dx/accordion";
+import Accordion from "@/components/ui/kit/accordion";
 import {
   ROLE_ACCORDION_ITEMS,
   ROLE_ACCORDION_TITLES,

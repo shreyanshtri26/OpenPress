@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getToken } from '../../../utils/auth'
+import { StudioDropdown } from './StudioDropdown'
 
 type ColorSelectProps = {
   value: string
@@ -101,57 +102,22 @@ export function ColorSelect({
   const selectedValue = value || defaultColor
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, width: '100%', marginBottom: 16 }}>
-      {label && <span style={{ fontSize: 13, fontWeight: 600, color: '#475569' }}>{label}</span>}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+    <div className="studio-color-field">
+      {label && <span className="studio-color-field__label">{label}</span>}
+      <div className="studio-color-field__row">
         {/* Color Preview Swatch */}
-        <div
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: '50%',
-            backgroundColor: selectedValue,
-            border: '1px solid #cbd5e1',
-            boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.06)',
-            flexShrink: 0,
-            transition: 'background-color 0.2s ease',
-          }}
-        />
-        <select
+        <span className="studio-color-field__swatch" style={{ backgroundColor: selectedValue }} aria-hidden="true" />
+        <StudioDropdown
+          variant="field"
           value={value ?? ''}
-          onChange={(event) => onChange(event.target.value)}
-          style={{
-            flexGrow: 1,
-            padding: '8px 12px',
-            border: '1px solid #cbd5e1',
-            borderRadius: 6,
-            fontSize: 13,
-            fontWeight: 500,
-            background: '#f8fafc',
-            color: '#334155',
-            cursor: 'pointer',
-            outline: 'none',
-            transition: 'all 0.2s ease',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
-            appearance: 'auto',
-          }}
-          onFocus={(e) => {
-            e.target.style.borderColor = '#3b82f6';
-            e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = '#cbd5e1';
-            e.target.style.boxShadow = '0 1px 2px rgba(0,0,0,0.03)';
-          }}
-        >
-          <option value="">Default Color</option>
-          {isLoading && options.length === 0 ? <option value="">Loading colors...</option> : null}
-          {options.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+          onChange={(v) => onChange(String(v ?? ''))}
+          ariaLabel={label ?? 'Colour'}
+          options={[
+            { label: 'Default Color', value: '' },
+            ...(isLoading && options.length === 0 ? [{ label: 'Loading colors…', value: '__loading', disabled: true }] : []),
+            ...options.map((option) => ({ label: option, value: option })),
+          ]}
+        />
       </div>
     </div>
   )

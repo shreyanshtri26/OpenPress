@@ -13,13 +13,13 @@ import DataGrid, {
     Pager,
     FilterPanel,
     FilterBuilderPopup,
-} from '@/components/ui/dx/data-grid';
-import { exportDataGrid as exportDataGridXLSX } from '@/components/ui/dx/excel-exporter';
-import { exportDataGrid as exportDataGridPDF } from '@/components/ui/dx/pdf-exporter';
+} from '@/components/ui/kit/data-grid';
+import { exportDataGrid as exportDataGridXLSX } from '@/components/ui/kit/excel-exporter';
+import { exportDataGrid as exportDataGridPDF } from '@/components/ui/kit/pdf-exporter';
 import { Workbook } from 'exceljs';
 import { jsPDF } from 'jspdf';
 import { saveAs } from 'file-saver';
-import { Chart, Series, ArgumentAxis, ValueAxis, Legend, Tooltip } from '@/components/ui/dx/chart';
+import { Chart, Series, ArgumentAxis, ValueAxis, Legend, Tooltip } from '@/components/ui/kit/chart';
 import { Card, CardTitle, KpiTile } from './AnalyticsUIComponents';
 import { BAR_COLORS, fmtMs, fetchAggregated } from '../../../utils/analyticsUtils';
 import { 

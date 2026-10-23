@@ -5,7 +5,7 @@ export function renderCampaignAd(props, ctx) {
 
     // Delegate matching/creative-resolution to the single shared resolver
     // (also used by the static LeaderboardAd/InStoryAd/SidebarAd blocks and
-    // by OpenPress-PageBuilder) instead of duplicating campaign-matching
+    // by OpenPress-Page Studio) instead of duplicating campaign-matching
     // logic here, so the two apps can no longer drift apart on this.
     const {
         activeCampaign,
@@ -47,7 +47,7 @@ export function renderCampaignAd(props, ctx) {
     // creative/tag resolved from literal props still counts, even when no
     // live campaign object matched it. Previously this required
     // `activeCampaign` to be truthy, which hid perfectly valid ads (like the
-    // navbar-adjacent leaderboard synced in from PageBuilder) whenever they
+    // navbar-adjacent leaderboard synced in from Page Studio) whenever they
     // weren't backed by a currently-matching campaign record.
     const hasAdContent = Boolean(desktopImageUrl || mobileImageUrl || tagDesktop || tagMobile);
     const active = hasAdContent;

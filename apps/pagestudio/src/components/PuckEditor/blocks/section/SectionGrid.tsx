@@ -42,8 +42,8 @@ export function SectionGrid({
   };
 
   return (
-    <section id={id} className={`w-full bg-white lg:pt-8 px-4 lg:px-16 pb-12 ${className}`}>
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id={id} className={`w-full bg-white lg:pt-8 pb-12 ${className}`}>
+      <div className="op-container">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-0">
 
           {/* LEFT COLUMN - Only Top Bar */}

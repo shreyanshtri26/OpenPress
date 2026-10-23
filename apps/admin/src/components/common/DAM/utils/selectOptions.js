@@ -1,4 +1,4 @@
-// Marks the currently selected option in a DevExtreme SelectBox dataSource as
+// Marks the currently selected option in a the grid kit SelectBox dataSource as
 // disabled.
 export const withSelectedDisabled = (options = [], selectedValue) =>
   options.map((option) => ({

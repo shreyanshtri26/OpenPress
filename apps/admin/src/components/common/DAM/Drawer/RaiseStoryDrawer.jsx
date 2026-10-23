@@ -1,5 +1,5 @@
 // src/components/common/DAM/Drawer/RaiseStoryDrawer.jsx
-import Accordion from '@/components/ui/dx/accordion';
+import Accordion from '@/components/ui/kit/accordion';
 import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import CustomButton from '../../CustomButton';
 import CustomCalendar from '../../CustomCalendar';
@@ -445,8 +445,8 @@ export default function RaiseStoryDrawer({
       e.target.closest('input[type="date"]') ||
       e.target.closest('input[type="datetime-local"]');
 
-    const isAccordionClick = e.target.closest('.dx-accordion') ||
-      e.target.closest('.dx-accordion-item');
+    const isAccordionClick = e.target.closest('.kit-accordion') ||
+      e.target.closest('.kit-accordion-item');
   }, []);
 
 
@@ -941,13 +941,13 @@ export default function RaiseStoryDrawer({
 
       <style jsx global>{`
         /* Accordion styling to look like SelectBox */
-        .dx-accordion {
+        .kit-accordion {
           border: none !important;
           padding: 0 !important;
           margin: 0 !important;
         }
  
-        .dx-accordion-item {
+        .kit-accordion-item {
           border: none !important;
           margin-bottom: 0px !important;
           position: relative;
@@ -955,39 +955,10 @@ export default function RaiseStoryDrawer({
           padding-bottom: 12px;
           margin-bottom: 2px !important;
         }
- 
-        .dx-accordion-item-title {
-          border: none !important;
-          border-radius: 4px !important;
-          padding: 8px 0px !important;
-          background: white !important;
-          min-height: 40px !important;
-          display: flex !important;
-        }
         /* Hide accordion arrow */
-        .dx-accordion-item-title::after {
-          display: none !important;
-        }
         /* Closed items */
-        .dx-accordion-item.dx-accordion-item-closed .dx-item-content {
-          height: 0 !important;
-          overflow: hidden !important;
-        }
  
         /* Opened items */
-        .dx-accordion-item.dx-accordion-item-opened .dx-item-content {
-          height: auto !important;
-          overflow: visible !important;
-          padding: 8px 0 0 0 !important;
-        }
- 
-        .dx-accordion-item-body {
-          border: none !important;
-          border-top: none !important;
-          border-radius: 0 0 4px 4px !important;
-          padding: 8px 0px 0px !important;
-          overflow: visible !important;
-        }
  
         .accordion-title-wrapper {
           font-family: 'Inter', sans-serif !important;
@@ -1123,46 +1094,12 @@ export default function RaiseStoryDrawer({
         }
  
         /* Calendar Navigator Layout Fix */
-        .dx-calendar {
-          gap: 4px;
-        }
- 
-        .dx-calendar-navigator {
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-        }
  
         /* Limit the width of the month title button */
-        .dx-calendar-caption-button {
-          flex: 0 1 auto !important;
-          max-width: 140px !important;
-          min-width: 130px !important;
-        }
  
         /* Ensure navigation buttons maintain consistent size */
-        .dx-calendar-navigator-previous-month,
-        .dx-calendar-navigator-next-month {
-          flex: 0 0 auto !important;
-          width: 32px !important;
-          height: 32px !important;
-        }
  
         /* Center the month text within the button */
-        .dx-calendar-caption-button .dx-button-content {
-          justify-content: center !important;
-        }
- 
-        .dx-calendar-caption-button .dx-button-text {
-          overflow: hidden !important;
-          text-overflow: ellipsis !important;
-          white-space: nowrap !important;
-        }
- 
-        .dx-button-has-text .dx-button-content {
-          padding-inline-start: 0px !important;
-          padding-inline-end: 0px !important;
-        }
  
         /* Calendar Container */
         .calendar-container {

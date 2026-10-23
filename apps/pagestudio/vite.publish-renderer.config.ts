@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 // `npm run build` runs this after the app build (with `emptyOutDir: false`, so
 // it lands next to the app in dist/ instead of wiping it). The result is one
 // self-contained ESM file, `dist/publish-renderer.js`, that the backend
-// republish-all worker imports at runtime from the PageBuilder origin.
+// republish-all worker imports at runtime from the Page Studio origin.
 //
 // Because this is a normal Vite production build, every `import.meta.env.VITE_*`
 // reference is replaced with this environment's value — the same substitution

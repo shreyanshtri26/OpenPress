@@ -5,7 +5,7 @@ import env from '@/utils/env';
 import LaunchBuilder from '../../assets/LaunchBuilder.svg';
 import Documents from '../../assets/Documents.svg';
 
-// The two tools that sit outside the editorial workflow: the page builder and the live site.
+// The two tools that sit outside the editorial workflow: Page Studio and the live site.
 const base =
   'inline-flex items-center gap-2 rounded-lg px-3.5 py-1.5 text-xs font-semibold tracking-wide shadow-sm transition-all duration-150 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-900';
 
@@ -18,7 +18,7 @@ const ExternalIcon = () => (
   </svg>
 );
 
-// Page Studio: the in-app page builder. Super Users only.
+// Page Studio: the in-app Page Studio. Super Users only.
 export const PageStudioButton = ({ className = '' }) => {
   const router = useRouter();
   const user = useContext(UserContext)?.user;

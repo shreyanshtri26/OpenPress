@@ -6,9 +6,10 @@ import "../../App.css";
 import "../../index.css";
 import "../PuckEditor/blocks/MastheadNavbarBlock.css";
 import {
-  type PageBuilderData,
+  type PageStudioData,
   type PageType,
   getConfigForPage,
+  getInitialDataForPage,
 } from "../PuckEditor/builderConfig";
 import { loadPublishedPage } from "../PuckEditor/publishStorage";
 import { initializeStories } from "../PuckEditor/storyData";
@@ -25,8 +26,8 @@ type PublishedPageProps = {
   authorSlug?: string;
 };
 
-// Extend the PageBuilderData type to include __meta
-type PublishedPageData = PageBuilderData & {
+// Extend the PageStudioData type to include __meta
+type PublishedPageData = PageStudioData & {
   __meta?: {
     pageType: string;
     activeSection?: string | null;
@@ -148,7 +149,7 @@ export function PublishedPage({ pageId, authorSlug }: PublishedPageProps) {
         ]);
         console.log("Stories and authors loaded for preview page");
         // Then load the published page data
-        const livePages = ['login', 'home', 'about', 'privacy-policy', 'media-council', 'contact-us', 'my-account'];
+        const livePages = ['login', 'home', 'about', 'privacy-policy', 'media-council', 'contact-us', 'support-us', 'error', 'my-account'];
 
         if (livePages.includes(pageId)) {
           // Special case for live pages.
@@ -160,6 +161,8 @@ export function PublishedPage({ pageId, authorSlug }: PublishedPageProps) {
           if (pageId === 'privacy-policy') targetPageType = "PrivacyPolicy";
           if (pageId === 'media-council') targetPageType = "MediaCouncil";
           if (pageId === 'contact-us') targetPageType = "ContactUs";
+          if (pageId === 'support-us') targetPageType = "SupportUs";
+          if (pageId === 'error') targetPageType = "Error";
 
           await initializeStories({ pageType: targetPageType as PageType });
 
@@ -171,8 +174,13 @@ export function PublishedPage({ pageId, authorSlug }: PublishedPageProps) {
             }
           });
           const data = await res.json();
-          if (data?.data) {
+          const hasContent = Array.isArray(data?.data?.content) && data.data.content.length > 0;
+          if (hasContent || (data?.data && targetPageType === "Home")) {
             setPageData({ ...data.data, __meta: { pageType: targetPageType } });
+            setCurrentPageType(targetPageType as PageType);
+          } else if (targetPageType !== "Home") {
+            // Never saved (or saved empty): show the page's default layout rather than a blank canvas.
+            setPageData({ ...getInitialDataForPage(targetPageType as PageType), __meta: { pageType: targetPageType } } as PublishedPageData);
             setCurrentPageType(targetPageType as PageType);
           } else {
             // ── Fallback: read from local publish storage (localStorage) ──────

@@ -124,7 +124,7 @@ export const StoryCard: React.FC<StoryCardProps> = ({
           key={displayImage}
           src={displayImage}
           alt={displayTitle}
-          className={`aspect-[4/3] w-full object-cover transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"
+          className={`aspect-[16/10] w-full object-cover transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"
             }`}
           loading="lazy"
         />

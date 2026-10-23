@@ -85,7 +85,7 @@ function getStoryTimestamp(story: StoryLike): number {
 /**
  * Computes auto story IDs from `storiesById` using the taxonomy props stored
  * on a block (autoTaxonomy_*, autoRecency, autoMostRead). This mirrors the
- * PageBuilder's resolveData logic so republish doesn't depend on stale stored IDs.
+ * Page Studio's resolveData logic so republish doesn't depend on stale stored IDs.
  */
 export function resolveAutoStoryIds(
   blockProps: Record<string, unknown>,

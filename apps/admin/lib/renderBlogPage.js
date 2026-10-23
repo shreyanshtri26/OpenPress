@@ -415,7 +415,7 @@ export function renderPageFromPuckJSON(pageJson, options = {}) {
     console.log("type >>>>", type);
     let renderer = ComponentRegistry[type];
 
-    // Fallback for dynamically generated Ad components from PageBuilder
+    // Fallback for dynamically generated Ad components from Page Studio
     if (!renderer && type.startsWith('Ad_')) {
       const placementName = type.replace('Ad_', '').replace(/_/g, '-');
       renderer = (p, c) => renderCampaignAd({

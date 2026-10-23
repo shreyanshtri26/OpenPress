@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import TextBox from "@/components/ui/dx/text-box";
+import TextBox from "@/components/ui/kit/text-box";
 
 export default function CoreTab({
     asset, isVideo, isAudio, isImage, apiMetadata
@@ -45,19 +45,7 @@ export default function CoreTab({
             {/* Embedded CSS */}
             <style>
                 {`
-        /* Make DevExtreme inputs fully square */
-        .dx-texteditor.dx-editor-underlined{
-            border-bottom: 1px solid black !important;
-        }
-
-        .dx-texteditor-input{
-            color:#6b7280 !important;
-        }
-
-                    
-        .dx-texteditor-container{
-                    border:none !important;
-        }
+        /* Make the grid kit inputs fully square */
       `}
             </style>
 

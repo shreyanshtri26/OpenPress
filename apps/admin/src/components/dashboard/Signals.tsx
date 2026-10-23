@@ -18,7 +18,7 @@ import DataGrid, {
     Selection,
     FilterPanel,
     FilterBuilderPopup,
-} from '@/components/ui/dx/data-grid';
+} from '@/components/ui/kit/data-grid';
 import { AllStoriesHeader } from './all-stories/AllStoriesHeader';
 import { AdminMobileSidebarToggle } from '../SideBar/AdminDashboardLayout';
 import { createGridExportHandler } from '../../utils/dataGridExport';

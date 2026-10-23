@@ -35,8 +35,8 @@ export function renderPopularGrid(
   if (!hasAny) return ''
 
   return `
-<section id="${id ?? ''}" class="w-full bg-white lg:pt-6 px-0 lg:px-16 pb-10 relative ${className}">
-  <div class="relative mx-auto w-full max-w-7xl px-4 lg:px-8 pb-4">
+<section id="${id ?? ''}" class="w-full bg-white lg:pt-6 pb-10 relative ${className}">
+  <div class="relative op-container pb-4">
     <div class="absolute inset-0 pointer-events-none">
       <div class="hidden lg:block mx-8 absolute left-0 right-0 -bottom-5" style="border-bottom: 1px solid gray;"></div>
     </div>

@@ -14,7 +14,7 @@ import {
   parseStory,
   readJob,
   writeJob,
-} from "../pagebuilder/republishAllJob.mjs";
+} from "../pagestudio/republishAllJob.mjs";
 import { createS3Client } from '../../lib/storage.mjs';
 
 const BUCKET_NAME = process.env.WEBSITE_BUCKET_NAME;

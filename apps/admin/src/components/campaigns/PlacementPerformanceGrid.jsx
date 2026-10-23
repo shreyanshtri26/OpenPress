@@ -13,7 +13,7 @@ import DataGrid, {
     Pager,
     FilterPanel,
     FilterBuilderPopup,
-} from '@/components/ui/dx/data-grid';
+} from '@/components/ui/kit/data-grid';
 import { createGridExportHandler } from '../../utils/dataGridExport';
 
 export default function PlacementPerformanceGrid({ data }) {

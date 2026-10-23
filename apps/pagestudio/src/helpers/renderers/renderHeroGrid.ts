@@ -82,8 +82,8 @@ export function renderHeroGrid(
   if (!hasAny) return ''
 
   return `
-<section id="${id}" class="w-full bg-white lg:pt-12 pt-4 px-0 lg:px-16 pb-0 mb-0 ${props.className ?? ''}">
-  <div class="relative mx-auto w-full max-w-7xl px-4 lg:px-8 pb-4">
+<section id="${id}" class="w-full bg-white lg:pt-12 pt-4 pb-0 mb-0 ${props.className ?? ''}">
+  <div class="relative op-container pb-4">
 
     <!-- Vertical dotted lines -->
     <div class="absolute inset-0 pointer-events-none">

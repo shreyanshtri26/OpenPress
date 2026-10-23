@@ -34,7 +34,7 @@ Write, review, design and publish a full newspaper website, with no paywall and 
 OpenPress is a newsroom CMS and a static newspaper site in one repository.
 
 - **Journalists and editors** work in the **admin app**: they raise stories, move them through an editorial workflow, manage media and campaigns, run surveys and publish.
-- **Super Users** also design pages in **Page Studio**, the in-app page builder (`/build`): the home page, section pages, article template and static pages.
+- **Super Users** also design pages in **Page Studio**, the in-app Page Studio (`/build`): the home page, section pages, article template and static pages.
 - **Readers** get a fast, fully static website. Every page is plain HTML written to object storage, so it can be served from any CDN. There is no paywall; an optional ePaper reader sign-in (Google OAuth / 1-click preview demo with light frosted backdrop) provides authenticated subscriber access to special digital editions.
 
 The database is Postgres and the file store is any S3-compatible service, so the whole stack runs on free tiers.
@@ -139,7 +139,7 @@ npm run dev
 | Service | URL |
 | --- | --- |
 | Admin dashboard | http://localhost:5173 |
-| Page Studio (page builder) | http://localhost:5173/build (Super User only) |
+| Page Studio (Page Studio) | http://localhost:5173/build (Super User only) |
 | API | http://localhost:3001 |
 | Public newspaper | http://localhost:8080 |
 | File-store console | http://localhost:9001 |
@@ -204,7 +204,7 @@ sequenceDiagram
 
 | Role | Can do |
 | --- | --- |
-| **Super User** | Everything, including users, roles, taxonomy and the page builder (`/build`). |
+| **Super User** | Everything, including users, roles, taxonomy and Page Studio (`/build`). |
 | **Admin** | Full editorial and library access. Creating users and roles is limited to Super Users by the API. |
 | **Editor** | Full editorial workflow, library and surveys. |
 | **Reporter** | Raise stories, ideas and drafts, and upload media. |

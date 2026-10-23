@@ -51,11 +51,11 @@ export function renderStorySubCard(
               </h2>
             </div>
 
-            <div class="ml-4 flex-shrink-0 h-16 flex items-center justify-center p-1">
+            <div class="ml-4 flex-shrink-0 h-16 w-16 overflow-hidden rounded-xl bg-gray-100">
               <img
                 src="${image}"
                 alt="${escapeHtml(story.imageAlt || 'Story image')}"
-                class="max-h-full max-w-full object-contain"
+                class="h-full w-full object-cover"
                 loading="lazy"
               />
             </div>

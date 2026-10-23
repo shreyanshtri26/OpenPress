@@ -1,5 +1,5 @@
 import React from 'react';
-import { Chart, Series, ArgumentAxis, ValueAxis, Legend, Margin, Tooltip, Grid } from '@/components/ui/dx/chart';
+import { Chart, Series, ArgumentAxis, ValueAxis, Legend, Margin, Tooltip, Grid } from '@/components/ui/kit/chart';
 
 export default function AudienceInsightsChart({ data }) {
     return (

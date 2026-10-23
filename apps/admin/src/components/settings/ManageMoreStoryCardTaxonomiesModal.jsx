@@ -85,7 +85,7 @@ const ManageMoreStoryCardTaxonomiesModal = ({
               Automatic Filter Taxonomies
             </h2>
             <p className="text-xs text-gray-500 mt-1">
-              Select which taxonomies will be visible as filter fields across all PageBuilder cards with automatic option.
+              Select which taxonomies will be visible as filter fields across all Page Studio cards with automatic option.
             </p>
           </div>
           <button

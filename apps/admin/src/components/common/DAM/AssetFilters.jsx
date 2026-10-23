@@ -1,6 +1,6 @@
-import TextBox from '@/components/ui/dx/text-box';
-import SelectBox from '@/components/ui/dx/select-box';
-import DateRangeBox from '@/components/ui/dx/date-range-box';
+import TextBox from '@/components/ui/kit/text-box';
+import SelectBox from '@/components/ui/kit/select-box';
+import DateRangeBox from '@/components/ui/kit/date-range-box';
 
 const AssetFilters = ({
     searchValue,

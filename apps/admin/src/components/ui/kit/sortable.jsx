@@ -1,4 +1,4 @@
-// DevExtreme-compatible Sortable on native HTML5 drag and drop. Each direct child is a draggable item.
+// Native Sortable on native HTML5 drag and drop. Each direct child is a draggable item.
 // Same list -> onReorder, another list with the same `group` -> onAdd; both get { fromIndex, toIndex, fromData, toData }.
 import { Children, useRef } from 'react';
 
@@ -31,7 +31,7 @@ export function Sortable({ group, data, onReorder, onAdd, onDragStart, className
 
   return (
     <div
-      data-testid="dx-sortable"
+      data-testid="kit-sortable"
       className={className}
       style={itemOrientation === 'horizontal' ? { display: 'flex' } : undefined}
       onDragOver={allow}

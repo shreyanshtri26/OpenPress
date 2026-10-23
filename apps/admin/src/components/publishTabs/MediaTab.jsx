@@ -1,7 +1,7 @@
 // src/components/publishTabs/MediaTab.jsx
 import React, { useState, useEffect } from "react";
-import { TextBox } from "@/components/ui/dx/text-box";
-import { Button } from "@/components/ui/dx/button";
+import { TextBox } from "@/components/ui/kit/text-box";
+import { Button } from "@/components/ui/kit/button";
 import toast from 'react-hot-toast';
 
 const MediaTab = ({ storyData, hasEditPermission, storyDetails, onFieldChange }) => {
@@ -168,17 +168,7 @@ const MediaTab = ({ storyData, hasEditPermission, storyDetails, onFieldChange })
             </div>
 
             {/* Inline CSS for TextBox styling */}
-            <style>{`
-                .dx-texteditor-input {
-                    border-radius: 0 !important;
-                }
-                .dx-placeholder {
-                    color: #9ca3af !important; /* gray-400 */
-                    padding: 2px;
-                }
-                .dx-texteditor.dx-editor-outlined {
-                    border-radius: 0px;
-                }  
+            <style>{`  
             `}</style>
         </div>
     );

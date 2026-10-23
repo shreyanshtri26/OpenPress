@@ -2,16 +2,19 @@
    Inspired by macOS, iOS, and Apple's Human Interface Guidelines
    Sophisticated greys, subtle elevations, and refined interactions */
 .studio-shell {
+  /* Select chevron (lucide chevron-down) for Puck's native selects, which can only take a background image. */
+  --studio-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  --studio-chevron-strong: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231d1d1f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   /* Premium Apple Grey Palette */
-  --studio-bg: #f5f5f7; /* System Gray 6 */
+  --studio-bg: #f1f2f4; /* System Gray 6 */
   --studio-surface: #ffffff; /* System Background */
-  --studio-surface-2: #f2f2f7; /* System Gray 6 Light */
+  --studio-surface-2: #f0f1f3; /* System Gray 6 Light */
   --studio-elevated: #ffffff; /* Elevated System Background */
-  --studio-line: rgba(0, 0, 0, 0.1); /* Subtler borders */
-  --studio-text: #1d1d1f; /* System Label */
-  --studio-muted: #8e8e93; /* System Gray */
-  --studio-accent: #007aff; /* System Blue */
-  --studio-accent-hover: #0056cc; /* Deeper blue for hover */
+  --studio-line: #dfe2e7; /* Subtler borders */
+  --studio-text: #18181b; /* System Label */
+  --studio-muted: #6b7280; /* System Gray */
+  --studio-accent: #1677ff; /* System Blue */
+  --studio-accent-hover: #0958d9; /* Deeper blue for hover */
   --studio-accent-text: #ffffff; /* White text on accent */
   --studio-danger: #ff3b30; /* System Red */
   --studio-ok: #34c759; /* System Green */
@@ -41,9 +44,9 @@
   --puck-color-grey-11: #f2f2f7; --puck-color-grey-12: #ffffff;
   
   /* Apple Blue Palette */
-  --puck-color-azure-01: #0040dd; --puck-color-azure-02: #0055ff;
-  --puck-color-azure-03: #007aff; --puck-color-azure-04: #2b95ff;
-  --puck-color-azure-05: #5aafff; --puck-color-azure-06: #7fc3ff;
+  --puck-color-azure-01: #0b3d91; --puck-color-azure-02: #0958d9;
+  --puck-color-azure-03: #1677ff; --puck-color-azure-04: #1677ff;
+  --puck-color-azure-05: #4096ff; --puck-color-azure-06: #7fc3ff;
   --puck-color-azure-07: #a4d7ff; --puck-color-azure-08: #c7e5ff;
   --puck-color-azure-09: #e1f0ff; --puck-color-azure-10: #f0f8ff;
   --puck-color-azure-11: #f8fbff; --puck-color-azure-12: #ffffff;
@@ -139,34 +142,8 @@
   opacity: 0.8;
 }
 
-/* Apple-style Select Dropdown */
-.studio-select {
-  appearance: none; 
-  -webkit-appearance: none; 
-  height: 36px; 
-  padding: 0 40px 0 14px; 
-  font: inherit; 
-  font-size: 14px;
-  color: var(--studio-text); 
-  background-color: var(--studio-surface); 
-  border: 1px solid var(--studio-line); 
-  border-radius: 10px;
-  cursor: pointer; 
-  transition: all 0.2s var(--studio-ease);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%238e8e93' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 5l4 4 4-4'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; 
-  background-position: right 14px center;
-  background-size: 12px;
-}
-.studio-select:hover { 
-  border-color: color-mix(in srgb, var(--studio-text) 40%, transparent); 
-  background-color: color-mix(in srgb, var(--studio-surface) 95%, var(--studio-bg) 5%);
-}
-.studio-select:focus-visible {
-  border-color: var(--studio-accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 25%, transparent);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23007aff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 5l4 4 4-4'/%3E%3C/svg%3E");
-}
+/* Select: a native <select> (keeps mouse, keyboard and screen-reader behaviour) with a real chevron icon.
+   The chevron is an element, not a background image, so no state can tile or restyle it. */
 .studio-shell ::-webkit-scrollbar { width: 10px; height: 10px; }
 .studio-shell ::-webkit-scrollbar-thumb { background: var(--studio-line); border-radius: 10px; border: 3px solid transparent; background-clip: content-box; }
 
@@ -331,12 +308,19 @@
 .studio-shell [class*="_ComponentList-title"] {
   padding: 12px 4px 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--studio-muted);
 }
-.studio-shell [class*="_ComponentList-content"] { display: flex; flex-direction: column; gap: 4px; padding-bottom: 8px; }
-.studio-shell [class*="_DrawerItem_"] {
-  height: 34px; padding: 0 10px 0 12px; font-size: 13px; color: var(--studio-text);
-  background: var(--studio-surface-2); border: 0; border-radius: 8px; transition: background-color 0.15s var(--studio-ease);
+.studio-shell [class*="_ComponentList-content"] { padding-bottom: 8px; }
+/* Puck's Drawer is the flex column that spaces the cards; the wrapper must size to its card, never clip or crowd it. */
+.studio-shell [class*="_Drawer_"] { gap: 8px; }
+.studio-shell [class*="_DrawerItem_"] { height: auto; padding: 0; background: none; border: 0; border-radius: 0; }
+.studio-shell [class*="_DrawerItem-draggable_"] {
+  min-height: 38px; padding: 0 12px; font-size: 13px; color: var(--studio-text); align-items: center;
+  background: var(--studio-surface); border: 1px solid var(--studio-line); border-radius: 10px;
+  transition: background-color 0.15s var(--studio-ease), border-color 0.15s var(--studio-ease), box-shadow 0.15s var(--studio-ease);
 }
-.studio-shell [class*="_DrawerItem_"]:hover { background: var(--studio-elevated); }
+.studio-shell [class*="_Drawer_"]:not([class*="_Drawer--isDraggingFrom_"]) [class*="_DrawerItem_"]:not([class*="_DrawerItem--disabled_"]) [class*="_DrawerItem-draggable_"]:hover {
+  background: var(--studio-surface-2); color: var(--studio-text); border-color: color-mix(in srgb, var(--studio-accent) 45%, transparent);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
 .studio-shell [class*="_DrawerItem-name"] { font-size: 13px; line-height: 1.2; }
 
 /* Canvas: the viewport bar belongs to the workspace, not a second band */
@@ -345,7 +329,540 @@
 
 /* Fields */
 .studio-shell label, .studio-shell [class*="_InputLabel"] { font-size: 12px; font-weight: 600; color: var(--studio-text); }
-.studio-shell input:not([type="checkbox"]):not([type="radio"]), .studio-shell textarea, .studio-shell select {
+.studio-shell input:not([type="checkbox"]):not([type="radio"]), .studio-shell textarea {
   font-size: 13px; color: var(--studio-text); background: var(--studio-surface-2);
 }
 .studio-shell input::placeholder, .studio-shell textarea::placeholder { color: var(--studio-muted); opacity: 0.8; }
+
+
+/* Header actions: Save draft (quiet) · Preview (outline) · Publish (filled), one height, even spacing. */
+.studio-actions { gap: 24px; }
+.studio-actions-left { gap: 16px; }
+.studio-actions-right { gap: 8px; }
+.studio-actions .studio-btn { height: 32px; padding: 0 16px; border-radius: 980px; font-size: 13px; transform: none; }
+.studio-actions .studio-btn:hover:not(:disabled) { transform: none; box-shadow: none; }
+.studio-actions .studio-btn:not(.studio-btn--primary):not(.studio-btn--secondary) { background: var(--studio-surface-2); border-color: transparent; }
+.studio-actions .studio-btn:not(.studio-btn--primary):not(.studio-btn--secondary):hover:not(:disabled) { background: color-mix(in srgb, var(--studio-surface-2) 82%, var(--studio-text) 8%); }
+.studio-actions .studio-btn--primary { box-shadow: none; padding: 0 20px; }
+
+/* Toolbar: every control shares one centre line and height. */
+.studio-shell [class*="_PuckHeader-inner"], .studio-shell [class*="_PuckHeader-tools"] { align-items: center; }
+.studio-shell [class*="_PuckHeader-tools"] > *, .studio-actions, .studio-actions-left, .studio-actions-right, .studio-field { align-items: center; }
+.studio-field { gap: 8px; min-width: 0; }
+.studio-actions { flex-wrap: nowrap; min-width: 0; }
+.studio-actions-left { min-width: 0; flex: 1 1 auto; }
+.studio-actions-right { flex: 0 0 auto; }
+.studio-shell [class*="_PuckHeader-tools"] [class*="_IconButton"] { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; }
+@media (max-width: 1100px) {
+  .studio-field-label { display: none; }
+  .studio-actions { gap: 12px; }
+  .studio-actions .studio-btn { padding: 0 12px; }
+}
+
+
+/* Properties-panel selects */
+
+/* Puck's own <select> fields (Select Story, colours, ...). Puck paints its arrow as a 100x100 SVG polygon scaled down by
+   background-size; any rule that resets the `background` shorthand drops that size and the arrow tiles at full size
+   behind the text. These rules own every background property of a Puck select, in every state, so that cannot recur. */
+.studio-shell select[class*="_Input-input_"],
+.studio-shell [class*="_Input_"]:has(> select):hover select[class*="_Input-input_"]:not([disabled]) {
+  background-image: var(--studio-chevron);
+  background-repeat: no-repeat;
+  background-size: 14px 14px;
+  background-position: right 12px center;
+}
+.studio-shell select[class*="_Input-input_"] {
+  box-sizing: border-box; height: 36px; min-width: 0; max-width: 100%; padding: 0 36px 0 12px; font-size: 13px; line-height: normal; color: var(--studio-text);
+  background-color: var(--studio-surface); border: 1px solid var(--studio-line); border-radius: 10px;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.studio-shell [class*="_Input_"]:has(> select):hover select[class*="_Input-input_"]:not([disabled]) {
+  background-image: var(--studio-chevron-strong);
+  background-color: var(--studio-surface-2); border-color: color-mix(in srgb, var(--studio-text) 28%, transparent);
+}
+.studio-shell select[class*="_Input-input_"]:focus { outline: none; border-color: var(--studio-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 22%, transparent); }
+.studio-shell select[class*="_Input-input_"]:disabled { opacity: 0.5; cursor: not-allowed; }
+.studio-shell select[class*="_Input-input_"] option { color: var(--studio-text); background: var(--studio-surface); }
+
+/* Component library: search, hidden non-matches, empty state */
+.studio-library-search { margin: 0 0 8px; padding: 4px 0; }
+.studio-library-search__field { position: relative; display: flex; align-items: center; }
+.studio-library-search__icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); z-index: 1; color: var(--studio-muted); pointer-events: none; }
+.studio-library-search__input { box-sizing: border-box; width: 100%; height: 34px; padding: 0 32px 0 32px; font-size: 13px; line-height: normal; color: var(--studio-text); background: var(--studio-surface-2); border: 1px solid transparent; border-radius: 10px; -webkit-appearance: none; appearance: none; }
+.studio-library-search__input::-webkit-search-cancel-button { display: none; }
+.studio-library-search__input:hover { border-color: var(--studio-line); }
+.studio-library-search__input:focus { outline: none; background: var(--studio-surface); border-color: var(--studio-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 22%, transparent); }
+.studio-library-search__clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); z-index: 1; display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; color: var(--studio-muted); background: none; border: 0; border-radius: 50%; cursor: pointer; }
+.studio-library-search__clear:hover { color: var(--studio-text); background: var(--studio-line); }
+.studio-library-search__clear:focus-visible { outline: 2px solid var(--studio-accent); outline-offset: 1px; }
+.studio-library-empty { margin: 16px 4px; font-size: 13px; color: var(--studio-muted); }
+.studio-shell [class*="_DrawerItem_"]:has([data-library-hidden]) { display: none; }
+/* While searching: open every group so matches are visible, and drop groups with no match */
+.studio-shell [data-library-searching] [class*="_ComponentList-content_"] { display: block; }
+.studio-shell [data-library-searching] [class*="_ComponentList_"]:not(:has([class*="_DrawerItem_"]:not(:has([data-library-hidden])))) { display: none; }
+
+
+/* ==========================================================================
+   Workspace geometry
+   Puck sizes its layout to 100dvh and builds its header from `1fr auto 1fr`. Mounted under our own top bar that made the
+   layout taller than its box, and the mirrored 1fr tracks made it twice as wide as the action row, so the whole editor
+   (and the canvas centred inside it) overflowed to the right. The chain below gives every level a definite size that is
+   never larger than its parent, so the canvas centres in the space that is actually visible.
+   ========================================================================== */
+.studio-workspace { display: flex; flex-direction: column; flex: 1 1 0; width: 100%; height: 100%; min-width: 0; min-height: 0; }
+.studio-layout { display: flex; flex-direction: column; flex: 1 1 0; width: 100%; height: 100%; min-width: 0; min-height: 0; }
+.studio-puck { flex: 1 1 0; min-width: 0; min-height: 0; position: relative; container-type: size; }
+/* Absolute, not height:100%: a percentage only resolves when every ancestor has a definite height, and when it did not the
+   layout grew with its content and the sidebars could no longer scroll. */
+.studio-puck > [class*="_Puck_"] { position: absolute; inset: 0; overflow: hidden; }
+/* Puck's DnD provider puts an unclassed, height:auto <div> between .Puck and .PuckLayout, so any percentage height below it
+   resolves against nothing and the editor collapsed to its content (a ~300px strip in an 800px window). Container-query
+   units resolve against .studio-puck itself, whatever wrappers sit in between. */
+.studio-shell [class*="_PuckLayout-inner"] { height: 100cqh; min-width: 0; min-height: 0; }
+.studio-shell [class*="_PuckLayout_"] { min-width: 0; }
+
+/* Header: toggles | title (takes the slack, truncates) | actions (wrap instead of widening the layout). */
+.studio-shell [class*="_PuckHeader_"] { max-width: 100%; }
+.studio-shell [class*="_PuckHeader-inner"] { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; min-width: 0; }
+.studio-shell [class*="_PuckHeader-title"] { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+.studio-shell [class*="_PuckHeader-tools"] { min-width: 0; justify-content: flex-end; flex-wrap: wrap; row-gap: 8px; }
+.studio-actions { width: auto; flex-wrap: wrap; row-gap: 8px; justify-content: flex-end; }
+.studio-actions-left, .studio-actions-right { flex-wrap: wrap; row-gap: 8px; }
+
+/* Canvas: the scroll container is the grey workspace; the viewport controls sit on it as one slim toolbar. */
+.studio-shell [class*="_PuckCanvas_"] { min-width: 0; min-height: 0; }
+.studio-shell [class*="_PuckCanvas-inner"] { min-width: 0; }
+.studio-shell [class*="_PuckCanvas-root"] { border: 0; box-shadow: 0 0 0 1px var(--studio-line), 0 8px 24px rgba(23, 23, 23, 0.06); background: #fff; }
+.studio-shell [class*="_ViewportControls_"] { min-width: 0; flex-wrap: wrap; align-items: center; gap: 8px; padding-bottom: 12px; }
+
+
+/* ==========================================================================
+   Panels, outline, selection and motion
+   One set of rules for both sidebars so their headers, spacing and states line up.
+   Motion is short and limited to colour/opacity/transform; reduced-motion removes it.
+   ========================================================================== */
+.studio-shell { --studio-dur-fast: 140ms; --studio-dur: 180ms; --studio-dur-panel: 220ms; }
+
+/* Sidebars: white surface, one hairline against the grey workspace. */
+.studio-shell [class*="_Sidebar_"] { background: var(--studio-surface); border-color: var(--studio-line); }
+.studio-shell [class*="_SidebarSection_"] { border-color: var(--studio-line); }
+
+/* Section headers (Components, Outline, the selected component's name): same height, weight and padding on both sides. */
+.studio-shell [class*="_SidebarSection-title"] {
+  position: sticky; top: 0; z-index: 1; display: flex; align-items: center; min-height: 44px; padding: 0 16px;
+  font-size: 13px; font-weight: 600; letter-spacing: -0.005em; color: var(--studio-text); background: var(--studio-surface);
+  border-bottom: 1px solid var(--studio-line);
+}
+.studio-shell [class*="_SidebarSection-content"] { padding: 8px 12px 16px; }
+.studio-shell [class*="_SidebarSection-heading"] { font-size: 13px; font-weight: 600; }
+
+/* Group headings in the component list. */
+.studio-shell [class*="_ComponentList-title"] {
+  display: flex; align-items: center; gap: 6px; width: 100%; padding: 12px 4px 6px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--studio-muted);
+  transition: color var(--studio-dur-fast) var(--studio-ease);
+}
+.studio-shell [class*="_ComponentList-title"]:hover { color: var(--studio-text); }
+.studio-shell [class*="_ComponentList-title"]:focus-visible { outline: 2px solid var(--studio-accent); outline-offset: 2px; border-radius: 6px; }
+
+/* Properties inspector: even rhythm, readable labels, one hairline between fields. */
+.studio-shell [class*="_PuckFields--wrapFields_"] [class*="_PuckFields-field_"] { padding: 12px 16px; color: var(--studio-text); }
+.studio-shell [class*="_PuckFields--wrapFields_"] [class*="_PuckFields-field_"] + [class*="_PuckFields-field_"] { margin-top: 0; border-top: 1px solid var(--studio-line); }
+.studio-shell [class*="_PuckFields-field_"] label, .studio-shell [class*="_PuckFields-field_"] [class*="_Input-label"] { font-size: 12px; font-weight: 600; color: var(--studio-text); }
+.studio-shell [class*="_Input-input_"]:not(select) { font-size: 13px; border-radius: 10px; border-color: var(--studio-line); }
+.studio-shell [class*="_Input-input_"]:not(select):hover { border-color: color-mix(in srgb, var(--studio-text) 28%, transparent); }
+.studio-shell [class*="_Input-input_"]:not(select):focus { outline: none; border-color: var(--studio-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 22%, transparent); }
+
+/* Outline (layers): clear hover, selected and ancestor-of-selected states, none of them colour-only. */
+.studio-shell [class*="_LayerTree_"] { padding: 0; }
+.studio-shell [class*="_Layer-inner"] { border-radius: 8px; transition: background-color var(--studio-dur-fast) var(--studio-ease); }
+.studio-shell [class*="_Layer-clickable"] { font-size: 13px; color: var(--studio-text); border-radius: 8px; }
+.studio-shell [class*="_Layer-clickable"]:hover { background: var(--studio-surface-2); }
+.studio-shell [class*="_Layer--isSelected_"] > [class*="_Layer-inner"] { background: color-mix(in srgb, var(--studio-accent) 12%, var(--studio-surface)); box-shadow: inset 3px 0 0 var(--studio-accent); }
+.studio-shell [class*="_Layer--isSelected_"] > [class*="_Layer-inner"] [class*="_Layer-name"] { font-weight: 600; }
+.studio-shell [class*="_Layer--childIsSelected_"] > [class*="_Layer-inner"] { background: var(--studio-surface-2); }
+.studio-shell [class*="_Layer-clickable"]:focus-visible { outline: 2px solid var(--studio-accent); outline-offset: -2px; }
+
+/* Selected-component toolbar: a small floating menu, the only element with real elevation on the canvas. */
+.studio-shell [class*="_ActionBar_"] { border-radius: 10px; box-shadow: 0 4px 16px rgba(23, 23, 23, 0.16); }
+.studio-shell [class*="_ActionBar-action"]:focus-visible { outline: 2px solid var(--studio-accent); outline-offset: 1px; }
+
+/* Canvas device and zoom toolbar. */
+.studio-shell [class*="_ViewportControls_"] button { border-radius: 8px; transition: background-color var(--studio-dur-fast) var(--studio-ease), color var(--studio-dur-fast) var(--studio-ease); }
+.studio-shell [class*="_ViewportControls_"] button:focus-visible { outline: 2px solid var(--studio-accent); outline-offset: 1px; }
+.studio-shell [class*="_ViewportControls_"] select {
+  height: 28px; padding: 0 28px 0 10px; font-size: 12px; border-radius: 8px; border: 1px solid var(--studio-line); background-color: var(--studio-surface); color: var(--studio-text);
+  background-image: var(--studio-chevron); background-repeat: no-repeat; background-size: 14px 14px; background-position: right 8px center; -webkit-appearance: none; appearance: none;
+}
+.studio-shell [class*="_ViewportControls_"] select:focus-visible { outline: none; border-color: var(--studio-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 22%, transparent); }
+
+/* Menus and sidebars ease in; the canvas re-centres through Puck's own width/transform transition (150ms). */
+.studio-shell .studio-tip, .studio-shell .studio-toast, .studio-shell .studio-progress { transition: opacity var(--studio-dur) var(--studio-ease), transform var(--studio-dur) var(--studio-ease); }
+.studio-shell [class*="_ComponentList-content_"] { animation: studio-fade var(--studio-dur) var(--studio-ease); }
+@keyframes studio-fade { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .studio-shell *, .studio-shell *::before, .studio-shell *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
+}
+
+
+/* ==========================================================================
+   Alignment pass: one control height, one panel-header height, 4px spacing steps.
+   Later rules win over the earlier, looser ones above, so every value that sizes or aligns a control lives here.
+   ========================================================================== */
+.studio-shell { --studio-control: 32px; --studio-panel-head: 44px; --studio-gap-1: 4px; --studio-gap-2: 8px; --studio-gap-3: 12px; --studio-gap-4: 16px; --studio-gap-6: 24px; }
+
+/* ---- Application toolbar: [sidebar toggles + title]  [undo/redo | page · status · save · preview · publish] ---- */
+.studio-shell [class*="_PuckHeader_"] { min-height: 48px; background: var(--studio-surface); border-bottom: 1px solid var(--studio-line); }
+.studio-shell [class*="_PuckHeader-inner"] {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: var(--studio-gap-4);
+  min-height: 48px; padding: 0 var(--studio-gap-4); min-width: 0;
+}
+.studio-shell [class*="_PuckHeader-toggle"] { display: flex; align-items: center; gap: var(--studio-gap-1); margin: 0; padding: 0; }
+.studio-shell [class*="_PuckHeader-title"] { align-self: center; min-width: 0; padding-left: var(--studio-gap-1); }
+.studio-shell [class*="_PuckHeader-title"] h2 { margin: 0; font-size: 14px; line-height: 1.2; font-weight: 600; letter-spacing: -0.01em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.studio-shell [class*="_PuckHeader-tools"] { display: flex; align-items: center; justify-content: flex-end; gap: var(--studio-gap-3); min-width: 0; }
+.studio-shell [class*="_MenuBar_"] { min-width: 0; }
+.studio-shell [class*="_MenuBar-inner"] { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: var(--studio-gap-2) var(--studio-gap-4); min-width: 0; }
+/* Undo / redo: one small group, separated from the rest by a hairline rather than extra padding. */
+.studio-shell [class*="_MenuBar-history"] { display: flex; align-items: center; gap: var(--studio-gap-1); padding-right: var(--studio-gap-4); border-right: 1px solid var(--studio-line); }
+.studio-shell [class*="_PuckHeader_"] [class*="_IconButton_"] { width: var(--studio-control); height: var(--studio-control); padding: 0; border-radius: 8px; }
+.studio-shell [class*="_PuckHeader_"] [class*="_IconButton_"] svg { width: 18px; height: 18px; }
+.studio-shell [class*="_PuckHeader_"] [class*="_IconButton--disabled_"] { opacity: 0.35; }
+
+/* The action row: page identity on the left, save + actions on the right, all on one centre line. */
+.studio-actions { flex: 1 1 auto; display: flex; align-items: center; justify-content: space-between; gap: var(--studio-gap-4); min-width: 0; padding: 0; width: auto; }
+.studio-actions-left, .studio-actions-right { display: flex; align-items: center; gap: var(--studio-gap-2); min-width: 0; }
+.studio-actions-left { flex: 1 1 auto; }
+.studio-actions-right { flex: 0 1 auto; justify-content: flex-end; }
+.studio-field { display: inline-flex; align-items: center; gap: var(--studio-gap-2); min-height: var(--studio-control); }
+.studio-field-label { font-size: 12px; font-weight: 500; line-height: 1; color: var(--studio-muted); }
+.studio-actions .studio-btn { display: inline-flex; align-items: center; justify-content: center; height: var(--studio-control); padding: 0 var(--studio-gap-4); font-size: 13px; line-height: 1; }
+.studio-save-status { height: var(--studio-control); margin-right: var(--studio-gap-1); font-size: 12px; line-height: 1; }
+
+/* ---- Canvas toolbar: device buttons | zoom out, zoom in | zoom level, centred on the visible canvas and kept in view ---- */
+.studio-shell [class*="_PuckCanvas_"] { padding: 0 var(--studio-gap-6) var(--studio-gap-6); scroll-padding-top: 56px; }
+.studio-shell [class*="_PuckCanvas-controls_"] { position: sticky; top: 0; z-index: 2; background: var(--studio-bg); }
+.studio-shell [class*="_ViewportControls_"] {
+  display: flex; align-items: center; justify-content: center; gap: var(--studio-gap-1); width: 100%; min-width: 0; box-sizing: border-box;
+  padding: var(--studio-gap-3) 0; border: 0; background: transparent;
+}
+.studio-shell [class*="_ViewportControls_"] [class*="_IconButton_"] { width: var(--studio-control); height: var(--studio-control); padding: 0; border-radius: 8px; color: var(--studio-muted); }
+.studio-shell [class*="_ViewportControls_"] [class*="_IconButton_"]:hover:not([class*="_IconButton--disabled_"]) { background: var(--studio-line); color: var(--studio-text); }
+.studio-shell [class*="_ViewportControls_"] [class*="_IconButton--disabled_"] { opacity: 0.4; }
+.studio-shell [class*="_ViewportControls-divider"] { align-self: center; height: 20px; margin: 0 var(--studio-gap-2); border-inline-end: 1px solid var(--studio-line); }
+/* The active device is the (disabled) button for the current width: make it unmistakable, not dimmed. */
+.studio-shell [class*="_ViewportButton--isActive_"] { border-radius: 8px; background: color-mix(in srgb, var(--studio-accent) 12%, var(--studio-surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--studio-accent) 45%, transparent); }
+.studio-shell [class*="_ViewportButton--isActive_"] [class*="_IconButton_"] { opacity: 1; color: var(--studio-accent); }
+/* Puck fixes this select at 96px with no right padding, which put "93% (Auto)" under its own arrow. */
+.studio-shell [class*="_ViewportControls-zoomSelect"] {
+  width: auto; min-width: 120px; height: var(--studio-control); padding: 0 30px 0 12px; font-size: 12px; font-weight: 500; line-height: normal; color: var(--studio-text);
+  background-color: var(--studio-surface); border: 1px solid var(--studio-line); border-radius: 8px;
+  background-image: var(--studio-chevron); background-repeat: no-repeat; background-size: 14px 14px; background-position: right 8px center;
+  text-overflow: ellipsis; cursor: pointer;
+}
+.studio-shell [class*="_ViewportControls-zoomSelect"]:hover { border-color: color-mix(in srgb, var(--studio-text) 28%, transparent); background-image: var(--studio-chevron-strong); }
+.studio-shell [class*="_ViewportControls-zoomSelect"]:focus-visible { outline: none; border-color: var(--studio-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 22%, transparent); }
+.studio-shell [class*="_PuckCanvas-inner"] { min-width: 0; }
+
+/* ---- Sidebars: same header height and the same 16px gutter on both sides ---- */
+.studio-shell [class*="_SidebarSection-title"] { min-height: var(--studio-panel-head); padding: 0 var(--studio-gap-4); }
+.studio-shell [class*="_SidebarSection-content"] { padding: var(--studio-gap-3) var(--studio-gap-4) var(--studio-gap-4); }
+.studio-library-search { margin: 0 0 var(--studio-gap-2); padding: 0; }
+.studio-shell [class*="_ComponentList_"]:first-of-type [class*="_ComponentList-title"] { padding-top: var(--studio-gap-1); }
+.studio-shell [class*="_PuckFields--wrapFields_"] [class*="_PuckFields-field_"] { padding: var(--studio-gap-3) var(--studio-gap-4); }
+.studio-shell [class*="_PuckFields--wrapFields_"] { margin: 0 calc(var(--studio-gap-4) * -1); }
+
+/* ---- Narrow editors: labels go, controls stay, nothing collides ---- */
+@media (max-width: 1280px) {
+  .studio-field-label { display: none; }
+  .studio-save-status { display: none; }
+  .studio-actions .studio-btn { padding: 0 var(--studio-gap-3); }
+}
+@media (max-width: 960px) {
+  .studio-shell [class*="_MenuBar-history"] { padding-right: var(--studio-gap-2); }
+  .studio-actions { flex-wrap: wrap; row-gap: var(--studio-gap-2); }
+}
+
+
+/* Colour fields (accent, title, paragraph, banner...): label, swatch and select on one centre line, same type as every panel label. */
+.studio-color-field { display: flex; flex-direction: column; gap: var(--studio-gap-2); width: 100%; margin: 0; }
+.studio-color-field__label { font-size: 12px; font-weight: 600; line-height: 1.3; color: var(--studio-text); }
+.studio-color-field__row { display: flex; align-items: center; gap: var(--studio-gap-3); min-width: 0; }
+.studio-color-field__swatch { flex: none; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--studio-line); box-shadow: inset 0 0 0 2px var(--studio-surface); }
+
+/* Component search stays pinned under the panel header while the list scrolls. The background covers the list passing beneath. */
+.studio-library-search { position: sticky; top: var(--studio-panel-head); z-index: 1; margin: 0; padding: var(--studio-gap-2) 0 var(--studio-gap-2); background: var(--studio-surface); }
+.studio-shell [class*="_SidebarSection-content"]:has(.studio-library-search) { padding-top: 0; }
+
+/* Panel selects keep their own size at every width: the toolbar rules above (height, min/max width) must not reach them. */
+
+
+/* ==========================================================================
+   Shared dropdown (components/PuckEditor/fields/StudioDropdown.tsx)
+   The list is portalled into .studio-shell at fixed coordinates: panels cannot clip it, and it is sized for long labels.
+   ========================================================================== */
+.studio-dd { position: relative; display: inline-flex; min-width: 0; }
+.studio-dd--field { display: flex; width: 100%; }
+.studio-dd--toolbar { min-width: 132px; max-width: 240px; }
+.studio-dd__trigger {
+  display: flex; align-items: center; gap: var(--studio-gap-2); width: 100%; min-width: 0; box-sizing: border-box; margin: 0; text-align: left;
+  font: inherit; font-size: 13px; line-height: 1.2; color: var(--studio-text); background: var(--studio-surface);
+  border: 1px solid var(--studio-line); cursor: pointer;
+  transition: border-color var(--studio-dur-fast) var(--studio-ease), background-color var(--studio-dur-fast) var(--studio-ease), box-shadow var(--studio-dur-fast) var(--studio-ease);
+}
+.studio-dd--toolbar .studio-dd__trigger { height: var(--studio-control); padding: 0 var(--studio-gap-3) 0 14px; font-weight: 500; border-radius: 980px; }
+.studio-dd--field .studio-dd__trigger { height: 36px; padding: 0 var(--studio-gap-3); border-radius: 10px; }
+.studio-dd__value { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.studio-dd__value.is-placeholder { color: var(--studio-muted); }
+.studio-dd__chevron { flex: none; color: var(--studio-muted); transition: transform var(--studio-dur-fast) var(--studio-ease), color var(--studio-dur-fast) var(--studio-ease); }
+.studio-dd__trigger:hover:not(:disabled) { background: var(--studio-surface-2); border-color: color-mix(in srgb, var(--studio-text) 28%, transparent); }
+.studio-dd__trigger:hover:not(:disabled) .studio-dd__chevron { color: var(--studio-text); }
+.studio-dd__trigger:focus { outline: none; }
+.studio-dd__trigger:focus-visible, .studio-dd__trigger[aria-expanded="true"] { border-color: var(--studio-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 22%, transparent); }
+.studio-dd__trigger[aria-expanded="true"] .studio-dd__chevron { transform: rotate(180deg); color: var(--studio-accent); }
+.studio-dd__trigger:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.studio-dd__list {
+  position: fixed; z-index: 10000; box-sizing: border-box; padding: var(--studio-gap-1); overflow-y: auto; overscroll-behavior: contain; outline: none;
+  background: var(--studio-surface); border: 1px solid var(--studio-line); border-radius: 12px; box-shadow: 0 12px 32px rgba(23, 23, 23, 0.16);
+  font-family: var(--puck-font-family); animation: studio-fade var(--studio-dur-fast) var(--studio-ease);
+}
+.studio-dd__option { display: flex; align-items: flex-start; gap: var(--studio-gap-2); padding: 7px 10px 7px 6px; border-radius: 8px; font-size: 13px; line-height: 1.35; color: var(--studio-text); cursor: pointer; }
+.studio-dd__option.is-active { background: var(--studio-surface-2); }
+.studio-dd__option[aria-selected="true"] { font-weight: 600; }
+.studio-dd__option.is-disabled { opacity: 0.45; cursor: not-allowed; }
+.studio-dd__check { flex: none; width: 14px; height: 18px; display: inline-flex; align-items: center; justify-content: center; color: var(--studio-accent); }
+/* Long labels wrap instead of being cut. */
+.studio-dd__label { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+
+/* Search field: the class alone loses to the generic form-control rule (higher specificity), which reset the left padding and ran
+   the placeholder under the icon. */
+.studio-shell .studio-library-search input.studio-library-search__input[type="search"] {
+  height: 32px; padding: 0 32px; font-size: 13px; line-height: normal; background: var(--studio-surface); border: 1px solid var(--studio-line); border-radius: 8px;
+}
+.studio-shell .studio-library-search input.studio-library-search__input[type="search"]:hover { border-color: color-mix(in srgb, var(--studio-text) 28%, transparent); }
+.studio-shell .studio-library-search input.studio-library-search__input[type="search"]:focus { border-color: var(--studio-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 22%, transparent); }
+
+/* ==========================================================================
+   Left sidebar: soft-grey surface, white component rows, compact outline tree
+   Puck spaces rows 12px apart, stacks two 1px borders on every layer, indents nested layers twice and tints selections blue;
+   each of those is reset at its source below.
+   ========================================================================== */
+.studio-shell { --studio-sidebar: #f5f6f7; --studio-selected: #e8eaed; }
+.studio-shell [class*="_Sidebar--left_"] { background: var(--studio-sidebar); border-inline-end: 1px solid var(--studio-line); overscroll-behavior: contain; }
+.studio-shell [class*="_Sidebar--left_"] [class*="_SidebarSection_"] { border-color: var(--studio-line); }
+.studio-shell [class*="_Sidebar--left_"] [class*="_SidebarSection-title"] { background: var(--studio-sidebar); border-top: 1px solid var(--studio-line); border-bottom: 1px solid var(--studio-line); }
+.studio-shell [class*="_Sidebar--left_"] [class*="_SidebarSection--noBorderTop_"] > [class*="_SidebarSection-title"] { border-top: 0; }
+.studio-shell [class*="_Sidebar--left_"] [class*="_SidebarSection-content"] { padding: 0 var(--studio-gap-3) var(--studio-gap-3); }
+.studio-shell [class*="_Sidebar--left_"] .studio-library-search { background: var(--studio-sidebar); padding: var(--studio-gap-3) 0 var(--studio-gap-2); }
+
+/* Component groups: tight, left-aligned labels with the chevron at the far right. */
+.studio-shell [class*="_ComponentList--isExpanded_"] + [class*="_ComponentList_"] { margin-top: 0; }
+.studio-shell [class*="_ComponentList-title"] {
+  justify-content: flex-start; align-items: center; margin: 0; padding: var(--studio-gap-2) var(--studio-gap-1); gap: var(--studio-gap-1);
+  text-align: left; white-space: nowrap; border-radius: 6px; line-height: 1.2;
+}
+.studio-shell [class*="_ComponentList-title"]:hover { background: rgba(23, 23, 23, 0.04); color: var(--studio-text); }
+.studio-shell [class*="_ComponentList-titleIcon"] { margin-inline-start: auto; display: inline-flex; color: var(--studio-muted); }
+.studio-shell [class*="_ComponentList-content_"] { padding-bottom: var(--studio-gap-2); }
+.studio-shell [class*="_Drawer_"] { gap: var(--studio-gap-1); }
+.studio-shell [class*="_DrawerItem-draggable_"] { min-height: 32px; padding: 0 10px; border-radius: 8px; background: var(--studio-surface); }
+.studio-shell [class*="_DrawerItem-name"] { text-align: left; }
+
+/* Outline: one row height, one indent step, a single guide line per nesting level. */
+.studio-shell [class*="_Layer_"] { border: 0; border-radius: 6px; }
+.studio-shell [class*="_Layer-inner"] { border: 0; border-radius: 6px; box-shadow: none; }
+.studio-shell [class*="_Layer-clickable"] { min-height: 28px; gap: 6px; padding: 0 var(--studio-gap-2); font-size: 13px; line-height: 1.2; text-align: left; border-radius: 6px; }
+.studio-shell [class*="_Layer--containsZone_"] > [class*="_Layer-inner"] [class*="_Layer-clickable"] { padding-inline-start: var(--studio-gap-1); }
+.studio-shell [class*="_Layer-chevron"] { display: inline-flex; flex: none; width: 16px; height: 16px; align-items: center; justify-content: center; color: var(--studio-muted); transition: transform var(--studio-dur-fast) var(--studio-ease); }
+.studio-shell [class*="_Layer-icon"], .studio-shell [class*="_Layer-zoneIcon"] { display: inline-flex; flex: none; align-items: center; justify-content: center; margin: 0; color: var(--studio-muted); }
+.studio-shell [class*="_Layer-name"] { flex: 1 1 auto; min-width: 0; text-align: left; }
+.studio-shell [class*="_Layer-zones"] { margin-inline-start: 14px; padding-inline-start: var(--studio-gap-1); border-inline-start: 1px solid var(--studio-line); }
+.studio-shell [class*="_Layer-zones"] > [class*="_LayerTree_"] { margin-inline-start: 0; }
+.studio-shell [class*="_LayerTree-zoneTitle"] { margin: var(--studio-gap-1) var(--studio-gap-1) 2px; font-size: 11px; letter-spacing: 0.05em; }
+.studio-shell [class*="_LayerTree-helper"] { margin: var(--studio-gap-1); font-size: 12px; text-align: left; }
+
+/* States: hover is a faint wash, selection a light-grey fill with heavier text and an accent icon. No borders, no blue fill. */
+.studio-shell [class*="_Layer_"]:not([class*="_Layer--isSelected_"]) > [class*="_Layer-inner"]:hover,
+.studio-shell [class*="_Layer--isHovering_"]:not([class*="_Layer--isSelected_"]) > [class*="_Layer-inner"] { background: rgba(23, 23, 23, 0.04); border-color: transparent; color: var(--studio-text); }
+.studio-shell [class*="_Layer--isSelected_"] { border-color: transparent; }
+.studio-shell [class*="_Layer--isSelected_"] > [class*="_Layer-inner"] { background: var(--studio-selected); box-shadow: none; color: var(--studio-text); }
+.studio-shell [class*="_Layer--isSelected_"] > [class*="_Layer-inner"] [class*="_Layer-name"] { font-weight: 600; }
+.studio-shell [class*="_Layer--isSelected_"] > [class*="_Layer-inner"] [class*="_Layer-icon"] { color: var(--studio-accent); }
+.studio-shell [class*="_Layer--childIsSelected_"] > [class*="_Layer-inner"] { background: transparent; }
+.studio-shell [class*="_Layer-clickable"]:focus-visible { outline: 2px solid var(--studio-accent); outline-offset: -2px; }
+.studio-color-field__row .studio-dd { flex: 1 1 auto; }
+
+
+/* ==========================================================================
+   Studio header: a true three-column grid.
+   The two side cells are equal minmax(0, 1fr) tracks and the title is the auto track between them, so the title sits at the
+   exact centre of the header whatever the width of the controls on either side (Puck's own 1fr tracks grew to the widest
+   side's min-content, which is what stretched the layout before).
+   ========================================================================== */
+.studio-header {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; column-gap: var(--studio-gap-6);
+  box-sizing: border-box; min-height: 48px; max-width: 100%; padding: 0 var(--studio-gap-4);
+  background: var(--studio-surface); border-bottom: 1px solid var(--studio-line);
+}
+.studio-header__left, .studio-header__right { display: flex; align-items: center; gap: var(--studio-gap-3); min-width: 0; }
+.studio-header__left { justify-self: start; }
+.studio-header__right { justify-self: end; justify-content: flex-end; }
+.studio-header__group { display: flex; align-items: center; gap: var(--studio-gap-1); flex: none; }
+/* Undo/redo are a unit, set apart from the actions by a hairline rather than extra padding. */
+.studio-header__right .studio-header__group { padding-right: var(--studio-gap-3); border-right: 1px solid var(--studio-line); }
+.studio-header__slot { display: flex; align-items: center; min-width: 0; }
+.studio-header__slot--right { flex: 0 1 auto; }
+.studio-header__title {
+  margin: 0; min-width: 0; max-width: 40vw; text-align: center; font-size: 14px; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em;
+  color: var(--studio-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.studio-icon-btn {
+  display: inline-flex; align-items: center; justify-content: center; flex: none; width: var(--studio-control); height: var(--studio-control); padding: 0;
+  color: var(--studio-muted); background: transparent; border: 0; border-radius: 8px; cursor: pointer;
+  transition: background-color var(--studio-dur-fast) var(--studio-ease), color var(--studio-dur-fast) var(--studio-ease);
+}
+.studio-icon-btn:hover:not(:disabled) { background: var(--studio-line); color: var(--studio-text); }
+.studio-icon-btn[aria-pressed="true"] { color: var(--studio-text); }
+.studio-icon-btn:focus-visible { outline: 2px solid var(--studio-accent); outline-offset: 1px; }
+.studio-icon-btn:disabled { opacity: 0.35; cursor: default; }
+
+/* Controls inside the cells. */
+.studio-actions-left, .studio-actions-right { display: flex; align-items: center; gap: var(--studio-gap-2); min-width: 0; flex-wrap: nowrap; }
+.studio-actions-left { flex: 1 1 auto; }
+.studio-actions-right { flex: 0 1 auto; justify-content: flex-end; }
+/* "Saved 19s ago" changes length every few seconds: a fixed, right-aligned, tabular box keeps the buttons from shifting. */
+.studio-save-status { flex: none; min-width: 104px; justify-content: flex-end; margin: 0 var(--studio-gap-1) 0 0; font-variant-numeric: tabular-nums; text-align: right; }
+
+@media (max-width: 1280px) {
+  .studio-save-status { min-width: 0; }
+}
+/* Narrow: title leaves the grid, controls get the whole row. */
+@media (max-width: 960px) {
+  .studio-header { grid-template-columns: minmax(0, 1fr) auto; row-gap: var(--studio-gap-2); padding-block: var(--studio-gap-2); }
+  .studio-header__title { display: none; }
+  .studio-header__right .studio-header__group { padding-right: var(--studio-gap-2); }
+}
+@media (max-width: 720px) {
+  .studio-header { grid-template-columns: minmax(0, 1fr); }
+  .studio-header__right { justify-self: stretch; justify-content: space-between; }
+}
+
+/* Panel toggles: an open panel reads as "on" with a tinted background and accent icon, not only a darker glyph. */
+.studio-icon-btn[aria-pressed="true"] { color: var(--studio-accent); background: color-mix(in srgb, var(--studio-accent) 10%, var(--studio-surface)); }
+.studio-icon-btn[aria-pressed="true"]:hover:not(:disabled) { background: color-mix(in srgb, var(--studio-accent) 16%, var(--studio-surface)); color: var(--studio-accent); }
+
+
+/* Save status as a traffic light on one line with the buttons: amber = waiting (unsaved or saving), green = saved, red = failed. */
+.studio-save-status { display: inline-flex; align-items: center; gap: var(--studio-gap-2); flex: none; height: var(--studio-control); min-width: 0; margin: 0 var(--studio-gap-1) 0 0; white-space: nowrap; text-align: left; justify-content: flex-start; font-size: 12px; font-weight: 500; line-height: 1; color: var(--studio-muted); }
+.studio-save-status__dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--studio-muted); box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-muted) 18%, transparent); }
+.studio-save-status--dirty .studio-save-status__dot,
+.studio-save-status--saving .studio-save-status__dot { background: var(--studio-warn); box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-warn) 22%, transparent); }
+.studio-save-status--saving .studio-save-status__dot { animation: studio-pulse 1s ease-in-out infinite; }
+.studio-save-status--saved .studio-save-status__dot { background: var(--studio-ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-ok) 22%, transparent); }
+.studio-save-status--saved { color: var(--studio-text); }
+.studio-save-status--error { color: var(--studio-danger); font-weight: 600; }
+.studio-save-status--error .studio-save-status__dot { background: var(--studio-danger); box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-danger) 22%, transparent); }
+.studio-header__divider { flex: none; width: 1px; height: 20px; background: var(--studio-line); }
+/* Narrow: keep the light, hand the words to screen readers and the tooltip only. */
+@media (max-width: 1280px) {
+  .studio-save-status { display: inline-flex; min-width: 0; }
+  .studio-save-status__text { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+}
+
+
+/* ==========================================================================
+   Surface system
+   workspace  --studio-bg        #F1F2F4  app background, canvas surround, canvas toolbar
+   panel      --studio-panel     #F8F9FA  top toolbar, both sidebars, panel headers
+   control    --studio-surface-2 #F0F1F3  component rows, secondary buttons, zoom select
+   input      --studio-input     #F1F2F5  text inputs, search, dropdown triggers
+   line       --studio-line      #DFE2E7  borders and separators
+   content    --studio-surface   #FFFFFF  the publication, floating menus, toasts, and an input while it is focused
+   Floating UI and the publication stay white; the working surfaces step down through grey so each layer is distinct.
+   ========================================================================== */
+.studio-shell { --studio-panel: #f8f9fa; --studio-input: #f1f2f5; --studio-sidebar: var(--studio-panel); --studio-selected: #e4e6ea; background: var(--studio-bg); }
+
+/* Toolbars and sidebars: the panel layer. */
+.studio-topbar, .studio-header { background: var(--studio-panel); border-bottom-color: var(--studio-line); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.studio-shell [class*="_Sidebar_"], .studio-shell [class*="_Sidebar--left_"], .studio-shell [class*="_Sidebar--right_"] { background: var(--studio-panel); border-color: var(--studio-line); }
+.studio-shell [class*="_SidebarSection_"] { background: transparent; }
+.studio-shell [class*="_SidebarSection-title"], .studio-shell [class*="_Sidebar--left_"] [class*="_SidebarSection-title"] { background: var(--studio-panel); border-color: var(--studio-line); }
+.studio-library-search, .studio-shell [class*="_Sidebar--left_"] .studio-library-search { background: var(--studio-panel); }
+
+/* Inputs: one step darker than the panel; white only while focused, so the active field stands out. */
+.studio-shell input:not([type="checkbox"]):not([type="radio"]), .studio-shell textarea, .studio-shell [class*="_Input-input_"]:not(select) {
+  background: var(--studio-input); border-color: var(--studio-line);
+}
+.studio-shell input:not([type="checkbox"]):not([type="radio"]):hover, .studio-shell textarea:hover, .studio-shell [class*="_Input-input_"]:not(select):hover { background: color-mix(in srgb, var(--studio-input) 90%, var(--studio-text)); }
+.studio-shell input:not([type="checkbox"]):not([type="radio"]):focus, .studio-shell textarea:focus, .studio-shell [class*="_Input-input_"]:not(select):focus { background: var(--studio-surface); }
+.studio-shell .studio-library-search input.studio-library-search__input[type="search"] { background: var(--studio-input); border-color: transparent; }
+.studio-shell .studio-library-search input.studio-library-search__input[type="search"]:hover { background: color-mix(in srgb, var(--studio-input) 90%, var(--studio-text)); }
+.studio-shell .studio-library-search input.studio-library-search__input[type="search"]:focus { background: var(--studio-surface); border-color: var(--studio-accent); }
+.studio-dd__trigger { background: var(--studio-input); }
+.studio-dd__trigger:hover:not(:disabled) { background: color-mix(in srgb, var(--studio-input) 90%, var(--studio-text)); }
+.studio-dd__trigger:focus-visible, .studio-dd__trigger[aria-expanded="true"] { background: var(--studio-surface); }
+.studio-shell select[class*="_Input-input_"] { background-color: var(--studio-input); }
+
+/* Component rows: control layer, no border at rest; they lift to white with a hairline on hover. */
+.studio-shell [class*="_DrawerItem-draggable_"] { background: var(--studio-surface-2); border-color: transparent; }
+.studio-shell [class*="_Drawer_"]:not([class*="_Drawer--isDraggingFrom_"]) [class*="_DrawerItem_"]:not([class*="_DrawerItem--disabled_"]) [class*="_DrawerItem-draggable_"]:hover {
+  background: var(--studio-surface); border-color: var(--studio-line); box-shadow: 0 1px 2px rgba(24, 24, 27, 0.06);
+}
+.studio-shell [class*="_DrawerItem--disabled_"] [class*="_DrawerItem-draggable_"] { background: var(--studio-surface-2); opacity: 0.55; }
+.studio-shell [class*="_ComponentList-title"]:hover { background: rgba(24, 24, 27, 0.045); }
+
+/* Outline: faint hover wash, light-grey selection (the control layer, one step darker than the panel). */
+.studio-shell [class*="_Layer_"]:not([class*="_Layer--isSelected_"]) > [class*="_Layer-inner"]:hover,
+.studio-shell [class*="_Layer--isHovering_"]:not([class*="_Layer--isSelected_"]) > [class*="_Layer-inner"] { background: rgba(24, 24, 27, 0.045); }
+.studio-shell [class*="_Layer--isSelected_"] > [class*="_Layer-inner"] { background: var(--studio-selected); }
+
+/* Canvas: workspace layer around a white publication. The publication gets a hairline and a soft shadow, nothing heavier. */
+.studio-shell [class*="_PuckCanvas_"], .studio-shell [class*="_PuckCanvas-inner"], .studio-shell [class*="_PuckCanvas-controls_"], .studio-shell [class*="_ViewportControls_"] { background: var(--studio-bg); }
+.studio-shell [class*="_PuckCanvas-root"] { background: #fff; box-shadow: 0 0 0 1px var(--studio-line), 0 6px 20px rgba(24, 24, 27, 0.06); }
+.studio-shell [class*="_ViewportControls-zoomSelect"], .studio-shell [class*="_ViewportControls_"] select { background-color: var(--studio-surface-2); }
+.studio-shell [class*="_ViewportControls_"] [class*="_IconButton_"]:hover:not([class*="_IconButton--disabled_"]) { background: color-mix(in srgb, var(--studio-line) 70%, transparent); }
+/* Active device: white chip with an accent outline, so it reads on the grey without a heavy fill. */
+.studio-shell [class*="_ViewportButton--isActive_"] { background: var(--studio-surface); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--studio-accent) 55%, transparent), 0 1px 2px rgba(24, 24, 27, 0.06); }
+
+/* Buttons and toggles on the panel layer. */
+.studio-btn { background: var(--studio-surface-2); }
+.studio-btn--secondary { background: transparent; }
+.studio-icon-btn:hover:not(:disabled) { background: color-mix(in srgb, var(--studio-line) 70%, transparent); }
+.studio-icon-btn[aria-pressed="true"] { background: var(--studio-surface); box-shadow: inset 0 0 0 1px var(--studio-line); color: var(--studio-accent); }
+.studio-icon-btn[aria-pressed="true"]:hover:not(:disabled) { background: var(--studio-surface); }
+
+/* Floating and content surfaces stay white and are the only ones with real elevation. */
+.studio-dd__list, .studio-tip, .studio-toast, .studio-progress, .studio-shell [class*="_ActionBar_"] { background: var(--studio-surface); }
+.studio-banner { background: var(--studio-panel); }
+
+/* ==========================================================================
+   Layout tracks
+   Puck sizes the canvas column as minmax(266px, auto): a 266px floor that also grows with its content, so when a sidebar
+   closed (or the window shrank) the canvas could end up wider than the space left and be clipped. Each column is now definite:
+   a sidebar is its own width when open and 0 when closed, and the canvas takes exactly the rest and can shrink to nothing.
+   ========================================================================== */
+.studio-shell [class*="_PuckLayout-inner"] { grid-template-columns: 0 minmax(0, 1fr) 0; }
+.studio-shell [class*="_PuckLayout--leftSideBarVisible_"] [class*="_PuckLayout-inner"] { grid-template-columns: var(--puck-left-side-bar-width) minmax(0, 1fr) 0; }
+.studio-shell [class*="_PuckLayout--rightSideBarVisible_"] [class*="_PuckLayout-inner"] { grid-template-columns: 0 minmax(0, 1fr) var(--puck-right-side-bar-width); }
+.studio-shell [class*="_PuckLayout--leftSideBarVisible_"][class*="_PuckLayout--rightSideBarVisible_"] [class*="_PuckLayout-inner"] { grid-template-columns: var(--puck-left-side-bar-width) minmax(0, 1fr) var(--puck-right-side-bar-width); }
+/* The canvas and its grid cell may shrink below their content; whatever is wider scrolls inside the canvas, not off screen. */
+.studio-shell [class*="_PuckLayout-inner"] > * { min-width: 0; }
+
+
+/* ==========================================================================
+   Publish button = the same traffic light as the save status
+   amber while there is unsaved work, saving, or a publish in flight; green once everything is saved; red if saving failed;
+   the normal blue when nothing has changed. Solid, darker tones keep white text above 4.5:1.
+   ========================================================================== */
+.studio-shell { --studio-warn-strong: #b45309; --studio-ok-strong: #1a7f37; --studio-danger-strong: #c62828; }
+.studio-btn--publish { transition: background-color var(--studio-dur) var(--studio-ease), box-shadow var(--studio-dur) var(--studio-ease), filter var(--studio-dur-fast) var(--studio-ease); }
+.studio-btn--publish[data-save="dirty"], .studio-btn--publish[data-save="saving"], .studio-btn--publish[data-publishing] { background: var(--studio-warn-strong); box-shadow: 0 2px 8px color-mix(in srgb, var(--studio-warn-strong) 35%, transparent); }
+.studio-btn--publish[data-save="saved"] { background: var(--studio-ok-strong); box-shadow: 0 2px 8px color-mix(in srgb, var(--studio-ok-strong) 35%, transparent); }
+.studio-btn--publish[data-save="error"] { background: var(--studio-danger-strong); box-shadow: 0 2px 8px color-mix(in srgb, var(--studio-danger-strong) 35%, transparent); }
+.studio-btn--publish[data-save="saving"], .studio-btn--publish[data-publishing] { animation: studio-publish-pulse 1.2s ease-in-out infinite; }
+.studio-btn--publish:hover:not(:disabled):not([aria-disabled="true"]) { filter: brightness(1.08); }
+.studio-btn--publish:focus-visible { outline: 2px solid var(--studio-text); outline-offset: 2px; }
+@keyframes studio-publish-pulse { 50% { filter: brightness(1.14); } }
+@media (prefers-reduced-motion: reduce) { .studio-btn--publish { animation: none !important; } }

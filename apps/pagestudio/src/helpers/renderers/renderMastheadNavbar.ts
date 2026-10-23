@@ -182,16 +182,22 @@ export function renderMastheadNavbar({
     `;
   };
 
-  const renderMobileMenuItem = (label: string) => {
+  // One row per section. HOME is already part of the list (it is not added again), and the row index drives the staggered entrance.
+  const menuSections = normalizedSections.includes('HOME') ? normalizedSections : ['HOME', ...normalizedSections];
+  const renderMobileMenuItem = (label: string, index: number) => {
     const isActive = normalizedActiveSection === label;
     const slug = label === 'HOME' ? '' : label.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
     return `
       <button
+        type="button"
         onclick="closeMobileMenu(); handleNavClick('${label}', '${slug}')"
         data-section="${label}"
-        class="text-left py-3 px-4 rounded-xl font-share uppercase transition-colors shrink-0 ${isActive ? 'bg-neutral-100 text-black font-bold' : 'hover:bg-gray-100'}"
+        class="op-menu__item${isActive ? ' is-active' : ''}"
+        style="--i:${index}"
+        ${isActive ? 'aria-current="page"' : ''}
       >
-        ${label}
+        <span class="op-menu__item-label">${toTitleCase(label)}</span>
+        <svg class="op-menu__item-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
       </button>
     `;
   };
@@ -247,11 +253,11 @@ export function renderMastheadNavbar({
   <div class="absolute top-[50px] sm:top-[65px] lg:top-[100px] right-0 w-[40%] sm:w-[38%] lg:w-[42%] h-[2px] bg-black transition-opacity duration-300 navbar-dec-line"></div>
 
   <!-- Top row -->
-  <div id="navbar-top-row" class="mx-auto flex items-center w-full px-4 sm:px-6 lg:w-[84%] lg:px-0 pt-2 pb-4 transition-all duration-300 relative">
+  <div id="navbar-top-row" class="op-container flex items-center pt-2 pb-4 transition-all duration-300 relative">
 
     <!-- Mobile menu + social icons for mobile -->
     <div class="absolute left-2 top-[29px] -translate-y-1/2 sm:relative sm:left-auto sm:top-auto sm:translate-y-0 sm:mt-0 flex sm:hidden justify-start items-center gap-2 z-10">
-      <button onclick="toggleMobileMenu()" class="p-1 text-black" aria-label="Toggle menu">
+      <button id="mobile-menu-btn" type="button" onclick="toggleMobileMenu()" class="p-1 text-black" aria-label="Open menu" aria-haspopup="dialog" aria-expanded="false" aria-controls="mobile-menu-drawer">
         <svg
           class="w-10 h-10"
           viewBox="0 0 64 64"
@@ -437,111 +443,89 @@ export function renderMastheadNavbar({
   ` : ''}
 </header>
 
-  <!-- Mobile menu drawer: outside <header>, whose backdrop-filter would make these fixed layers relative to the header instead of the viewport -->
-  <div id="mobile-menu-dim" onclick="closeMobileMenu()" class="sm:hidden fixed inset-0 z-[59] bg-black/60 transition-opacity duration-300 opacity-0 pointer-events-none" style="-webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);"></div>
-  <div id="mobile-menu-overlay" class="sm:hidden fixed inset-x-0 bottom-0 z-[60] flex justify-end transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div class="absolute inset-0" onclick="closeMobileMenu()"></div>
-    <div id="mobile-menu-drawer" class="relative w-[75%] max-w-sm bg-white h-full overflow-y-auto shadow-xl flex flex-col transition-transform duration-300 translate-x-full">
-      <!-- Header section (Black background) -->
-      <div class="bg-white text-black px-4 pt-4 pb-3 flex flex-col gap-3 shrink-0 border-b border-neutral-200">
-        <!-- Top row -->
-        <div class="flex items-center justify-between h-[40px]">
-          <!-- Close Button on Left -->
-          <button onclick="closeMobileMenu()" class="p-2 -ml-2 min-w-[40px] min-h-[40px] flex items-center justify-center text-black hover:bg-neutral-100 rounded-xl transition-colors animate-none" aria-label="Close menu">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-
-          <!-- Title in Center (the page header above already shows the logo) -->
-          <span class="font-share text-sm tracking-[0.2em] uppercase text-black">Menu</span>
-
-          <!-- Right Avatar/Initials or SIGN IN button -->
-          <div id="drawer-avatar-container" class="flex items-center justify-end min-w-[40px]">
+  <!-- Mobile menu: a full-screen sheet (outside <header>, whose backdrop-filter would make fixed layers relative to the header) -->
+  <div id="mobile-menu-overlay" class="op-menu" data-open="false" aria-hidden="true">
+    <div id="mobile-menu-drawer" class="op-menu__sheet" role="dialog" aria-modal="true" aria-label="Site menu">
+      <div class="op-menu__bar">
+        <img class="op-menu__logo" src="/openpress-logo-full-nobg-trim.png" alt="OpenPress" />
+        <div class="op-menu__bar-actions">
+          <div id="drawer-avatar-container" class="op-menu__avatar">
             ${resolvedShowSignIn ? `
             <button
               id="mobile-drawer-login-btn"
               onclick="closeMobileMenu(); openEpaperAuthModal();"
               type="button"
-              class="font-share text-[10px] tracking-wider px-2.5 py-1 transition-colors uppercase font-bold rounded cursor-pointer"
+              class="op-menu__signin"
               style="display: none; background-color: ${resolvedSignInBg}; color: ${resolvedSignInText};"
             >
               ${signInText}
             </button>
             ` : ''}
           </div>
-        </div>
-
-        <!-- Search Input Box below it -->
-        <div id="drawer-search-container" class="relative flex items-center bg-neutral-100 text-neutral-500 rounded-xl px-4 min-h-[44px] text-base transition-all duration-200 border border-neutral-200 focus-within:border-black">
-          <svg id="drawer-search-icon" class="w-4 h-4 mr-2.5 text-neutral-450 flex-shrink-0 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            id="drawer-search-input"
-            type="text"
-            oninput="handleDrawerSearch(this.value)"
-            placeholder="Search stories..."
-            class="w-full bg-transparent outline-none text-black text-base placeholder-neutral-500 transition-colors duration-200 appearance-none"
-            style="font-size: 16px; -webkit-appearance: none;"
-          />
-          <button
-            id="drawer-search-clear-btn"
-            onclick="clearDrawerSearch()"
-            style="display: none;"
-            class="text-neutral-500 hover:text-black transition-colors duration-200"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+          <button id="mobile-menu-close" type="button" onclick="closeMobileMenu()" class="op-menu__close" aria-label="Close menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
           </button>
         </div>
       </div>
 
-      <div id="drawer-nav-container" class="flex-1 flex flex-col min-h-0">
-        <nav id="drawer-nav-links" class="flex flex-col p-4 gap-2 overflow-y-auto flex-1 h-full">
-          <!-- Reader Profile Card in Mobile Drawer -->
-          <div id="drawer-reader-card" class="hidden p-3.5 mb-2 bg-neutral-50 rounded-xl border border-neutral-200 shrink-0">
-            <div class="flex items-center gap-3">
-              <div id="drawer-reader-initial" class="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm shrink-0">?</div>
-              <img id="drawer-reader-picture" class="w-10 h-10 rounded-full object-cover hidden shrink-0 border border-neutral-300" src="" alt="" />
-              <div class="flex-1 min-w-0">
-                <div id="drawer-reader-name" class="font-bold text-sm text-neutral-900 truncate">ePaper Reader</div>
-                <div id="drawer-reader-email" class="text-xs text-neutral-500 truncate"></div>
-                <span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 rounded-full">Signed in</span>
-              </div>
-            </div>
-            <button onclick="closeMobileMenu(); handleLogout();" type="button" class="mt-3 w-full py-2 px-3 text-xs font-semibold text-red-600 bg-white border border-neutral-300 rounded-lg hover:bg-red-50 text-center transition cursor-pointer">
-              Sign Out
-            </button>
-          </div>
+      <div class="op-menu__scroll">
+        <div id="drawer-search-container" class="op-menu__search">
+          <svg id="drawer-search-icon" class="op-menu__search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.3-4.3M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
+          <input
+            id="drawer-search-input"
+            type="search"
+            inputmode="search"
+            enterkeyhint="search"
+            autocomplete="off"
+            oninput="handleDrawerSearch(this.value)"
+            placeholder="Search stories"
+            aria-label="Search stories"
+            class="op-menu__search-input"
+          />
+          <button id="drawer-search-clear-btn" type="button" onclick="clearDrawerSearch()" style="display: none;" class="op-menu__search-clear" aria-label="Clear search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
 
-          ${renderMobileMenuItem('HOME')}
-          ${normalizedSections.map(renderMobileMenuItem).join('')}
-          ${resolvedShowBecomeMember ? `
-          <a
-            href="/support-us"
-            class="mt-4 text-center border font-share text-sm px-4 py-3 transition-colors whitespace-nowrap block"
-            style="background-color: ${resolvedBecomeMemberBg}; color: ${resolvedBecomeMemberText}; border-color: ${resolvedBecomeMemberBg};"
-          >
-            ${becomeMemberText}
-          </a>
-          ` : ''}
-        </nav>
-        <div id="drawer-search-results" class="hidden flex flex-col p-4 gap-2 overflow-y-auto flex-1 h-full"></div>
+        <div id="drawer-nav-container" class="op-menu__body">
+          <nav id="drawer-nav-links" class="op-menu__nav" aria-label="Sections">
+            <!-- Reader profile card (shown once a reader is signed in) -->
+            <div id="drawer-reader-card" class="hidden op-menu__reader">
+              <div class="op-menu__reader-row">
+                <div id="drawer-reader-initial" class="op-menu__reader-initial">?</div>
+                <img id="drawer-reader-picture" class="op-menu__reader-picture hidden" src="" alt="" />
+                <div class="op-menu__reader-text">
+                  <div id="drawer-reader-name" class="op-menu__reader-name">ePaper Reader</div>
+                  <div id="drawer-reader-email" class="op-menu__reader-email"></div>
+                </div>
+              </div>
+              <button onclick="closeMobileMenu(); handleLogout();" type="button" class="op-menu__reader-out">Sign out</button>
+            </div>
+
+            ${menuSections.map(renderMobileMenuItem).join('')}
+          </nav>
+          <div id="drawer-search-results" class="hidden op-menu__results"></div>
+        </div>
       </div>
-      <!-- Social icons in mobile menu footer -->
+
+      <div class="op-menu__foot">
+        ${resolvedShowBecomeMember ? `
+        <a data-drawer-become-member-btn href="/support-us" class="op-menu__cta" style="background-color: ${resolvedBecomeMemberBg}; color: ${resolvedBecomeMemberText};">${becomeMemberText}</a>
+        ` : ''}
+        ${resolvedShowSupportUs ? `
+        <a data-drawer-support-btn href="/support-us" class="op-menu__cta op-menu__cta--secondary">Support us</a>
+        ` : ''}
       ${resolvedShowFacebook || resolvedShowLinkedIn ? `
-      <div class="flex items-center gap-3 px-4 py-4 border-t border-gray-100">
+      <div class="op-menu__social">
         ${resolvedShowFacebook ? `
         <a
           href="https://www.facebook.com/shreyanshtri26"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Facebook"
-          class="flex items-center justify-center w-6 h-6 text-black hover:opacity-70 transition-opacity"
+          class="op-menu__social-link"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12c0-5.5-4.5-10-10-10z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9c1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12c0-5.5-4.5-10-10-10z"/></svg>
         </a>
         ` : ''}
         ${resolvedShowLinkedIn ? `
@@ -550,13 +534,14 @@ export function renderMastheadNavbar({
           target="_blank"
           rel="noopener noreferrer"
           aria-label="LinkedIn"
-          class="flex items-center justify-center w-6 h-6 text-black hover:opacity-70 transition-opacity"
+          class="op-menu__social-link"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor" aria-hidden="true"><path d="M19.7,3H4.3C3.582,3,3,3.582,3,4.3v15.4C3,20.418,3.582,21,4.3,21h15.4c0.718,0,1.3-0.582,1.3-1.3V4.3C21,3.582,20.418,3,19.7,3z M8.339,18.338H5.667v-8.59h2.672V18.338z M7.004,8.574c-0.857,0-1.549-0.694-1.549-1.548c0-0.855,0.691-1.548,1.549-1.548c0.854,0,1.547,0.694,1.547,1.548C8.551,7.881,7.858,8.574,7.004,8.574z M18.339,18.338h-2.669v-4.177c0-0.996-0.017-2.278-1.387-2.278c-1.389,0-1.601,1.086-1.601,2.206v4.249h-2.667v-8.59h2.559v1.174h0.037c0.356-0.675,1.227-1.387,2.526-1.387c2.703,0,3.203,1.779,3.203,4.092V18.338z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor" aria-hidden="true"><path d="M19.7,3H4.3C3.582,3,3,3.582,3,4.3v15.4C3,20.418,3.582,21,4.3,21h15.4c0.718,0,1.3-0.582,1.3-1.3V4.3C21,3.582,20.418,3,19.7,3z M8.339,18.338H5.667v-8.59h2.672V18.338z M7.004,8.574c-0.857,0-1.549-0.694-1.549-1.548c0-0.855,0.691-1.548,1.549-1.548c0.854,0,1.547,0.694,1.547,1.548C8.551,7.881,7.858,8.574,7.004,8.574z M18.339,18.338h-2.669v-4.177c0-0.996-0.017-2.278-1.387-2.278c-1.389,0-1.601,1.086-1.601,2.206v4.249h-2.667v-8.59h2.559v1.174h0.037c0.356-0.675,1.227-1.387,2.526-1.387c2.703,0,3.203,1.779,3.203,4.092V18.338z"/></svg>
         </a>
         ` : ''}
       </div>
       ` : ''}
+      </div>
     </div>
   </div>
 
@@ -1155,8 +1140,14 @@ export function renderMastheadNavbar({
         const section = btn.getAttribute('data-section');
         const isActive = section === activeSection;
 
+        if (btn.classList.contains('op-menu__item')) {
+          btn.classList.toggle('is-active', isActive);
+          if (isActive) btn.setAttribute('aria-current', 'page'); else btn.removeAttribute('aria-current');
+          return;
+        }
+
         if (isActive) {
-          if (btn.classList.contains('bg-neutral-100')) { /* mobile drawer active item: already styled */ }
+          if (btn.classList.contains('bg-neutral-100')) { /* legacy active item: already styled */ }
           else { btn.classList.add('text-black', 'font-bold'); btn.classList.remove('hover:text-black'); }
         } else {
           btn.classList.remove('text-black', 'font-bold');
@@ -1170,52 +1161,56 @@ export function renderMastheadNavbar({
       });
     };
 
+    // ---- Mobile menu (full-screen sheet) ------------------------------------------------------------
+    // Open: lock page scroll, make everything behind inert, move focus into the sheet. Close: undo all of that and give focus
+    // back to the button that opened it. Tab is kept inside the sheet; Escape is handled by the shared key handler below.
+    var _menuReturnFocus = null;
     window.toggleMobileMenu = function() {
-      isMobileMenuOpen = !isMobileMenuOpen;
-      const overlay = document.getElementById('mobile-menu-overlay');
-      const drawer = document.getElementById('mobile-menu-drawer');
-      if (isMobileMenuOpen) {
-        // Position overlay to start below the banner + header so banner stays visible
-        var banner = document.getElementById('navbar-top-banner');
-        var header = document.querySelector('header');
-        var topOffset = 0;
-        if (banner && banner.offsetHeight > 0) {
-          topOffset = banner.getBoundingClientRect().bottom;
-        } else if (header) {
-          topOffset = header.getBoundingClientRect().bottom;
-        }
-        topOffset = Math.max(0, topOffset);
-        overlay.style.top = topOffset + 'px';
-        overlay.style.height = 'calc(100dvh - ' + topOffset + 'px)';
-        overlay.classList.remove('opacity-0', 'pointer-events-none');
-        overlay.classList.add('opacity-100', 'pointer-events-auto');
-        var dim = document.getElementById('mobile-menu-dim');
-        if (dim) { dim.classList.remove('opacity-0', 'pointer-events-none'); dim.classList.add('opacity-100', 'pointer-events-auto'); }
-        drawer.classList.remove('translate-x-full');
-        drawer.classList.add('translate-x-0');
-        document.body.style.overflow = 'hidden';
-      } else {
-        window.closeMobileMenu();
-      }
+      if (isMobileMenuOpen) window.closeMobileMenu(); else window.openMobileMenu();
     };
-
+    window.openMobileMenu = function() {
+      var overlay = document.getElementById('mobile-menu-overlay');
+      if (!overlay || isMobileMenuOpen) return;
+      isMobileMenuOpen = true;
+      _menuReturnFocus = document.activeElement;
+      overlay.setAttribute('data-open', 'true');
+      overlay.setAttribute('aria-hidden', 'false');
+      var btn = document.getElementById('mobile-menu-btn');
+      if (btn) { btn.setAttribute('aria-expanded', 'true'); btn.setAttribute('aria-label', 'Close menu'); }
+      document.body.style.overflow = 'hidden';
+      ['root', 'navbar-top-banner'].forEach(function(id) { var el = document.getElementById(id); if (el) el.setAttribute('inert', ''); });
+      var header = document.querySelector('header'); if (header) header.setAttribute('inert', '');
+      setTimeout(function() { var c = document.getElementById('mobile-menu-close'); if (c) c.focus({ preventScroll: true }); }, 60);
+    };
     window.closeMobileMenu = function() {
+      var overlay = document.getElementById('mobile-menu-overlay');
+      var wasOpen = isMobileMenuOpen;
       isMobileMenuOpen = false;
-      const overlay = document.getElementById('mobile-menu-overlay');
-      const drawer = document.getElementById('mobile-menu-drawer');
-      if (overlay && drawer) {
-        overlay.classList.add('opacity-0', 'pointer-events-none');
-        overlay.classList.remove('opacity-100', 'pointer-events-auto');
-        var dim = document.getElementById('mobile-menu-dim');
-        if (dim) { dim.classList.add('opacity-0', 'pointer-events-none'); dim.classList.remove('opacity-100', 'pointer-events-auto'); }
-        drawer.classList.add('translate-x-full');
-        drawer.classList.remove('translate-x-0');
-        document.body.style.overflow = 'unset';
+      if (overlay) {
+        overlay.setAttribute('data-open', 'false');
+        overlay.setAttribute('aria-hidden', 'true');
       }
+      var btn = document.getElementById('mobile-menu-btn');
+      if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-label', 'Open menu'); }
+      document.body.style.overflow = '';
+      ['root', 'navbar-top-banner'].forEach(function(id) { var el = document.getElementById(id); if (el) el.removeAttribute('inert'); });
+      var header = document.querySelector('header'); if (header) header.removeAttribute('inert');
+      if (wasOpen && _menuReturnFocus && _menuReturnFocus.focus) { try { _menuReturnFocus.focus({ preventScroll: true }); } catch (e) {} }
+      _menuReturnFocus = null;
       if (window.clearDrawerSearch) {
         window.clearDrawerSearch();
       }
     };
+    document.addEventListener('keydown', function(e) {
+      if (e.key !== 'Tab' || !isMobileMenuOpen) return;
+      var sheet = document.getElementById('mobile-menu-drawer');
+      if (!sheet) return;
+      var items = Array.prototype.filter.call(sheet.querySelectorAll('a[href], button, input, [tabindex]:not([tabindex="-1"])'), function(el) { return !el.disabled && el.offsetParent !== null; });
+      if (!items.length) return;
+      var first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
 
     window.toggleDesktopMenu = function() {
       isDesktopMenuOpen = !isDesktopMenuOpen;

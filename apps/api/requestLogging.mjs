@@ -1,5 +1,5 @@
 /**
- * Pagebuilder requests contain complete HTML documents and editor state.
+ * Page Studio requests contain complete HTML documents and editor state.
  * Summarize only their operational request log; pass the original request to
  * the handler and keep RUM/campaign/other event logging in its existing format.
  */
@@ -9,8 +9,8 @@ export function requestEventForLogging(event) {
   if (
     !path.startsWith('/pagestudio/') &&
     !path.startsWith('/api/pagestudio/') &&
-    !path.startsWith('/pagebuilder/') &&
-    !path.startsWith('/api/pagebuilder/')
+    !path.startsWith('/pagestudio/') &&
+    !path.startsWith('/api/pagestudio/')
   ) {
     return event;
   }

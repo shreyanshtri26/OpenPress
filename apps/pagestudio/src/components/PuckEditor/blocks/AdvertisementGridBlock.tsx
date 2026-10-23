@@ -12,7 +12,7 @@ export function AdvertisementGridBlock({ id, heading, infoLabel, brandName, item
   const Slot = Items as unknown as React.ComponentType<{ className?: string }>
 
   return (
-    <section id={id} className="mx-auto w-full max-w-[85%] px-6 py-8">
+    <section id={id} className="op-container py-8">
       {/* Heading */}
       <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">
         <span className="h-px flex-1 bg-slate-200" aria-hidden />

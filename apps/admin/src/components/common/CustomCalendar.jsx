@@ -1,5 +1,5 @@
 import React from "react";
-import { DateBox } from "@/components/ui/dx/date-box";
+import { DateBox } from "@/components/ui/kit/date-box";
 
 /**
  * Date (or date + time) picker built on the native input via the free DateBox kit.

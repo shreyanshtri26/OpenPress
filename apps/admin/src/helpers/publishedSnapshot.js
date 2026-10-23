@@ -1,7 +1,7 @@
 /**
- * A page's stored `data` (from GET /pagebuilder/page) optionally carries a
+ * A page's stored `data` (from GET /pagestudio/page) optionally carries a
  * `publishedSnapshot`: a full, self-contained copy of the data as of the
- * last explicit "Publish" click in the PageBuilder editor. The editor's
+ * last explicit "Publish" click in the Page Studio editor. The editor's
  * live-editing autosave never touches this key, only the top-level
  * root/content/zones. So anything that republishes a page for a reason
  * OTHER than the editing user themselves publishing (campaign pause/play,

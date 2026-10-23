@@ -1,7 +1,7 @@
 // src/components/common/DAM/Drawer/ReviewDrawer.jsx
 
-import Accordion from '@/components/ui/dx/accordion';
-import TextArea from '@/components/ui/dx/text-area';
+import Accordion from '@/components/ui/kit/accordion';
+import TextArea from '@/components/ui/kit/text-area';
 import { useState, useCallback , useEffect} from 'react';
 import CustomButton from '../../CustomButton';
 
@@ -22,7 +22,7 @@ const isFormValid = ()=>{
  formData.editorComments && formData.decision
   );
 };
-  // Simplified state management using DevExtreme's selectedItems approach
+  // Simplified state management using the kit's selectedItems approach
   const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
@@ -184,13 +184,13 @@ const isFormValid = ()=>{
       {/* Global Styles */}
       <style jsx global>{`
         /* Accordion styling to look like SelectBox */
-        .dx-accordion {
+        .kit-accordion {
           border: none !important;
           padding: 0 !important;
           margin: 0 !important;
         }
 
-        .dx-accordion-item {
+        .kit-accordion-item {
           border: none !important;
           margin-bottom: 2px !important;
           position: relative;
@@ -199,46 +199,11 @@ const isFormValid = ()=>{
           margin-bottom: 2px !important;
         }
 
-        .dx-accordion-item-title {
-          border: none !important;
-          border-radius: 4px !important;
-          padding: 0 !important;
-          background: white !important;
-          min-height: 40px !important;
-          display: flex !important;
-          align-items: center !important;
-        }
-
-        .dx-accordion-item-title .dx-item-content {
-          padding: 0 !important;
-        }
-
         /* Hide accordion arrow */
-        .dx-accordion-item-title::after {
-          display: none !important;
-        }
 
         /* Closed items */
-        .dx-accordion-item.dx-accordion-item-closed .dx-item-content {
-          height: 0 !important;
-          overflow: hidden !important;
-        }
-
-        .dx-accordion-item-opened .dx-accordion-item-title {
-          border: none !important;
-        }
-
-        .dx-accordion-item-body {
-          border: none !important;
-          border-top: none !important;
-          border-radius: 0 0 4px 4px !important;
-          padding: 0 0 0 0 !important;
-        }
 
         /* Opened items */
-        .dx-accordion-item-opened .dx-accordion-item-body {
-          padding: 8px 0 0 0 !important;
-        }
 
         .accordion-title-wrapper {
           font-family: 'Inter', sans-serif !important;
@@ -261,15 +226,7 @@ const isFormValid = ()=>{
           padding-bottom: 8px;
         }
 
-        /* Remove DevExtreme hover/selected tints */
-        .dx-accordion .dx-accordion-item.dx-state-hover,
-        .dx-accordion .dx-accordion-item.dx-state-focused,
-        .dx-accordion .dx-accordion-item-title.dx-state-hover,
-        .dx-accordion .dx-accordion-item-title.dx-state-focused,
-        .dx-accordion .dx-item-selected {
-          background: transparent !important;
-          box-shadow: none !important;
-        }
+        /* Remove the grid kit hover/selected tints */
 
         .option-item {
           font-family: 'Inter', sans-serif !important;
@@ -284,30 +241,7 @@ const isFormValid = ()=>{
           background-color: #f9fafb;
         }
 
-        .dx-texteditor,
-        .dx-texteditor-input {
-          border-radius: 0 !important;
-        }
-
-        .custom-textarea .dx-texteditor:hover {
-          background: #f9fafb !important;
-        }
-
-        .custom-textarea .dx-texteditor-input {
-          font-family: 'Inter', sans-serif !important;
-          font-size: 15px !important;
-          padding: 12px !important;
-        }
-
         /* Ensure TextArea border stays consistent */
-        .custom-textarea .dx-texteditor {
-          border: 1px solid black !important;
-        }
-
-        .custom-textarea .dx-texteditor.dx-state-focused {
-          border-color: black !important;
-          box-shadow: none !important;
-        }
       `}</style>
     </>
   );

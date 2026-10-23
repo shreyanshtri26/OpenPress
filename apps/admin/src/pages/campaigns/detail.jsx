@@ -269,12 +269,12 @@ export default function CampaignDetailPage() {
                                                     <button className="px-2 py-1 hover:text-black hover:bg-gray-100 transition-colors">M</button>
                                                 </div>
                                             </div>
-                                            {/* DevExtreme Chart Component */}
+                                            {/* the grid kit Chart Component */}
                                             <div className="mb-8">
                                                 <AudienceInsightsChart data={chartData} />
                                             </div>
 
-                                            {/* DevExtreme DataGrid Component */}
+                                            {/* the grid kit DataGrid Component */}
                                             <div className="mt-12 w-full">
                                                 <PlacementPerformanceGrid data={(campaign?.jobs || []).map(job => ({
                                                     placement: job.placement,

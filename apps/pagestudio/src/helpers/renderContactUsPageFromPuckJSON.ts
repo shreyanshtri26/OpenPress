@@ -1,6 +1,7 @@
 import { PUBLISHED_PAGE_STYLES } from "../generated/publishedPageStyles";
 import { ComponentRegistry } from './registry/ComponentRegistry';
 import type { RenderContext } from './core/renderTypes';
+import { popupAdHtmlFor } from './renderers/renderPopupAd';
 import { renderDynamicAd } from './renderers/renderDynamicAd';
 
 type PuckBlock = {
@@ -111,6 +112,7 @@ export function renderContactUsPageFromPuckJSON(
   </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark" />
     <title>${escapeHtml(ogTitle)}</title>
     
     <!-- Meta Tags -->
@@ -131,13 +133,14 @@ export function renderContactUsPageFromPuckJSON(
     <meta property="twitter:description" content="${escapeHtml(ogDescription)}">
     <meta property="twitter:image" content="${ogImage}">
 
-    <!-- Favicons -->
-    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Icons and manifest (the files the site actually serves) -->
+    <link rel="icon" href="/openpress-favicon-32.png" type="image/png" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="${siteName}" />
-    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1d1d1f" media="(prefers-color-scheme: dark)" />
 
     <!-- Performance: Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -156,10 +159,11 @@ export function renderContactUsPageFromPuckJSON(
       .font-libre { font-family: 'Libre Franklin', sans-serif !important; }
     </style>
 </head>
-<body class="bg-white text-black">
+<body>
     <div id="root">
         ${contentHTML}
     </div>
+${popupAdHtmlFor(campaigns, data)}
 </body>
 </html>`;
 }

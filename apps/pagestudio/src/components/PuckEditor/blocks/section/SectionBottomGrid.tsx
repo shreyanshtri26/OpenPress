@@ -45,7 +45,7 @@ export function SectionBottomGrid({
 
     return (
         <section id={id} className={`w-full bg-white pt-8 lg:pr-24 pb-12 ${className}`}>
-            <div className="mx-auto w-full max-w-7xl">
+            <div className="op-container">
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-0">
 
                     {/* LEFT COLUMN - Only Top Bar */}

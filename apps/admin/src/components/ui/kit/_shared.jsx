@@ -1,4 +1,4 @@
-// Shared helpers for the DevExtreme-compatible kit (free replacement for devextreme-react).
+// Shared helpers for the Native kit (free replacement for a third-party widget library).
 // Only the props/events this codebase actually uses are implemented.
 import { Children, isValidElement, useEffect, useState } from 'react';
 
@@ -8,7 +8,7 @@ export const fieldClass =
   'w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 ' +
   'focus:border-black focus:outline-none focus:ring-1 focus:ring-black disabled:bg-gray-100 read-only:bg-gray-50 transition-colors';
 
-// DevExtreme passes { value, previousValue, event, component } to onValueChanged.
+// the grid kit passes { value, previousValue, event, component } to onValueChanged.
 export function emit(handler, value, previousValue, event, options = {}) {
   handler?.({ value, previousValue, event, component: { option: (name) => options[name] }, ...options });
 }
@@ -29,7 +29,7 @@ export function fromElementAttr(elementAttr) {
 
 export const toArray = (source) => (Array.isArray(source) ? source : Array.isArray(source?.items) ? source.items : []);
 
-// Keeps the typed value locally (like DevExtreme editors) while following the parent's value prop.
+// Keeps the typed value locally (like the grid kit editors) while following the parent's value prop.
 export function useLocalValue(value) {
   const [local, setLocal] = useState(value);
   useEffect(() => setLocal(value), [value]);

@@ -1,4 +1,4 @@
-// POST /analytics/collect: public beacon target for the published pages' tracker (see pagebuilder analyticsTags).
+// POST /analytics/collect: public beacon target for the published pages' tracker (see pagestudio analyticsTags).
 // First-party and cookie-free: the browser sends a random id it keeps in localStorage. Device, browser and OS
 // come from the User-Agent; country/region/city from the CDN's geo headers when there is one (Cloudflare).
 import { db } from '../../db/client.mjs';

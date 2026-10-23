@@ -1137,28 +1137,6 @@ export default function AllStories({ onBack, handleEditStory }: AllStoriesProps)
   return (
     <>
       <style>{`
-        .allstories-datagrid .dx-datagrid-pager,
-        .allstories-datagrid .dx-datagrid-bottom-content {
-          background-color: #fff !important;
-          border-top: none !important;
-          box-shadow: none !important;
-          margin-top: 0 !important;
-        }
-
-        .allstories-datagrid .dx-datagrid-rowsview .dx-row:last-child > td {
-          border-bottom: none !important;
-        }
-
-        .allstories-datagrid .dx-datagrid-headers .dx-header-row td {
-          font-weight: 600 !important;
-          color: #111827 !important;
-        }
-
-        .allstories-datagrid .dx-datagrid-rowsview .dx-row > td {
-          font-weight: 400 !important;
-          color: #000 !important;
-        }
-
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }

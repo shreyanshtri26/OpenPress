@@ -1808,17 +1808,6 @@ export default function PublishDrawer({
           margin-bottom: 4px !important;
           letter-spacing: -0.01em !important;
         }
-        .drawer-apple-compact .dx-texteditor {
-          border-radius: 8px !important;
-          border-color: #e5e7eb !important;
-          background: #fdfdfd !important;
-          font-size: 12px !important;
-        }
-        .drawer-apple-compact .dx-texteditor.dx-state-focused {
-          border-color: #171717 !important;
-          background: #ffffff !important;
-          box-shadow: 0 0 0 1px #171717 !important;
-        }
         .drawer-apple-compact .custom-textarea {
           border-radius: 8px !important;
           border: 1px solid #e5e7eb !important;

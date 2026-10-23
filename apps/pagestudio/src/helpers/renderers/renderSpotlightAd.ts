@@ -1,3 +1,4 @@
+import { isCampaignStatusServing } from '../core/campaignStatus';
 import type { RenderContext } from '../core/renderTypes';
 import { renderRecommendCard } from './renderRecommendCard';
 
@@ -28,11 +29,9 @@ function resolveSpotlightCampaign(
     // Backend stores status via CreateCampaignView: (status).toLowerCase().replace(' ','_')
     // So possible values: 'start_now', 'run_now', 'active', 'running', 'scheduled', 'draft', 'paused'
     // We accept everything EXCEPT explicitly inactive ones.
-    const INACTIVE = new Set(['paused', 'pause', 'draft', 'stopped', 'ended', 'cancelled', 'canceled']);
 
     const isActive = (c: any): boolean => {
-        const st = (c.status || '').toLowerCase().replace(/[\s_-]+/g, '_');
-        if (INACTIVE.has(st)) return false;
+        if (!isCampaignStatusServing(c.status)) return false;
         const s = c.startDate || c.startTime;
         const e = c.endDate   || c.endTime;
         if (s && new Date(s) > now) return false;

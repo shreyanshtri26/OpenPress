@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import DateBox from '@/components/ui/dx/date-box';
-import SelectBox from '@/components/ui/dx/select-box';
+import DateBox from '@/components/ui/kit/date-box';
+import SelectBox from '@/components/ui/kit/select-box';
 
 interface FilterDrawerProps {
     fromDate: string;
@@ -86,7 +86,7 @@ export const FilterDrawer = ({
                                 useMaskBehavior={true}
                                 showDropDownButton={false}
                                 placeholder="Select start date"
-                                className="dx-borderless flex-1"
+                                className="kit-borderless flex-1"
                             />
                         </div>
                     </div>
@@ -114,7 +114,7 @@ export const FilterDrawer = ({
                                 useMaskBehavior={true}
                                 showDropDownButton={false}
                                 placeholder="Select end date"
-                                className="dx-borderless flex-1"
+                                className="kit-borderless flex-1"
                             />
                         </div>
                     </div>
@@ -131,7 +131,7 @@ export const FilterDrawer = ({
                             value={localUserId}
                             onValueChanged={e => setLocalUserId(e.value)}
                             placeholder="Select user ID"
-                            className="dx-borderless w-full"
+                            className="kit-borderless w-full"
                         />
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 # OpenPress Admin
 
-The newsroom dashboard: where stories are raised, reviewed and published, media and campaigns are managed, and (for Super Users) the public site is designed in **Page Studio** (the page builder) at `/build`.
+The newsroom dashboard: where stories are raised, reviewed and published, media and campaigns are managed, and (for Super Users) the public site is designed in **Page Studio** (Page Studio) at `/build`.
 
 - **Stack:** React 18, Vite 7, TypeScript and JavaScript, Tailwind CSS 3, React Router 6
 - **Editors:** [Editor.js](https://editorjs.io) for story bodies, [Puck](https://puckeditor.com) for page layouts
@@ -35,7 +35,7 @@ The newsroom dashboard: where stories are raised, reviewed and published, media 
 | `/contact_inquiries` | Messages from the site's contact form | signed in |
 | `/signals`, `/research`, `/queries` | Research and wire tools | signed in |
 | `/settings` | Users, roles and permissions, taxonomies, authors, ad placements | Super User for users and roles |
-| `/build` | **Page Studio**, the page builder (see below) | **Super User only** |
+| `/build` | **Page Studio**, Page Studio (see below) | **Super User only** |
 
 A slim strip above every page holds two buttons: **Page Studio** (Super Users, opens `/build`) and **ePaper**, which opens the published site in a new tab. Both are in `components/common/ToolbarLinks.jsx`.
 
@@ -78,7 +78,7 @@ These values are baked into the build, **including the renderer bundle** that th
 apps/admin/src/
 ├── App.jsx                 Routes, idle timeout (9 h), service worker
 ├── pages/                  One folder per route
-│   └── build/              The page-builder route
+│   └── build/              Page Studio route
 ├── components/
 │   ├── KanbanBoard/        Dashboard board
 │   ├── StoryEditor/        Story editor, headers, raise-a-story form

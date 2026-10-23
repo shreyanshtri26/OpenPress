@@ -9,7 +9,7 @@ type RenderHeadingProps = {
   size?: 'xxxl' | 'xxl' | 'xl' | 'l' | 'm' | 's' | 'xs'
 }
 
-export function renderHeading(props: RenderHeadingProps, ctx?: RenderContext): string {
+export function renderHeading(props: RenderHeadingProps, _ctx?: RenderContext): string {
   const {
     id,
     text = 'Heading',
@@ -37,11 +37,10 @@ export function renderHeading(props: RenderHeadingProps, ctx?: RenderContext): s
       ? 'text-right'
       : 'text-left'
 
-  const isHome = ctx?.pageType === 'Home' || (ctx?.activeSection === 'HOME' && !ctx?.currentStory && !ctx?.authorId);
 
   return `
-    <section id="${id ?? ''}" class="bg-white italic font-libre franklin w-full px-4 sm:px-8 lg:px-16 pt-6">
-      <div class="mx-auto w-full max-w-7xl ${isHome ? 'px-0 sm:px-6 lg:px-8' : 'px-4 sm:px-6 lg:px-8'}">
+    <section id="${id ?? ''}" class="bg-white italic font-libre franklin w-full pt-6">
+      <div class="op-container">
         <${tag} class="${sizeClasses[size]} ${alignClass}">
           ${escapeHtml(text)}
         </${tag}>

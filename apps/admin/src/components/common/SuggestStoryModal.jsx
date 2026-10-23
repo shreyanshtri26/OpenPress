@@ -12,12 +12,12 @@ import { normalizeDescription } from "../../utils/normalizeDescription";
 import { UserContext } from '../../context/UserContext';
 
 // DevExpress imports
-import { Popup } from '@/components/ui/dx/popup';
-import { SelectBox } from '@/components/ui/dx/select-box';
-import { DateBox } from '@/components/ui/dx/date-box';
-import { Button } from '@/components/ui/dx/button';
-import { ValidationSummary } from '@/components/ui/dx/validation-summary';
-import { Validator, RequiredRule, StringLengthRule } from '@/components/ui/dx/validator';
+import { Popup } from '@/components/ui/kit/popup';
+import { SelectBox } from '@/components/ui/kit/select-box';
+import { DateBox } from '@/components/ui/kit/date-box';
+import { Button } from '@/components/ui/kit/button';
+import { ValidationSummary } from '@/components/ui/kit/validation-summary';
+import { Validator, RequiredRule, StringLengthRule } from '@/components/ui/kit/validator';
 
 export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
   const { user } = useContext(UserContext);

@@ -17,8 +17,8 @@ import DataGrid, {
     Selection,
     FilterPanel,
     FilterBuilderPopup,
-} from '@/components/ui/dx/data-grid';
-import SelectBox from '@/components/ui/dx/select-box';
+} from '@/components/ui/kit/data-grid';
+import SelectBox from '@/components/ui/kit/select-box';
 import { mapBackendCampaignToFrontend } from "../../helpers/campaignMapper";
 import { AlertCircle, X } from "lucide-react";
 import { createGridExportHandler } from "../../utils/dataGridExport";
@@ -362,55 +362,9 @@ const PlacementTab = ({ onRegisterAddPlacement }) => {
       {/* Table Container */}
       <div className="bg-white border border-black overflow-hidden">
         <style jsx global>{`
-          .placement-datagrid .dx-datagrid-addrow-button,
-          .placement-datagrid .dx-command-edit .dx-link-add {
-            display: none !important;
-          }
-          .placement-datagrid .dx-datagrid-rowsview tbody tr.dx-data-row:last-child > td {
-            border-bottom: 0 !important;
-          }
-          .placement-datagrid .dx-datagrid-headers .dx-header-row td {
-            color: #000000 !important;
-            font-weight: 600 !important;
-            height: 48px !important;
-            vertical-align: middle !important;
-          }
-          .placement-datagrid .dx-sort-icon,
-          .placement-datagrid .dx-header-filter {
-            color: #9ca3af !important;
-          }
-          .placement-datagrid .dx-datagrid-headers {
-            border-bottom: 1px solid #e5e7eb !important; /* Standard gray border like Users tab */
-            background-color: transparent !important;
-          }
           /* Remove the heavy black borders that were causing issues */
-          .placement-datagrid .dx-datagrid-rowsview .dx-row {
-            border-bottom: none !important;
-          }
-          .placement-datagrid .dx-datagrid-rowsview .dx-data-row {
-            border-bottom: 1px solid #f3f4f6 !important;
-            height: 44px !important;
-          }
-          .placement-datagrid .dx-datagrid-rowsview {
-            border-top: none !important;
-            border-bottom: none !important;
-          }
-          .placement-datagrid .dx-datagrid-filter-row {
-            display: none !important;
-          }
-          .placement-datagrid .dx-datagrid-nodata {
-            border-top: none !important;
-            border-bottom: none !important;
-          }
 
           /* Remove blue focus border from SelectBoxes */
-          .dx-state-focused.border-gray-300 {
-            border-color: #000000 !important;
-            box-shadow: none !important;
-          }
-          .dx-state-focused .dx-texteditor-container {
-            border-color: transparent !important;
-          }
         `}</style>
         <DataGrid
           dataSource={placements}

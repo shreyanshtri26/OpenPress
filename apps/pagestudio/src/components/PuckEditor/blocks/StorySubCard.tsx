@@ -108,12 +108,12 @@ const StorySubCard: React.FC<StorySubCardProps> = ({
             </div>
 
             {/* Image Section (unchanged) */}
-            <div className="ml-4 flex-shrink-0 h-16 flex items-center justify-center p-1">
+            <div className="ml-4 flex-shrink-0 h-16 w-16 overflow-hidden rounded-xl bg-gray-100">
               <img
                 key={displayImage}
                 src={displayImage}
                 alt={story.imageAlt || "Story image"}
-                className={`max-h-full max-w-full object-contain transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"
+                className={`h-full w-full object-cover transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"
                   }`}
                 loading="lazy"
               />
