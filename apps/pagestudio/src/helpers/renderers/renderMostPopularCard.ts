@@ -59,7 +59,7 @@ export function renderMostPopularCard(
   }
 
   return `
-    <div class="max-w-5xl mx-auto bg-white">
+    <div class="w-full bg-white">
       <!-- Desktop: Table layout (hidden on mobile) -->
       <div class="hidden md:flex min-h-[380px] lg:min-h-[490px] items-stretch">
         <table class="w-full border-collapse border border-gray-300 h-full table-fixed">

@@ -29,17 +29,15 @@ export function renderStoryCard(props: StoryCardProps, ctx: RenderContext): stri
     story?.category ||
     'NEWS'
 
-  const titleRaw =
-    props.title ||
-    story?.headline ||
-    'Headline goes here'
+  const titleRaw = props.title || story?.headline || ''
+  if (!story && !titleRaw) return ''
 
   const title = titleRaw
 
   const displayDescription =
     props.description ||
     story?.summary ||
-    'A short summary of the story appears here.'
+    ''
 
   const html = displayDescription
     .split(/(<[^>]+>)/g)
@@ -82,9 +80,9 @@ export function renderStoryCard(props: StoryCardProps, ctx: RenderContext): stri
           ${escapeHtml(title)}
         </h2>
 
-        <p class="text-black text-sm sm:text-base lg:text-[17px] font-[Merriweather] line-clamp-3 text-left">
+        ${normalizedDescription ? `<p class="text-black text-sm sm:text-base lg:text-[17px] font-[Merriweather] line-clamp-3 text-left">
           ${normalizedDescription}
-        </p>
+        </p>` : ''}
       </div>
     </div>
   </div>

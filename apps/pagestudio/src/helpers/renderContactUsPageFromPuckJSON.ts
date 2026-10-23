@@ -1,5 +1,6 @@
 import { PUBLISHED_PAGE_STYLES } from "../generated/publishedPageStyles";
 import { ComponentRegistry } from './registry/ComponentRegistry';
+import { wrapRootBlock, rootProps } from './core/wrapRootBlock';
 import type { RenderContext } from './core/renderTypes';
 import { popupAdHtmlFor } from './renderers/renderPopupAd';
 import { renderDynamicAd } from './renderers/renderDynamicAd';
@@ -66,7 +67,7 @@ export function renderContactUsPageFromPuckJSON(
       pageType: 'ContactUs',
     };
 
-    return renderer(props, ctx);
+    return wrapRootBlock(type, renderer(rootProps(type, props), ctx));
   }
 
   /* --------------------------------------------------

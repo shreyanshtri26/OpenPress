@@ -16,8 +16,8 @@ export function renderAuthorCard(props: {
 }): string {
     const author = props.authorId ? findAuthorById(props.authorId) : null
     const displayName = props.name || author?.name || 'Author Name'
-    const displayBio = props.bio || author?.bio || 'Lorem ipsum dolor sit amet.'
-    const displayImage = props.image || author?.image || 'https://via.placeholder.com/150'
+    const displayBio = props.bio || author?.bio || ''
+    const displayImage = props.image || author?.image || '/openpress-quill-nobg-trim.png'
 
     let authorLink = "";
     if (props.authorId && displayName) {

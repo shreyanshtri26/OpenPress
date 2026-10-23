@@ -105,23 +105,23 @@ export function renderHeroGrid(
     <div class="relative z-10 grid grid-cols-1 gap-4 sm:gap-5 lg:gap-x-6 gap-y-2 lg:grid-cols-12">
 
       <!-- Left column -->
-      <div class="order-2 lg:order-1 lg:col-span-3 flex flex-col gap-3">
-        ${leftTop ? `<div class="order-1 lg:order-none [&_h3]:text-[1.5rem] lg:[&_h3]:text-[20px] sm:[&_h3]:text-lg">${leftTop}</div>` : ''}
+      <div class="order-2 lg:order-1 lg:col-span-3 min-w-0 flex flex-col gap-3">
+        ${leftTop ? `<div class="order-1 lg:order-none [&_h2]:text-[1.35rem] [&_h2]:leading-[1.2] sm:[&_h2]:text-xl lg:[&_h2]:text-[22px] lg:[&_h2]:leading-[1.2]">${leftTop}</div>` : ''}
         ${leftTop && leftBottom ? `<hr class="border-t border-dotted border-black mb-3 order-2 lg:order-none" />` : ''}
-        ${leftBottom ? `<div class="order-3 lg:order-none [&_h3]:text-[1.5rem] lg:[&_h3]:text-[20px] sm:[&_h3]:text-lg">${leftBottom}</div>` : ''}
+        ${leftBottom ? `<div class="order-3 lg:order-none [&_h2]:text-[1.35rem] [&_h2]:leading-[1.2] sm:[&_h2]:text-xl lg:[&_h2]:text-[22px] lg:[&_h2]:leading-[1.2]">${leftBottom}</div>` : ''}
       </div>
 
       <!-- Center column -->
-      <div class="order-1 lg:order-2 lg:col-span-6 px-0 lg:px-2">
-        ${center ? `<div>${center}</div>` : ''}
+      <div class="order-1 lg:order-2 lg:col-span-6 min-w-0 px-0 lg:px-2 lg:flex lg:flex-col">
+        ${center ? `<div class="lg:flex-1 lg:flex lg:flex-col lg:[&>a]:flex lg:[&>a]:flex-1 lg:[&>a]:flex-col lg:[&_img]:flex-1 lg:[&_img]:min-h-[20rem] lg:[&_img]:aspect-auto">${center}</div>` : ''}
         ${hasCenter && (hasRight || hasLeft) ? `<hr class="border-t border-dotted border-black my-4 lg:hidden" />` : ''}
       </div>
 
       <!-- Right column -->
-      <div class="order-3 lg:order-3 lg:col-span-3 flex flex-col gap-3">
-        ${rightTop ? `<div class="order-1 lg:order-none [&_h3]:text-[1.5rem] lg:[&_h3]:text-[20px] sm:[&_h3]:text-lg">${rightTop}</div>` : ''}
+      <div class="order-3 lg:order-3 lg:col-span-3 min-w-0 flex flex-col gap-3">
+        ${rightTop ? `<div class="order-1 lg:order-none [&_h2]:text-[1.35rem] [&_h2]:leading-[1.2] sm:[&_h2]:text-xl lg:[&_h2]:text-[22px] lg:[&_h2]:leading-[1.2]">${rightTop}</div>` : ''}
         ${rightTop && rightBottom ? `<hr class="border-t border-dotted border-black mb-3 order-2 lg:order-none" />` : ''}
-        ${rightBottom ? `<div class="order-3 lg:order-none [&_h3]:text-[1.5rem] lg:[&_h3]:text-[20px] sm:[&_h3]:text-lg">${rightBottom}</div>` : ''}
+        ${rightBottom ? `<div class="order-3 lg:order-none [&_h2]:text-[1.35rem] [&_h2]:leading-[1.2] sm:[&_h2]:text-xl lg:[&_h2]:text-[22px] lg:[&_h2]:leading-[1.2]">${rightBottom}</div>` : ''}
         ${hasRight && hasLeft ? `<hr class="border-t border-dotted border-black my-4 lg:hidden order-4" />` : ''}
       </div>
 

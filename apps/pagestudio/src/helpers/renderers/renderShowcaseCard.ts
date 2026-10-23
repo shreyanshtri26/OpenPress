@@ -42,10 +42,11 @@ export function renderShowcaseCard(
           ? ctx.storiesById[item.storyId]
           : null
 
-        const title = story?.title || item.title || 'Untitled'
+        const title = story?.title || item.title || ''
+        if (!story && !title) return ''
 
         const category =
-          story?.category || item.category || 'Category'
+          story?.category || item.category || ''
 
         const publishUrl = story?.publishUrl || ''
 

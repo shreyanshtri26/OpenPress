@@ -26,8 +26,8 @@ export function renderStorySubCard(
   if (!story) return ''
 
   const image = story.image || recomCard
-  const category = story.section || 'Category'
-  const title = story.title || 'Story Title'
+  const category = story.section || ''
+  const title = story.title || story.headline || ''
   const publishUrl = story.publishUrl
 
   const Tag = publishUrl ? 'a' : 'div'

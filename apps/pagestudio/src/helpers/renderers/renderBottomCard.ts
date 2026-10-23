@@ -40,8 +40,9 @@ export function renderBottomCard(props: BottomCardProps, _ctx?: RenderContext): 
 
   // Fallbacks similar to React component
   const displayImage = story?.imageUrl || props.imageUrl || '/openpress-share.png'
-  const displayTitle = props.title || story?.headline || 'Featured story'
-  const displayDescription = props.description || story?.storySummary || story?.summary || 'Lorem ipsum dolor sit amet consectetur adipiscing elit quisque elit quisque faucibus.'
+  const displayTitle = props.title || story?.headline || ''
+  if (!story && !displayTitle) return ''
+  const displayDescription = props.description || story?.storySummary || story?.summary || ''
 
   const html = displayDescription
     .split(/(<[^>]+>)/g)
@@ -91,9 +92,9 @@ export function renderBottomCard(props: BottomCardProps, _ctx?: RenderContext): 
         </h3>
 
         <!-- Description -->
-        <p class="text-m text-gray-700 font-[Merriweather] mb-3">
+        ${normalizedDescription ? `<p class="text-m text-gray-700 font-[Merriweather] mb-3">
           ${normalizedDescription}
-        </p>
+        </p>` : ''}
 
         <!-- Meta Information -->
         <div class="flex items-center gap-2 font-share text-[12px] text-black">

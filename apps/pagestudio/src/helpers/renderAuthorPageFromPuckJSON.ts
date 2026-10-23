@@ -2,6 +2,7 @@ import { PUBLISHED_PAGE_STYLES } from "../generated/publishedPageStyles";
 import { findAuthorById } from '../components/PuckEditor/authorData';
 import { publicCampaignsJson } from './core/campaignStatus';
 import { ComponentRegistry } from './registry/ComponentRegistry';
+import { wrapRootBlock, rootProps } from './core/wrapRootBlock';
 import { getClientAdScript } from './renderers/clientAdScript';
 import type { RenderContext } from './core/renderTypes';
 import { renderDynamicAd } from './renderers/renderDynamicAd';
@@ -74,7 +75,7 @@ export function renderAuthorPageFromPuckJSON(
       pageType: pageJson?.pageType || 'Author',
     };
 
-    return renderer(props, ctx);
+    return wrapRootBlock(type, renderer(rootProps(type, props), ctx));
   }
 
   /* --------------------------------------------------

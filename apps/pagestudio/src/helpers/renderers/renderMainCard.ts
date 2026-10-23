@@ -18,10 +18,11 @@ export function renderMainCard(
 
   const story = props.storyId ? ctx.storiesById?.[props.storyId] : null
 
-  const displayImage = props.imageUrl || story?.imageUrl || story?.image || ''
-  const displayLabel = props.label || story?.category || ''
-  const displayTitle = props.title || story?.headline || ''
-  const displayDescription = props.description || story?.summary || ''
+  const displayImage = story?.imageUrl || story?.image || props.imageUrl || '/openpress-share.png'
+  const displayLabel = story?.category || props.label || ''
+  const displayTitle = story?.headline || props.title || ''
+  if (!story && !displayTitle) return ''
+  const displayDescription = story?.summary || props.description || ''
 
   const html = (displayDescription || '')
     .split(/(<[^>]+>)/g) // keep tags intact

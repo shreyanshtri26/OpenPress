@@ -162,7 +162,8 @@ export function renderMastheadNavbar({
   );
 
   // Get first 3 sections for top nav; remaining sections go into the hamburger
-  const topSections = normalizedSections.slice(0, 3);
+  // HOME always has its own button, so it is not one of the three section buttons (it would show twice).
+  const topSections = normalizedSections.filter((s) => s !== 'HOME').slice(0, 3);
   const overflowSections = normalizedSections.slice(3);
   const showHamburger = normalizedSections.length > 3;
 

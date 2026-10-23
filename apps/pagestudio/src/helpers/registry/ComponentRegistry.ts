@@ -10,6 +10,7 @@ import { renderMultimediaGrid } from '../renderers/renderMultimediaGrid'
 import { renderAllStoriesGrid } from '../renderers/renderAllStoriesGrid'
 import { renderHeading } from '../renderers/renderHeading'
 import { renderAdCard } from '../renderers/renderAdCard'
+import { findAdProductById } from '../../components/PuckEditor/adProducts'
 import { renderInStoryAd } from '../renderers/renderInStoryAd'
 import { renderLeaderboardAd } from '../renderers/renderLeaderboardAd'
 import { renderSidebarAd } from '../renderers/renderSidebarAd'
@@ -181,9 +182,10 @@ export const ComponentRegistry: Record<
       level: props.level,
       size: props.size,
     }, ctx),
+  // The editor saves only `productId`; the product itself comes from the catalogue.
   AdCard: (props) =>
     renderAdCard({
-      product: props.product,
+      product: props.product ?? findAdProductById(props.productId),
     }),
   InStoryAd: (props, ctx) =>
     renderInStoryAd({

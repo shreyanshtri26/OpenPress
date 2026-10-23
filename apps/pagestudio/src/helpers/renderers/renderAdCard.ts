@@ -24,13 +24,14 @@ export function renderAdCard(props: { product?: AdProduct }): string {
         alt="${escapeHtml(product.imageAlt)}"
         class="aspect-[16/10] w-full object-cover"
         loading="lazy"
+        onerror="this.onerror=null;this.src='/openpress-share.png'"
       />
 
       <div class="flex flex-col gap-1 px-5 py-4">
-        <p class="font-cormorant-garamond text-xl font-semibold text-slate-900">
+        <p class="font-libre text-xl font-bold text-slate-900">
           ${escapeHtml(product.name)}
         </p>
-        <p class="font-jetbrains-mono text-sm font-semibold uppercase tracking-wide text-slate-800">
+        <p class="font-share text-sm font-semibold uppercase tracking-wide text-slate-800">
           ${escapeHtml(product.price)}
         </p>
       </div>

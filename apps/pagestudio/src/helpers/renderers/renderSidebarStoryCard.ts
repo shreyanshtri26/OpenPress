@@ -32,16 +32,16 @@ export function renderSidebarStoryCard(
     >
       <div class="flex overflow-hidden items-center justify-between gap-5">
         <div class="flex flex-col">
-          <h3 class="font-cormorant-garamond text-xl font-semibold leading-snug text-slate-900 mb-4 px-2 py-1">
+          <h3 class="font-libre text-xl font-bold leading-snug text-slate-900 mb-4 px-2 py-1">
             ${escapeHtml(story.headline)}
           </h3>
-          <p class="font-jetbrains-mono text-black uppercase text-[12px] font-medium">
+          <p class="font-share text-black uppercase text-[12px] font-medium">
             ${escapeHtml(story.author)}
           </p>
         </div>
 
         <img
-          src="${escapeHtml(story.imageUrl)}"
+          src="${escapeHtml(story.imageUrl || story.image || '/openpress-share.png')}"
           alt="${escapeHtml(story.imageAlt || '')}"
           class="h-20 w-50 object-cover shadow-sm md:h-20"
           loading="lazy"

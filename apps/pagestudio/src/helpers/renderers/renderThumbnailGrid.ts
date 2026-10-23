@@ -93,22 +93,18 @@ export function renderThumbnailGrid(
     </div>
     ` : ''}
 
-    <!-- Dotted vertical lines (desktop only) -->
+    <!-- Bottom rule (desktop only); the column dividers are borders on the columns themselves -->
     <div class="hidden lg:block absolute inset-0 pointer-events-none">
-      ${gridBox0 && (gridBox1 || gridBox2 || gridBox3) ? `<div class="absolute top-0 bottom-0 left-[25.5%]" style="border-left: 1px solid #d2d2d7;"></div>` : ''}
-      ${(gridBox0 || gridBox1) && (gridBox2 || gridBox3) ? `<div class="absolute top-0 bottom-0 left-[50%]" style="border-left: 1px solid #d2d2d7;"></div>` : ''}
-      ${(gridBox0 || gridBox1 || gridBox2) && gridBox3 ? `<div class="absolute top-0 bottom-0 left-[74.4%]" style="border-left: 1px solid #d2d2d7;"></div>` : ''}
       <div class="mx-8 absolute left-0 right-0 -bottom-5" style="border-bottom: 1px solid gray;"></div>
     </div>
 
-    <!-- 4-column grid -->
-    <div class="grid ${mobileGridCols} lg:grid-cols-4 gap-6 lg:gap-x-8 relative">
-
-      <div class="w-full h-full">${gridBox0}</div>
-      <div class="w-full h-full">${gridBox1}</div>
-      <div class="w-full h-full">${gridBox2}</div>
-      <div class="w-full h-full">${gridBox3}</div>
-
+    <!-- 4-column grid: each column carries its own divider and padding, so the lines always sit between the cards -->
+    <div class="grid ${mobileGridCols} lg:grid-cols-4 gap-6 lg:gap-x-0 relative">
+      ${[gridBox0, gridBox1, gridBox2, gridBox3].map((box, i, all) => {
+        const before = all.slice(0, i).some(Boolean)
+        const after = all.slice(i + 1).some(Boolean)
+        return `<div class="w-full h-full min-w-0 ${before ? 'lg:border-l lg:pl-5' : ''} ${after ? 'lg:pr-5' : ''} lg:[&_h2]:text-[21px] lg:[&_h2]:leading-[1.2] ${isMobile2x2 ? '[&_h2]:text-[1.05rem] [&_h2]:leading-[1.2] sm:[&_h2]:text-xl' : ''}" style="${before ? 'border-color:#d2d2d7' : ''}">${box}</div>`
+      }).join('')}
     </div>
   </div>
 </section>

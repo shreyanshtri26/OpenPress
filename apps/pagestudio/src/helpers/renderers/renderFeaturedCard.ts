@@ -34,8 +34,9 @@ export function renderFeaturedCard(
       ${items
       .map((item) => {
         const story = item.storyId ? ctx.storiesById?.[item.storyId] : null
-        const title = story?.headline || item.title || 'Untitled'
-        const category = story?.category || item.category || 'Category'
+        const title = story?.headline || item.title || ''
+        if (!story && !title) return ''
+        const category = story?.category || item.category || ''
         const publishUrl = story?.publishUrl
 
         const Tag = publishUrl ? 'a' : 'div'

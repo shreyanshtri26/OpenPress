@@ -1,5 +1,6 @@
 import { PUBLISHED_PAGE_STYLES } from "../generated/publishedPageStyles";
 import { ComponentRegistry } from './registry/ComponentRegistry';
+import { wrapRootBlock, rootProps } from './core/wrapRootBlock';
 import { publicCampaignsJson } from './core/campaignStatus';
 import { getClientAdScript } from './renderers/clientAdScript';
 import type { RenderContext } from './core/renderTypes';
@@ -76,7 +77,7 @@ export function renderErrorPageFromPuckJSON(
       pageType: 'Error',
     };
 
-    return renderer(props, ctx);
+    return wrapRootBlock(type, renderer(rootProps(type, props), ctx));
   }
 
   /* --------------------------------------------------

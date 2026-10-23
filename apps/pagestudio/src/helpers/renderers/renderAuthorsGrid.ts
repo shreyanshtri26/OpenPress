@@ -44,7 +44,7 @@ export function renderAuthorsGrid(props: {
 
         <!-- Role / Bio - Very small text -->
         <p class="text-m text-gray-700 font-[Merriweather] leading-relaxed max-w-2xl line-clamp-3">
-            ${author.bio || "Lorem ipsum dolor sit amet consectetur adipiscing elit."}
+            ${author.bio || ""}
         </p>
     </div>
   `).join('')

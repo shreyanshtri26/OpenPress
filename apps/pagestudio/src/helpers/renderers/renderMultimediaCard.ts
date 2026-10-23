@@ -18,12 +18,12 @@ export function renderMultimediaCard(
   const story = props.storyId ? ctx.storiesById?.[props.storyId] : null
 
   const imageUrl = props.imageUrl || story?.image || '/openpress-share.png'
-  const title = props.title || story?.headline || 'Featured story'
+  const title = props.title || story?.headline || ''
+  if (!story && !title) return ''
   const description =
-    props.description || story?.summary ||
-    'Lorem ipsum dolor sit amet consectetur adipiscing elit.'
-  const author = props.author || story?.author || 'NAME'
-  const duration = props.duration || '4m5s'
+    props.description || story?.summary || ''
+  const author = props.author || story?.author || ''
+  const duration = props.duration || ''
   const publishUrl = story?.publishUrl
 
   const Tag = publishUrl ? 'a' : 'div'
@@ -59,16 +59,16 @@ export function renderMultimediaCard(
         ${escapeHtml(title)}
       </h2>
 
-      <p class="text-black text-[16px] font-[Merriweather] line-clamp-5 leading-[21px]">
+      ${description ? `<p class="text-black text-[16px] font-[Merriweather] line-clamp-5 leading-[21px]">
         ${escapeHtml(description)}
-      </p>
+      </p>` : ''}
     </div>
 
-    <div class="flex items-center font-share text-sm text-black uppercase tracking-wide -mb-1">
-      <span class="text-[14px]">AUTHOR ${escapeHtml(author)}</span>
-      <span class="mx-1">|</span>
-      <span class="lowercase text-[14px]">${escapeHtml(duration)}</span>
-    </div>
+    ${author || duration ? `<div class="flex items-center font-share text-sm text-black uppercase tracking-wide -mb-1">
+      ${author ? `<span class="text-[14px]">AUTHOR ${escapeHtml(author)}</span>` : ''}
+      ${author && duration ? '<span class="mx-1">|</span>' : ''}
+      ${duration ? `<span class="lowercase text-[14px]">${escapeHtml(duration)}</span>` : ''}
+    </div>` : ''}
   </div>
 
 </${Tag}>

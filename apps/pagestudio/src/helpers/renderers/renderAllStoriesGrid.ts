@@ -36,19 +36,17 @@ export function renderAllStoriesGrid(
   const rb = renderZone({ zonePrefix: zonePrefixes[4], ctx: renderCtx })
 
   const hasAny = !!(left || rt1 || rt2 || rt3 || rb)
+  const hasRight = !!(rt1 || rt2 || rt3 || rb)
   if (!hasAny) return ''
 
   return `
 <section id="${id ?? ''}" class="w-full bg-white sm:pt-6 ${className}">
   <div class="op-container">
-    <div class="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:justify-between">
-      <div class="w-full lg:w-[59.5%] flex-shrink-0">${left}</div>
-      <div class="w-full lg:w-[32.5%] flex-shrink-0 flex flex-col">
-        <div>${rt1}</div>
-        <div>${rt2}</div>
-        <div>${rt3}</div>
-        <div>${rb}</div>
-      </div>
+    <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 lg:items-stretch">
+      <div class="min-w-0 w-full ${hasRight ? 'lg:flex-[1.85]' : 'lg:flex-1'} lg:flex lg:flex-col lg:[&>a]:flex lg:[&>a]:flex-1 lg:[&>a]:flex-col lg:[&_img]:flex-1 lg:[&_img]:min-h-[18rem] lg:[&_img]:aspect-auto">${left}</div>
+      ${hasRight ? `<div class="min-w-0 w-full lg:flex-1 flex flex-col gap-6 lg:divide-y lg:divide-[#d2d2d7] lg:[&>div]:pt-6 lg:[&>div:first-child]:pt-0 lg:[&_h2]:text-[21px] lg:[&_h2]:leading-[1.2] lg:[&_a>div]:grid lg:[&_a>div]:grid-cols-[9rem_minmax(0,1fr)] lg:[&_a>div]:items-start lg:[&_a>div]:gap-4 lg:[&_img]:aspect-[4/3] lg:[&_img]:w-full">
+        ${[rt1, rt2, rt3, rb].filter(Boolean).map((card) => `<div>${card}</div>`).join('')}
+      </div>` : ''}
     </div>
   </div>
 </section>

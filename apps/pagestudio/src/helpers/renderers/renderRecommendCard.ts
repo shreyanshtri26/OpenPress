@@ -18,16 +18,17 @@ export function renderRecommendCard(
   const story = props.storyId ? ctx.storiesById?.[props.storyId] : undefined
 
   const imageUrl =
-    story?.imageUrl || story?.image || props.imageUrl || 'https://via.placeholder.com/400x250'
+    story?.imageUrl || story?.image || props.imageUrl || '/openpress-share.png'
 
   const imageAlt =
     props.imageAlt || story?.imageAlt || story?.title || story?.headline || 'Recommended article'
 
   const label =
-    props.label || story?.section || story?.Section || story?.category || story?.taxonomyCategory || 'Category'
+    props.label || story?.section || story?.Section || story?.category || story?.taxonomyCategory || ''
 
   const title =
-    props.title || story?.headline || story?.title || 'Recommended Story'
+    props.title || story?.headline || story?.title || ''
+  if (!story && !title) return ''
 
   const publishUrl = story?.publishUrl
 
@@ -50,9 +51,9 @@ export function renderRecommendCard(
       </div>
 
       <div class="flex flex-1 flex-col py-2 pl-[32px] pr-[30px] sm:p-2 recommend-card-content">
-        <p class="font-share text-[9px] sm:text-[10px] text-black uppercase pt-2 sm:pt-3 pb-0.5 ">
+        ${label ? `<p class="font-share text-[9px] sm:text-[10px] text-black uppercase pt-2 sm:pt-3 pb-0.5 ">
           ${escapeHtml(label)}
-        </p>
+        </p>` : ''}
 
         <p class="font-libre text-[1.5rem] sm:text-lg lg:text-[20px] font-extrabold text-black mb-2 leading-tight lg:leading-[1.40rem]">
           ${escapeHtml(title)}

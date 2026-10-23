@@ -422,21 +422,6 @@ export const commonBlocks: Record<string, any> = {
           <ThumbnailGridCategorySelect value={value ?? ''} onChange={onChange} />
         ),
       },
-      children: {
-        label: 'Grid Items',
-        type: 'array',
-        arrayFields: {
-          type: 'component',
-          allowedComponents: ['StoryCard', 'RecommendCard', 'ShowcaseCard'],
-          defaultItem: {
-            type: 'StoryCard',
-            props: {
-              title: 'New Card',
-              description: 'Add your content here',
-            },
-          },
-        },
-      },
     },
     defaultProps: { id: 'thumbnail-grid', mode: 'manual', automaticCategory: '', autoMostRead: 'off', children: [], autoStoryIds: [] } as ThumbnailGridProps,
     resolveFields: async (data: any, { fields }: any) => {
@@ -643,22 +628,6 @@ export const commonBlocks: Record<string, any> = {
           <ThumbnailGridCategorySelect value={value ?? ''} onChange={onChange} />
         ),
       },
-      children: {
-        label: 'Grid Items',
-        type: 'array',
-        arrayFields: {
-          type: 'component',
-          allowedComponents: ['ShowcaseCard', 'StoryCard', 'RecommendCard', 'MainCard', 'HoverCard'],
-          defaultItem: {
-            type: 'ShowcaseCard',
-            props: {
-              title: 'New Card',
-              description: 'Add your content here',
-              imageUrl: 'https://via.placeholder.com/600x400',
-            },
-          },
-        },
-      },
     },
     defaultProps: { id: 'hero-grid', mode: 'manual', automaticCategory: '', autoMostRead: 'off', children: [], autoStoryIds: [] } as HeroGridProps,
     resolveFields: async (data: any, { fields }: any) => {
@@ -860,15 +829,6 @@ export const commonBlocks: Record<string, any> = {
         render: ({ value, onChange }: { value?: string; onChange: (next: string) => void }) => (
           <ThumbnailGridCategorySelect value={value ?? ''} onChange={onChange} />
         ),
-      },
-      children: {
-        label: 'Grid Items',
-        type: 'array',
-        arrayFields: {
-          type: 'component',
-          allowedComponents: ['MostPopularTable', 'RecommendCard'],
-          defaultItem: { type: 'MostPopularTable', props: {} },
-        },
       },
     },
     defaultProps: { id: 'popular-grid', mode: 'manual', automaticCategory: '', autoMostRead: 'off', children: [], autoStoryIds: [] } as PopularGridProps,
@@ -1072,15 +1032,6 @@ export const commonBlocks: Record<string, any> = {
           <ThumbnailGridCategorySelect value={value ?? ''} onChange={onChange} />
         ),
       },
-      children: {
-        label: 'Grid Items',
-        type: 'array',
-        arrayFields: {
-          type: 'component',
-          allowedComponents: ['StoryCard', 'RecommendCard'],
-          defaultItem: { type: 'StoryCard', props: {} },
-        },
-      },
     },
     defaultProps: { id: 'multimedia-grid', mode: 'manual', automaticCategory: '', autoMostRead: 'off', children: [], autoStoryIds: [] } as MultimediaGridProps,
     resolveFields: async (data: any, { fields }: any) => {
@@ -1282,15 +1233,6 @@ export const commonBlocks: Record<string, any> = {
         render: ({ value, onChange }: { value?: string; onChange: (next: string) => void }) => (
           <ThumbnailGridCategorySelect value={value ?? ''} onChange={onChange} />
         ),
-      },
-      children: {
-        label: 'Grid Items',
-        type: 'array',
-        arrayFields: {
-          type: 'component',
-          allowedComponents: ['StoryCard', 'RecommendCard', 'MainCard'],
-          defaultItem: { type: 'StoryCard', props: {} },
-        },
       },
     },
     defaultProps: { id: 'all-stories-grid', mode: 'manual', automaticCategory: '', autoMostRead: 'off', children: [], autoStoryIds: [] } as AllStoriesGridProps,

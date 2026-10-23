@@ -20,6 +20,9 @@ export function renderAdvertisementGrid(
     ctx,
   })
 
+  // No ad cards in it: draw nothing (a heading over an empty box is just dead space on the page).
+  if (!itemsHtml.trim()) return ''
+
   return `
     <section id="${props.id ?? ''}" class="op-container py-8">
 
@@ -63,7 +66,7 @@ export function renderAdvertisementGrid(
       ${props.brandName
       ? `
           <div class="mt-6 flex flex-col items-center gap-3">
-            <span class="font-jetbrains-mono text-xs font-semibold uppercase tracking-[0.45em] text-slate-700">
+            <span class="font-share text-xs font-semibold uppercase tracking-[0.45em] text-slate-700">
               ${escapeHtml(props.brandName)}
             </span>
             <span class="h-px w-full bg-slate-200"></span>

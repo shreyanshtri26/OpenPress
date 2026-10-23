@@ -43,10 +43,11 @@ export function renderHoverCard(
 
         const story = item.storyId ? ctx.storiesById[item.storyId] : null
 
-        const title = story?.title || item.title || 'Untitled'
+        const title = story?.title || item.title || ''
+        if (!story && !title) return ''
         const rawCategory = (story?.category ?? item.category ?? '').toString().trim()
-        const category = rawCategory || 'Category'
-        const imageUrl = story?.image || 'https://via.placeholder.com/400x250'
+        const category = rawCategory
+        const imageUrl = story?.image || '/openpress-share.png'
         const imageAlt = story?.title || title
         const publishUrl = story?.publishUrl || ''
         const hoverBgColor = item.hoverBgColor || '#ffffff'

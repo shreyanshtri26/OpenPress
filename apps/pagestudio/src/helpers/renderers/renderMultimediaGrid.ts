@@ -48,16 +48,16 @@ export function renderMultimediaGrid(
       <div class="hidden lg:block mx-8 absolute left-0 right-0 -bottom-5" style="border-bottom:1px solid gray"></div>
     </div>
     <div class="grid grid-cols-1 gap-x-6 gap-y-4 lg:grid-cols-12 relative">
-      <div class="lg:col-span-6">
-        <div class="w-full h-full bg-white overflow-hidden min-h-[300px]">${left}</div>
+      <div class="min-w-0 ${hasRight ? 'lg:col-span-6' : hasLeft ? 'lg:col-span-12' : 'lg:col-span-6'}">
+        <div class="w-full h-full bg-white overflow-hidden ${hasRight ? 'min-h-[300px]' : 'lg:[&_img]:aspect-[21/9]'}">${left}</div>
       </div>
-      <div class="lg:col-span-6 grid grid-cols-2 lg:grid-rows-2 gap-4 lg:gap-6 relative">
+      ${hasRight ? `<div class="min-w-0 lg:col-span-6 grid grid-cols-2 lg:grid-rows-2 gap-4 lg:gap-6 relative">
         ${hasRight ? `<div class="absolute inset-0 pointer-events-none"><div class="absolute top-0 bottom-[52.5%] left-1/2" style="border-left:1px solid #d2d2d7"></div><div class="absolute top-[52.5%] bottom-0 left-1/2" style="border-left:1px solid #d2d2d7"></div><div class="absolute top-1/2 left-0 right-0" style="border-top:1px solid #d2d2d7"></div></div>` : ''}
         <div>${r0}</div>
         <div>${r1}</div>
         <div>${r2}</div>
         <div>${r3}</div>
-      </div>
+      </div>` : ''}
     </div>
   </div>
 </section>

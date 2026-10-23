@@ -32,6 +32,8 @@ export function renderPopularGrid(
   const right2 = renderZone({ zonePrefix: zonePrefixes[2], ctx: renderCtx })
 
   const hasAny = !!(leftContent || right1 || right2)
+  // The right-hand rail (ads or extra stories) only takes space when it has something in it.
+  const hasRail = !!(right1 || right2)
   if (!hasAny) return ''
 
   return `
@@ -41,13 +43,13 @@ export function renderPopularGrid(
       <div class="hidden lg:block mx-8 absolute left-0 right-0 -bottom-5" style="border-bottom: 1px solid gray;"></div>
     </div>
     <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6 lg:grid-cols-12 lg:items-start">
-      <div class="lg:col-span-9">
+      <div class="min-w-0 ${hasRail ? 'lg:col-span-9' : 'lg:col-span-12'}">
         <div class="w-full h-auto overflow-hidden rounded">${leftContent}</div>
       </div>
-      <div class="lg:col-span-3 flex flex-col gap-1">
-        <div class="h-full">${right1}</div>
-        <div class="h-full">${right2}</div>
-      </div>
+      ${hasRail ? `<div class="min-w-0 lg:col-span-3 flex flex-col gap-4">
+        ${right1 ? `<div>${right1}</div>` : ''}
+        ${right2 ? `<div>${right2}</div>` : ''}
+      </div>` : ''}
     </div>
   </div>
 </section>

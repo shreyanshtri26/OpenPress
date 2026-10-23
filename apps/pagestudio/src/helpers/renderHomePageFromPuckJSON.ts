@@ -1,5 +1,6 @@
 import { PUBLISHED_PAGE_STYLES } from "../generated/publishedPageStyles";
 import { ComponentRegistry } from './registry/ComponentRegistry';
+import { wrapRootBlock, rootProps } from './core/wrapRootBlock';
 import { publicCampaignsJson } from './core/campaignStatus';
 import { getClientAdScript } from './renderers/clientAdScript';
 import type { RenderContext } from './core/renderTypes';
@@ -118,7 +119,7 @@ export function renderHomePageFromPuckJSON(
       finalProps = { ...props, thumbnailGridIndex: thumbnailGridIndex++, thumbnailGridTotal };
     }
 
-    return renderer(finalProps, ctx);
+    return wrapRootBlock(type, renderer(rootProps(type, finalProps), ctx));
   }
 
   /* --------------------------------------------------
