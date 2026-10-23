@@ -6,11 +6,10 @@ import LaunchBuilder from '../../assets/LaunchBuilder.svg';
 import Documents from '../../assets/Documents.svg';
 
 // The two tools that sit outside the editorial workflow: Page Studio and the live site.
-const base =
-  'inline-flex items-center gap-2 rounded-lg px-3.5 py-1.5 text-xs font-semibold tracking-wide shadow-sm transition-all duration-150 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-900';
+const base = 'op-btn';
 
-const primary = `${base} bg-gray-900 text-white ring-1 ring-black/10 hover:bg-black`;
-const secondary = `${base} border border-gray-300 bg-white text-gray-900 hover:border-gray-900`;
+const primary = `${base} op-btn--grey`;
+const secondary = base;
 
 const ExternalIcon = () => (
   <svg viewBox="0 0 16 16" className="h-3 w-3 opacity-60" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -26,8 +25,9 @@ export const PageStudioButton = ({ className = '' }) => {
 
   return (
     <button type="button" onClick={() => router.push('/build')} title="Design the home page, sections and articles" className={`${primary} ${className}`}>
-      <img src={LaunchBuilder} alt="" className="h-4 w-4 brightness-0 invert" />
+      <img src={LaunchBuilder} alt="" className="h-4 w-4 brightness-0" />
       Page Studio
+      <span className="font-medium opacity-80">by OpenPress</span>
     </button>
   );
 };

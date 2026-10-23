@@ -6,6 +6,8 @@ import { Children, forwardRef, isValidElement, useEffect, useImperativeHandle, u
 import { Check, Pencil, Trash2, X } from 'lucide-react';
 import { cx, fieldClass, readExpr, toArray } from './_shared';
 import { SelectBox } from './select-box';
+import { Pagination } from './pagination';
+import { defaultExport } from './default-export';
 
 const marker = (role) => {
   /** @param {Record<string, any>} _props */
@@ -227,7 +229,7 @@ export const DataGrid = forwardRef(function DataGrid(props, ref) {
 
   // ---- the kit component handle ----
   const latest = useRef({});
-  latest.current = { columns, processed, rows, selectedKeys, pageRows, pagingEnabled, pagerVisible };
+  latest.current = { columns, processed, rows, selectedKeys, pageRows, pagingEnabled, pagerVisible, hidden };
   const handle = useMemo(() => ({
     option(name, value) {
       const map = { 'paging.enabled': [latest.current.pagingEnabled, setPagingEnabled], 'pager.visible': [latest.current.pagerVisible, setPagerVisible] };
@@ -259,7 +261,7 @@ export const DataGrid = forwardRef(function DataGrid(props, ref) {
     },
     editCell: () => {},
     getExportData: (selectedOnly) => {
-      const cols = latest.current.columns.filter((c) => c.type !== 'buttons' && c.allowExporting !== false && !hidden.has(c.id));
+      const cols = latest.current.columns.filter((c) => c.type !== 'buttons' && c.allowExporting !== false && !latest.current.hidden.has(c.id));
       const source = selectedOnly ? latest.current.rows.filter((r) => latest.current.selectedKeys.includes(keyExpr ? r?.[keyExpr] : r)) : latest.current.processed;
       return {
         columns: cols.map((c) => ({ caption: c.caption ?? c.dataField ?? '', dataField: c.dataField, dataType: c.dataType })),
@@ -285,6 +287,8 @@ export const DataGrid = forwardRef(function DataGrid(props, ref) {
   const runExport = (format, selectedRowsOnly = false) => {
     const e = { format, selectedRowsOnly, component: handle, cancel: false };
     onExporting?.(e);
+    // A page that exported by itself sets `cancel`; otherwise the kit does the export.
+    if (!e.cancel) defaultExport(format, handle, selectedRowsOnly).catch((error) => console.error('Export failed:', error));
   };
   const toolbarItems = config.Toolbar?.items?.length
     ? config.Toolbar.items.map((i) => i.name).filter(Boolean)
@@ -292,15 +296,15 @@ export const DataGrid = forwardRef(function DataGrid(props, ref) {
   const formats = exportCfg?.formats || ['xlsx'];
   const renderToolItem = (name) => {
     if (name === 'searchPanel' && config.SearchPanel?.visible !== false) {
-      return <input key={name} type="search" className={cx(fieldClass, 'max-w-xs')} style={{ width: config.SearchPanel?.width }} placeholder="Search..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }} />;
+      return <input key={name} type="search" className={cx(fieldClass, 'mr-auto max-w-xs')} style={{ width: config.SearchPanel?.width }} placeholder="Search..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }} />;
     }
     if (name === 'exportButton' && exportCfg?.enabled) {
       return (
-        <div key={name} className="flex gap-2">
-          {formats.includes('xlsx') && <button type="button" className="rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50" onClick={() => runExport('xlsx')}>Export to Excel</button>}
-          {formats.includes('pdf') && <button type="button" className="rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50" onClick={() => runExport('pdf')}>Export to PDF</button>}
+        <div key={name} className="flex flex-wrap items-center gap-2">
+          {formats.includes('xlsx') && <button type="button" className="op-btn op-btn--lg" onClick={() => runExport('xlsx')}>Export to Excel</button>}
+          {formats.includes('pdf') && <button type="button" className="op-btn op-btn--lg" onClick={() => runExport('pdf')}>Export to PDF</button>}
           {exportCfg.allowExportSelectedData && selectedKeys.length > 0 && formats.map((f) => (
-            <button key={f} type="button" className="rounded-md border border-blue-300 px-3 py-2 text-sm text-blue-700 hover:bg-blue-50" onClick={() => runExport(f, true)}>
+            <button key={f} type="button" className="op-btn op-btn--lg op-btn--outline" onClick={() => runExport(f, true)}>
               Export selected ({f === 'xlsx' ? 'Excel' : 'PDF'})
             </button>
           ))}
@@ -310,7 +314,7 @@ export const DataGrid = forwardRef(function DataGrid(props, ref) {
     if (name === 'columnChooserButton' && config.ColumnChooser?.enabled) {
       return (
         <div key={name} className="relative">
-          <button type="button" className="rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50" aria-expanded={chooserOpen} onClick={() => setChooserOpen((o) => !o)}>Columns</button>
+          <button type="button" className="op-btn op-btn--lg" aria-expanded={chooserOpen} onClick={() => setChooserOpen((o) => !o)}>Columns</button>
           {chooserOpen && (
             <div className="absolute right-0 z-20 mt-1 w-56 rounded-md border border-gray-200 bg-white p-2 shadow-lg">
               {columns.filter((c) => c.caption && c.type !== 'buttons').map((c) => (
@@ -394,13 +398,13 @@ export const DataGrid = forwardRef(function DataGrid(props, ref) {
   const cellLines = cx(showColumnLines && 'border-x border-gray-200');
 
   return (
-    <div className={cx('w-full', className, elAttr.class)} style={{ width }}>
+    <div className={cx('w-full', showBorders && 'overflow-hidden rounded-xl border border-[var(--color-border-subtle)]', className, elAttr.class)} style={{ width }}>
       {toolbarItems.length > 0 && (
-        <div className="mb-3 flex flex-wrap items-center justify-end gap-2">{toolbarItems.map(renderToolItem)}</div>
+        <div className="op-grid-toolbar">{toolbarItems.map(renderToolItem)}</div>
       )}
-      <div className={cx('overflow-auto', showBorders && 'border border-gray-200')} style={height && height !== 'auto' ? { maxHeight: height } : undefined}>
+      <div className="overflow-auto" style={height && height !== 'auto' ? { maxHeight: height } : undefined}>
         <table className="min-w-full border-collapse text-sm">
-          <thead className="sticky top-0 z-10 bg-gray-50">
+          <thead className="sticky top-0 z-10 bg-[var(--color-surface-secondary)] shadow-[inset_0_-1px_0_var(--color-border-subtle)]">
             <tr>
               {multiple && (
                 <th className="w-10 px-3 py-2 text-left">
@@ -414,7 +418,7 @@ export const DataGrid = forwardRef(function DataGrid(props, ref) {
                   <th
                     key={col.id}
                     aria-sort={dir}
-                    className={cx('whitespace-nowrap px-3 py-2 font-semibold text-gray-700', col.alignment === 'right' ? 'text-right' : col.alignment === 'center' ? 'text-center' : 'text-left', sortable && 'cursor-pointer select-none hover:text-gray-900', cellLines)}
+                    className={cx('whitespace-nowrap px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-[var(--color-text-secondary)]', col.alignment === 'right' ? 'text-right' : col.alignment === 'center' ? 'text-center' : 'text-left', sortable && 'cursor-pointer select-none hover:text-gray-900', cellLines)}
                     style={{ width: col.width, minWidth: col.minWidth }}
                     onClick={sortable ? () => setSort((s) => (s?.id !== col.id ? { id: col.id, desc: false } : s.desc ? null : { id: col.id, desc: true })) : undefined}
                   >
@@ -460,10 +464,10 @@ export const DataGrid = forwardRef(function DataGrid(props, ref) {
                 <tr
                   key={rowKey}
                   className={cx(
-                    showRowLines !== false && 'border-b border-gray-100',
+                    showRowLines !== false && 'border-b border-[var(--color-border-subtle)]',
                     rowAlternationEnabled && rowIndex % 2 === 1 && 'bg-gray-50',
-                    hoverStateEnabled && 'hover:bg-blue-50/40',
-                    selected && 'bg-blue-50',
+                    hoverStateEnabled && 'hover:bg-[var(--color-surface-secondary)]',
+                    selected && 'bg-[var(--color-accent-subtle)]',
                     (onRowClick || onCellClick || selectionMode === 'single') && 'cursor-pointer',
                   )}
                   onClick={(event) => {
@@ -503,30 +507,18 @@ export const DataGrid = forwardRef(function DataGrid(props, ref) {
         </table>
       </div>
       {showPager && (
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-sm text-gray-600">
-          <div className="flex items-center gap-2">
-            {pager.showPageSizeSelector && (
-              <select aria-label="Rows per page" className="rounded-md border border-gray-300 px-2 py-1" value={String(allPages ? 'all' : pageSize)} onChange={(e) => { setPageSize(e.target.value === 'all' ? 'all' : Number(e.target.value)); setPage(0); }}>
-                {(pager.allowedPageSizes || [10, 20, 50]).map((s) => <option key={String(s)} value={String(s)}>{s === 'all' ? 'All' : s}</option>)}
-              </select>
-            )}
-            {pager.showInfo && <span>{`Page ${safePage + 1} of ${pageCount} (${processed.length} items)`}</span>}
-          </div>
-          {pageCount > 1 && (
-            <div className="flex items-center gap-1">
-              <button type="button" aria-label="Previous page" disabled={safePage === 0} className="rounded px-2 py-1 hover:bg-gray-100 disabled:opacity-40" onClick={() => setPage(safePage - 1)}>‹</button>
-              {Array.from({ length: pageCount }, (_, i) => i)
-                .filter((i) => pageCount <= 7 || i === 0 || i === pageCount - 1 || Math.abs(i - safePage) <= 1)
-                .map((i, idx, arr) => (
-                  <span key={i} className="flex items-center">
-                    {idx > 0 && i - arr[idx - 1] > 1 && <span className="px-1">…</span>}
-                    <button type="button" aria-current={i === safePage ? 'page' : undefined} className={cx('min-w-8 rounded px-2 py-1', i === safePage ? 'bg-gray-900 text-white' : 'hover:bg-gray-100')} onClick={() => setPage(i)}>{i + 1}</button>
-                  </span>
-                ))}
-              <button type="button" aria-label="Next page" disabled={safePage >= pageCount - 1} className="rounded px-2 py-1 hover:bg-gray-100 disabled:opacity-40" onClick={() => setPage(safePage + 1)}>›</button>
-            </div>
+        <Pagination
+          className="op-grid-footer"
+          page={safePage}
+          pageCount={pageCount}
+          onPage={setPage}
+          leading={pager.showPageSizeSelector && (
+            <select aria-label="Rows per page" className="op-page-size" value={String(allPages ? 'all' : pageSize)} onChange={(e) => { setPageSize(e.target.value === 'all' ? 'all' : Number(e.target.value)); setPage(0); }}>
+              {(pager.allowedPageSizes || [10, 20, 50]).map((s) => <option key={String(s)} value={String(s)}>{s === 'all' ? 'All' : s}</option>)}
+            </select>
           )}
-        </div>
+          info={pager.showInfo && <span>{`Page ${safePage + 1} of ${pageCount} (${processed.length} items)`}</span>}
+        />
       )}
     </div>
   );

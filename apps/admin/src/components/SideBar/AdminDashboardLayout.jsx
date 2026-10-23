@@ -8,7 +8,7 @@ const AdminLayoutContext = createContext(undefined);
 
 // Tools outside the editorial workflow live in a slim strip above every page: Page Studio (Super Users) and ePaper.
 const TopActions = () => (
-  <div className="flex shrink-0 items-center justify-end gap-2 px-4 pt-2">
+  <div className="flex h-[var(--header-height)] shrink-0 items-center justify-end gap-2 border-b border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-4 md:px-6">
     <PageStudioButton />
     <EPaperButton />
   </div>
@@ -89,9 +89,9 @@ export const AdminDashboardLayout = ({
             aria-hidden="true"
           />
         )}
-        <div className="flex-1 flex flex-col min-h-0 min-w-0">
+        <div className="op-admin flex-1 flex flex-col min-h-0 min-w-0">
           <TopActions />
-          {children}
+          <main className="op-sheet">{children}</main>
           <PWAInstall />
         </div>
       </div>

@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from '@/hooks/useRouter';
 import CustomButton from '../common/CustomButton';
 import BackToDashboardButton from '../common/BackToDashboardButton';
+import { Pagination } from '../ui/kit/pagination';
 
 const fetchWithTimeout = async (url: string, timeout = 8000) => {
     const controller = new AbortController();
@@ -786,33 +787,8 @@ export default function Queries({ onBack, isTab = false }: QueriesProps) {
                                     ))}
 
                                     {/* Pagination */}
-                                    <div className="flex flex-col items-center pt-10 pb-20">
-                                        <div className="flex items-center gap-4 text-xs font-medium text-blue-700">
-                                            {currentPage > 1 && (
-                                                <button onClick={() => handlePageChange(currentPage - 1)} className="hover:underline">
-                                                    Previous
-                                                </button>
-                                            )}
-                                            <div className="flex items-center gap-3">
-                                                {[...Array(totalPages)].map((_, i) => {
-                                                    const p = i + 1;
-                                                    return (
-                                                        <button
-                                                            key={p}
-                                                            onClick={() => handlePageChange(p)}
-                                                            className={`${p === currentPage ? 'text-gray-900 cursor-default font-bold' : 'hover:underline'}`}
-                                                        >
-                                                            {p}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                            {currentPage < totalPages && (
-                                                <button onClick={() => handlePageChange(currentPage + 1)} className="hover:underline">
-                                                    Next
-                                                </button>
-                                            )}
-                                        </div>
+                                    <div className="pt-8 pb-20">
+                                        <Pagination page={currentPage - 1} pageCount={totalPages} onPage={(i) => handlePageChange(i + 1)} />
                                     </div>
                                 </div>
                             )}

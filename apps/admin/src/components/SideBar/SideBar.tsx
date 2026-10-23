@@ -107,7 +107,7 @@ const UserMenu = ({
   };
 
   return (
-    <div ref={ref} className="mt-auto border-t border-black/10 pb-3 pt-2">
+    <div ref={ref} className="mt-auto border-t border-[var(--color-border-subtle)] pb-3 pt-2">
       <button
         type="button"
         aria-haspopup="menu"
@@ -116,7 +116,7 @@ const UserMenu = ({
         title={name}
         className={`flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition-colors hover:bg-black/5 apple-pressable ${isOpen ? '' : 'justify-center'}`}
       >
-        <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white">
+        <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-border)] text-xs font-semibold text-[var(--color-text-primary)]">
           {initials}
         </span>
         {isOpen && (
@@ -151,9 +151,9 @@ const UserMenu = ({
               setOpen(false);
               onNavigate('/settings');
             }}
-            className={`${itemClass} ${settingsActive ? 'bg-black text-white' : 'text-gray-800 hover:bg-black/5'}`}
+            className={`${itemClass} ${settingsActive ? 'bg-[var(--color-surface-tertiary)] text-[var(--color-text-primary)]' : 'text-gray-800 hover:bg-[var(--color-surface-tertiary)]'}`}
           >
-            <Image src={Settings} alt="" width={24} height={24} className={`h-5 w-5 flex-shrink-0 ${settingsActive ? 'brightness-0 invert' : 'filter grayscale opacity-75'}`} />
+            <Image src={Settings} alt="" width={24} height={24} className={`h-5 w-5 flex-shrink-0 ${settingsActive ? 'brightness-0' : 'filter grayscale opacity-75'}`} />
             Settings
           </button>
           <button
@@ -273,16 +273,17 @@ const SideBarItems = ({
             activePath &&
             activePath.startsWith('/') &&
             (router.pathname === activePath ||
+              (activePath === '/dashboard' && router.pathname.startsWith('/dashboard')) ||
               (activePath === '/wires' && router.pathname === '/signals') ||
               (activePath === '/research' && router.pathname === '/queries') ||
               (activePath === '/media' && router.pathname === '/library') ||
               (activePath === '/campaign-hub' && (router.pathname === '/campaigns' || router.pathname.startsWith('/campaigns'))))
           );
-          const baseItemClass = 'flex items-center w-full mb-1.5 px-3 py-2.5 rounded-lg transition-all duration-150 apple-pressable active:scale-[0.98]';
+          const baseItemClass = 'flex items-center w-full mb-1 h-10 px-3 rounded-[var(--radius-control)] transition-colors duration-150';
           const stateClasses = isActive
-            ? 'bg-black text-white font-medium shadow-sm'
-            : 'hover:bg-black/5 text-gray-800';
-          const layoutClasses = isOpen ? 'pl-3.5' : 'justify-center';
+            ? 'bg-[#ececef] text-[var(--color-text-primary)] font-semibold shadow-[inset_3px_0_0_var(--color-text-primary)]'
+            : 'text-[var(--color-text-primary)] hover:bg-[var(--color-surface-tertiary)]';
+          const layoutClasses = isOpen ? '' : 'justify-center';
 
           return 'action' in item ? (
             <button
@@ -299,10 +300,10 @@ const SideBarItems = ({
                 alt={item.title}
                 width={24}
                 height={24}
-                className={`${getIconSizeClass(item.title)} flex-shrink-0 transition-opacity ${isActive ? 'brightness-0 invert' : 'filter grayscale opacity-75'}`}
+                className={`${getIconSizeClass(item.title)} flex-shrink-0 transition-opacity ${isActive ? 'brightness-0' : 'filter grayscale opacity-75'}`}
               />
               {isOpen && (
-                <span className={`ml-3 text-sm font-medium whitespace-nowrap ${isActive ? 'text-white' : 'text-gray-800'}`}>
+                <span className={`ml-3 text-sm font-medium whitespace-nowrap ${isActive ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-primary)]'}`}>
                   {item.title}
                 </span>
               )}
@@ -323,10 +324,10 @@ const SideBarItems = ({
                   alt={item.title}
                   width={24}
                   height={24}
-                  className={`${getIconSizeClass(item.title)} flex-shrink-0 transition-opacity ${isActive ? 'brightness-0 invert' : 'filter grayscale opacity-75'}`}
+                  className={`${getIconSizeClass(item.title)} flex-shrink-0 transition-opacity ${isActive ? 'brightness-0' : 'filter grayscale opacity-75'}`}
                 />
                 {isOpen && (
-                  <span className={`ml-3 text-sm font-medium whitespace-nowrap ${isActive ? 'text-white' : 'text-gray-800'}`}>
+                  <span className={`ml-3 text-sm font-medium whitespace-nowrap ${isActive ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-primary)]'}`}>
                     {item.title}
                   </span>
                 )}
@@ -366,52 +367,47 @@ export const SideBar = ({
   return (
     <aside
       id="sidebar"
-      className={`border-r border-black/10 bg-white/85 backdrop-blur-xl flex flex-col flex-shrink-0 h-screen transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] z-[70] md:sticky md:top-0 ${isOpen ? 'w-[300px]' : 'w-20'} fixed md:relative ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
+      className={`border-r border-[var(--color-border-subtle)] bg-[var(--color-surface-secondary)] flex flex-col flex-shrink-0 h-screen transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] z-[70] md:sticky md:top-0 ${isOpen ? 'w-[300px]' : 'w-20'} fixed md:relative ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       aria-label="Sidebar"
     >
       <div
-        className={`flex items-center px-4 py-3.5 ${isOpen ? 'justify-between' : 'flex-col gap-3 justify-center'}`}
+        className={`flex items-center border-b border-[var(--color-border-subtle)] ${isOpen ? 'justify-between gap-2 px-4 py-4' : 'flex-col justify-center gap-3 px-2 py-4'}`}
       >
         <div
-          className="flex items-center cursor-pointer apple-pressable active:scale-[0.98] min-w-0"
+          className={`flex min-w-0 items-center ${isOpen ? '' : 'cursor-pointer'}`}
           onClick={!isOpen ? onToggle : undefined}
-          title="OpenPress"
+          title="OpenPress: Every thought has a story."
         >
           {isOpen ? (
+            // Wordmark + tagline. 216px wide keeps the tagline legible; the height follows the file's own ratio.
             <img
               src="/openpress-logo-full-nobg-trim.png"
-              alt="OpenPress"
-              className="h-10 w-auto max-w-[210px] object-contain object-left transition-all duration-300"
+              alt="OpenPress. Every thought has a story."
+              width={675}
+              height={228}
+              className="h-auto w-[216px] max-w-full object-contain object-left"
             />
           ) : (
             <img
               src="/openpress-quill-nobg-trim.png"
               alt="OpenPress"
-              className="h-8 w-8 flex-shrink-0 object-contain transition-all duration-300"
+              width={354}
+              height={414}
+              className="h-10 w-auto flex-shrink-0 object-contain"
             />
           )}
         </div>
         <button
           onClick={onToggle}
-          className="p-1.5 text-gray-700 hover:bg-black/5 rounded-lg flex-shrink-0 apple-pressable active:scale-90 transition-all"
+          className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[var(--radius-control)] text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-tertiary)] hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-text-primary)]"
           aria-label="Toggle sidebar"
         >
-          <svg
-            className="h-6 w-6"
-            stroke="currentColor"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
+          <svg className="h-5 w-5" stroke="currentColor" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
       </div>
-      <div className="overflow-y-auto overflow-x-hidden flex-1 px-2">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 pt-3 pb-2">
         <SideBarItems
           isOpen={isOpen}
           onToggle={onToggle}

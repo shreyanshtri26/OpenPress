@@ -39,6 +39,14 @@ const AssetLibraryStyles = () => (
           }
         }
 
+        /* Cards and pagination share the filter bar's 24px side inset so every edge lines up. */
+        .asset-grid .kit-cardview__grid { padding: 4px 24px 16px; }
+        .asset-grid .kit-cardview__footer { flex: none; margin-top: 0; padding: 12px 24px; border-top: 1px solid var(--color-border-subtle); background: var(--color-surface); }
+        @media (max-width: 768px) {
+          .asset-grid .kit-cardview__grid { padding: 4px 12px 12px; }
+          .asset-grid .kit-cardview__footer { padding: 12px; }
+        }
+
         .kit-accordion-item{
           border-bottom: 1px solid black;
         }

@@ -62,6 +62,14 @@ const STUDIO_VIEWPORTS = [
   { width: 1280, height: "auto" as const, label: "Desktop", icon: "Monitor" as const },
 ];
 
+/**
+ * Two open sidebars on a narrow window leave the canvas zero pixels wide for Puck's first measurement, which gives its zoom
+ * a divide-by-zero (`NaN` height). StudioHeader closes the components panel there too, but only after that first render,
+ * so start with it closed. Keep the breakpoint in step with SINGLE_PANEL_QUERY in StudioHeader.
+ */
+const studioInitialUi = () =>
+  typeof window !== "undefined" && window.matchMedia("(max-width: 999px)").matches ? { leftSideBarVisible: false } : {};
+
 export function PuckEditor() {
   const [isLoading, setIsLoading] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -566,15 +574,17 @@ export function PuckEditor() {
     [selectedPage, activeSection, activeAuthor, pageId, injectFallbacks]
   );
 
+  // A hook, so it must sit above the early returns below.
+  // Same object between renders: a new `config` makes Puck rebuild its whole component tree. Dynamic ad blocks are
+  // registered when placements load, so `placements` is a dependency.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const activeConfig = useMemo(() => getConfigForPage(selectedPage), [selectedPage, placements]);
+
   if (isLoading) return <LoadingScreen text="Loading stories..." />;
   if (isPageLoading) return <LoadingScreen text="Loading page data..." />;
 
   // const stories = getStories(); // Remove redundant call
   const hasNoStories = stories.length === 0;
-  // Same object between renders: a new `config` makes Puck rebuild its whole component tree. Dynamic ad blocks are
-  // registered when placements load, so `placements` is a dependency.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const activeConfig = useMemo(() => getConfigForPage(selectedPage), [selectedPage, placements]);
 
   const libraryLabels = Object.fromEntries(
     Object.entries((activeConfig as any).components ?? {}).map(([key, c]: [string, any]) => [key, c?.label ?? key])
@@ -627,6 +637,7 @@ export function PuckEditor() {
             onChange={(data) => handleOnChange(data as PageStudioData)}
             overrides={STUDIO_OVERRIDES}
             viewports={STUDIO_VIEWPORTS}
+            ui={studioInitialUi()}
           />
           </StudioPuckBox>
           </StudioLiveContext.Provider>

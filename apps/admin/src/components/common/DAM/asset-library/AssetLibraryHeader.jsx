@@ -127,7 +127,7 @@ export const AssetLibraryDesktopHeader = ({
             <TextBox
               className="search-input w-full"
               inputClassName="pl-9 h-10 border border-gray-300 rounded-md focus:border-black focus:ring-1 focus:ring-black text-sm"
-              placeholder="Search With aI..."
+              placeholder="search with AI..."
               value={searchValue}
               valueChangeEvent="input"
               height={40}
@@ -353,7 +353,7 @@ export const AssetLibraryMobileHeader = ({
         <TextBox
           className="search-input w-full"
           inputClassName="pl-9 h-10 border border-gray-300 rounded-md focus:border-black focus:ring-1 focus:ring-black text-sm"
-          placeholder="Search With aI..."
+          placeholder="search with AI..."
           value={searchValue}
           valueChangeEvent="input"
           onValueChanged={(e) => onSearchChange?.(e.value)}

@@ -2276,6 +2276,41 @@ const useLive = () => {
   return live
 }
 
+function LibraryOverride({ children }: { children: React.ReactNode }) {
+  return <LibraryPanel labels={useLive().libraryLabels}>{children}</LibraryPanel>
+}
+function LibraryItemOverride({ children, name }: { children: React.ReactNode; name: string }) {
+  return <LibraryItem name={name} label={useLive().libraryLabels[name]}>{children}</LibraryItem>
+}
+function HeaderOverride({ actions }: { actions: React.ReactNode }) {
+  const l = useLive()
+  return <StudioHeader title={headerTitleFor(l.selectedPage, l.activeSection, l.activeAuthor)} actions={actions} />
+}
+function HeaderActionsOverride() {
+  const l = useLive()
+  return (
+    <PuckHeaderActions
+      selectedPage={l.selectedPage}
+      setSelectedPage={l.setSelectedPage}
+      scheduleAutosave={l.scheduleAutosave}
+      handlePublish={l.handlePublish}
+      saveStatus={l.saveStatus}
+      saveNow={l.saveNow}
+      activeSection={l.activeSection}
+      setActiveSection={l.setActiveSection}
+      activeAuthor={l.activeAuthor}
+      setActiveAuthor={l.setActiveAuthor}
+    />
+  )
+}
+function ComponentOverlayOverride({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ width: "100%", height: "100%", background: "transparent", pointerEvents: "none" }}>
+      {children}
+    </div>
+  )
+}
+
 /**
  * Puck treats a new component in `overrides` as a new component type and remounts it. Building these inside the editor's
  * render remounted the whole UI (sidebar, header, fields, open dropdowns) on every edit and save-status change. This object
@@ -2285,34 +2320,9 @@ export const STUDIO_OVERRIDES = {
   // Every Puck `select` field (Select Story, colours, ...) uses the shared Studio dropdown.
   fieldTypes: { select: StudioSelectField } as unknown as NonNullable<Overrides["fieldTypes"]>,
   // Search box above the grouped list; non-matching items are hidden (see LibrarySearch.tsx).
-  components: ({ children }: { children: React.ReactNode }) => <LibraryPanel labels={useLive().libraryLabels}>{children}</LibraryPanel>,
-  componentItem: ({ children, name }: { children: React.ReactNode; name: string }) => (
-    <LibraryItem name={name} label={useLive().libraryLabels[name]}>{children}</LibraryItem>
-  ),
-  header: ({ actions }: { actions: React.ReactNode }) => {
-    const l = useLive()
-    return <StudioHeader title={headerTitleFor(l.selectedPage, l.activeSection, l.activeAuthor)} actions={actions} />
-  },
-  headerActions: () => {
-    const l = useLive()
-    return (
-      <PuckHeaderActions
-        selectedPage={l.selectedPage}
-        setSelectedPage={l.setSelectedPage}
-        scheduleAutosave={l.scheduleAutosave}
-        handlePublish={l.handlePublish}
-        saveStatus={l.saveStatus}
-        saveNow={l.saveNow}
-        activeSection={l.activeSection}
-        setActiveSection={l.setActiveSection}
-        activeAuthor={l.activeAuthor}
-        setActiveAuthor={l.setActiveAuthor}
-      />
-    )
-  },
-  componentOverlay: ({ children }: { children: React.ReactNode }) => (
-    <div style={{ width: "100%", height: "100%", background: "transparent", pointerEvents: "none" }}>
-      {children}
-    </div>
-  ),
+  components: LibraryOverride,
+  componentItem: LibraryItemOverride,
+  header: HeaderOverride,
+  headerActions: HeaderActionsOverride,
+  componentOverlay: ComponentOverlayOverride,
 }

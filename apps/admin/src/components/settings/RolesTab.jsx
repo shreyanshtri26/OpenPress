@@ -22,7 +22,7 @@ const RolesTab = ({
 
   return (
     <div className="mt-6">
-      <div className="flex justify-between items-center pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-border-subtle)]">
         <div className="flex flex-wrap gap-6">
           {roleTabs.map((tab) => {
             const isActive = tab.key === activeRoleTab;
@@ -31,8 +31,8 @@ const RolesTab = ({
                 key={tab.key}
                 type="button"
                 onClick={() => onRoleTabChange(tab.key)}
-                className={`pb-2 text-sm font-semibold uppercase tracking-wide transition-colors duration-200 ${
-                  isActive ? "border-b-2 border-black text-black" : "text-gray-500 hover:text-gray-800"
+                className={`-mb-px inline-flex h-11 items-center border-b-2 text-sm font-semibold uppercase tracking-wide transition-colors duration-200 ${
+                  isActive ? "border-black text-black" : "border-transparent text-gray-500 hover:text-gray-800"
                 }`}
               >
                 {tab.label}
@@ -41,7 +41,7 @@ const RolesTab = ({
           })}
         </div>
 
-        {canCreateRole && <CustomButton onClick={onAddRoleClick}>Add Role</CustomButton>}
+        {canCreateRole && <div className="pb-1"><CustomButton onClick={onAddRoleClick}>Add Role</CustomButton></div>}
       </div>
       <div className="mt-6">
         <RoleAccordion

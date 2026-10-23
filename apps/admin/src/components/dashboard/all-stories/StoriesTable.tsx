@@ -308,7 +308,7 @@ export function StoriesTable({
           dataField="title"
           caption="Title"
           cellRender={renderTitleCell}
-          minWidth={180}
+          minWidth={380}
           allowSorting
           allowFiltering
           allowGrouping
@@ -316,7 +316,8 @@ export function StoriesTable({
         <Column
           dataField="statusValue"
           caption="Status"
-          minWidth={120}
+          minWidth={130}
+          width={130}
           alignment="center"
           allowSorting
           allowFiltering
@@ -331,7 +332,8 @@ export function StoriesTable({
         <Column
           dataField="authorDisplay"
           caption="Author"
-          minWidth={120}
+          minWidth={150}
+          width={150}
           allowSorting
           allowFiltering
           allowGrouping
@@ -339,7 +341,8 @@ export function StoriesTable({
         <Column
           dataField="storySection"
           caption="Section"
-          minWidth={100}
+          minWidth={120}
+          width={120}
           allowSorting
           allowFiltering
           allowGrouping
@@ -347,7 +350,8 @@ export function StoriesTable({
         <Column
           dataField="workflowStateValue"
           caption="Workflow State"
-          minWidth={140}
+          minWidth={170}
+          width={170}
           allowSorting
           allowFiltering
           allowGrouping
@@ -364,6 +368,7 @@ export function StoriesTable({
           dataType="date"
           format="shortDate"
           minWidth={120}
+          width={120}
           allowSorting
           allowFiltering
           allowGrouping
@@ -374,6 +379,7 @@ export function StoriesTable({
           dataType="date"
           format="shortDate"
           minWidth={120}
+          width={120}
           allowSorting
           allowFiltering
           allowGrouping
@@ -384,7 +390,8 @@ export function StoriesTable({
           caption="Published Date"
           dataType="date"
           format="shortDate"
-          minWidth={120}
+          minWidth={130}
+          width={130}
           allowSorting
           allowFiltering
           allowGrouping
@@ -392,7 +399,8 @@ export function StoriesTable({
         <Column
           dataField="assignedToDisplay"
           caption="Assigned Editor"
-          minWidth={140}
+          minWidth={160}
+          width={160}
           allowSorting
           allowFiltering
           allowGrouping

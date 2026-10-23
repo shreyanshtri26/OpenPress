@@ -871,3 +871,28 @@
 /* Colour dot beside a dropdown option (colour pickers, coloured categories). The hairline keeps white and near-white visible. */
 .studio-dd__swatch { flex: none; width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(23, 23, 23, 0.22); }
 .studio-dd__option .studio-dd__swatch { margin-top: 3px; }
+
+/* Palette pass: the shared OpenPress neutrals. */
+.studio-shell {
+  --studio-line: #e4e4e7;
+  --studio-muted: #71717a;
+  --studio-hover: #f4f4f5;
+  --studio-input: #f8f9fa;
+  --studio-ok: #22c55e;
+  --studio-text: #18181b;
+  --studio-accent: #1677ff;
+}
+
+/* "Page Studio by OpenPress": the product name, then the page being edited. */
+.studio-header__brand { font-weight: 700; letter-spacing: -0.015em; color: var(--studio-text); }
+.studio-header__by { font-weight: 500; color: var(--studio-muted); }
+.studio-header__sep { display: inline-block; width: 1px; height: 14px; margin: 0 var(--studio-gap-3); vertical-align: -2px; background: var(--studio-line); }
+.studio-header__page { font-weight: 500; color: var(--studio-muted); }
+
+/* /build top bar: "Page Studio by OpenPress" centred; the back link is neutral (black text, grey hover), not blue. */
+.studio-topbar { justify-content: space-between; }
+.studio-topbar-brand { position: absolute; left: 50%; transform: translateX(-50%); font-weight: 700; font-size: 14px; letter-spacing: -0.015em; color: var(--studio-text); white-space: nowrap; pointer-events: none; }
+.studio-topbar-brand span { font-weight: 500; color: var(--studio-muted); }
+.studio-topbar-back { color: var(--studio-text); }
+.studio-topbar-back:hover { color: var(--studio-text); background: #f4f4f5; }
+@media (max-width: 560px) { .studio-topbar-brand { position: static; transform: none; } }

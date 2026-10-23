@@ -533,7 +533,7 @@ function DashboardPageContent() {
               <input
                 type="search"
                 name="search"
-                placeholder="Search With aI..."
+                placeholder="search with AI..."
                 className="w-full bg-transparent text-sm pr-2 focus:outline-none"
               />
             </div>
@@ -581,7 +581,7 @@ function DashboardPageContent() {
               <input
                 type="search"
                 name="search"
-                placeholder="Search With aI..."
+                placeholder="search with AI..."
                 className="w-full bg-transparent text-sm focus:outline-none"
               />
             </div>

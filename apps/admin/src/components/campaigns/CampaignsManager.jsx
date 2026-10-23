@@ -392,10 +392,10 @@ export default function CampaignsManager() {
                             </div>
 
                             {/* Header */}
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-wrap items-center justify-between gap-3">
                                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Campaign Hub</h1>
                                 <button
-                                    className="rounded-full bg-[#1d1d1f] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#3a3a3c]"
+                                    className="inline-flex h-10 items-center justify-center rounded-full bg-[#18181b] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#3f3f46]"
                                     onClick={() => setCurrentView('create')}
                                 >
                                     Create Campaign
@@ -403,13 +403,13 @@ export default function CampaignsManager() {
                             </div>
 
                             {/* Tab switcher */}
-                            <div className="flex items-center justify-between flex-wrap gap-3">
-                                <div className="flex gap-0 border border-gray-200 rounded-full overflow-hidden w-fit bg-white">
+                            <div className="flex flex-wrap items-center justify-between gap-3">
+                                <div className="flex h-10 w-fit items-stretch overflow-hidden rounded-full border border-[var(--color-border)] bg-white">
                                     <button
                                         onClick={() => setCampaignTab('calendar')}
-                                        className={`px-5 py-2 text-sm font-semibold transition-colors ${
+                                        className={`inline-flex items-center px-5 text-sm font-semibold transition-colors ${
                                             campaignTab === 'calendar'
-                                                ? 'bg-[#1d1d1f] text-white'
+                                                ? 'bg-[#18181b] text-white'
                                                 : 'bg-white text-gray-600 hover:bg-gray-50'
                                         }`}
                                     >
@@ -417,9 +417,9 @@ export default function CampaignsManager() {
                                     </button>
                                     <button
                                         onClick={() => setCampaignTab('table')}
-                                        className={`px-5 py-2 text-sm font-semibold transition-colors border-l border-gray-300 ${
+                                        className={`inline-flex items-center border-l border-[var(--color-border)] px-5 text-sm font-semibold transition-colors ${
                                             campaignTab === 'table'
-                                                ? 'bg-[#1d1d1f] text-white'
+                                                ? 'bg-[#18181b] text-white'
                                                 : 'bg-white text-gray-600 hover:bg-gray-50'
                                         }`}
                                     >

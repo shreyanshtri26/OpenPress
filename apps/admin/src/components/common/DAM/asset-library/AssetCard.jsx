@@ -15,11 +15,10 @@ const AssetCard = ({ asset = null, onOpen, onDelete }) => {
 
   const fileExtension = asset.type?.split('/')[1]?.toUpperCase() || 'FILE';
   const fileName = asset.fileName || 'Untitled Asset';
-  const displayName = fileName.length > 30 ? `${fileName.substring(0, 30)}...` : fileName;
 
   return (
     <div
-      className="group relative flex h-full w-full flex-col cursor-pointer overflow-hidden rounded-2xl border border-black/[0.08] bg-white shadow-sm hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200"
+      className="group relative flex h-full w-full min-w-0 cursor-pointer flex-col overflow-hidden rounded-xl border border-[var(--color-border-subtle)] bg-white transition-[box-shadow,border-color] duration-200 hover:border-[var(--color-border)] hover:shadow-md"
       onClick={() => {
         triggerHaptic('selection');
         onOpen(asset);
@@ -74,10 +73,10 @@ const AssetCard = ({ asset = null, onOpen, onDelete }) => {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-3.5">
-        <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="text-sm font-semibold text-gray-900 tracking-tight truncate flex-1" title={fileName}>
-            {displayName}
+      <div className="flex flex-1 flex-col gap-2 p-3">
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="min-w-0 flex-1 truncate text-sm font-semibold leading-5 tracking-tight text-[var(--color-text-primary)]" title={fileName}>
+            {fileName}
           </h3>
           <button
             onClick={(e) => {
@@ -85,14 +84,15 @@ const AssetCard = ({ asset = null, onOpen, onDelete }) => {
               triggerHaptic('selection');
               onDelete(asset.assetId);
             }}
-            className="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1 rounded-md transition-colors"
-            title="Delete Asset"
+            className="-mr-1 flex h-8 w-8 flex-none items-center justify-center rounded-lg text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-error-subtle)] hover:text-[var(--color-error)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-error)]"
+            title="Delete asset"
+            aria-label={`Delete ${fileName}`}
           >
-            <Trash2 className="h-3.5 w-3.5" />
+            <Trash2 className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="border-t border-black/[0.05] pt-2 mt-auto flex items-center justify-between text-xs text-gray-400">
+        <div className="mt-auto flex items-center justify-between border-t border-[var(--color-border-subtle)] pt-2 text-xs text-[var(--color-text-secondary)]">
           <span>{formatDate(asset.createdAt)}</span>
         </div>
       </div>

@@ -1782,7 +1782,7 @@ export default function SurveyResults({ survey, onBack }: SurveyResultsProps) {
                         type="text"
                         value={summaryChatInput}
                         onChange={(event) => setSummaryChatInput(event.target.value)}
-                        placeholder="Search With aI..."
+                        placeholder="search with AI..."
                         disabled={isSummaryChatLoading}
                         className="w-full border border-black py-3 pl-12 pr-12 text-sm text-gray-900 placeholder-gray-500 focus:outline-none"
                       />

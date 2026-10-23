@@ -441,17 +441,17 @@ export default function AdminSettingsPage() {
         >
           <div className="flex flex-1 min-h-0 min-w-0">
             <aside className="w-64 border-r border-gray-200 bg-white hidden md:flex md:flex-col">
-              <div className="px-3 pt-5 pb-0 text-xl font-semibold text-gray-900">
+              <div className="flex h-10 items-center px-6 pt-6 text-xl font-semibold text-gray-900">
                 Settings
               </div>
-              <nav className="flex-1 px-2 space-y-1 mt-8">
+              <nav className="mt-6 flex-1 space-y-1 px-3">
                 {filteredSettingsTabs.map((tab) => {
                   const isActive = tab.key === activeTab;
                   const baseItemClass =
-                    "flex items-center w-full mb-2 p-2 rounded-none transition-all duration-200";
+                    "flex h-10 w-full items-center rounded-[var(--radius-control)] px-3 text-sm transition-colors duration-150";
                   const stateClasses = isActive
-                    ? "border border-black text-black"
-                    : "hover:bg-gray-100 text-gray-900";
+                    ? "bg-[#ececef] font-semibold text-[var(--color-text-primary)] shadow-[inset_3px_0_0_var(--color-text-primary)]"
+                    : "text-[var(--color-text-primary)] hover:bg-[var(--color-surface-tertiary)]";
                   return (
                     <button
                       key={tab.key}
@@ -471,7 +471,7 @@ export default function AdminSettingsPage() {
                   <div className="mb-4 md:hidden">
                     <AdminMobileSidebarToggle className="border border-gray-300" />
                   </div>
-                  <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
+                  <div className="mb-8 flex flex-col gap-4 md:min-h-10 md:flex-row md:items-center md:justify-between">
                     <h1 className="text-2xl font-semibold text-gray-900">
                       {activeTab === "users"
                         ? "Users"
@@ -487,7 +487,7 @@ export default function AdminSettingsPage() {
                     {activeTab === "users" && canCreateUser && (
                       <button
                         onClick={handleAddUserClick}
-                        className="self-start md:self-center inline-flex items-center justify-center px-4 py-2 border border-black text-sm font-medium text-white bg-black hover:bg-gray-800"
+                        className="inline-flex h-10 items-center justify-center self-start rounded-full bg-[#18181b] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#3f3f46] md:self-center"
                         type="button"
                       >
                         Add user
@@ -497,7 +497,7 @@ export default function AdminSettingsPage() {
                     {activeTab === "placement" && (
                       <button
                         onClick={handleAddPlacementClick}
-                        className="self-start md:self-center inline-flex items-center justify-center px-4 py-2 border border-black text-sm font-medium text-white bg-black hover:bg-gray-800"
+                        className="inline-flex h-10 items-center justify-center self-start rounded-full bg-[#18181b] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#3f3f46] md:self-center"
                         type="button"
                       >
                         Add Placement

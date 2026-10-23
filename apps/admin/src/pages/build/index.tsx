@@ -34,6 +34,12 @@ function BuildWorkspace() {
     import('@builder/components/PuckEditor/storyData').then((m) => m.initializeStories({}));
   }, [isSuperUser]);
 
+  useEffect(() => {
+    const previous = document.title;
+    document.title = 'Page Studio by OpenPress';
+    return () => { document.title = previous; };
+  }, []);
+
   if (!isSuperUser) return null;
 
   if (window.location.hash.startsWith(PUBLISHED_HASH)) {
@@ -52,6 +58,9 @@ function BuildWorkspace() {
         <button type="button" onClick={() => router.push('/dashboard')} className="studio-topbar-back">
           ← Back to dashboard
         </button>
+        <span className="studio-topbar-brand">
+          Page Studio <span>by OpenPress</span>
+        </span>
         <EPaperButton />
       </div>
       <main className="flex min-h-0 min-w-0 flex-1 [&>*]:min-h-0 [&>*]:min-w-0 [&>*]:flex-1">

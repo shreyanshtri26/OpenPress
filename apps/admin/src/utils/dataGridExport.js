@@ -5,6 +5,9 @@ import { exportDataGrid as exportDataGridToPdf } from '@/components/ui/kit/pdf-e
 import { Workbook } from 'exceljs';
 import { jsPDF } from 'jspdf';
 import { saveAs } from 'file-saver';
+import { toast } from 'react-hot-toast';
+
+const failed = (error) => { console.error('Export failed:', error); toast.error('Export failed. Please try again.'); };
 
 export function createGridExportHandler(fileNameBase = 'Export') {
   return function handleExporting(e) {
@@ -18,14 +21,12 @@ export function createGridExportHandler(fileNameBase = 'Export') {
         worksheet,
         autoFilterEnabled: true,
         selectedRowsOnly,
-      }).then(() => {
-        workbook.xlsx.writeBuffer().then((buffer) => {
-          saveAs(
-            new Blob([buffer], { type: 'application/octet-stream' }),
-            `${fileNameBase}.xlsx`
-          );
-        });
-      });
+      }).then(() => workbook.xlsx.writeBuffer()).then((buffer) => {
+        saveAs(
+          new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+          `${fileNameBase}.xlsx`
+        );
+      }).catch(failed);
       e.cancel = true;
     } else if (e.format === 'pdf') {
       const doc = new jsPDF('l', 'mm', 'a4');
@@ -36,7 +37,7 @@ export function createGridExportHandler(fileNameBase = 'Export') {
         indent: 5,
       }).then(() => {
         doc.save(`${fileNameBase}.pdf`);
-      });
+      }).catch(failed);
       e.cancel = true;
     }
   };

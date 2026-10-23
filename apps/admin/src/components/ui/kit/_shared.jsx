@@ -5,8 +5,8 @@ import { Children, isValidElement, useEffect, useState } from 'react';
 export const cx = (...classes) => classes.filter(Boolean).join(' ');
 
 export const fieldClass =
-  'w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 ' +
-  'focus:border-black focus:outline-none focus:ring-1 focus:ring-black disabled:bg-gray-100 read-only:bg-gray-50 transition-colors';
+  'w-full min-h-[40px] rounded-lg border border-[var(--color-border)] bg-[var(--color-input)] px-3 py-2 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] ' +
+  'hover:border-[var(--color-text-muted)] focus:border-[var(--color-text-primary)] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-border)] disabled:bg-gray-100 read-only:bg-gray-50 transition-colors';
 
 // the grid kit passes { value, previousValue, event, component } to onValueChanged.
 export function emit(handler, value, previousValue, event, options = {}) {

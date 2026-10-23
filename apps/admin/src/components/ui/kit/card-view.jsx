@@ -1,6 +1,7 @@
 // Native CardView (free): responsive card grid with paging, cardRender and noDataRender.
 import { Children, forwardRef, isValidElement, useImperativeHandle, useState } from 'react';
 import { cx, toArray } from './_shared';
+import { Pagination } from './pagination';
 import { Column, Pager, Paging, SearchPanel, Selection, Sorting } from './data-grid';
 
 /** @param {Record<string, any>} _props */
@@ -27,25 +28,24 @@ export const CardView = forwardRef(function CardView(
   if (!items.length) return <div className={className}>{noDataRender ? noDataRender() : <p className="py-10 text-center text-gray-500">No data</p>}</div>;
 
   return (
-    <div className={cx('flex flex-col', className)} style={height && height !== '100%' ? { height } : undefined}>
-      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(auto-fill, minmax(${cardMinWidth}px, 1fr))` }}>
+    <div className={cx('flex min-h-0 flex-col', className)} style={height && height !== '100%' ? { height } : undefined}>
+      <div className={cx('kit-cardview__grid', height && 'min-h-0 flex-1 overflow-y-auto')}>
+      <div className="grid items-stretch gap-4" style={{ gridTemplateColumns: `repeat(auto-fill, minmax(${cardMinWidth}px, 1fr))` }}>
         {shown.map((item, i) => (
-          <div key={String(keyExpr ? item[keyExpr] : i)} className={onItemClick ? 'cursor-pointer' : undefined} onClick={(event) => onItemClick?.({ itemData: item, data: item, event })}>
+          <div key={String(keyExpr ? item[keyExpr] : i)} className={cx('flex min-w-0', onItemClick && 'cursor-pointer')} onClick={(event) => onItemClick?.({ itemData: item, data: item, event })}>
             {cardRender ? cardRender({ data: item, card: { data: item }, itemData: item, index: i }) : null}
           </div>
         ))}
       </div>
+      </div>
       {pageCount > 1 && config.Pager?.visible !== false && (
-        <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
-          {config.Pager?.showInfo ? <span>{`Page ${current + 1} of ${pageCount} (${items.length} items)`}</span> : <span />}
-          <div className="flex items-center gap-1">
-            <button type="button" aria-label="Previous page" disabled={current === 0} className="rounded px-2 py-1 hover:bg-gray-100 disabled:opacity-40" onClick={() => setPage(current - 1)}>‹</button>
-            {Array.from({ length: pageCount }, (_, i) => (
-              <button key={i} type="button" aria-current={i === current ? 'page' : undefined} className={cx('min-w-8 rounded px-2 py-1', i === current ? 'bg-gray-900 text-white' : 'hover:bg-gray-100')} onClick={() => setPage(i)}>{i + 1}</button>
-            ))}
-            <button type="button" aria-label="Next page" disabled={current >= pageCount - 1} className="rounded px-2 py-1 hover:bg-gray-100 disabled:opacity-40" onClick={() => setPage(current + 1)}>›</button>
-          </div>
-        </div>
+        <Pagination
+          page={current}
+          pageCount={pageCount}
+          onPage={setPage}
+          className="kit-cardview__footer"
+          info={config.Pager?.showInfo ? <span>{`Page ${current + 1} of ${pageCount} (${items.length} items)`}</span> : null}
+        />
       )}
     </div>
   );

@@ -5,6 +5,70 @@
 @tailwind utilities;
 
 /* ==========================================================================
+   OpenPress design tokens: one neutral ramp, one blue accent, three semantic colours.
+   4px spacing scale. Components read these; do not hardcode the values.
+   ========================================================================== */
+:root {
+  --color-app-background: #f5f5f7;
+  --color-workspace: #f1f2f4;
+  --color-surface: #ffffff;
+  --color-surface-secondary: #fafafa;
+  --color-surface-tertiary: #f4f4f5;
+  --color-input: #f8f9fa;
+  --color-text-primary: #18181b;
+  --color-text-secondary: #71717a;
+  --color-text-muted: #a1a1aa;
+  --color-border: #e4e4e7;
+  --color-border-subtle: #ececef;
+  --color-accent: #1677ff;
+  --color-accent-hover: #0958d9;
+  --color-accent-subtle: #e8f1ff;
+  --color-accent-border: #b5d3ff;
+  --color-success: #22c55e;
+  --color-success-subtle: #e9f9ef;
+  --color-warning: #b86e00;
+  --color-warning-subtle: #fff4db;
+  --color-error: #d70015;
+  --color-error-subtle: #fff0f0;
+
+  --space-xs: 4px; --space-sm: 8px; --space-md: 12px; --space-lg: 16px;
+  --space-xl: 24px; --space-2xl: 32px; --space-3xl: 40px; --space-4xl: 48px;
+
+  --radius-control: 8px;
+  --radius-card: 12px;
+  --control-height: 40px;
+  --control-height-compact: 34px;
+  --header-height: 56px;
+  --ease-ui: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+  background: var(--color-app-background);
+  color: var(--color-text-primary);
+}
+
+/* Shared buttons for chrome that is not already a kit component. */
+.op-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-sm);
+  height: var(--control-height-compact); padding: 0 var(--space-lg);
+  border-radius: var(--radius-control); border: 1px solid var(--color-border);
+  background: var(--color-surface); color: var(--color-text-primary);
+  font-size: 13px; font-weight: 600; letter-spacing: -0.005em; white-space: nowrap;
+  transition: background-color 150ms var(--ease-ui), border-color 150ms var(--ease-ui), color 150ms var(--ease-ui), transform 120ms var(--ease-ui);
+}
+.op-btn:hover { background: var(--color-surface-tertiary); }
+.op-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.op-btn--grey { background: var(--color-surface-tertiary); border-color: var(--color-border); color: var(--color-text-primary); }
+.op-btn--grey:hover { background: var(--color-border); }
+.op-btn--lg { height: var(--control-height); }
+.op-btn--primary { background: var(--color-accent); border-color: var(--color-accent); color: #fff; }
+.op-btn--primary:hover { background: var(--color-accent-hover); border-color: var(--color-accent-hover); }
+.op-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Tints a black SVG icon to the accent blue (#1677ff). */
+.op-icon-accent { filter: brightness(0) saturate(100%) invert(30%) sepia(98%) saturate(2800%) hue-rotate(211deg) brightness(95%) contrast(101%); }
+
+/* ==========================================================================
    Apple Design Foundations & Materials (WWDC / Emil Kowalski Framework)
    ========================================================================== */
 
@@ -112,6 +176,61 @@ button:not(:disabled):not([class*="no-press"]):active,
     -webkit-backdrop-filter: none !important;
   }
 }
+
+/* ==========================================================================
+   Admin workspace. The page sits on the grey application background as one white sheet; below, defaults for
+   controls that carry no styling of their own and a remap of the stock black/blue utilities to the tokens.
+   Scoped to .op-admin so Page Studio, the ePaper and the public pages are untouched.
+   ========================================================================== */
+.op-admin { background: var(--color-app-background); }
+.op-sheet {
+  display: flex; flex-direction: column; flex: 1 1 0%; min-height: 0; min-width: 0; overflow: auto;
+  background: var(--color-surface); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card);
+  margin: var(--space-md); box-shadow: 0 1px 2px rgba(24, 24, 27, 0.04);
+}
+@media (max-width: 767px) { .op-sheet { margin: 0; border-radius: 0; border-width: 1px 0 0; } }
+
+/* Defaults only: zero specificity, so any utility class on the element still wins. */
+:where(.op-admin) :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]), select, textarea) {
+  border-color: var(--color-border); color: var(--color-text-primary);
+}
+:where(.op-admin) :where(input, select, textarea, button, a, [tabindex]):focus-visible { outline: 2px solid var(--color-text-primary); outline-offset: 2px; }
+:where(.op-admin) :where(th) { color: var(--color-text-secondary); }
+
+/* Selected state stays neutral: black text and fills stay black, only outlines are softened. */
+.op-admin .border-black { border-color: var(--color-border); }
+.op-admin .border-b-2.border-black, .op-admin .border-b-4.border-black, .op-admin .border-b-\[3px\].border-black { border-color: var(--color-text-primary); }
+.op-admin .focus\:border-black:focus, .op-admin .focus-within\:border-black:focus-within, .op-admin .hover\:border-black:hover { border-color: var(--color-text-primary); }
+.op-admin .focus\:ring-black:focus, .op-admin .focus-within\:ring-black:focus-within { --tw-ring-color: var(--color-border); }
+.op-admin .border-gray-300 { border-color: var(--color-border); }
+.op-admin .border-gray-200, .op-admin .border-gray-100 { border-color: var(--color-border-subtle); }
+.op-admin .bg-gray-50 { background-color: var(--color-surface-secondary); }
+.op-admin .bg-gray-100 { background-color: var(--color-surface-tertiary); }
+.op-admin .text-gray-900 { color: var(--color-text-primary); }
+.op-admin .text-gray-500, .op-admin .text-gray-600 { color: var(--color-text-secondary); }
+
+/* Shared pagination footer (kit/pagination.jsx): info left, compact controls right, one row, wraps only on narrow screens. */
+.op-pagination { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-md); margin-top: var(--space-lg); padding: 0 var(--space-xs); font-size: 13px; color: var(--color-text-secondary); }
+.op-pagination__info { display: flex; align-items: center; gap: var(--space-sm); min-width: 0; }
+.op-pagination__controls { display: flex; align-items: center; gap: var(--space-xs); margin-left: auto; }
+.op-page { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 var(--space-sm); border: 0; border-radius: var(--radius-control); background: transparent; color: var(--color-text-primary); font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1; cursor: pointer; transition: background-color 120ms var(--ease-ui), color 120ms var(--ease-ui); }
+.op-page:hover:not(:disabled):not([aria-current="page"]) { background: var(--color-surface-tertiary); }
+.op-page[aria-current="page"] { background: var(--color-text-primary); color: #fff; font-weight: 600; cursor: default; }
+.op-page:disabled { color: var(--color-text-muted); opacity: 0.45; cursor: not-allowed; }
+.op-page:focus-visible { outline: 2px solid var(--color-text-primary); outline-offset: 2px; }
+.op-page-gap { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 32px; color: var(--color-text-muted); }
+.op-page-size { height: 32px; padding: 0 var(--space-sm); border: 1px solid var(--color-border); border-radius: var(--radius-control); background: var(--color-input); color: var(--color-text-primary); font-size: 13px; }
+@media (max-width: 560px) { .op-pagination { justify-content: center; } .op-pagination__controls { margin-left: 0; } }
+
+/* Shared table surface: wide titles keep their room, metadata columns keep their width, narrow screens scroll. */
+.op-admin table { table-layout: auto; }
+
+/* Table toolbar (kit/data-grid.jsx): its own row above the headers. Controls sit together on the right, 8px apart, inset 16px
+   from the table edge, centred vertically; a hairline separates it from the column headers. */
+.op-grid-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--space-sm); padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-border-subtle); background: var(--color-surface); }
+.op-grid-toolbar > * { flex: none; }
+.op-grid-toolbar > input[type="search"] { margin-right: auto; flex: 0 1 320px; }
+.op-grid-footer { padding: var(--space-md) var(--space-lg); margin-top: 0; border-top: 1px solid var(--color-border-subtle); }
 
 /* Hide scrollbar by default but keep scroll functionality */
 .no-scrollbar::-webkit-scrollbar {
