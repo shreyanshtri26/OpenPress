@@ -277,7 +277,7 @@ export function PuckHeaderActions({
   // changes (see republishAllClient.ts). The publish button never waits for it;
   // these two pieces of state only carry its messages.
   const [republishNotice, setRepublishNotice] = useState<
-    { tone: "info" | "error"; title: string; message: string } | null
+    { tone: "info" | "error" | "success"; title: string; message: string } | null
   >(null);
   const [republishToasts, setRepublishToasts] = useState<RepublishToast[]>([]);
   // Other editor modules (e.g. Preview) report problems through this event instead of alert().
@@ -2104,7 +2104,15 @@ export function PuckHeaderActions({
         )}
         {republishNotice && (
           <div className="studio-toast-wrap">
-            <div className={`studio-toast ${republishNotice.tone === "error" ? "studio-toast--error" : "studio-toast--info"}`}>
+            <div
+              className={`studio-toast ${
+                republishNotice.tone === "error"
+                  ? "studio-toast--error"
+                  : republishNotice.tone === "success"
+                  ? "studio-toast--success"
+                  : "studio-toast--info"
+              }`}
+            >
               <div className="flex items-start justify-between gap-3">
                 <span className="font-semibold text-sm">{republishNotice.title}</span>
                 <button
