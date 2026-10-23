@@ -44,7 +44,7 @@ jobs:
           VITE_RUM_REGION: ${{ vars.VITE_RUM_REGION }}
           VITE_YOUPI_URL: ${{ vars.VITE_YOUPI_URL }}
           VITE_YOUPI_PUBLIC_KEY: ${{ vars.VITE_YOUPI_PUBLIC_KEY }}
-      - uses: cloudflare/wrangler-action@v3
+      - uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
