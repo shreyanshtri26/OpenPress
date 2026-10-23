@@ -158,7 +158,7 @@ export function renderMastheadNavbar({
     .filter((s: any) => s.title && s.publishUrl);
   const preloadedStoriesJson = serializeForInlineScript(preloadedStories);
   const mobileDrawerLoginHtml = serializeForInlineScript(
-    `<button id="mobile-drawer-login-btn" onclick="closeMobileMenu(); openEpaperAuthModal();" type="button" class="font-share text-xs tracking-wider px-4 min-h-[36px] shrink-0 whitespace-nowrap transition-colors uppercase font-bold rounded-full cursor-pointer" style="background-color: ${resolvedSignInBg}; color: ${resolvedSignInText};">${signInText}</button>`
+    `<button id="mobile-drawer-login-btn" onclick="closeMobileMenu(); openEpaperAuthModal();" type="button" class="op-menu__signin" style="background-color: ${resolvedSignInBg}; color: ${resolvedSignInText};">${signInText}</button>`
   );
 
   // Get first 3 sections for top nav; remaining sections go into the hamburger
@@ -1165,6 +1165,20 @@ export function renderMastheadNavbar({
     // Open: lock page scroll, make everything behind inert, move focus into the sheet. Close: undo all of that and give focus
     // back to the button that opened it. Tab is kept inside the sheet; Escape is handled by the shared key handler below.
     var _menuReturnFocus = null;
+    // Everything beside the sheet (the sheet is a child of #root, so #root itself must stay interactive) becomes inert while it is open.
+    window.setMenuBackgroundInert = function(on) {
+      var overlay = document.getElementById('mobile-menu-overlay');
+      if (!overlay) return;
+      var scopes = [overlay.parentElement, document.body];
+      scopes.forEach(function(scope) {
+        if (!scope) return;
+        Array.prototype.forEach.call(scope.children, function(el) {
+          if (el === overlay || el.contains(overlay) || /^(SCRIPT|STYLE|LINK|NOSCRIPT)$/.test(el.tagName)) return;
+          if (on) { if (!el.hasAttribute('inert')) { el.setAttribute('inert', ''); el.setAttribute('data-menu-inert', ''); } }
+          else if (el.hasAttribute('data-menu-inert')) { el.removeAttribute('inert'); el.removeAttribute('data-menu-inert'); }
+        });
+      });
+    };
     window.toggleMobileMenu = function() {
       if (isMobileMenuOpen) window.closeMobileMenu(); else window.openMobileMenu();
     };
@@ -1177,9 +1191,9 @@ export function renderMastheadNavbar({
       overlay.setAttribute('aria-hidden', 'false');
       var btn = document.getElementById('mobile-menu-btn');
       if (btn) { btn.setAttribute('aria-expanded', 'true'); btn.setAttribute('aria-label', 'Close menu'); }
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
-      ['root', 'navbar-top-banner'].forEach(function(id) { var el = document.getElementById(id); if (el) el.setAttribute('inert', ''); });
-      var header = document.querySelector('header'); if (header) header.setAttribute('inert', '');
+      window.setMenuBackgroundInert(true);
       setTimeout(function() { var c = document.getElementById('mobile-menu-close'); if (c) c.focus({ preventScroll: true }); }, 60);
     };
     window.closeMobileMenu = function() {
@@ -1192,9 +1206,9 @@ export function renderMastheadNavbar({
       }
       var btn = document.getElementById('mobile-menu-btn');
       if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-label', 'Open menu'); }
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
-      ['root', 'navbar-top-banner'].forEach(function(id) { var el = document.getElementById(id); if (el) el.removeAttribute('inert'); });
-      var header = document.querySelector('header'); if (header) header.removeAttribute('inert');
+      window.setMenuBackgroundInert(false);
       if (wasOpen && _menuReturnFocus && _menuReturnFocus.focus) { try { _menuReturnFocus.focus({ preventScroll: true }); } catch (e) {} }
       _menuReturnFocus = null;
       if (window.clearDrawerSearch) {

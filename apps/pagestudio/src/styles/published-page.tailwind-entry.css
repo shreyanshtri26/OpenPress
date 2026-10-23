@@ -356,7 +356,7 @@ img { max-width: 100%; }
 @media (prefers-color-scheme: dark) { .op-menu__logo { filter: brightness(0) invert(1); } }
 .op-menu__bar-actions { display: flex; align-items: center; gap: 8px; }
 .op-menu__avatar { display: flex; align-items: center; }
-.op-menu__signin { align-items: center; justify-content: center; min-height: 36px; padding: 0 16px; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; border: 0; border-radius: 980px; cursor: pointer; text-transform: none; transition: filter 160ms ease; }
+.op-menu__signin { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; box-shadow: inset 0 0 0 1px var(--op-line); padding: 0 16px; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; border: 0; border-radius: 980px; cursor: pointer; text-transform: none; transition: filter 160ms ease; }
 .op-menu__signin:hover { filter: brightness(0.94); }
 .op-menu__close { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; color: var(--op-text); background: var(--op-surface); border: 0; border-radius: 50%; cursor: pointer; transition: background-color 160ms ease; }
 .op-menu__close:hover { background: var(--op-line); }
@@ -428,4 +428,11 @@ img { max-width: 100%; }
   .op-menu { transition: none; }
   .op-menu__sheet { transition: none; }
   .op-menu__item { opacity: 1; transform: none; animation: none !important; }
+}
+
+/* Short screens (landscape phones, split view): the list keeps the room, so the secondary links drop out of the footer. */
+@media (max-height: 600px) {
+  .op-menu__social, .op-menu__cta--secondary { display: none; }
+  .op-menu__cta { min-height: 46px; }
+  .op-menu__item { min-height: 52px; font-size: 22px; }
 }

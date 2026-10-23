@@ -82,3 +82,15 @@ for (const [type, blocks] of [['About', [{ type: 'AboutUs', props: { id: 'a' } }
   assert.doesNotMatch(shown, /\bundefined\b|\[object Object\]/, `${type}: no leaked undefined`);
 }
 console.log('page shells ok');
+
+// Mobile menu: a labelled modal dialog, one row per section (HOME once), with an accessible trigger.
+{
+  const mobile = renderHomePage({ content: [{ type: 'AtlanticNavbar', props: { id: 'nav' } }, { type: 'Footer', props: { id: 'foot' } }] }, { storiesById: {}, sections: ['HOME', 'Politics', 'Business'], campaigns: [] }).html;
+  const sheet = mobile.slice(mobile.indexOf('id="mobile-menu-drawer"'), mobile.indexOf('id="search-overlay"'));
+  assert.match(sheet, /role="dialog"[^>]*aria-modal="true"/, 'menu sheet is a modal dialog');
+  assert.match(mobile, /id="mobile-menu-btn"[^>]*aria-expanded="false"[^>]*aria-controls="mobile-menu-drawer"/, 'hamburger exposes its state');
+  assert.equal((sheet.match(/data-section="HOME"/g) || []).length, 1, 'HOME appears once in the menu');
+  assert.match(sheet, /id="mobile-menu-close"[^>]*aria-label="Close menu"/, 'labelled close button');
+  assert.match(style, /\.op-menu__sheet\{[^}]*height:100dvh/, 'menu sheet covers the whole viewport');
+  console.log('mobile menu ok');
+}
