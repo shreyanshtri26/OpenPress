@@ -27,32 +27,73 @@ const SCRAPED_ENDPOINTS = [
 ];
 
 const LOCAL_SNAPSHOT_PATH = '/scraped-stories.json';
-// Free public RSS/Atom feeds (no API key). Each is fetched on "Fetch Live" and the results are merged, newest first.
-// Add a source here and it shows up in the Source column and filter. Several URLs per source are fallbacks.
-const FEED_SOURCES: { id: string; name: string; region: string; urls: string[] }[] = [
-    // India
-    { id: 'hindu', name: 'The Hindu', region: 'India', urls: ['https://www.thehindu.com/news/national/feeder/default.rss'] },
-    { id: 'indianexpress', name: 'The Indian Express', region: 'India', urls: ['https://indianexpress.com/section/india/feed/'] },
-    { id: 'hindustantimes', name: 'Hindustan Times', region: 'India', urls: ['https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml'] },
-    { id: 'ndtv', name: 'NDTV', region: 'India', urls: ['https://feeds.feedburner.com/ndtvnews-latest'] },
-    { id: 'toi', name: 'Times of India', region: 'India', urls: ['https://timesofindia.indiatimes.com/rssfeedstopstories.cms'] },
-    { id: 'indiatoday', name: 'India Today', region: 'India', urls: ['https://www.indiatoday.in/rss/1206514'] },
-    { id: 'firstpost', name: 'Firstpost', region: 'India', urls: ['https://www.firstpost.com/commonfeeds/v1/mfp/rss/india.xml'] },
-    { id: 'scroll', name: 'Scroll.in', region: 'India', urls: ['https://feeds.feedburner.com/ScrollinArticles.rss'] },
-    { id: 'bbc-india', name: 'BBC News India', region: 'India', urls: ['https://feeds.bbci.co.uk/news/world/asia/india/rss.xml'] },
-    { id: 'pib', name: 'PIB (Govt. of India)', region: 'India', urls: ['https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3'] },
-    // India business
-    { id: 'mint', name: 'Mint', region: 'India Business', urls: ['https://www.livemint.com/rss/news'] },
-    { id: 'business-standard', name: 'Business Standard', region: 'India Business', urls: ['https://www.business-standard.com/rss/home_page_top_stories.rss'] },
-    { id: 'hindu-business', name: 'The Hindu BusinessLine', region: 'India Business', urls: ['https://www.thehindu.com/business/feeder/default.rss'] },
-    // World
-    { id: 'hindu-world', name: 'The Hindu (International)', region: 'World', urls: ['https://www.thehindu.com/news/international/feeder/default.rss'] },
-    { id: 'bbc-world', name: 'BBC News World', region: 'World', urls: ['https://feeds.bbci.co.uk/news/world/rss.xml'] },
-    { id: 'aljazeera', name: 'Al Jazeera', region: 'World', urls: ['https://www.aljazeera.com/xml/rss/all.xml'] },
-    { id: 'dw', name: 'DW', region: 'World', urls: ['https://rss.dw.com/rdf/rss-en-all'] },
-    { id: 'guardian', name: 'The Guardian', region: 'World', urls: ['https://www.theguardian.com/world/rss'] },
-    { id: 'npr', name: 'NPR', region: 'World', urls: ['https://feeds.npr.org/1001/rss.xml'] },
-    { id: 'conversation', name: 'The Conversation', region: 'World', urls: ['https://theconversation.com/global/articles.atom'] },
+// Free public RSS/Atom feeds (no API key). "Fetch Live" fetches the ones for the chosen country and merges them, newest first.
+// `type` is the article type shown in the dropdown; each type maps to a footer section on import (see SECTION_FOR_TYPE).
+// To add a source, add a line here with its country and type.
+const COUNTRIES = ['India', 'World'] as const;
+const ARTICLE_TYPES = ['National', 'International', 'Sports', 'Business', 'Technology'] as const;
+type Country = (typeof COUNTRIES)[number];
+type ArticleType = (typeof ARTICLE_TYPES)[number];
+const DEFAULT_COUNTRY: Country = 'India';
+
+// The ePaper footer's sections (News, World, Sports, Business, Technology) are where imported stories land.
+const SECTION_FOR_TYPE: Record<ArticleType, string> = {
+    National: 'News',
+    International: 'World',
+    Sports: 'Sports',
+    Business: 'Business',
+    Technology: 'Technology',
+};
+
+const FEED_SOURCES: { id: string; name: string; country: Country; type: ArticleType; urls: string[] }[] = [
+    // India: national
+    { id: 'hindu', name: 'The Hindu', country: 'India', type: 'National', urls: ['https://www.thehindu.com/news/national/feeder/default.rss'] },
+    { id: 'indianexpress', name: 'The Indian Express', country: 'India', type: 'National', urls: ['https://indianexpress.com/section/india/feed/'] },
+    { id: 'hindustantimes', name: 'Hindustan Times', country: 'India', type: 'National', urls: ['https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml'] },
+    { id: 'ndtv', name: 'NDTV', country: 'India', type: 'National', urls: ['https://feeds.feedburner.com/ndtvnews-latest'] },
+    { id: 'toi', name: 'Times of India', country: 'India', type: 'National', urls: ['https://timesofindia.indiatimes.com/rssfeedstopstories.cms'] },
+    { id: 'indiatoday', name: 'India Today', country: 'India', type: 'National', urls: ['https://www.indiatoday.in/rss/1206514'] },
+    { id: 'firstpost', name: 'Firstpost', country: 'India', type: 'National', urls: ['https://www.firstpost.com/commonfeeds/v1/mfp/rss/india.xml'] },
+    { id: 'scroll', name: 'Scroll.in', country: 'India', type: 'National', urls: ['https://feeds.feedburner.com/ScrollinArticles.rss'] },
+    { id: 'bbc-india', name: 'BBC News India', country: 'India', type: 'National', urls: ['https://feeds.bbci.co.uk/news/world/asia/india/rss.xml'] },
+    { id: 'pib', name: 'PIB (Govt. of India)', country: 'India', type: 'National', urls: ['https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3'] },
+    // India: international (Indian publishers' world desks)
+    { id: 'hindu-world', name: 'The Hindu (International)', country: 'India', type: 'International', urls: ['https://www.thehindu.com/news/international/feeder/default.rss'] },
+    // India: sports
+    { id: 'hindu-sport', name: 'The Hindu (Sport)', country: 'India', type: 'Sports', urls: ['https://www.thehindu.com/sport/feeder/default.rss'] },
+    { id: 'ie-sports', name: 'The Indian Express (Sports)', country: 'India', type: 'Sports', urls: ['https://indianexpress.com/section/sports/feed/'] },
+    { id: 'ndtv-sports', name: 'NDTV Sports', country: 'India', type: 'Sports', urls: ['https://feeds.feedburner.com/ndtvsports-latest'] },
+    { id: 'toi-sports', name: 'Times of India (Sports)', country: 'India', type: 'Sports', urls: ['https://timesofindia.indiatimes.com/rssfeeds/4719148.cms'] },
+    { id: 'ht-sports', name: 'Hindustan Times (Sports)', country: 'India', type: 'Sports', urls: ['https://www.hindustantimes.com/feeds/rss/sports/rssfeed.xml'] },
+    // India: business
+    { id: 'mint', name: 'Mint', country: 'India', type: 'Business', urls: ['https://www.livemint.com/rss/news'] },
+    { id: 'business-standard', name: 'Business Standard', country: 'India', type: 'Business', urls: ['https://www.business-standard.com/rss/home_page_top_stories.rss'] },
+    { id: 'hindu-business', name: 'The Hindu BusinessLine', country: 'India', type: 'Business', urls: ['https://www.thehindu.com/business/feeder/default.rss'] },
+    { id: 'ie-business', name: 'The Indian Express (Business)', country: 'India', type: 'Business', urls: ['https://indianexpress.com/section/business/feed/'] },
+    { id: 'ht-business', name: 'Hindustan Times (Business)', country: 'India', type: 'Business', urls: ['https://www.hindustantimes.com/feeds/rss/business/rssfeed.xml'] },
+    { id: 'toi-business', name: 'Times of India (Business)', country: 'India', type: 'Business', urls: ['https://timesofindia.indiatimes.com/rssfeeds/1898055.cms'] },
+    // India: technology
+    { id: 'hindu-tech', name: 'The Hindu (Technology)', country: 'India', type: 'Technology', urls: ['https://www.thehindu.com/sci-tech/technology/feeder/default.rss'] },
+    { id: 'ie-tech', name: 'The Indian Express (Technology)', country: 'India', type: 'Technology', urls: ['https://indianexpress.com/section/technology/feed/'] },
+    { id: 'gadgets360', name: 'Gadgets 360', country: 'India', type: 'Technology', urls: ['https://feeds.feedburner.com/gadgets360-latest'] },
+    { id: 'ht-tech', name: 'Hindustan Times (Technology)', country: 'India', type: 'Technology', urls: ['https://www.hindustantimes.com/feeds/rss/technology/rssfeed.xml'] },
+    { id: 'toi-tech', name: 'Times of India (Technology)', country: 'India', type: 'Technology', urls: ['https://timesofindia.indiatimes.com/rssfeeds/5880659.cms'] },
+    // World: international
+    { id: 'bbc-world', name: 'BBC News World', country: 'World', type: 'International', urls: ['https://feeds.bbci.co.uk/news/world/rss.xml'] },
+    { id: 'aljazeera', name: 'Al Jazeera', country: 'World', type: 'International', urls: ['https://www.aljazeera.com/xml/rss/all.xml'] },
+    { id: 'dw', name: 'DW', country: 'World', type: 'International', urls: ['https://rss.dw.com/rdf/rss-en-all'] },
+    { id: 'guardian', name: 'The Guardian', country: 'World', type: 'International', urls: ['https://www.theguardian.com/world/rss'] },
+    { id: 'npr', name: 'NPR', country: 'World', type: 'International', urls: ['https://feeds.npr.org/1001/rss.xml'] },
+    { id: 'conversation', name: 'The Conversation', country: 'World', type: 'International', urls: ['https://theconversation.com/global/articles.atom'] },
+    // World: sports, business, technology
+    { id: 'bbc-sport', name: 'BBC Sport', country: 'World', type: 'Sports', urls: ['https://feeds.bbci.co.uk/sport/rss.xml'] },
+    { id: 'guardian-sport', name: 'The Guardian (Sport)', country: 'World', type: 'Sports', urls: ['https://www.theguardian.com/sport/rss'] },
+    { id: 'bbc-business', name: 'BBC News (Business)', country: 'World', type: 'Business', urls: ['https://feeds.bbci.co.uk/news/business/rss.xml'] },
+    { id: 'guardian-business', name: 'The Guardian (Business)', country: 'World', type: 'Business', urls: ['https://www.theguardian.com/uk/business/rss'] },
+    { id: 'npr-business', name: 'NPR (Business)', country: 'World', type: 'Business', urls: ['https://feeds.npr.org/1006/rss.xml'] },
+    { id: 'bbc-tech', name: 'BBC News (Technology)', country: 'World', type: 'Technology', urls: ['https://feeds.bbci.co.uk/news/technology/rss.xml'] },
+    { id: 'guardian-tech', name: 'The Guardian (Technology)', country: 'World', type: 'Technology', urls: ['https://www.theguardian.com/technology/rss'] },
+    { id: 'npr-tech', name: 'NPR (Technology)', country: 'World', type: 'Technology', urls: ['https://feeds.npr.org/1019/rss.xml'] },
 ];
 const ARTICLE_SCRAPE_CACHE_PREFIX = 'openpress_article_scrape_';
 
@@ -357,12 +398,12 @@ const parseRssJsonRows = (data: any, sourceName: string, region = '') => {
 };
 
 // One source: rss2json first (reliable from the browser), then the XML through the CORS proxies.
-const fetchFeedRows = async (source: { name: string; region: string; urls: string[] }, token?: string) => {
+const fetchFeedRows = async (source: { name: string; country: string; urls: string[] }, token?: string) => {
     for (const feedUrl of source.urls) {
         try {
             const xmlText = await fetchWithProxies(feedUrl, 100, token);
             if (xmlText) {
-                const rows = parseRssRows(xmlText, source.name, source.region);
+                const rows = parseRssRows(xmlText, source.name, source.country);
                 if (rows.length > 0) return rows;
             }
         } catch (err) {
@@ -375,7 +416,7 @@ const fetchFeedRows = async (source: { name: string; region: string; urls: strin
             if (response.ok) {
                 const data = await response.json();
                 if (data.status === 'ok' && Array.isArray(data.items) && data.items.length > 0) {
-                    const rows = parseRssJsonRows(data, source.name, source.region);
+                    const rows = parseRssJsonRows(data, source.name, source.country);
                     if (rows.length > 0) return rows;
                 }
             }
@@ -387,11 +428,12 @@ const fetchFeedRows = async (source: { name: string; region: string; urls: strin
 };
 
 // Every source in parallel; one failing feed never blocks the rest. Newest first, duplicate links dropped.
-const fetchRssRows = async (token?: string) => {
-    const settled = await Promise.allSettled(FEED_SOURCES.map((source) => fetchFeedRows(source, token)));
+const fetchRssRows = async (token?: string, country: Country = DEFAULT_COUNTRY) => {
+    const sources = FEED_SOURCES.filter((source) => source.country === country);
+    const settled = await Promise.allSettled(sources.map((source) => fetchFeedRows(source, token)));
     const seen = new Set<string>();
     const rows = settled
-        .flatMap((outcome, i) => (outcome.status === 'fulfilled' ? outcome.value.map((row: any) => ({ ...row, id: `${FEED_SOURCES[i].id}-${row.id}` })) : []))
+        .flatMap((outcome, i) => (outcome.status === 'fulfilled' ? outcome.value.map((row: any) => ({ ...row, id: `${sources[i].id}-${row.id}`, country: sources[i].country, articleType: sources[i].type })) : []))
         .filter((row: any) => {
             const key = row.sourceUrl || row.id;
             if (seen.has(key)) return false;
@@ -442,6 +484,8 @@ export default function Signals({ onBack }: SignalsProps) {
     const user = userContext?.user ?? null;
     const router = useRouter();
     const [rows, setRows] = useState<any[]>([]);
+    const [country, setCountry] = useState<Country>(DEFAULT_COUNTRY);
+    const [articleType, setArticleType] = useState<'All' | ArticleType>('All');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [isScraping, setIsScraping] = useState(false);
@@ -546,7 +590,7 @@ export default function Signals({ onBack }: SignalsProps) {
             } catch { }
 
             try {
-                const rssRows = await fetchRssRows(user?.token || undefined);
+                const rssRows = await fetchRssRows(user?.token || undefined, DEFAULT_COUNTRY);
                 if (rssRows.length > 0) {
                     setRows(rssRows);
                     hasData = true;
@@ -565,15 +609,17 @@ export default function Signals({ onBack }: SignalsProps) {
         fetchRows();
     }, [fetchRows]);
 
-    const handleFetchLive = async () => {
+    const handleFetchLive = async (chosenCountry: Country = country) => {
         setIsScraping(true);
         setError('');
         toast.loading('Fetching live RSS feed...', { id: 'scrape' });
 
         try {
-            const rssRows = await fetchRssRows(user?.token || undefined);
-            setRows(rssRows);
-            localStorage.setItem('openpress_scraped_cache', JSON.stringify(rssRows));
+            const rssRows = await fetchRssRows(user?.token || undefined, chosenCountry);
+            // Replace this country's rows, keep what was already fetched for the other one.
+            const merged = [...rows.filter((row) => row.country && row.country !== chosenCountry), ...rssRows];
+            setRows(merged);
+            localStorage.setItem('openpress_scraped_cache', JSON.stringify(merged));
             toast.success(`Found ${rssRows.length} latest stories.`, { id: 'scrape' });
         } catch (err: any) {
             console.error('Fetch live error:', err);
@@ -792,7 +838,8 @@ export default function Signals({ onBack }: SignalsProps) {
                     version: '2.30.8',
                 },
                 storySummary: verifiedFirstArticleParagraph || '',
-                section: 'World',
+                // The type chosen for this wire decides the section (National -> News, Sports -> Sports, ...); World if unknown.
+                section: SECTION_FOR_TYPE[finalStory.articleType as ArticleType] || 'World',
                 category: 'External',
                 // The publisher this wire came from ("The Hindu (Live)" -> "The Hindu"), so attribution stays correct.
                 source: String(finalStory.source || 'The Conversation IN').replace(/\s*\(Live\)$/, ''),
@@ -852,15 +899,29 @@ export default function Signals({ onBack }: SignalsProps) {
         }
     }, [backendApi, user?.token, router]);
 
+    // Rows from older imports carry no country or type; they stay visible under every filter rather than vanishing.
+    const visibleRows = useMemo(
+        () => rows.filter((row) => (!row.country || row.country === country) && (articleType === 'All' || !row.articleType || row.articleType === articleType)),
+        [rows, country, articleType],
+    );
+
+    // Picking a country with nothing fetched yet fetches it.
+    useEffect(() => {
+        if (loading || isScraping) return;
+        if (!rows.some((row) => row.country === country)) void handleFetchLive(country);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [country]);
+
     const content = useMemo(() => {
         if (loading && rows.length === 0) return <div className="p-6 text-sm text-gray-600">Loading scraped stories...</div>;
         if (error && rows.length === 0) return <div className="p-6 text-sm text-red-600">{error}</div>;
         if (rows.length === 0) return <div className="p-6 text-sm text-gray-600">No scraped stories found yet.</div>;
+        if (visibleRows.length === 0) return <div className="p-6 text-sm text-gray-600">No {articleType === 'All' ? '' : `${articleType.toLowerCase()} `}stories for {country} yet. Try Fetch Live.</div>;
 
         return (
             <div className="overflow-auto">
                 <DataGrid
-                    dataSource={rows}
+                    dataSource={visibleRows}
                     keyExpr="id"
                     showBorders={false}
                     showColumnLines={false}
@@ -902,7 +963,8 @@ export default function Signals({ onBack }: SignalsProps) {
                         )}
                     />
                     <Column dataField="source" caption="Source" allowFiltering={true} allowSorting={true} allowGrouping={true} minWidth={220} />
-                    <Column dataField="region" caption="Region" allowFiltering={true} allowSorting={true} allowGrouping={true} minWidth={130} />
+                    <Column dataField="country" caption="Country" allowFiltering={true} allowSorting={true} allowGrouping={true} minWidth={110} />
+                    <Column dataField="articleType" caption="Article type" allowFiltering={true} allowSorting={true} allowGrouping={true} minWidth={130} />
 
                     <Column
                         dataField="publishedAt"
@@ -947,7 +1009,7 @@ export default function Signals({ onBack }: SignalsProps) {
                 </DataGrid>
             </div>
         );
-    }, [error, loading, rows, importingId, importedUrls, handleImport]);
+    }, [error, loading, rows, visibleRows, country, articleType, importingId, importedUrls, handleImport]);
 
     return (
         <div className="flex flex-col h-full overflow-hidden bg-white">
@@ -967,7 +1029,7 @@ export default function Signals({ onBack }: SignalsProps) {
                         </div>
 
                         <CustomButton
-                            onClick={handleFetchLive}
+                            onClick={() => handleFetchLive()}
                             disabled={isScraping}
                             variant="black"
                             className="flex items-center gap-2"
@@ -979,6 +1041,33 @@ export default function Signals({ onBack }: SignalsProps) {
                                 </>
                             ) : 'Fetch Live'}
                         </CustomButton>
+                    </div>
+
+                    <div className="flex flex-wrap items-end gap-4">
+                        <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wide text-[var(--color-text-secondary)]">
+                            Country
+                            <select
+                                value={country}
+                                onChange={(e) => setCountry(e.target.value as Country)}
+                                className="h-10 min-w-[160px] rounded-lg border border-[var(--color-border)] bg-[var(--color-input)] pl-3 pr-8 text-sm font-normal normal-case tracking-normal text-[var(--color-text-primary)] focus:border-black focus:outline-none"
+                            >
+                                {COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                        </label>
+                        <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wide text-[var(--color-text-secondary)]">
+                            Article type
+                            <select
+                                value={articleType}
+                                onChange={(e) => setArticleType(e.target.value as 'All' | ArticleType)}
+                                className="h-10 min-w-[180px] rounded-lg border border-[var(--color-border)] bg-[var(--color-input)] pl-3 pr-8 text-sm font-normal normal-case tracking-normal text-[var(--color-text-primary)] focus:border-black focus:outline-none"
+                            >
+                                <option value="All">All</option>
+                                {ARTICLE_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
+                            </select>
+                        </label>
+                        <span className="pb-2.5 text-sm text-[var(--color-text-secondary)]" aria-live="polite">
+                            {visibleRows.length} of {rows.length} stories
+                        </span>
                     </div>
 
                     <div className="max-w-[1600px]">
