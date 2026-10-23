@@ -8,3 +8,5 @@ compatibility_date = "2025-01-01"
 BUCKET_ORIGIN = ""
 # Neon Auth base URL for the /_neon sign-in proxy; the Deploy Site workflow fills it from NEON_AUTH_BASE_URL.
 NEON_AUTH_BASE_URL = ""
+# API base URL for the reader sign-in page; the Deploy Site workflow fills it from API_URL.
+API_URL = ""

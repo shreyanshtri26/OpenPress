@@ -22,43 +22,38 @@ import DataGrid, {
 import { AllStoriesHeader } from './all-stories/AllStoriesHeader';
 import { AdminMobileSidebarToggle } from '../SideBar/AdminDashboardLayout';
 import { createGridExportHandler } from '../../utils/dataGridExport';
+import { ARTICLE_BODY_SELECTORS, extractBlocksFromDoc, findMainContent } from '../../helpers/wireArticleExtract';
 const SCRAPED_ENDPOINTS = [
     '/story/scrapedStories',
 ];
 
 const LOCAL_SNAPSHOT_PATH = '/scraped-stories.json';
 // Free public RSS/Atom feeds (no API key). "Fetch Live" fetches the ones for the chosen country and merges them, newest first.
-// `type` is the article type shown in the dropdown; each type maps to a footer section on import (see SECTION_FOR_TYPE).
+// `type` is the article type shown in the dropdown (one of the footer sections).
 // To add a source, add a line here with its country and type.
 const COUNTRIES = ['India', 'World'] as const;
-const ARTICLE_TYPES = ['National', 'International', 'Sports', 'Business', 'Technology'] as const;
+const ARTICLE_TYPES = ['News', 'Opinion', 'Business', 'Sports', 'Technology', 'Arts & Culture', 'Politics', 'Lifestyle', 'World'] as const;
 type Country = (typeof COUNTRIES)[number];
 type ArticleType = (typeof ARTICLE_TYPES)[number];
 const DEFAULT_COUNTRY: Country = 'India';
 
-// The ePaper footer's sections (News, World, Sports, Business, Technology) are where imported stories land.
-const SECTION_FOR_TYPE: Record<ArticleType, string> = {
-    National: 'News',
-    International: 'World',
-    Sports: 'Sports',
-    Business: 'Business',
-    Technology: 'Technology',
-};
+// The article types are the ePaper footer's sections, so a type is also the section an imported story lands in.
+const SECTION_FOR_TYPE: Record<ArticleType, string> = Object.fromEntries(ARTICLE_TYPES.map((type) => [type, type])) as Record<ArticleType, string>;
 
 const FEED_SOURCES: { id: string; name: string; country: Country; type: ArticleType; urls: string[] }[] = [
     // India: national
-    { id: 'hindu', name: 'The Hindu', country: 'India', type: 'National', urls: ['https://www.thehindu.com/news/national/feeder/default.rss'] },
-    { id: 'indianexpress', name: 'The Indian Express', country: 'India', type: 'National', urls: ['https://indianexpress.com/section/india/feed/'] },
-    { id: 'hindustantimes', name: 'Hindustan Times', country: 'India', type: 'National', urls: ['https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml'] },
-    { id: 'ndtv', name: 'NDTV', country: 'India', type: 'National', urls: ['https://feeds.feedburner.com/ndtvnews-latest'] },
-    { id: 'toi', name: 'Times of India', country: 'India', type: 'National', urls: ['https://timesofindia.indiatimes.com/rssfeedstopstories.cms'] },
-    { id: 'indiatoday', name: 'India Today', country: 'India', type: 'National', urls: ['https://www.indiatoday.in/rss/1206514'] },
-    { id: 'firstpost', name: 'Firstpost', country: 'India', type: 'National', urls: ['https://www.firstpost.com/commonfeeds/v1/mfp/rss/india.xml'] },
-    { id: 'scroll', name: 'Scroll.in', country: 'India', type: 'National', urls: ['https://feeds.feedburner.com/ScrollinArticles.rss'] },
-    { id: 'bbc-india', name: 'BBC News India', country: 'India', type: 'National', urls: ['https://feeds.bbci.co.uk/news/world/asia/india/rss.xml'] },
-    { id: 'pib', name: 'PIB (Govt. of India)', country: 'India', type: 'National', urls: ['https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3'] },
+    { id: 'hindu', name: 'The Hindu', country: 'India', type: 'News', urls: ['https://www.thehindu.com/news/national/feeder/default.rss'] },
+    { id: 'indianexpress', name: 'The Indian Express', country: 'India', type: 'News', urls: ['https://indianexpress.com/section/india/feed/'] },
+    { id: 'hindustantimes', name: 'Hindustan Times', country: 'India', type: 'News', urls: ['https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml'] },
+    { id: 'ndtv', name: 'NDTV', country: 'India', type: 'News', urls: ['https://feeds.feedburner.com/ndtvnews-latest'] },
+    { id: 'toi', name: 'Times of India', country: 'India', type: 'News', urls: ['https://timesofindia.indiatimes.com/rssfeedstopstories.cms'] },
+    { id: 'indiatoday', name: 'India Today', country: 'India', type: 'News', urls: ['https://www.indiatoday.in/rss/1206514'] },
+    { id: 'firstpost', name: 'Firstpost', country: 'India', type: 'News', urls: ['https://www.firstpost.com/commonfeeds/v1/mfp/rss/india.xml'] },
+    { id: 'scroll', name: 'Scroll.in', country: 'India', type: 'News', urls: ['https://feeds.feedburner.com/ScrollinArticles.rss'] },
+    { id: 'bbc-india', name: 'BBC News India', country: 'India', type: 'News', urls: ['https://feeds.bbci.co.uk/news/world/asia/india/rss.xml'] },
+    { id: 'pib', name: 'PIB (Govt. of India)', country: 'India', type: 'News', urls: ['https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3'] },
     // India: international (Indian publishers' world desks)
-    { id: 'hindu-world', name: 'The Hindu (International)', country: 'India', type: 'International', urls: ['https://www.thehindu.com/news/international/feeder/default.rss'] },
+    { id: 'hindu-world', name: 'The Hindu (International)', country: 'India', type: 'World', urls: ['https://www.thehindu.com/news/international/feeder/default.rss'] },
     // India: sports
     { id: 'hindu-sport', name: 'The Hindu (Sport)', country: 'India', type: 'Sports', urls: ['https://www.thehindu.com/sport/feeder/default.rss'] },
     { id: 'ie-sports', name: 'The Indian Express (Sports)', country: 'India', type: 'Sports', urls: ['https://indianexpress.com/section/sports/feed/'] },
@@ -79,12 +74,12 @@ const FEED_SOURCES: { id: string; name: string; country: Country; type: ArticleT
     { id: 'ht-tech', name: 'Hindustan Times (Technology)', country: 'India', type: 'Technology', urls: ['https://www.hindustantimes.com/feeds/rss/technology/rssfeed.xml'] },
     { id: 'toi-tech', name: 'Times of India (Technology)', country: 'India', type: 'Technology', urls: ['https://timesofindia.indiatimes.com/rssfeeds/5880659.cms'] },
     // World: international
-    { id: 'bbc-world', name: 'BBC News World', country: 'World', type: 'International', urls: ['https://feeds.bbci.co.uk/news/world/rss.xml'] },
-    { id: 'aljazeera', name: 'Al Jazeera', country: 'World', type: 'International', urls: ['https://www.aljazeera.com/xml/rss/all.xml'] },
-    { id: 'dw', name: 'DW', country: 'World', type: 'International', urls: ['https://rss.dw.com/rdf/rss-en-all'] },
-    { id: 'guardian', name: 'The Guardian', country: 'World', type: 'International', urls: ['https://www.theguardian.com/world/rss'] },
-    { id: 'npr', name: 'NPR', country: 'World', type: 'International', urls: ['https://feeds.npr.org/1001/rss.xml'] },
-    { id: 'conversation', name: 'The Conversation', country: 'World', type: 'International', urls: ['https://theconversation.com/global/articles.atom'] },
+    { id: 'bbc-world', name: 'BBC News World', country: 'World', type: 'World', urls: ['https://feeds.bbci.co.uk/news/world/rss.xml'] },
+    { id: 'aljazeera', name: 'Al Jazeera', country: 'World', type: 'World', urls: ['https://www.aljazeera.com/xml/rss/all.xml'] },
+    { id: 'dw', name: 'DW', country: 'World', type: 'World', urls: ['https://rss.dw.com/rdf/rss-en-all'] },
+    { id: 'guardian', name: 'The Guardian', country: 'World', type: 'World', urls: ['https://www.theguardian.com/world/rss'] },
+    { id: 'npr', name: 'NPR', country: 'World', type: 'World', urls: ['https://feeds.npr.org/1001/rss.xml'] },
+    { id: 'conversation', name: 'The Conversation', country: 'World', type: 'World', urls: ['https://theconversation.com/global/articles.atom'] },
     // World: sports, business, technology
     { id: 'bbc-sport', name: 'BBC Sport', country: 'World', type: 'Sports', urls: ['https://feeds.bbci.co.uk/sport/rss.xml'] },
     { id: 'guardian-sport', name: 'The Guardian (Sport)', country: 'World', type: 'Sports', urls: ['https://www.theguardian.com/sport/rss'] },
@@ -94,6 +89,29 @@ const FEED_SOURCES: { id: string; name: string; country: Country; type: ArticleT
     { id: 'bbc-tech', name: 'BBC News (Technology)', country: 'World', type: 'Technology', urls: ['https://feeds.bbci.co.uk/news/technology/rss.xml'] },
     { id: 'guardian-tech', name: 'The Guardian (Technology)', country: 'World', type: 'Technology', urls: ['https://www.theguardian.com/technology/rss'] },
     { id: 'npr-tech', name: 'NPR (Technology)', country: 'World', type: 'Technology', urls: ['https://feeds.npr.org/1019/rss.xml'] },
+    // Opinion
+    { id: 'hindu-opinion', name: 'The Hindu (Opinion)', country: 'India', type: 'Opinion', urls: ['https://www.thehindu.com/opinion/feeder/default.rss'] },
+    { id: 'ie-opinion', name: 'The Indian Express (Opinion)', country: 'India', type: 'Opinion', urls: ['https://indianexpress.com/section/opinion/feed/'] },
+    { id: 'ht-opinion', name: 'Hindustan Times (Opinion)', country: 'India', type: 'Opinion', urls: ['https://www.hindustantimes.com/feeds/rss/opinion/rssfeed.xml'] },
+    { id: 'guardian-opinion', name: 'The Guardian (Opinion)', country: 'World', type: 'Opinion', urls: ['https://www.theguardian.com/commentisfree/rss'] },
+    // Politics
+    { id: 'ie-politics', name: 'The Indian Express (Political Pulse)', country: 'India', type: 'Politics', urls: ['https://indianexpress.com/section/political-pulse/feed/'] },
+    { id: 'bbc-politics', name: 'BBC News (Politics)', country: 'World', type: 'Politics', urls: ['https://feeds.bbci.co.uk/news/politics/rss.xml'] },
+    { id: 'guardian-politics', name: 'The Guardian (Politics)', country: 'World', type: 'Politics', urls: ['https://www.theguardian.com/politics/rss'] },
+    { id: 'npr-politics', name: 'NPR (Politics)', country: 'World', type: 'Politics', urls: ['https://feeds.npr.org/1014/rss.xml'] },
+    // Arts & Culture
+    { id: 'hindu-ent', name: 'The Hindu (Entertainment)', country: 'India', type: 'Arts & Culture', urls: ['https://www.thehindu.com/entertainment/feeder/default.rss'] },
+    { id: 'ie-ent', name: 'The Indian Express (Entertainment)', country: 'India', type: 'Arts & Culture', urls: ['https://indianexpress.com/section/entertainment/feed/'] },
+    { id: 'ht-ent', name: 'Hindustan Times (Entertainment)', country: 'India', type: 'Arts & Culture', urls: ['https://www.hindustantimes.com/feeds/rss/entertainment/rssfeed.xml'] },
+    { id: 'guardian-culture', name: 'The Guardian (Culture)', country: 'World', type: 'Arts & Culture', urls: ['https://www.theguardian.com/culture/rss'] },
+    { id: 'bbc-arts', name: 'BBC News (Entertainment & Arts)', country: 'World', type: 'Arts & Culture', urls: ['https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml'] },
+    { id: 'npr-arts', name: 'NPR (Arts)', country: 'World', type: 'Arts & Culture', urls: ['https://feeds.npr.org/1008/rss.xml'] },
+    // Lifestyle
+    { id: 'ie-lifestyle', name: 'The Indian Express (Lifestyle)', country: 'India', type: 'Lifestyle', urls: ['https://indianexpress.com/section/lifestyle/feed/'] },
+    { id: 'ht-lifestyle', name: 'Hindustan Times (Lifestyle)', country: 'India', type: 'Lifestyle', urls: ['https://www.hindustantimes.com/feeds/rss/lifestyle/rssfeed.xml'] },
+    { id: 'hindu-life', name: 'The Hindu (Life & Style)', country: 'India', type: 'Lifestyle', urls: ['https://www.thehindu.com/life-and-style/feeder/default.rss'] },
+    { id: 'guardian-life', name: 'The Guardian (Life & Style)', country: 'World', type: 'Lifestyle', urls: ['https://www.theguardian.com/lifeandstyle/rss'] },
+    { id: 'npr-health', name: 'NPR (Health)', country: 'World', type: 'Lifestyle', urls: ['https://feeds.npr.org/1128/rss.xml'] },
 ];
 const ARTICLE_SCRAPE_CACHE_PREFIX = 'openpress_article_scrape_';
 
@@ -123,14 +141,6 @@ const text = (value: any = '') =>
 
 const stripHtml = (value: string) => value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
-const ARTICLE_BODY_SELECTORS = [
-    '[itemprop="articleBody"]',
-    '.content-body',
-    'article',
-    '.article-body',
-    '.post-content',
-    '.entry-content',
-];
 
 const ARTICLE_SUMMARY_EXCLUDED_SELECTOR = '.slot, .inline-promo, .author-bio, .content-authors, .content-authors-group, [itemprop="author"], .role, .content-disclosure-statement, .content-partners, .content-doi, form, aside, script, style, .ad-container, .newsletter-signup, .related-articles, .social-share, .fine-print, .tags, .tag-list, .content-tags, .article-tags, .story-tags';
 
@@ -144,7 +154,7 @@ const getVerifiedArticleBodyContainer = (doc: Document) =>
         .find(Boolean) || null;
 
 const extractVerifiedFirstArticleParagraph = (doc: Document): string => {
-    const bodyContainer = getVerifiedArticleBodyContainer(doc);
+    const bodyContainer = getVerifiedArticleBodyContainer(doc) || findMainContent(doc);
     if (!bodyContainer) return '';
 
     const paragraphs = bodyContainer.matches('p')
@@ -684,35 +694,8 @@ export default function Signals({ onBack }: SignalsProps) {
                                 if (roleNode) scrapedAuthorBio = roleNode.textContent?.trim() || '';
                             }
 
-                            const bodyContainer = getArticleBodyContainer(doc);
-
-                            if (bodyContainer) {
-                                const contentBlocks: any[] = [];
-                                const walk = (node: Element) => {
-                                    if (node.nodeType !== 1) return;
-                                    if (node.matches('.slot, .inline-promo, .author-bio, .content-authors, .content-disclosure-statement, .content-partners, .content-doi, form, aside, script, style, .ad-container, .newsletter-signup, .related-articles, .social-share, .fine-print')) return;
-                                    if (['BUTTON', 'INPUT', 'IFRAME', 'NOSCRIPT'].includes(node.tagName)) return;
-
-                                    const tagName = node.tagName.toLowerCase();
-                                    if (['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote'].includes(tagName)) {
-                                        const payloadText = node.innerHTML.trim();
-                                        if (payloadText.length > 0) {
-                                            contentBlocks.push({
-                                                type: (tagName === 'blockquote' ? 'quote' : (tagName.startsWith('h') ? 'header' : 'paragraph')),
-                                                data: { text: payloadText, ...(tagName.startsWith('h') && { level: parseInt(tagName[1]) }) }
-                                            });
-                                        }
-                                    } else if (['ul', 'ol'].includes(tagName)) {
-                                        const items = Array.from(node.querySelectorAll('li')).map(li => li.innerHTML.trim()).filter(Boolean);
-                                        if (items.length > 0) {
-                                            contentBlocks.push({ type: 'list', data: { style: tagName === 'ul' ? 'unordered' : 'ordered', items } });
-                                        }
-                                    } else {
-                                        Array.from(node.children).forEach(child => walk(child as Element));
-                                    }
-                                };
-
-                                walk(bodyContainer as Element);
+                            {
+                                const contentBlocks: any[] = extractBlocksFromDoc(doc);
 
                                 if (contentBlocks.length > 0) {
                                     finalStory.body = JSON.stringify(contentBlocks);
@@ -751,6 +734,11 @@ export default function Signals({ onBack }: SignalsProps) {
                     verifiedFirstArticleParagraph = '';
                     console.error('handleImport: Summary scrape error on import:', scrapeErr);
                 }
+            }
+
+            // The page could not be read (blocked, JavaScript-only, paywalled): use the feed's own text so more than the title is kept.
+            if (!finalStory.body || (typeof finalStory.body === 'string' && !stripHtml(finalStory.body))) {
+                finalStory.body = '';
             }
 
             const rawSlug = finalStory.sourceUrl?.split('/').filter(Boolean).pop();
@@ -838,7 +826,7 @@ export default function Signals({ onBack }: SignalsProps) {
                     version: '2.30.8',
                 },
                 storySummary: verifiedFirstArticleParagraph || '',
-                // The type chosen for this wire decides the section (National -> News, Sports -> Sports, ...); World if unknown.
+                // The type chosen for this wire decides the section (the type is the footer section); World if unknown.
                 section: SECTION_FOR_TYPE[finalStory.articleType as ArticleType] || 'World',
                 category: 'External',
                 // The publisher this wire came from ("The Hindu (Live)" -> "The Hindu"), so attribution stays correct.

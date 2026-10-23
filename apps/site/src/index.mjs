@@ -2,6 +2,7 @@
 // the way a static host would (/news -> news.html or news/index.html, / -> home.html). Unknown paths get the
 // published error page with a 404.
 import { siteKeys } from '../../api/lib/site-keys.mjs';
+import { renderDevLoginPageHtml } from '../../api/src/render-login-fallback.mjs';
 
 const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
@@ -23,6 +24,17 @@ const respond = (upstream, status) => {
   return { headers, status };
 };
 
+// The reader sign-in page is built here from the current code, so deploying the site updates it (no separate publish
+// step, no stale login.html in the bucket). It talks to Neon Auth through the /_neon proxy below.
+function loginPage(request, env) {
+  const config = `window.__openPress_API__ = ${JSON.stringify((env.API_URL || '').replace(/\/+$/, ''))};${env.NEON_AUTH_BASE_URL ? ' window.__NEON_AUTH_PROXY__ = true;' : ''}`;
+  const html = renderDevLoginPageHtml().replace('<head>', `<head>\n  <script>${config}</script>`);
+  const headers = new Headers(SECURITY_HEADERS);
+  headers.set('content-type', 'text/html; charset=utf-8');
+  headers.set('cache-control', 'no-store');
+  return new Response(request.method === 'HEAD' ? null : html, { status: 200, headers });
+}
+
 // Neon Auth lives on another domain, so its session cookies are third-party to the newspaper and iOS Safari (and other
 // browsers) drop them: Google sign-in comes back with no session. The sign-in page therefore talks to /_neon/*, which
 // this worker forwards to Neon Auth, making those cookies first-party. Only the one configured upstream is reachable.
@@ -41,6 +53,8 @@ async function proxyNeonAuth(request, env, pathname, search) {
   });
   const out = new Headers(upstream.headers);
   out.delete('set-cookie');
+  out.delete('content-encoding');
+  out.delete('content-length');
   // A Domain attribute would pin the cookie to Neon's host; without it the browser keeps it for this site.
   for (const cookie of upstream.headers.getSetCookie?.() ?? []) out.append('set-cookie', cookie.replace(/;\s*Domain=[^;]*/i, ''));
   out.set('cache-control', 'no-store');
@@ -52,6 +66,7 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === NEON_PREFIX || url.pathname.startsWith(`${NEON_PREFIX}/`)) return proxyNeonAuth(request, env, url.pathname, url.search);
     if (!env.BUCKET_ORIGIN) return new Response('Site is not configured (BUCKET_ORIGIN).', { status: 500 });
+    if ((url.pathname === '/login' || url.pathname === '/login.html') && (request.method === 'GET' || request.method === 'HEAD')) return loginPage(request, env);
     if (request.method !== 'GET' && request.method !== 'HEAD') return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET, HEAD' } });
 
     const { pathname } = new URL(request.url);

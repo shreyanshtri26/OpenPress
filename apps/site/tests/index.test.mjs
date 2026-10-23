@@ -53,3 +53,18 @@ test('proxies /_neon/* to Neon Auth with cookies kept first-party', async () => 
   assert.match(res.headers.getSetCookie()[0], /session_token=abc/);
   assert.equal((await worker.fetch(new Request('https://site.test/_neon/token'), env)).status, 404);
 });
+
+test('serves the sign-in page itself, wired to the proxy and the API', async () => {
+  const res = await worker.fetch(new Request('https://site.test/login?neon=1'), { ...env, API_URL: 'https://api.example/', NEON_AUTH_BASE_URL: 'https://auth.neon.example/x/auth' });
+  const html = await res.text();
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get('content-type'), /text\/html/);
+  assert.equal(res.headers.get('cache-control'), 'no-store');
+  assert.match(html, /window\.__openPress_API__ = "https:\/\/api\.example"/);
+  assert.match(html, /__NEON_AUTH_PROXY__ = true/);
+  assert.match(html, /Continue with Google/);
+  assert.doesNotMatch(html, /Public Reader Access|reader-email|neon-password/);
+  // without Neon Auth configured the page does not claim the proxy exists
+  const bare = await (await worker.fetch(new Request('https://site.test/login'), env)).text();
+  assert.doesNotMatch(bare, /__NEON_AUTH_PROXY__ = true/);
+});
