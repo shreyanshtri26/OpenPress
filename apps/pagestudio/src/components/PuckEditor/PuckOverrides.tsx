@@ -299,6 +299,8 @@ export function PuckHeaderActions({
   const [finishedJob, setFinishedJob] = useState<RepublishJob | null>(null);
   const watchedJobRef = useRef<RepublishJob | null>(null);
   const shownJobIdRef = useRef<string | null>(null);
+  // True only while the first status read after opening Page Studio is handled.
+  const initialReadRef = useRef(false);
 
   const token = checkAuth();
 
@@ -331,11 +333,21 @@ export function PuckHeaderActions({
     (job: RepublishJob | null) => {
       if (job) {
         const fresh = republishToastsFor(job).filter((t) => !hasSeenRepublishToast(t.key));
-        if (fresh.length > 0) {
+        if (initialReadRef.current) {
+          // Opening Page Studio: results of publishes from earlier visits are history, not news. Mark them seen quietly.
+          fresh.forEach((t) => markRepublishToastSeen(t.key));
+        } else if (fresh.length > 0) {
           setRepublishToasts((current) => [
             ...current,
             ...fresh.filter((t) => !current.some((c) => c.key === t.key)),
           ]);
+          // Success and progress notes disappear after 3 seconds; errors stay until dismissed so they are not missed.
+          fresh.filter((t) => t.tone !== "error").forEach((t) =>
+            window.setTimeout(() => {
+              markRepublishToastSeen(t.key);
+              setRepublishToasts((current) => current.filter((c) => c.key !== t.key));
+            }, 3000)
+          );
         }
       }
       if (job?.isActive) {
@@ -380,7 +392,9 @@ export function PuckHeaderActions({
       setRepublishChecked(true);
       // A failed read must not unlock the button.
       if (!known) return;
+      initialReadRef.current = true;
       handleRepublishJob(job);
+      initialReadRef.current = false;
       if (job?.isActive) startRepublishPolling();
     })();
 

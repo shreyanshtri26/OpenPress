@@ -34,3 +34,22 @@ test('adds security headers and rejects other methods and a missing config', asy
   assert.equal((await get('/', { method: 'POST' })).status, 405);
   assert.equal((await worker.fetch(new Request('https://site.test/'), {})).status, 500);
 });
+
+test('proxies /_neon/* to Neon Auth with cookies kept first-party', async () => {
+  const seen = [];
+  globalThis.fetch = async (url, init) => {
+    seen.push({ url: String(url), method: init.method, cookie: init.headers.get('cookie'), host: init.headers.get('host') });
+    const headers = new Headers({ 'content-type': 'application/json' });
+    headers.append('set-cookie', '__Secure-neon-auth.session_token=abc; Path=/; Domain=auth.neon.example; Secure; HttpOnly; SameSite=None');
+    return new Response('{"ok":true}', { headers });
+  };
+  const withAuth = { ...env, NEON_AUTH_BASE_URL: 'https://auth.neon.example/neondb/auth/' };
+  const res = await worker.fetch(new Request('https://site.test/_neon/sign-in/social?x=1', { method: 'POST', headers: { cookie: 'c=1' }, body: '{}' }), withAuth);
+  assert.equal(seen[0].url, 'https://auth.neon.example/neondb/auth/sign-in/social?x=1');
+  assert.equal(seen[0].method, 'POST');
+  assert.equal(seen[0].cookie, 'c=1');
+  assert.equal(res.headers.get('cache-control'), 'no-store');
+  assert.equal(res.headers.getSetCookie()[0].includes('Domain='), false);
+  assert.match(res.headers.getSetCookie()[0], /session_token=abc/);
+  assert.equal((await worker.fetch(new Request('https://site.test/_neon/token'), env)).status, 404);
+});

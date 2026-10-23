@@ -6,3 +6,5 @@ compatibility_date = "2025-01-01"
 
 [vars]
 BUCKET_ORIGIN = ""
+# Neon Auth base URL for the /_neon sign-in proxy; the Deploy Site workflow fills it from NEON_AUTH_BASE_URL.
+NEON_AUTH_BASE_URL = ""

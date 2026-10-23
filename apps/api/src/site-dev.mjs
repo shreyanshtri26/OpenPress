@@ -12,7 +12,31 @@ export async function startSiteServer(port, { storageUrl, bucket }) {
 
   const server = createServer(async (req, res) => {
     try {
-      const { pathname } = new URL(req.url, 'http://site.local');
+      const { pathname, search } = new URL(req.url, 'http://site.local');
+
+      // Same /_neon sign-in proxy the production worker has (apps/site): Neon Auth's cookies stay first-party to this host.
+      if (pathname === '/_neon' || pathname.startsWith('/_neon/')) {
+        const authBase = (process.env.NEON_AUTH_BASE_URL || '').replace(/\/+$/, '');
+        if (!authBase) { res.writeHead(404); res.end('NEON_AUTH_BASE_URL is not set'); return; }
+        const chunks = [];
+        for await (const chunk of req) chunks.push(chunk);
+        const headers = { ...req.headers };
+        delete headers.host;
+        delete headers['content-length'];
+        const upstream = await fetch(authBase + pathname.slice('/_neon'.length) + search, {
+          method: req.method,
+          headers,
+          body: req.method === 'GET' || req.method === 'HEAD' ? undefined : Buffer.concat(chunks),
+          redirect: 'manual',
+        });
+        const out = {};
+        upstream.headers.forEach((value, key) => { if (!['set-cookie', 'content-encoding', 'content-length', 'transfer-encoding'].includes(key)) out[key] = value; });
+        out['set-cookie'] = (upstream.headers.getSetCookie?.() ?? []).map((c) => c.replace(/;\s*Domain=[^;]*/i, '').replace(/;\s*Secure/i, ''));
+        out['cache-control'] = 'no-store';
+        res.writeHead(upstream.status, out);
+        res.end(Buffer.from(await upstream.arrayBuffer()));
+        return;
+      }
       for (const key of [...siteKeys(pathname)]) {
         const upstream = await fetchKey(key);
         if (!upstream.ok) continue;
@@ -27,7 +51,10 @@ export async function startSiteServer(port, { storageUrl, bucket }) {
       // If login page is requested and not yet published to bucket, serve dynamic dev fallback
       const cleanPath = pathname.replace(/^\/+|\/+$/g, '');
       if (cleanPath === 'login' || cleanPath === 'login.html') {
-        const html = renderDevLoginPageHtml();
+        // With NEON_AUTH_BASE_URL set the page signs in with the real Google account through the proxy above.
+        const html = process.env.NEON_AUTH_BASE_URL
+          ? renderDevLoginPageHtml().replace('<head>', '<head><script>window.__NEON_AUTH_PROXY__ = true;</script>')
+          : renderDevLoginPageHtml();
         res.writeHead(200, {
           'content-type': 'text/html; charset=utf-8',
           'cache-control': 'no-cache',

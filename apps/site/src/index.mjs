@@ -23,8 +23,34 @@ const respond = (upstream, status) => {
   return { headers, status };
 };
 
+// Neon Auth lives on another domain, so its session cookies are third-party to the newspaper and iOS Safari (and other
+// browsers) drop them: Google sign-in comes back with no session. The sign-in page therefore talks to /_neon/*, which
+// this worker forwards to Neon Auth, making those cookies first-party. Only the one configured upstream is reachable.
+const NEON_PREFIX = '/_neon';
+
+async function proxyNeonAuth(request, env, pathname, search) {
+  if (!env.NEON_AUTH_BASE_URL) return new Response('Sign-in is not configured (NEON_AUTH_BASE_URL).', { status: 404 });
+  const target = `${env.NEON_AUTH_BASE_URL.replace(/\/+$/, '')}${pathname.slice(NEON_PREFIX.length)}${search}`;
+  const headers = new Headers(request.headers);
+  headers.delete('host');
+  const upstream = await fetch(target, {
+    method: request.method,
+    headers,
+    body: request.method === 'GET' || request.method === 'HEAD' ? undefined : request.body,
+    redirect: 'manual',
+  });
+  const out = new Headers(upstream.headers);
+  out.delete('set-cookie');
+  // A Domain attribute would pin the cookie to Neon's host; without it the browser keeps it for this site.
+  for (const cookie of upstream.headers.getSetCookie?.() ?? []) out.append('set-cookie', cookie.replace(/;\s*Domain=[^;]*/i, ''));
+  out.set('cache-control', 'no-store');
+  return new Response(upstream.body, { status: upstream.status, headers: out });
+}
+
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
+    if (url.pathname === NEON_PREFIX || url.pathname.startsWith(`${NEON_PREFIX}/`)) return proxyNeonAuth(request, env, url.pathname, url.search);
     if (!env.BUCKET_ORIGIN) return new Response('Site is not configured (BUCKET_ORIGIN).', { status: 500 });
     if (request.method !== 'GET' && request.method !== 'HEAD') return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET, HEAD' } });
 

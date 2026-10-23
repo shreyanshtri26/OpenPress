@@ -33,6 +33,7 @@ jobs:
         run: |
           mkdir -p dist && cp src/index.mjs dist/_worker.js
           sed -i 's|^BUCKET_ORIGIN = .*|BUCKET_ORIGIN = "${{ vars.SITE_BUCKET_ORIGIN }}"|' wrangler.toml
+          sed -i 's|^NEON_AUTH_BASE_URL = .*|NEON_AUTH_BASE_URL = "${{ vars.NEON_AUTH_BASE_URL }}"|' wrangler.toml
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

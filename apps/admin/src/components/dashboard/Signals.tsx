@@ -27,8 +27,33 @@ const SCRAPED_ENDPOINTS = [
 ];
 
 const LOCAL_SNAPSHOT_PATH = '/scraped-stories.json';
-const FEED_URL_RSS = 'https://theconversation.com/topics/new-zealand-205/articles.rss';
-const FEED_URL_ATOM = 'https://theconversation.com/topics/new-zealand-205/articles.atom';
+// Free public RSS/Atom feeds (no API key). Each is fetched on "Fetch Live" and the results are merged, newest first.
+// Add a source here and it shows up in the Source column and filter. Several URLs per source are fallbacks.
+const FEED_SOURCES: { id: string; name: string; region: string; urls: string[] }[] = [
+    // India
+    { id: 'hindu', name: 'The Hindu', region: 'India', urls: ['https://www.thehindu.com/news/national/feeder/default.rss'] },
+    { id: 'indianexpress', name: 'The Indian Express', region: 'India', urls: ['https://indianexpress.com/section/india/feed/'] },
+    { id: 'hindustantimes', name: 'Hindustan Times', region: 'India', urls: ['https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml'] },
+    { id: 'ndtv', name: 'NDTV', region: 'India', urls: ['https://feeds.feedburner.com/ndtvnews-latest'] },
+    { id: 'toi', name: 'Times of India', region: 'India', urls: ['https://timesofindia.indiatimes.com/rssfeedstopstories.cms'] },
+    { id: 'indiatoday', name: 'India Today', region: 'India', urls: ['https://www.indiatoday.in/rss/1206514'] },
+    { id: 'firstpost', name: 'Firstpost', region: 'India', urls: ['https://www.firstpost.com/commonfeeds/v1/mfp/rss/india.xml'] },
+    { id: 'scroll', name: 'Scroll.in', region: 'India', urls: ['https://feeds.feedburner.com/ScrollinArticles.rss'] },
+    { id: 'bbc-india', name: 'BBC News India', region: 'India', urls: ['https://feeds.bbci.co.uk/news/world/asia/india/rss.xml'] },
+    { id: 'pib', name: 'PIB (Govt. of India)', region: 'India', urls: ['https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3'] },
+    // India business
+    { id: 'mint', name: 'Mint', region: 'India Business', urls: ['https://www.livemint.com/rss/news'] },
+    { id: 'business-standard', name: 'Business Standard', region: 'India Business', urls: ['https://www.business-standard.com/rss/home_page_top_stories.rss'] },
+    { id: 'hindu-business', name: 'The Hindu BusinessLine', region: 'India Business', urls: ['https://www.thehindu.com/business/feeder/default.rss'] },
+    // World
+    { id: 'hindu-world', name: 'The Hindu (International)', region: 'World', urls: ['https://www.thehindu.com/news/international/feeder/default.rss'] },
+    { id: 'bbc-world', name: 'BBC News World', region: 'World', urls: ['https://feeds.bbci.co.uk/news/world/rss.xml'] },
+    { id: 'aljazeera', name: 'Al Jazeera', region: 'World', urls: ['https://www.aljazeera.com/xml/rss/all.xml'] },
+    { id: 'dw', name: 'DW', region: 'World', urls: ['https://rss.dw.com/rdf/rss-en-all'] },
+    { id: 'guardian', name: 'The Guardian', region: 'World', urls: ['https://www.theguardian.com/world/rss'] },
+    { id: 'npr', name: 'NPR', region: 'World', urls: ['https://feeds.npr.org/1001/rss.xml'] },
+    { id: 'conversation', name: 'The Conversation', region: 'World', urls: ['https://theconversation.com/global/articles.atom'] },
+];
 const ARTICLE_SCRAPE_CACHE_PREFIX = 'openpress_article_scrape_';
 
 const editorJsToText = (value: any): string => {
@@ -155,7 +180,7 @@ const getItemNodeText = (item: Element, selectors: string[] = []) => {
     return '';
 };
 
-const parseRssRows = (xmlString: string) => {
+const parseRssRows = (xmlString: string, sourceName: string, region = '') => {
     const parser = new DOMParser();
     const xml = parser.parseFromString(xmlString, 'text/xml');
     const items = Array.from(xml.querySelectorAll('item, entry'));
@@ -163,10 +188,10 @@ const parseRssRows = (xmlString: string) => {
     return items.map((item, index) => {
         const title = getItemNodeText(item, ['title']) || 'Untitled';
         const sourceUrl = getItemNodeText(item, ['link']);
-        const authorName = getItemNodeText(item, ['dc\\:creator', 'creator', 'author', 'name']) || 'The Conversation';
+        const authorName = getItemNodeText(item, ['dc\\:creator', 'creator', 'author', 'name']) || sourceName;
         const body = getItemNodeText(item, ['content\\:encoded', 'encoded', 'description', 'summary', 'content']);
-        const publishedAt = toIsoDate(getItemNodeText(item, ['pubDate', 'published', 'updated']));
-        const source = 'The Conversation IN (Live)';
+        const publishedAt = toIsoDate(getItemNodeText(item, ['pubDate', 'published', 'updated', 'date']));
+        const source = `${sourceName} (Live)`;
 
         return {
             id: `${index}-${sourceUrl || title}`,
@@ -178,6 +203,7 @@ const parseRssRows = (xmlString: string) => {
             publishedAt,
             importedAt: null,
             source,
+            region,
             status: 'rss_preview',
         };
     });
@@ -300,19 +326,19 @@ const parseHtmlToBlocks = (htmlString: string): string => {
     return '';
 };
 
-const parseRssJsonRows = (data: any) => {
+const parseRssJsonRows = (data: any, sourceName: string, region = '') => {
     if (!data || !Array.isArray(data.items)) return [];
     return data.items.map((item: any, index: number) => {
         const title = item.title || 'Untitled';
         const sourceUrl = item.link || item.guid || '';
-        const authorName = item.author || 'The Conversation';
+        const authorName = item.author || sourceName;
 
         const rawHtml = item.content || item.description || '';
         const blocksJson = parseHtmlToBlocks(rawHtml);
         const hasBlocks = blocksJson && blocksJson.length > 50;
 
         const publishedAt = toIsoDate(item.pubDate);
-        const source = 'The Conversation IN (Live)';
+        const source = `${sourceName} (Live)`;
 
         return {
             id: `${index}-${sourceUrl || title}`,
@@ -324,26 +350,32 @@ const parseRssJsonRows = (data: any) => {
             publishedAt,
             importedAt: null,
             source,
+            region,
             status: hasBlocks ? 'scraped' : 'rss_preview',
         };
     });
 };
 
-const fetchRssRows = async (token?: string) => {
-    const candidates = [
-        FEED_URL_ATOM,
-        FEED_URL_RSS,
-    ];
-
-    // 1. Try rss2json first as it handles feeds reliably in client environments
-    for (const feedUrl of candidates) {
+// One source: rss2json first (reliable from the browser), then the XML through the CORS proxies.
+const fetchFeedRows = async (source: { name: string; region: string; urls: string[] }, token?: string) => {
+    for (const feedUrl of source.urls) {
         try {
-            const rss2jsonUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
-            const response = await fetchWithTimeout(rss2jsonUrl, 8000);
+            const xmlText = await fetchWithProxies(feedUrl, 100, token);
+            if (xmlText) {
+                const rows = parseRssRows(xmlText, source.name, source.region);
+                if (rows.length > 0) return rows;
+            }
+        } catch (err) {
+            console.warn(`Feed ${feedUrl} failed with XML proxies:`, err);
+        }
+    }
+    for (const feedUrl of source.urls) {
+        try {
+            const response = await fetchWithTimeout(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`, 8000);
             if (response.ok) {
                 const data = await response.json();
                 if (data.status === 'ok' && Array.isArray(data.items) && data.items.length > 0) {
-                    const rows = parseRssJsonRows(data);
+                    const rows = parseRssJsonRows(data, source.name, source.region);
                     if (rows.length > 0) return rows;
                 }
             }
@@ -351,20 +383,24 @@ const fetchRssRows = async (token?: string) => {
             console.warn(`rss2json failed for ${feedUrl}:`, err);
         }
     }
+    return [];
+};
 
-    // 2. Fall back to fetching XML via CORS proxies
-    for (const feedUrl of candidates) {
-        try {
-            const xmlText = await fetchWithProxies(feedUrl, 100, token);
-            if (xmlText) {
-                const rows = parseRssRows(xmlText);
-                if (rows.length > 0) return rows;
-            }
-        } catch (err) {
-            console.warn(`Feed ${feedUrl} failed with XML proxies:`, err);
-        }
-    }
-    throw new Error('Could not fetch RSS feed.');
+// Every source in parallel; one failing feed never blocks the rest. Newest first, duplicate links dropped.
+const fetchRssRows = async (token?: string) => {
+    const settled = await Promise.allSettled(FEED_SOURCES.map((source) => fetchFeedRows(source, token)));
+    const seen = new Set<string>();
+    const rows = settled
+        .flatMap((outcome, i) => (outcome.status === 'fulfilled' ? outcome.value.map((row: any) => ({ ...row, id: `${FEED_SOURCES[i].id}-${row.id}` })) : []))
+        .filter((row: any) => {
+            const key = row.sourceUrl || row.id;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        })
+        .sort((a: any, b: any) => (Date.parse(b.publishedAt || '') || 0) - (Date.parse(a.publishedAt || '') || 0));
+    if (rows.length === 0) throw new Error('Could not fetch any RSS feed.');
+    return rows;
 };
 
 const convertBlocksToHtml = (blocks: any[]): string => {
@@ -758,10 +794,11 @@ export default function Signals({ onBack }: SignalsProps) {
                 storySummary: verifiedFirstArticleParagraph || '',
                 section: 'World',
                 category: 'External',
-                source: 'The Conversation IN',
+                // The publisher this wire came from ("The Hindu (Live)" -> "The Hindu"), so attribution stays correct.
+                source: String(finalStory.source || 'The Conversation IN').replace(/\s*\(Live\)$/, ''),
                 sourceUrl: finalStory.sourceUrl,
                 authorId: user?.userId || null,
-                authorName: finalStory.authorName || 'The Conversation',
+                authorName: finalStory.authorName || String(finalStory.source || 'Wire').replace(/\s*\(Live\)$/, ''),
                 author_bio: finalStory.author_bio || '',
                 status: 'raise_a_story',
                 state: 'draft',
@@ -865,6 +902,7 @@ export default function Signals({ onBack }: SignalsProps) {
                         )}
                     />
                     <Column dataField="source" caption="Source" allowFiltering={true} allowSorting={true} allowGrouping={true} minWidth={220} />
+                    <Column dataField="region" caption="Region" allowFiltering={true} allowSorting={true} allowGrouping={true} minWidth={130} />
 
                     <Column
                         dataField="publishedAt"
