@@ -30,7 +30,7 @@ export function renderFeaturedCard(
   }
 
   return `
-    <div class="w-full lg:max-w-md mx-auto px-4 lg:px-0">
+    <div class="w-full">
       ${items
       .map((item) => {
         const story = item.storyId ? ctx.storiesById?.[item.storyId] : null

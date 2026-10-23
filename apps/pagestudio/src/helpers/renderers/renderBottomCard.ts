@@ -2,6 +2,7 @@ import type { RenderContext } from '../core/renderTypes'
 import { escapeHtml } from '../core/escapeHtml'
 import { findStoryById } from '../../components/PuckEditor/storyData'
 import { readTimeFromDescription } from '../../components/PuckEditor/storyOverride'
+import { realText, realImage } from '../core/realValues'
 
 type BottomCardProps = {
   id?: string
@@ -39,10 +40,10 @@ export function renderBottomCard(props: BottomCardProps, _ctx?: RenderContext): 
     : undefined
 
   // Fallbacks similar to React component
-  const displayImage = story?.imageUrl || props.imageUrl || '/openpress-share.png'
-  const displayTitle = props.title || story?.headline || ''
+  const displayImage = realImage(story?.imageUrl) || realImage(props.imageUrl) || '/openpress-share.png'
+  const displayTitle = realText(props.title) || story?.headline || ''
   if (!story && !displayTitle) return ''
-  const displayDescription = props.description || story?.storySummary || story?.summary || ''
+  const displayDescription = realText(props.description) || realText(story?.storySummary) || realText(story?.summary) || ''
 
   const html = displayDescription
     .split(/(<[^>]+>)/g)

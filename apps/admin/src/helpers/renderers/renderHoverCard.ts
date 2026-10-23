@@ -61,7 +61,7 @@ export function renderHoverCard(
           const title = story?.title || item.title || 'Untitled'
           const rawCategory = (story?.section ?? story?.Section ?? story?.category ?? item.category ?? '').toString().trim()
           const category = rawCategory || 'Category'
-          const imageUrl = story?.image || 'https://via.placeholder.com/400x250'
+          const imageUrl = story?.image || '/openpress-share.png'
           const imageAlt = story?.title || title
           const publishUrl = story?.publishUrl || ''
           const hoverBgColor = item.hoverBgColor || '#ffffff'

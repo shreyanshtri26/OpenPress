@@ -24,7 +24,7 @@ export function AuthorProfile({ authorId: authorIdProp, name, bio, image, twitte
     // Use props as fallback or overrides
     const displayName = name || author?.name || "Author Name";
     const displayBio = bio || author?.bio || "Author Bio";
-    const displayImage = image || author?.image || "https://via.placeholder.com/150";
+    const displayImage = image || author?.image || "/openpress-quill-nobg-trim.png";
     const displayTwitter = twitter || author?.twitter;
     const displayLinkedin = linkedin || author?.linkedin;
 

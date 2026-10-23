@@ -12,15 +12,7 @@ export function renderStorySubCard(
   },
   ctx: RenderContext
 ): string {
-  if (!props.storyId) {
-    return `
-      <div class="bg-gray-50 p-4 text-center">
-        <p class="text-sm text-black">
-          No story selected. Please choose one from the dropdown.
-        </p>
-      </div>
-    `
-  }
+  if (!props.storyId) return ''
 
   const story = ctx.storiesById?.[props.storyId]
   if (!story) return ''

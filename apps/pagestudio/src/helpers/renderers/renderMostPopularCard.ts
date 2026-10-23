@@ -1,5 +1,6 @@
 import { escapeHtml } from '../core/escapeHtml'
 import type { RenderContext } from '../core/renderTypes'
+import { realText } from '../core/realValues'
 
 type TableItemProps = {
   number: number
@@ -32,7 +33,8 @@ export function renderMostPopularCard(
       ? ctx.storiesById?.[item.storyId]
       : null
 
-    const displayText = story?.title || item.text
+    const displayText = story?.title || realText(item.text)
+    if (!displayText) return ''
 
     const publishUrl = story?.publishUrl
 
@@ -78,7 +80,8 @@ export function renderMostPopularCard(
                 ? ctx.storiesById?.[item.storyId]
                 : null
 
-              const displayText = story?.title || item.text
+              const displayText = story?.title || realText(item.text)
+              if (!displayText) return '<td class="border border-dotted border-gray-500"></td>'
 
               const publishUrl = story?.publishUrl
 

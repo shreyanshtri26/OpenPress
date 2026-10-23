@@ -6,7 +6,7 @@ export function renderRecommendCard(
   ctx: RenderContext
 ): string {
   const story = props.storyId ? ctx.storiesById?.[props.storyId] : undefined
-  const imageUrl = story?.imageUrl || story?.image || props.imageUrl || 'https://via.placeholder.com/400x250'
+  const imageUrl = story?.imageUrl || story?.image || props.imageUrl || '/openpress-share.png'
   const imageAlt = props.imageAlt || story?.imageAlt || story?.title || story?.headline || 'Recommended article'
   const label = props.label || story?.section || story?.Section || story?.category || story?.taxonomyCategory || 'Category'
   const title = props.title || story?.headline || story?.title || 'Recommended Story'

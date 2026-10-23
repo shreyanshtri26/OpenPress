@@ -21,7 +21,7 @@ export function RecommendCard({
   storyId,
   title: propTitle,
   label: propLabel,
-  imageUrl: fallbackImage = "https://via.placeholder.com/400x250",
+  imageUrl: fallbackImage = "/openpress-share.png",
   imageAlt: fallbackAlt = "Recommended article",
   className = "",
 }: RecommendCardProps) {

@@ -93,7 +93,7 @@ export function renderAuthorCard(props: any, ctx: RenderContext): string {
     const author = props.authorId ? ctx.authors?.find(a => a.id === props.authorId) : null
     const displayName = props.name || author?.name || 'Author Name'
     const displayBio = props.bio || author?.bio || ''
-    const displayImage = props.image || author?.image || 'https://via.placeholder.com/150'
+    const displayImage = props.image || author?.image || '/openpress-quill-nobg-trim.png'
 
     return `
     <div class="group flex flex-col items-start w-full cursor-pointer">

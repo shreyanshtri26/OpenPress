@@ -12,7 +12,7 @@ export function renderAuthorProfile(props) {
     const { name, bio, image, twitter, linkedin } = props;
     const displayName = name || 'Author Name';
     const displayBio = bio || 'Author Bio';
-    const displayImage = image || 'https://via.placeholder.com/150';
+    const displayImage = image || '/openpress-quill-nobg-trim.png';
     const displayTwitter = twitter;
     const displayLinkedin = linkedin;
 
@@ -56,7 +56,7 @@ export function renderAuthorCard(props) {
     const { authorId, name, bio, image } = props;
     const displayName = name || 'Author Name';
     const displayBio = bio || 'Lorem ipsum dolor sit amet.';
-    const displayImage = image || 'https://via.placeholder.com/150';
+    const displayImage = image || '/openpress-quill-nobg-trim.png';
 
     let authorLink = "";
     if (displayName) {

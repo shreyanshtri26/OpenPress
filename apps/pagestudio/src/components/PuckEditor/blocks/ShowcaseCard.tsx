@@ -59,9 +59,12 @@ const ShowcaseCardItem: React.FC<{ item: ShowcaseCardItem, noBorder?: boolean }>
 
 
 
+  const displayImage = story?.imageUrl || ''
+  const displayAuthor = story?.author && story.author !== 'Unknown Author' ? story.author : ''
+
   return (
     <div
-      className={`${!noBorder ? 'border-b border-dotted border-black last:border-b-0 lg:last:border-b' : ''} py-3 px-0 last:mb-0 ${publishUrl ? 'cursor-pointer' : ''} transition-colors`}
+      className={`group grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 ${!noBorder ? 'border-b border-dotted border-black last:border-b-0 lg:last:border-b' : ''} py-4 px-0 ${publishUrl ? 'cursor-pointer' : ''}`}
       onClick={handleClick}
       role={publishUrl ? "button" : undefined}
       tabIndex={publishUrl ? 0 : undefined}
@@ -72,24 +75,35 @@ const ShowcaseCardItem: React.FC<{ item: ShowcaseCardItem, noBorder?: boolean }>
         }
       }}
     >
-      {displayCategory && (
-        <p
-          ref={categoryRef}
-          // contentEditable
+      <div className="min-w-0">
+        {displayCategory && (
+          <p
+            ref={categoryRef}
+            suppressContentEditableWarning
+            className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-share text-black uppercase tracking-wide outline-none focus:ring-0"
+          >
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-black" aria-hidden="true" />
+            {displayCategory}
+          </p>
+        )}
+        <h2
+          ref={titleRef}
           suppressContentEditableWarning
-          className="text-[10px] font-share text-black uppercase outline-none focus:ring-0"
+          className="mt-1.5 line-clamp-3 text-[1.05rem] sm:text-[1.1rem] lg:text-[18px] font-libre font-bold text-black leading-snug outline-none focus:ring-0 group-hover:underline"
         >
-          {displayCategory}
-        </p>
+          {displayTitle}
+        </h2>
+        {displayAuthor && <p className="mt-2 text-[10px] font-share text-black uppercase tracking-wide opacity-70">{displayAuthor}</p>}
+      </div>
+      {displayImage && (
+        <img
+          src={displayImage}
+          alt=""
+          className="h-[72px] w-[96px] flex-none rounded-[10px] object-cover"
+          loading="lazy"
+          onError={(e) => { e.currentTarget.style.display = 'none' }}
+        />
       )}
-      <h2
-        ref={titleRef}
-        // contentEditable
-        suppressContentEditableWarning
-        className="text-[1.1rem] sm:text-[1.1rem] lg:text-[18px] font-libre text-black leading-tight lg:leading-[1.50rem] outline-none focus:ring-0"
-      >
-        {displayTitle}
-      </h2>
     </div>
   )
 }
@@ -120,7 +134,7 @@ const ShowcaseCardLayout: React.FC<ShowcaseCardProps> = ({ id, items = [], noBor
   }
 
   return (
-    <div className="max-w-xl md:max-w-3xl lg:max-w-md mx-auto px-4 lg:px-0">
+    <div className="w-full">
       {effectiveItems.map((item, index) => (
         <ShowcaseCardItem key={index} item={item} noBorder={noBorder} />
       ))}

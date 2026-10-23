@@ -12,7 +12,7 @@ export function renderAuthorProfile(props: {
     const author = props.authorId ? ctx.authors?.find(a => a.id === props.authorId) : null
     const displayName = props.name || author?.name || 'Author Name'
     const displayBio = props.bio || author?.bio || 'Author Bio'
-    const displayImage = props.image || author?.image || 'https://via.placeholder.com/150'
+    const displayImage = props.image || author?.image || '/openpress-quill-nobg-trim.png'
     const displayTwitter = props.twitter || author?.twitter
     const displayLinkedin = props.linkedin || author?.linkedin
 

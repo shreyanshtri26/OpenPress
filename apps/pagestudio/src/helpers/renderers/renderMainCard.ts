@@ -1,5 +1,6 @@
 import { escapeHtml } from '../core/escapeHtml'
 import type { RenderContext } from '../core/renderTypes'
+import { realText, realImage } from '../core/realValues'
 
 
 
@@ -18,11 +19,11 @@ export function renderMainCard(
 
   const story = props.storyId ? ctx.storiesById?.[props.storyId] : null
 
-  const displayImage = story?.imageUrl || story?.image || props.imageUrl || '/openpress-share.png'
+  const displayImage = realImage(story?.imageUrl) || realImage(story?.image) || realImage(props.imageUrl) || '/openpress-share.png'
   const displayLabel = story?.category || props.label || ''
-  const displayTitle = story?.headline || props.title || ''
+  const displayTitle = story?.headline || realText(props.title) || ''
   if (!story && !displayTitle) return ''
-  const displayDescription = story?.summary || props.description || ''
+  const displayDescription = realText(story?.summary) || realText(props.description) || ''
 
   const html = (displayDescription || '')
     .split(/(<[^>]+>)/g) // keep tags intact

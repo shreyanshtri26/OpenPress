@@ -21,7 +21,7 @@ export function AuthorCard({ authorId, name, bio, image }: AuthorCardProps) {
     const author = authorId ? findAuthorById(authorId) : null;
     const displayName = name || author?.name || "Author Name";
     const displayBio = bio || author?.bio || "Lorem ipsum dolor sit amet.";
-    const displayImage = image || author?.image || "https://via.placeholder.com/150";
+    const displayImage = image || author?.image || "/openpress-quill-nobg-trim.png";
 
     const handleRedirect = () => {
         if (displayName) {

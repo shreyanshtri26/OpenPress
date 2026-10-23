@@ -71,7 +71,7 @@ const HoverCardLayout: React.FC<HoverCardProps> = ({ id, items = [], noBorder = 
   }
 
   return (
-    <div className="max-w-xl md:max-w-3xl lg:max-w-md mx-auto px-4 lg:px-0">
+    <div className="w-full">
       {effectiveItems.map((item, index) => {
         if (item.__automaticEmpty) {
           return <div key={index} className="min-h-[2rem]" />
@@ -81,7 +81,7 @@ const HoverCardLayout: React.FC<HoverCardProps> = ({ id, items = [], noBorder = 
         const displayTitle = story?.headline || item.title || 'Untitled'
         const rawCategory = (story?.category ?? item.category ?? '').toString().trim()
         const displayCategory = rawCategory || 'Category'
-        const imageUrl = story?.imageUrl || 'https://via.placeholder.com/400x250'
+        const imageUrl = story?.imageUrl || '/openpress-share.png'
         const imageAlt = story?.imageAlt || displayTitle
         const publishUrl = story?.publishUrl
         const hoverBgColor = item.hoverBgColor || '#ffffff'

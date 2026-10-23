@@ -95,7 +95,7 @@ const FeaturedCardLayout: React.FC<FeaturedCardProps> = ({ items = [] }) => {
   }
 
   return (
-    <div className="w-full lg:max-w-md mx-auto px-4 lg:px-0">
+    <div className="w-full">
       {items.map((item, index) => (
         <FeaturedCardItem key={index} item={item} />
       ))}

@@ -98,12 +98,12 @@ export function renderThumbnailGrid(
       <div class="mx-8 absolute left-0 right-0 -bottom-5" style="border-bottom: 1px solid gray;"></div>
     </div>
 
-    <!-- 4-column grid: each column carries its own divider and padding, so the lines always sit between the cards -->
-    <div class="grid ${mobileGridCols} lg:grid-cols-4 gap-6 lg:gap-x-0 relative">
+    <!-- 4-column grid: every column has the same padding, so the cards are exactly the same width; a divider is just the left border of
+         a filled column that has a filled column before it. The grid is pulled out by that padding so the outer edges still line up. -->
+    <div class="grid ${mobileGridCols} lg:grid-cols-4 gap-6 lg:gap-x-0 lg:-mx-5 relative">
       ${[gridBox0, gridBox1, gridBox2, gridBox3].map((box, i, all) => {
-        const before = all.slice(0, i).some(Boolean)
-        const after = all.slice(i + 1).some(Boolean)
-        return `<div class="w-full h-full min-w-0 ${before ? 'lg:border-l lg:pl-5' : ''} ${after ? 'lg:pr-5' : ''} lg:[&_h2]:text-[21px] lg:[&_h2]:leading-[1.2] ${isMobile2x2 ? '[&_h2]:text-[1.05rem] [&_h2]:leading-[1.2] sm:[&_h2]:text-xl' : ''}" style="${before ? 'border-color:#d2d2d7' : ''}">${box}</div>`
+        const divider = Boolean(box) && all.slice(0, i).some(Boolean)
+        return `<div class="w-full h-full min-w-0 ${box ? 'lg:px-5' : ''} ${divider ? 'lg:border-l' : ''} lg:[&_h2]:text-[21px] lg:[&_h2]:leading-[1.2] ${isMobile2x2 ? '[&_h2]:text-[1.05rem] [&_h2]:leading-[1.2] sm:[&_h2]:text-xl' : ''}" style="${divider ? 'border-color:#d2d2d7' : ''}">${box}</div>`
       }).join('')}
     </div>
   </div>

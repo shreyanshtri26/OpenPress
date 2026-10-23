@@ -1,6 +1,7 @@
 // src/helpers/renderers/renderStoryCard.ts
 import type { RenderContext } from '../core/renderTypes'
 import { escapeHtml } from '../core/escapeHtml'
+import { realText, realImage } from '../core/realValues'
 
 type StoryCardProps = {
   id?: string
@@ -19,24 +20,21 @@ export function renderStoryCard(props: StoryCardProps, ctx: RenderContext): stri
 
   const story = props.storyId ? ctx.storiesById?.[props.storyId] : undefined
 
-  const image =
-    story?.image ||
-    props.imageUrl ||
-    '/openpress-share.png'
+  const image = realImage(story?.image) || realImage(props.imageUrl) || '/openpress-share.png'
 
   const label =
     props.label ||
     story?.category ||
     'NEWS'
 
-  const titleRaw = props.title || story?.headline || ''
+  const titleRaw = realText(props.title) || story?.headline || ''
   if (!story && !titleRaw) return ''
 
   const title = titleRaw
 
   const displayDescription =
-    props.description ||
-    story?.summary ||
+    realText(props.description) ||
+    realText(story?.summary) ||
     ''
 
   const html = displayDescription

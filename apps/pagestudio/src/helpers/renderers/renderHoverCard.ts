@@ -34,7 +34,7 @@ export function renderHoverCard(
   }
 
   return `
-    <div id="${containerId}" class="max-w-xl md:max-w-3xl lg:max-w-md mx-auto px-4 lg:px-0" data-default-open-index="${defaultOpenIndex}">
+    <div id="${containerId}" class="w-full" data-default-open-index="${defaultOpenIndex}">
       ${items
       .map((item, index) => {
         if (item.__automaticEmpty) {

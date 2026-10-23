@@ -169,7 +169,7 @@ function transformApiStory(apiStory: ApiStory): Story | null {
     authorName: apiStory.authorName || 'Unknown Author',
     authorId: apiStory.authorId || '',
     readTime: '5 min read',
-    imageUrl: apiStory.image || 'https://via.placeholder.com/600x400',
+    imageUrl: apiStory.image || '/openpress-share.png',
     imageAuthor: 'Staff Photo',
     imageAlt: apiStory.title,
     kicker: apiStory.section || undefined,
@@ -243,7 +243,7 @@ export async function fetchStories({
         category: 'Technology',
         author: 'Mock Author',
         readTime: '3 min read',
-        imageUrl: 'https://via.placeholder.com/600x400',
+        imageUrl: '/openpress-share.png',
         imageAuthor: 'Placeholder',
         imageAlt: 'Mock Story Image',
       },
@@ -292,7 +292,7 @@ export function transformApiAuthor(apiAuthor: ApiAuthor, index: number): AuthorP
     || extractImageUrl(apiAuthor.profileImage)
     || extractImageUrl(apiAuthor.avatar)
     || extractImageUrl(apiAuthor.profilePic)
-    || 'https://via.placeholder.com/150'
+    || '/openpress-quill-nobg-trim.png'
 
   return {
     id,

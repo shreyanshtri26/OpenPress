@@ -51,11 +51,11 @@ export default function ArticleEditor({
     cate_bg: initialData.cate_bg || '',
     cate_img:
       initialData.cate_img ||
-      'https://via.placeholder.com/150x150/cccccc/ffffff?text=Category',
+      '/openpress-quill-nobg-trim.png/cccccc/ffffff?text=Category',
     tags: initialData.tags ? initialData.tags.join(', ') : '',
     featureImg:
       initialData.featureImg ||
-      'https://via.placeholder.com/800x400/cccccc/ffffff?text=Featured+Image',
+      '/openpress-share.png/cccccc/ffffff?text=Featured+Image',
     date: initialData.date || '',
     post_views: initialData.post_views || '',
     post_share: initialData.post_share || '',
@@ -64,7 +64,7 @@ export default function ArticleEditor({
     author_desg: initialData.author_desg || '',
     author_img:
       initialData.author_img ||
-      'https://via.placeholder.com/150x150/cccccc/ffffff?text=Author',
+      '/openpress-quill-nobg-trim.png/cccccc/ffffff?text=Author',
     author_bio: initialData.author_bio || '',
     author_social: initialData.author_social || [],
   });

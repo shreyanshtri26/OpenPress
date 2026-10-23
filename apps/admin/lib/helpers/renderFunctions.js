@@ -2088,7 +2088,7 @@ function renderRecommendCard(props, storyData) {
     storyId,
     title: fallbackTitle = "Recommended Story",
     description: fallbackDesc = "Category",
-    imageUrl: fallbackImage = "https://via.placeholder.com/400x250",
+    imageUrl: fallbackImage = "/openpress-share.png",
     imageAlt: fallbackAlt = "Recommended article",
     className = ""
   } = props;
@@ -2422,7 +2422,7 @@ export function renderBlogSubHeading({ id, time = "18 minutes ago", category = "
 //  RENDER: BlogImageCard
 export function renderBlogImageCard({ storyId, imageUrl: fallbackImage = "/story-images/default.png", title: fallbackTitle = "" }, storiesById) {
   const story = findStory(storyId, storiesById);
-  const displayImage = story?.imageUrl || story?.image || fallbackImage || "https://via.placeholder.com/900x600";
+  const displayImage = story?.imageUrl || story?.image || fallbackImage || "/openpress-share.png";
   const displayTitle = story?.caption || story?.mediaCaption || story?.imageDescription || fallbackTitle || "";
   const displayAltText = story?.altText || fallbackTitle || "";
 

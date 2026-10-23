@@ -72,10 +72,11 @@ export const MainCard: React.FC<MainCardProps> = ({
     </div>
   );
 
-  const isAutomatic = hasCardAssignment || Boolean(autoStoryId);
-  const displayImage = isAutomatic ? story?.imageUrl || imageUrl : imageUrl || story?.imageUrl;
-  const displayLabel = isAutomatic ? story?.category || label : label || story?.category;
-  const displayTitle = isAutomatic ? story?.headline || title || "" : title || story?.headline || "";
+  // The chosen story is the truth, same as on the published page; the card's own props are the stand-in used until a story is
+  // chosen (and the snapshot saved with the page).
+  const displayImage = story?.imageUrl || imageUrl;
+  const displayLabel = story?.category || label;
+  const displayTitle = story?.headline || title || "";
   const displayDescription = story?.summary || description;
 
   const html = (displayDescription || "")

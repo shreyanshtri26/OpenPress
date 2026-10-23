@@ -9,6 +9,7 @@
     "build:published-styles": "node scripts/build-published-styles.mjs",
     "build": "npm run build:published-styles && tsc -b && vite build && npm run build:publish-renderer",
     "build:publish-renderer": "vite build --config vite.publish-renderer.config.ts",
+    "check:layout": "npm run build:publish-renderer && node scripts/check-card-layout.mjs",
     "lint": "eslint .",
     "test": "vitest run && npm run build:publish-renderer && node scripts/check-published.mjs",
     "preview": "vite preview",

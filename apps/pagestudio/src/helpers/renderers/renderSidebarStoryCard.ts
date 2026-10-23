@@ -12,13 +12,8 @@ export function renderSidebarStoryCard(
 ): string {
   const story = ctx.storiesById?.[props.storyId]
 
-  if (!story) {
-    return `
-      <article class="p-4 border border-slate-200 rounded">
-        <p class="text-slate-500 text-sm">No story selected</p>
-      </article>
-    `
-  }
+  // Nothing chosen (or the story is gone): draw nothing rather than an editor hint on the live page.
+  if (!story) return ''
 
   const publishUrl = story.publishUrl
 

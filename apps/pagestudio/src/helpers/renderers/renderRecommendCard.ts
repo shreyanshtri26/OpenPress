@@ -1,5 +1,6 @@
 import type { RenderContext } from '../core/renderTypes'
 import { escapeHtml } from '../core/escapeHtml'
+import { realText, realImage } from '../core/realValues'
 
 export function renderRecommendCard(
   props: {
@@ -18,7 +19,7 @@ export function renderRecommendCard(
   const story = props.storyId ? ctx.storiesById?.[props.storyId] : undefined
 
   const imageUrl =
-    story?.imageUrl || story?.image || props.imageUrl || '/openpress-share.png'
+    realImage(story?.imageUrl) || realImage(story?.image) || realImage(props.imageUrl) || '/openpress-share.png'
 
   const imageAlt =
     props.imageAlt || story?.imageAlt || story?.title || story?.headline || 'Recommended article'
@@ -27,7 +28,7 @@ export function renderRecommendCard(
     props.label || story?.section || story?.Section || story?.category || story?.taxonomyCategory || ''
 
   const title =
-    props.title || story?.headline || story?.title || ''
+    realText(props.title) || story?.headline || story?.title || ''
   if (!story && !title) return ''
 
   const publishUrl = story?.publishUrl

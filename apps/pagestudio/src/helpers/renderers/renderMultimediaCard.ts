@@ -2,6 +2,7 @@
 
 import { escapeHtml } from '../core/escapeHtml'
 import type { RenderContext } from '../core/renderTypes'
+import { realText, realImage } from '../core/realValues'
 
 export function renderMultimediaCard(
   props: {
@@ -17,11 +18,11 @@ export function renderMultimediaCard(
 ): string {
   const story = props.storyId ? ctx.storiesById?.[props.storyId] : null
 
-  const imageUrl = props.imageUrl || story?.image || '/openpress-share.png'
-  const title = props.title || story?.headline || ''
+  const imageUrl = realImage(props.imageUrl) || realImage(story?.image) || '/openpress-share.png'
+  const title = realText(props.title) || story?.headline || ''
   if (!story && !title) return ''
   const description =
-    props.description || story?.summary || ''
+    realText(props.description) || realText(story?.summary) || ''
   const author = props.author || story?.author || ''
   const duration = props.duration || ''
   const publishUrl = story?.publishUrl
