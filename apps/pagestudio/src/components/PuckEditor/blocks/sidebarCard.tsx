@@ -11,25 +11,33 @@ export type SidebarStoryCardProps = {
 }
 
 export function SidebarStoryCard({ storyId, isFirst, isLast }: SidebarStoryCardProps) {
- const story = findStoryById(storyId)
+  const story = findStoryById(storyId)
 
-if (!story) {
-  return (
-    <article className="p-4 border border-slate-200 rounded">
-      <p className="text-slate-500 text-sm">No story selected</p>
-    </article>
-  )
-}
-
+  // Hooks first, always in the same order. They used to sit below an early return, so picking a story for an empty card changed
+  // the hook count between renders and React threw.
   const [isEditing, setIsEditing] = useState(false)
-  const [headline, setHeadline] = useState(story.headline)
+  const [headline, setHeadline] = useState(story?.headline ?? '')
   const headlineRef = useRef<HTMLHeadingElement>(null)
+
+  // A different story brings its own headline; the previous story's text must not stick.
+  useEffect(() => {
+    setHeadline(story?.headline ?? '')
+    setIsEditing(false)
+  }, [story?.headline])
 
   useEffect(() => {
     if (headlineRef.current) {
       return registerOverlayPortal(headlineRef.current)
     }
-  }, [headlineRef.current])
+  }, [isEditing, story])
+
+  if (!story) {
+    return (
+      <article className="p-4 border border-slate-200 rounded">
+        <p className="text-slate-500 text-sm">No story selected</p>
+      </article>
+    )
+  }
 
   const handleHeadlineClick = () => setIsEditing(true)
   const handleBlur = () => setIsEditing(false)

@@ -7,7 +7,6 @@ import {
 } from "@aws-sdk/client-rekognition";
 
 export const getVideoAnalysis = async (jobs) => {
-  console.log('📊 Getting video analysis results...');
   
   try {
     const results = {};
@@ -31,7 +30,6 @@ export const getVideoAnalysis = async (jobs) => {
             })).slice(0, 50) : [], 
           totalLabels: response.Labels?.length || 0
         };
-        console.log('✅ Labels:', response.JobStatus);
       } catch (err) {
         console.error('❌ Get labels failed:', err.message);
         results.labels = { status: "ERROR", error: err.message };
@@ -59,7 +57,6 @@ export const getVideoAnalysis = async (jobs) => {
           totalFlags: response.ModerationLabels?.length || 0,
           isSafe: response.ModerationLabels?.length === 0
         };
-        console.log('✅ Moderation:', response.JobStatus);
       } catch (err) {
         console.error('❌ Get moderation failed:', err.message);
         results.moderation = { status: "ERROR", error: err.message };
@@ -86,7 +83,6 @@ export const getVideoAnalysis = async (jobs) => {
     //         })).slice(0, 50) : [],
     //       totalCelebrities: response.Celebrities?.length || 0
     //     };
-    //     console.log('✅ Celebrities:', response.JobStatus);
     //   } catch (err) {
     //     console.error('❌ Get celebrities failed:', err.message);
     //     results.celebrities = { status: "ERROR", error: err.message };
@@ -113,7 +109,6 @@ export const getVideoAnalysis = async (jobs) => {
             })).slice(0, 50) : [],
           totalDetections: response.TextDetections?.length || 0
         };
-        console.log('✅ Text:', response.JobStatus);
       } catch (err) {
         console.error('❌ Get text failed:', err.message);
         results.text = { status: "ERROR", error: err.message };

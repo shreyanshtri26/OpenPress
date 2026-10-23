@@ -128,7 +128,6 @@ export function StoriesTable({
       }
     }
 
-    console.log('🚀 [StoriesTable] Triggering server search with params:', apiParams);
     onApplyServerFilterRef.current(apiParams);
   }, []);
 
@@ -275,7 +274,6 @@ export function StoriesTable({
                     delete filterValuesRef.current[dataField];
                   }
 
-                  console.log('📝 [StoriesTable] Filter tracking update:', { ...filterValuesRef.current });
 
                   // Debounce the server request
                   if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);

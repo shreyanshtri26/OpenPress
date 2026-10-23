@@ -8,7 +8,8 @@ import { cx, fieldClass, readExpr, toArray } from './_shared';
 import { SelectBox } from './select-box';
 
 const marker = (role) => {
-  const Marker = () => null;
+  /** @param {Record<string, any>} _props */
+  const Marker = (_props) => null;
   Marker.dxRole = role;
   Marker.displayName = role;
   return Marker;

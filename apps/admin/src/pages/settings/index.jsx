@@ -117,7 +117,6 @@ export default function AdminSettingsPage() {
     }
   }, [activeTab, roleTabs]);
 
-  console.log("new role name >>>", newRoleName);
 
 
   const fetchRoles = async () => {
@@ -151,7 +150,6 @@ export default function AdminSettingsPage() {
       //  Update roleTabs state
       setRoleTabs(formattedRoles);
       setActiveRoleTab(formattedRoles[0].key);
-      console.log("formatted roles >>>", formattedRoles);
 
       // Build permissions map directly from API response
       const permissionsMap = {};
@@ -178,7 +176,6 @@ export default function AdminSettingsPage() {
         );
       });
 
-      console.log("permission map >>>", permissionsMap);
 
       setRolePermissions(permissionsMap);
 
@@ -201,8 +198,6 @@ export default function AdminSettingsPage() {
   }, [activeTab]);
 
 
-  console.log("permissions >>>", rolePermissions[activeRoleTab]);
-  console.log("roleTabs>>", roleTabs);
 
   useEffect(() => {
     setExpandedAccordionItems([ROLE_ACCORDION_ITEMS[0].id]);
@@ -313,7 +308,6 @@ export default function AdminSettingsPage() {
       toast.error("You do not have permission to delete roles.");
       return;
     }
-    console.log("roleId>>>", roleId);
     try {
       const response = await apiFetch(`${env.backendApi}/deleteRole?roleId=${roleId}`, {
         method: 'DELETE',
@@ -378,7 +372,6 @@ export default function AdminSettingsPage() {
         toast.error("You do not have permission to modify role permissions.");
         return;
       }
-      console.log("clicked>>>>");
 
       setRolePermissions((prev) => {
         const currentRoleState = prev[activeRoleTab] || {};

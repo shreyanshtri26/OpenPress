@@ -1,4 +1,8 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
+import { Info } from 'lucide-react';
+import toast from 'react-hot-toast';
+import CustomButton from './CustomButton';
+import { ALSO_IN_MEDIA_NOTE, FEATURED_IMAGE_HINT } from './featuredImageUpload';
 import AssetModalStyles from './AssetModal/AssetModalStyles';
 import AssetFilterBar from './AssetModal/AssetFilterBar';
 import AssetGrid from './AssetModal/AssetGrid';
@@ -50,6 +54,8 @@ const AssetModal = ({
   const [sessionId, setSessionId] = useState(null);
   const [showFocalEditor, setShowFocalEditor] = useState(false);
   const [currentView, setCurrentView] = useState('library');
+  // Set when the user chose "Upload from computer": the upload screen then opens the file chooser straight away.
+  const [autoOpenPicker, setAutoOpenPicker] = useState(false);
   const [assetOverrides, setAssetOverrides] = useState({});
 
   const extractMetadataDetails = (metadata) => {
@@ -419,6 +425,12 @@ Write the caption now:
 
 
   const handleShowUpload = () => {
+    setAutoOpenPicker(false);
+    setCurrentView('upload');
+  };
+
+  const handleShowFeaturedUpload = () => {
+    setAutoOpenPicker(true);
     setCurrentView('upload');
   };
 
@@ -426,6 +438,7 @@ Write the caption now:
     if (!file) return;
 
     try {
+      if (!user) throw new Error('You must be signed in to upload images.');
       // Step 1: Request a presigned S3 upload URL
       const result = await apiFetch(`${env.backendApi}/api/uploadAsset`, {
         method: 'POST',
@@ -450,7 +463,6 @@ Write the caption now:
         body: file,
       });
 
-      console.log('Step 2 status (S3):', s3Upload.status);
       if (!s3Upload.ok) throw new Error(`S3 upload failed (${s3Upload.status})`);
 
       // Step 3: Save asset metadata in backend DB
@@ -468,7 +480,7 @@ Write the caption now:
           uploadedBy: user?.userName,
         }),
       });
-      if (!assetResponse.ok) throw new Error(`Failed to save asset metadata (${assetResponse.status})`);
+      if (!assetResponse.ok) throw new Error('The image was uploaded but could not be added to Media. Please try again.');
       const assetData = await assetResponse.json();
       // Step 4: Update UI and open Focal Editor
       const newAsset = assetData?.data || {
@@ -487,6 +499,8 @@ Write the caption now:
 
     } catch (error) {
       console.error('Upload failed:', error);
+      // Rethrown so the upload screen marks this file as failed instead of "uploaded".
+      throw error instanceof Error ? error : new Error('Upload failed');
     }
   };
 
@@ -525,7 +539,6 @@ Write the caption now:
             console.warn(`Direct updateStory returned ${res.status}`);
           } else {
             const responseData = await res.json();
-            console.log('Story (Featured Image) updated successfully:', responseData);
           }
         } catch (updateErr) {
           console.warn('Direct story update error in AssetModal:', updateErr);
@@ -607,16 +620,22 @@ Write the caption now:
 
     if (currentView === 'upload') {
       return (
-        <div className="flex-1 flex flex-col">
-          <div className="p-2 bg-white">
+        <div className="flex-1 min-h-0 flex flex-col">
+          <div className="p-2 bg-white shrink-0">
             <BackToDashboardButton
               onClick={() => setCurrentView('library')}
               label="Back to Media"
               shortLabel="Media"
-              className="ml-10 mt-1"
+              className="ml-2 sm:ml-10 mt-1"
             />
           </div>
-          <UploadComponent onFileUpload={handleFileUpload} />
+          <UploadComponent
+            onFileUpload={handleFileUpload}
+            imagesOnly={isFeaturedImage}
+            autoOpenPicker={isFeaturedImage && autoOpenPicker}
+            note={isFeaturedImage ? ALSO_IN_MEDIA_NOTE : ''}
+            successMessage={isFeaturedImage ? 'Image uploaded and added to Media' : ''}
+          />
         </div>
       );
     }
@@ -624,6 +643,18 @@ Write the caption now:
     return (
       <div className="bg-white h-full relative flex">
         <div className="flex-1 flex flex-col w-full h-full">
+          {isFeaturedImage && (
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 bg-gray-50 px-4 py-3 sm:px-6">
+              <div className="min-w-0 flex-1 basis-64">
+                <p className="text-sm font-semibold text-gray-900">Choose an image from Media, or upload a new one</p>
+                <p className="mt-0.5 flex items-start gap-1.5 text-xs text-gray-600">
+                  <Info size={14} className="mt-px shrink-0" aria-hidden="true" />
+                  <span>{ALSO_IN_MEDIA_NOTE} {FEATURED_IMAGE_HINT}.</span>
+                </p>
+              </div>
+              <CustomButton onClick={handleShowFeaturedUpload} className="min-h-[44px] w-full sm:w-auto">Upload image</CustomButton>
+            </div>
+          )}
           {/* MOBILE VIEW (matches AssetLibrary mobile responsive behavior) */}
           <div className="md:hidden flex flex-1 pt-0 flex-col font-sans px-4 pb-0 h-full overflow-hidden">
             <div className="flex-1 min-h-0">
@@ -642,6 +673,7 @@ Write the caption now:
                 sortByValue={sortByValue}
                 onSortByChange={setSortByValue}
                 onShowUpload={handleShowUpload}
+                showUpload={!isFeaturedImage}
               />
 
               <AssetGrid
@@ -670,6 +702,7 @@ Write the caption now:
               sortByValue={sortByValue}
               onSortByChange={setSortByValue}
               onShowUpload={handleShowUpload}
+                showUpload={!isFeaturedImage}
             />
 
             <AssetGrid

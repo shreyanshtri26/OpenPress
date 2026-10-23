@@ -9,7 +9,6 @@ import {
 const BUCKET_NAME = process.env.DAM_BUCKET_NAME;
 
 export const startVideoAnalysis = async (s3Key, analysisTypes = ["labels", "moderation", "text"]) => { // "celebrities" removed: celebrity detection feature deprecated
-  console.log('🎬 Starting video analysis for:', s3Key);
 
   try {
     const jobs = {};
@@ -28,7 +27,6 @@ export const startVideoAnalysis = async (s3Key, analysisTypes = ["labels", "mode
         });
         const response = await analysisClient.send(command);
         jobs.labelDetection = response.JobId;
-        console.log('✅ Label detection job started:', response.JobId);
       } catch (err) {
         console.error('❌ Label detection job failed:', err.message);
         jobs.labelDetection = { error: err.message };
@@ -44,7 +42,6 @@ export const startVideoAnalysis = async (s3Key, analysisTypes = ["labels", "mode
         });
         const response = await analysisClient.send(command);
         jobs.contentModeration = response.JobId;
-        console.log('✅ Content moderation job started:', response.JobId);
       } catch (err) {
         console.error('❌ Content moderation job failed:', err.message);
         jobs.contentModeration = { error: err.message };
@@ -57,7 +54,6 @@ export const startVideoAnalysis = async (s3Key, analysisTypes = ["labels", "mode
     //     });
     //     const response = await analysisClient.send(command);
     //     jobs.celebrityRecognition = response.JobId;
-    //     console.log('✅ Celebrity recognition job started:', response.JobId);
     //   } catch (err) {
     //     console.error('❌ Celebrity recognition job failed:', err.message);
     //     jobs.celebrityRecognition = { error: err.message };
@@ -71,7 +67,6 @@ export const startVideoAnalysis = async (s3Key, analysisTypes = ["labels", "mode
         });
         const response = await analysisClient.send(command);
         jobs.textDetection = response.JobId;
-        console.log('✅ Text detection job started:', response.JobId);
       } catch (err) {
         console.error('❌ Text detection job failed:', err.message);
         jobs.textDetection = { error: err.message };

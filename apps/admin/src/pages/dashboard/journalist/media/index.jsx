@@ -19,7 +19,6 @@ const DAMContainer = () => {
     const { user } = useContext(UserContext);
 
     const handleFileUpload = async (file) => {
-        console.log("file details >>", file);
 
         if (!file) return;
 
@@ -41,12 +40,9 @@ const DAMContainer = () => {
 
             if (result?.ok) {
                 const res = await result.json();
-                console.log("response>>", res);
 
                 const { uploadUrl, fileUrl } = res;
 
-                console.log("uploadUrl >>>", uploadUrl);
-                console.log("fileUrl >>>", fileUrl);
 
 
                 // Step 2: Upload file directly to S3
@@ -59,7 +55,6 @@ const DAMContainer = () => {
 
 
                 if (answer.ok) {
-                    console.log("Upload successful!");
                     toast.success(`File uploaded !!`);
 
 
@@ -85,7 +80,6 @@ const DAMContainer = () => {
                     if (!assetResponse.ok) throw new Error("Failed to save asset metadata");
 
                     const assetData = await assetResponse.json();
-                    console.log("Asset created:", assetData);
 
 
                     // const mockAsset = {
@@ -126,7 +120,6 @@ const DAMContainer = () => {
 
             }
         } catch (error) {
-            console.log("Error uploadig file in DAM >>>", error);
             toast.error('Error uploadig file in DAM' + error?.message);
         }
 

@@ -26,7 +26,6 @@ export const useFaceSearch = () => {
       setError(null);
 
       try {
-        console.log('📝 Adding face with payload:', payload);
 
         const s3Key = extractS3Key(payload.s3Key);
 
@@ -46,7 +45,6 @@ export const useFaceSearch = () => {
           }
         );
 
-        console.log('Response status:', response.status);
 
         if (!response.ok) {
           let errorMessage = `HTTP Error: ${response.status}`;
@@ -63,7 +61,6 @@ export const useFaceSearch = () => {
         }
 
         const data = await response.json();
-        console.log('✅ Face added successfully:', data);
         return data;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error';
@@ -84,7 +81,6 @@ export const useFaceSearch = () => {
       setError(null);
 
       try {
-        console.log('🔍 Searching faces with payload:', payload);
 
         const s3Key = extractS3Key(payload.s3Key);
 
@@ -105,7 +101,6 @@ export const useFaceSearch = () => {
           }
         );
 
-        console.log('Response status:', response.status);
 
         if (!response.ok) {
           let errorMessage = `HTTP Error: ${response.status}`;
@@ -122,7 +117,6 @@ export const useFaceSearch = () => {
         }
 
         const data = await response.json();
-        console.log('✅ Search completed:', data);
         return data.faceMatches || [];
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error';

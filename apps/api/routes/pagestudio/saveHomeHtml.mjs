@@ -30,7 +30,6 @@ export const handler = async (event) => {
     // ✅ Fixed key for homepage
     const s3Key = "home.html";
 
-    console.log(`🔧 Publishing HOME page to S3: ${BUCKET_NAME}/${s3Key}`);
 
     // ✅ Upload (OVERWRITE happens automatically)
     const uploadParams = {
@@ -49,10 +48,8 @@ export const handler = async (event) => {
 
     await s3Client.send(new PutObjectCommand(uploadParams));
 
-    console.log("✅ Home page published successfully");
 
 
-    console.log("⏱ Time taken:", Date.now() - startTime, "ms");
 
     return {
       statusCode: 200,

@@ -10,7 +10,6 @@ export const handler = async (event) => {
   try {
     let FRONTEND_URL = event.headers?.referer || event.headers?.Referer;
     FRONTEND_URL = FRONTEND_URL?.replace(/\/$/, '') || process.env.FRONTEND_URL || 'http://localhost:5173';
-    console.log('Frontend URL: ', FRONTEND_URL);
 
     const body = JSON.parse(event.body || "{}");
     const { email } = body;
@@ -24,7 +23,6 @@ export const handler = async (event) => {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    console.log(`🔑 Password reset requested for: ${normalizedEmail}`);
 
     const [user] = await db
       .select()
@@ -32,7 +30,6 @@ export const handler = async (event) => {
       .where(eq(users.email, normalizedEmail));
 
     if (!user) {
-      console.log(`⚠️ User not found: ${normalizedEmail}`);
       return {
         statusCode: 200,
         headers: { "Content-Type": "application/json" },
@@ -47,7 +44,6 @@ export const handler = async (event) => {
       const lastUpdate = new Date(user.updatedAt);
       const now = new Date();
       if (now - lastUpdate < 60000) {
-        console.log(`🕒 Rate limit: Reset requested too soon for ${normalizedEmail}`);
         return {
           statusCode: 429,
           headers: { "Content-Type": "application/json" },
@@ -56,7 +52,6 @@ export const handler = async (event) => {
       }
     }
 
-    console.log(`✅ User found: ${user.fullName || user.email}`);
 
     const resetToken = crypto.randomBytes(32).toString('hex');
     const resetExpiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
@@ -71,7 +66,6 @@ export const handler = async (event) => {
       })
       .where(eq(users.email, normalizedEmail));
 
-    console.log(`💾 Hashed reset token saved to Postgres`);
 
     const resetLink = `${FRONTEND_URL}/auth/forgot-password/?token=${resetToken}&email=${encodeURIComponent(normalizedEmail)}`;
 
@@ -82,7 +76,6 @@ export const handler = async (event) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: normalizedEmail, resetLink })
         });
-        console.log(`✅ Email sent via Power Automate`);
       } catch (paError) {
         console.error(`❌ Power Automate error:`, paError.message);
       }

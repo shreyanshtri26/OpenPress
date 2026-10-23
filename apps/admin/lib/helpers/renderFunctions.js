@@ -1807,9 +1807,6 @@ function renderComponent(block, zones, storiesById, ctx = {}) {
 
 
 export function renderBlogGrid(props, zones, storiesById, ctx = {}) {
-  console.log("props inside blog grid >>>>", props);
-  console.log("zones inside blog grid >>>>", zones);
-  console.log("stories inside blog grid >>>", storiesById);
   const id = props.id;
 
 
@@ -1822,7 +1819,6 @@ export function renderBlogGrid(props, zones, storiesById, ctx = {}) {
 
     if (!zoneItems.length) return "";
 
-    console.log("zone Items >>>>", zoneItems);
     return zoneItems
       .map((item) => renderComponent(item, zones, storiesById, ctx))
       .join("");
@@ -2088,8 +2084,6 @@ export function renderBlogShowcaseCard(props, storiesById) {
 
 // Recommended Card
 function renderRecommendCard(props, storyData) {
-  console.log("props data in recommend card >>>", props);
-  console.log("story data in recommend card >>>", storyData)
   const {
     storyId,
     title: fallbackTitle = "Recommended Story",
@@ -2101,7 +2095,6 @@ function renderRecommendCard(props, storyData) {
 
   const imageUrl = storyData?.image || storyData?.imageUrl || fallbackImage;
   const description = storyData?.Category || storyData?.category || fallbackDesc;
-  console.log("description >>>", description);
   const title = storyData?.title || storyData?.headline || fallbackTitle;
   const imageAlt = storyData?.imageAlt || fallbackAlt;
   const publishUrl = storyData?.publishUrl || '';
@@ -2551,14 +2544,12 @@ export function renderBlogTitle(
   allAuthors = []
 ) {
 
-  console.log("all authors in render Blog title >>>", allAuthors);
 
   const story = findStory(storyId, storiesById);
 
   // Check byLine array first, then fall back to authorName
   const byLine = story?.byLine;
 
-  console.log("by line >>>", byLine);
 
   let displayAuthorHTML = "";
 
@@ -3357,7 +3348,6 @@ export function renderBlogBodyCard({ storyId, bodyText }, storiesById, campaigns
     }
   }
 
-  console.log('renderBlogBodyCard: inStoryJob=', inStoryJob, 'afterEvery=', afterEvery);
 
   return `
     <div class="w-full max-w-[900px] mx-auto my-5">
@@ -3882,7 +3872,6 @@ export function renderShareCard({ title, url = "" }, containerId) {
 //  MAIN RENDERER: BlogPostCard
 export function renderBlogPostCard(props, zones, storiesById, ctx = {}) {
   const allAuthors = ctx.allAuthors || [];
-  console.log("allAuthors >>>", allAuthors);
   const {
     id,
     storyId,
@@ -3951,9 +3940,6 @@ export function renderBlogPostCard(props, zones, storiesById, ctx = {}) {
   }
 
 
-  console.log("props of blog post card >>>>", props);
-  console.log("storiesById of blog post card >>>>>>", storiesById);
-  console.log("zones of blog post card >>>", zones);
 
   // Robust story lookup:
   const story = findStory(storyId, storiesById);
@@ -3969,7 +3955,6 @@ export function renderBlogPostCard(props, zones, storiesById, ctx = {}) {
     window.__PUCK_FINAL_TITLE__ = displayTitle;
   }
 
-  console.log("dispayTitle >>>", displayTitle);
 
   const displayAuthor =
     story?.author ||
@@ -4015,7 +4000,6 @@ export function renderBlogPostCard(props, zones, storiesById, ctx = {}) {
     displayBody = bodyText || "";
   }
 
-  console.log("displayBody >>>>", displayBody);
 
   // container id (use provided id or a generated one)
   const containerId = id || `blogpost-${Math.random().toString(36).slice(2, 9)}`;

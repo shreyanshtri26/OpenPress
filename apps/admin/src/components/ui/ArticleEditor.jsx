@@ -94,7 +94,6 @@ export default function ArticleEditor({
   const [errorMessage, setErrorMessage] = useState('');
 
   const formatZodErrors = (zodError) => {
-    console.log('zodError>>', zodError);
 
     const formatted = {};
 
@@ -174,7 +173,6 @@ export default function ArticleEditor({
       setSuccessMessage('Article saved successfully!');
       // onCancel();
     } catch (error) {
-      console.log('error>>', error);
 
       if (error instanceof z.ZodError) {
         const formattedErrors = formatZodErrors(error);

@@ -137,7 +137,6 @@ const importRenderer = async (source, label) => {
     throw new Error(`${label} → renderer API version ${version}, expected ${SUPPORTED_RENDERER_API_VERSION}`);
   }
 
-  console.log(`[republishAll] renderer loaded from ${label} (${hash})`);
   return cachedRenderer.module;
 };
 
@@ -333,13 +332,11 @@ const passScope = (job, inputs) => {
 
 const skipUnaffected = (job, key, count = 1) => {
   job.total = Math.max((job.total ?? 0) - count, 0);
-  console.log(`[republishAll] skip ${key} (campaign not on this page)`);
 };
 
 // A page with no saved layout has nothing to publish: take it out of the total so done reaches total.
 const skipNeverBuilt = (job, key) => {
   job.total = Math.max((job.total ?? 0) - 1, 0);
-  console.log(`[republishAll] skip ${key} (never built)`);
 };
 
 /** Reads a page record and returns its publishable data, or null if unbuilt. */
@@ -692,9 +689,6 @@ const processTick = async (job, save, deadline) => {
   job.storyIds = null;
   await save();
 
-  console.log(
-    `[republishAll] job ${job.jobId} ${job.status}: ${job.done} page(s), ${job.failedCount} failure(s)`
-  );
 };
 
 /**
@@ -713,7 +707,6 @@ export const runRepublishAllWorker = async (context, { dedicated = false } = {})
       // On a dedicated invocation this is as much time as the job will ever
       // get, so it is a dead end rather than something to retry.
       if (!dedicated) {
-        console.log("[republishAll] skipping tick: not enough time left in this invocation");
         return;
       }
       job.status = "failed";
@@ -732,7 +725,6 @@ export const runRepublishAllWorker = async (context, { dedicated = false } = {})
     }
 
     if (job.leaseUntil && Date.parse(job.leaseUntil) > Date.now()) {
-      console.log(`[republishAll] job ${job.jobId} is leased by another run; skipping`);
       return;
     }
 
@@ -768,7 +760,6 @@ export const runRepublishAllWorker = async (context, { dedicated = false } = {})
       etag = await writeJob(job, etag);
     } catch (err) {
       if (err instanceof JobConflictError) {
-        console.log("[republishAll] another run claimed the job first; skipping");
         return;
       }
       throw err;
@@ -811,11 +802,10 @@ export const runRepublishAllWorker = async (context, { dedicated = false } = {})
 
         if (Date.now() >= deadline) {
           // Out of time: the tail below hands the repeat pass to the next tick.
-          console.log(`[republishAll] job ${job.jobId} repeat pass deferred to the next tick`);
+          undefined;
           break;
         }
 
-        console.log(`[republishAll] job ${job.jobId} repeating with fresh data`);
         await processTick(job, save, deadline);
       }
     } catch (err) {
@@ -842,10 +832,6 @@ export const runRepublishAllWorker = async (context, { dedicated = false } = {})
         if (!(err instanceof JobConflictError)) throw err;
       }
 
-      console.log(
-        `[republishAll] job ${job.jobId} out of time at ${job.phase}:${job.cursor}; ` +
-          `${job.done} of ${job.total ?? "?"} done`
-      );
     }
   } catch (err) {
     // Never propagate: this may share its invocation with other work.

@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
-import { Upload, X, Check, AlertTriangle, FileText, Image, Video, Music, RotateCcw, Play, Pause } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Info, Upload, X, Check, AlertTriangle, FileText, Image, Video, Music, RotateCcw, Play, Pause } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import CustomButton from '../CustomButton';
+import { FEATURED_IMAGE_ACCEPT, FEATURED_IMAGE_HINT, FEATURED_IMAGE_TYPES } from '../featuredImageUpload';
 
-const UploadComponent = ({ onFileUpload }) => {
+const UploadComponent = ({ onFileUpload, imagesOnly = false, autoOpenPicker = false, note = '', successMessage = '' }) => {
 	const [isDragOver, setIsDragOver] = useState(false);
 	const [uploadQueue, setUploadQueue] = useState([]);
 	const [rejectedFiles, setRejectedFiles] = useState([]);
@@ -29,7 +30,7 @@ const UploadComponent = ({ onFileUpload }) => {
 	};
 
 	// Define accepted file types
-	const ACCEPTED_TYPES = {
+	const ALL_ACCEPTED_TYPES = {
 		'image/jpeg': ['.jpg', '.jpeg'],
 		'image/png': ['.png'],
 		'image/gif': ['.gif'],
@@ -48,6 +49,9 @@ const UploadComponent = ({ onFileUpload }) => {
 		'audio/ogg': ['.ogg'],
 		'audio/flac': ['.flac']
 	};
+	const ACCEPTED_TYPES = imagesOnly
+		? Object.fromEntries(Object.entries(ALL_ACCEPTED_TYPES).filter(([type]) => FEATURED_IMAGE_TYPES.includes(type)))
+		: ALL_ACCEPTED_TYPES;
 
 	// Validate file types
 	const validateFiles = (files) => {
@@ -171,7 +175,7 @@ const UploadComponent = ({ onFileUpload }) => {
 						: item
 				)
 			);
-			toast.success(`File uploaded successfully!`);
+			toast.success(successMessage || `File uploaded successfully!`);
 
 		} catch (error) {
 			const isAborted = error.message === 'Upload cancelled' || error.name === 'AbortError';
@@ -200,10 +204,8 @@ const UploadComponent = ({ onFileUpload }) => {
 
 	// ✅ FIXED: Process next files using ref for immediate state check
 	const processNextFiles = () => {
-		console.log('🔍 processNextFiles called - uploadingRef.current:', uploadingRef.current);
 
 		if (!uploadingRef.current || isProcessingRef.current) {
-			console.log('⏹️ Upload process stopped');
 			return;
 		}
 
@@ -212,21 +214,14 @@ const UploadComponent = ({ onFileUpload }) => {
 		const pendingFiles = uploadQueue.filter(f => f.status === UPLOAD_STATUS.PENDING);
 		const availableSlots = MAX_CONCURRENT_UPLOADS - activeUploadsRef.current;
 
-		console.log('🔍 Queue analysis:', {
-			pending: pendingFiles.length,
-			activeSlots: activeUploadsRef.current,
-			availableSlots
-		});
 
 		if (pendingFiles.length > 0 && availableSlots > 0) {
 			const filesToProcess = pendingFiles.slice(0, availableSlots);
-			console.log('🎯 Starting uploads for:', filesToProcess.map(f => f.name));
 
 			filesToProcess.forEach(fileItem => {
 				uploadSingleFile(fileItem);
 			});
 		} else if (pendingFiles.length === 0 && activeUploadsRef.current === 0) {
-			console.log('🎉 All uploads completed');
 			uploadingRef.current = false;
 			setIsUploading(false);
 		}
@@ -273,7 +268,6 @@ const UploadComponent = ({ onFileUpload }) => {
 
 	// Retry failed upload
 	const retryFileUpload = (fileId) => {
-		console.log('🔄 Retrying upload for file:', fileId);
 
 		setUploadQueue(prevQueue =>
 			prevQueue.map(item =>
@@ -399,7 +393,6 @@ const UploadComponent = ({ onFileUpload }) => {
 			e.dataTransfer.effectAllowed = 'none';
 			e.dataTransfer.dropEffect = 'none';
 		} catch (error) {
-			console.log('DataTransfer cleanup warning:', error);
 		}
 
 		setTimeout(() => {
@@ -423,7 +416,7 @@ const UploadComponent = ({ onFileUpload }) => {
 
 		if (invalidFiles.length > 0) {
 			setRejectedFiles(prev => [...prev, ...invalidFiles]);
-			toast.error(`Rejected ${invalidFiles.length} unsupported file(s)`);
+			toast.error(imagesOnly ? `Only ${FEATURED_IMAGE_HINT} images can be used here.` : `Rejected ${invalidFiles.length} unsupported file(s)`);
 		}
 
 		if (validFiles.length > 0) {
@@ -433,6 +426,11 @@ const UploadComponent = ({ onFileUpload }) => {
 		}
 	};
 
+
+	useEffect(() => {
+		if (autoOpenPicker) fileInputRef.current?.click();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [autoOpenPicker]);
 
 	const handleUploadClick = () => {
 		setRejectedFiles([]);
@@ -465,7 +463,6 @@ const UploadComponent = ({ onFileUpload }) => {
 
 
 	const handleCancelUpload = () => {
-		console.log('🛑 Cancelling all uploads');
 		uploadingRef.current = false;
 		setIsUploading(false);
 
@@ -505,9 +502,9 @@ const UploadComponent = ({ onFileUpload }) => {
 	const stats = getUploadStats();
 
 	return (
-		<div className="w-full flex-1 min-h-0 p-8">
+		<div className="w-full flex-1 min-h-0 overflow-y-auto p-4 sm:p-8">
 			<div className="w-full">
-				<div className="card p-6 mb-6 border-none">
+				<div className="card p-4 sm:p-6 mb-4 border-none">
 					{isUploading ?
 						(<div className='flex flex-col p-4 sm:p-6  w-full max-w-md sm:max-w-lg mx-auto h-72 sm:h-96 items-center justify-center'>
 							<h2 className="text-lg font-bold text-gray-800 mb-3 text-center">
@@ -518,7 +515,7 @@ const UploadComponent = ({ onFileUpload }) => {
 
 							<div
 								className={`border-2 border-dashed p-6 text-center transition-all duration-200 
-							w-full max-w-md sm:max-w-lg mx-auto h-52 sm:h-64 flex flex-col items-center justify-center gap-4
+							w-full max-w-md sm:max-w-lg mx-auto ${uploadQueue.length > 0 ? 'h-44 gap-2' : 'h-52 sm:h-64 gap-4'} flex flex-col items-center justify-center
 							${isDragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-400 hover:border-black'}`}
 								onDragEnter={handleDragEnter}
 								onDragOver={handleDragOver}
@@ -535,28 +532,37 @@ const UploadComponent = ({ onFileUpload }) => {
 										onClick={handleUploadClick}
 										disabled={stats.pending > 0}
 									>
-										Browse
+										{imagesOnly ? 'Choose image' : 'Browse'}
 									</CustomButton>
+									<p className="text-xs text-gray-500">
+										{imagesOnly ? 'Choose a photo from your device, or drag one here' : 'or drag files here'}
+									</p>
 								</div>
 
 								<input
 									key={inputKey}
 									ref={fileInputRef}
 									type="file"
-									accept=".svg,image/*,video/*,audio/*"
+									accept={imagesOnly ? FEATURED_IMAGE_ACCEPT : '.svg,image/*,video/*,audio/*'}
 									onChange={handleFileInputChange}
 									className="hidden"
 									multiple={false}
 								/>
 							</div>
+							{note && (
+								<p className="mx-auto mt-3 flex max-w-md items-start justify-center gap-1.5 text-center text-xs text-gray-600 sm:max-w-lg">
+									<Info size={14} className="mt-px shrink-0" aria-hidden="true" />
+									<span>{note}</span>
+								</p>
+							)}
 						</div>
 						)}
 				</div>
 
 				{uploadQueue.length > 0 && (
-					<div className="card border-none max-w-md sm:max-w-lg mx-auto flex flex-col h-[32rem]">
+					<div className="card border-none max-w-md sm:max-w-lg mx-auto flex flex-col">
 						{/* Scrollable file list */}
-						<div className="flex-1 overflow-y-auto space-y-1 border-black border-b mb-[7.5rem] pr-2">
+						<div className="max-h-72 overflow-y-auto space-y-1 border-black border-b pr-2">
 							{uploadQueue.map((fileItem) => (
 								<div key={fileItem.id} className="relative p-3 sm:p-4 bg-white">
 									<div className="absolute top-0 left-0 w-full h-0.5 bg-gray-200">
@@ -625,14 +631,14 @@ const UploadComponent = ({ onFileUpload }) => {
 							))}
 						</div>
 
-						{/* Sticky Upload Button */}
-						<div className=" bottom-0 bg-white pb-[16rem] flex justify-center">
+						{/* Submit: right under the selected file, always in view */}
+						<div className="sticky bottom-0 flex justify-center bg-white pb-2 pt-4">
 							{stats.pending > 0 && !isUploading && (
 								<CustomButton
 									onClick={startBatchUpload}
-									variant='white'
+									className="min-h-[48px] w-full sm:w-auto sm:min-w-[200px]"
 								>
-									Upload
+									{imagesOnly ? 'Upload image' : 'Upload'}
 								</CustomButton>
 							)}
 						</div>

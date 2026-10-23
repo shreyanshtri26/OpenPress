@@ -186,7 +186,6 @@ export function ThumbnailGridBlock({
 
   // If not in edit mode and no children, return null or a placeholder
   if (!isEditMode && !isAutomatic && (!items || items.length === 0)) {
-    console.log('ThumbnailGridBlock: Not in edit mode and no items to render')
     return null
   }
 

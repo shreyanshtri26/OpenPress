@@ -23,8 +23,6 @@ export default function ResetPasswordFlow(): ReactNode {
   // ✅ Check if user clicked email link - jump to Step 3
   useEffect(() => {
     if (token) {
-      console.log('✅ User clicked email link - showing password form');
-      console.log('Token:', token);
       setStep(3);
       setResetToken(token);
       if (urlEmail) {

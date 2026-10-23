@@ -29,7 +29,6 @@ export const handler = async (event) => {
     // ✅ Fixed key for CONTACT US page
     const s3Key = "contact-us/index.html";
 
-    console.log(`🔧 Publishing CONTACT US page to S3: ${BUCKET_NAME}/${s3Key}`);
 
     // ✅ Upload to S3 (overwrite)
     const uploadParams = {
@@ -50,9 +49,7 @@ export const handler = async (event) => {
 
     await s3Client.send(new PutObjectCommand(uploadParams));
 
-    console.log("✅ Contact Us page published successfully");
 
-    console.log("⏱ Time taken:", Date.now() - startTime, "ms");
 
     return {
       statusCode: 200,

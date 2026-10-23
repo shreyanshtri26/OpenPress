@@ -49,7 +49,6 @@ export const initializePlacements = async (): Promise<ApiPlacement[]> => {
     placementsInFlight = fetchPlacements()
         .then((placements) => {
             livePlacements = placements;
-            console.log("Placements initialized:", livePlacements.length);
             return livePlacements;
         })
         .catch((error) => {
@@ -76,7 +75,6 @@ export const initializeCampaigns = async (): Promise<Campaign[]> => {
             popupCampaignOptions = apiCampaigns
                 .filter(c => isCampaignStatusServing(c.status) && (c.jobs ?? []).some(j => (j.adFormat || j.ad_format || '').toLowerCase() === 'popup'))
                 .map(c => ({ value: c.campaignId, label: `${c.advertiserName} — ${c.campaignName}` }));
-            console.log("Campaigns initialized:", liveCampaigns.length);
             return liveCampaigns;
         })
         .catch((error) => {

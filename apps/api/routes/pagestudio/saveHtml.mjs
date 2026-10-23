@@ -95,7 +95,6 @@ export const handler = async (event) => {
     const baseKey = `${sanitizedSection}/${sanitizedSlug}`;
     const s3Key = status === "scheduled" ? `pending-html/${baseKey}` : baseKey;
 
-    console.log(`🔧 Uploading HTML to S3: ${BUCKET_NAME}/${s3Key}`);
 
     // ✅ Upload to S3
     const uploadParams = {
@@ -118,9 +117,7 @@ export const handler = async (event) => {
 
     await s3Client.send(new PutObjectCommand(uploadParams));
 
-    console.log(`✅ Successfully uploaded to S3: ${s3Key}`);
 
-    console.log("⏱ Time taken:", Date.now() - startTime, "ms");
 
     return {
       statusCode: 200,

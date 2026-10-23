@@ -146,7 +146,6 @@ function MediaPage() {
             onBack={handleBackToLibrary}
             onAssetUpdate={(updatedAsset: AssetRecord) => {
               setSelectedAsset(updatedAsset);
-              console.log("Asset updated in MediaPage:", updatedAsset);
             }}
           />
         );

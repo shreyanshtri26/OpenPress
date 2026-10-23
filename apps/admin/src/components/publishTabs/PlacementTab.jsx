@@ -24,9 +24,7 @@ const PlacementTab = ({
   isEditingPublishedArticle = false,
 }) => {
 
-  console.log('PlacementTab: isEditingPublishedArticle =', isEditingPublishedArticle);
 
-  console.log("story data in placement Tab >>>", storyData);
 
 
   const normalizeSelectionType = (value) => {
@@ -116,8 +114,6 @@ const PlacementTab = ({
     // Use the actual story status as the drawer key, defaulting to "ready_to_publish"
     const drawerKey = storyData?.status === "published" ? "published" : "ready_to_publish";
 
-    console.log("PublishDrawer -> taxonomies:", taxonomies);
-    console.log("PublishDrawer -> taxonomySelections:", taxonomySelections);
 
     if (!Array.isArray(taxonomies)) return [];
 
@@ -166,7 +162,6 @@ const PlacementTab = ({
       const isReadOnlyField = (isEditingPublishedArticle || isPublished) && t.name.toLowerCase() === 'section';
 
       if (t.name.toLowerCase() === 'section') {
-        console.log('PlacementTab Section field: isEditingPublishedArticle =', isEditingPublishedArticle, 'isPublished =', isPublished, 'isReadOnlyField =', isReadOnlyField);
       }
 
       const options = (t.values || []).map(v => ({ id: v, name: v }));
@@ -633,7 +628,6 @@ const PlacementTab = ({
   };
 
 
-  console.log("form data >>>", formData);
 
 
   return (

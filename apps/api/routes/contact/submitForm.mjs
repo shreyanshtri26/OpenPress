@@ -159,7 +159,6 @@ export const handler = async (event) => {
       status: 'new' // Can be used for internal tracking
     };
 
-    console.log(`📝 Saving contact submission ${submissionId} to ${TABLE_NAME}`);
 
     await docClient.send(new PutCommand({
       TableName: TABLE_NAME,
@@ -167,9 +166,7 @@ export const handler = async (event) => {
     }));
 
     if (!isEnabled('email')) {
-      console.log(`📭 Email is turned off; submission ${submissionId} saved without sending`);
     } else try {
-      console.log(`📧 Sending contact submission ${submissionId} to ${receiverEmail}`);
       await sendContactEmail(item);
     } catch (emailError) {
       console.error("❌ Failed to send contact submission email:", emailError);

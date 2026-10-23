@@ -5,7 +5,6 @@ const TABLE_NAME = process.env.DOC_CONTACT_US_TABLE || "op_contact_submissions";
 
 export const handler = async (event) => {
   try {
-    console.log(`🔍 Fetching contact submissions from ${TABLE_NAME}`);
 
     const command = new ScanCommand({
       TableName: TABLE_NAME,

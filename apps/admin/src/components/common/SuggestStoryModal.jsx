@@ -144,7 +144,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
       if (status === 'Suggested' || status === 'Completed' || status === 'Published') {
         setIsReadOnly(true);
         setHasSubmitted(true);
-        console.log('🔒 Story has been submitted - disabling draft options');
       } else {
         setIsReadOnly(false);
         setHasSubmitted(false);
@@ -235,7 +234,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
       const editor = (data?.data || []).filter(u => u.role === "editor");
       setEditors(editor);
     } catch (err) {
-      console.log(err);
     }
   }
 
@@ -302,7 +300,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
     if (!user?.userId || prefillData) return null;
 
     try {
-      console.log('Checking for existing drafts...');
 
       const res = await apiFetch(
         `${env.backendApi}/api/fetchDrafts?userId=${user.userId}`,
@@ -335,7 +332,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
         if (recentDrafts.length > 0) {
           const mostRecentDraft = recentDrafts[0];
 
-          console.log('Found existing auto-save candidate:', mostRecentDraft.title);
 
           return {
             storyId: mostRecentDraft._id,
@@ -370,7 +366,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
       setStoryId(existingDraft.storyId);
       setDraftCreated(true);
       setCurrentStatus('draft');
-      console.log('Reusing existing draft for auto-save');
 
       // Now update it with current content
       await autoSaveDraft();
@@ -407,16 +402,13 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
         }
       );
 
-      console.log("res>>>", res);
 
       if (res.ok) {
         const responseData = await res.json();
-        console.log("this is my response data", responseData)
         setStoryId(responseData.storyId || responseData.data?._id);
         setCurrentStatus(responseData.status || 'draft');
         setDraftCreated(true);
         setLastSaved(new Date());
-        console.log('New auto-save draft created');
       }
     } catch (err) {
       console.error('Error creating draft:', err);
@@ -446,7 +438,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
         state: storyState
       };
 
-      console.log(`Auto-saving with preserved status: ${currentStatus}`);
 
       const res = await apiFetch(
         `${env.backendApi}/api/updateStory?storyId=${storyId}`,
@@ -464,7 +455,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
 
       if (res.ok) {
         setLastSaved(new Date());
-        console.log(`Auto-saved with status: ${currentStatus}`);
       }
     } catch (err) {
       console.error('Auto-save failed:', err);
@@ -492,7 +482,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
       };
 
 
-      console.log(`Auto-saving existing story without changing status`);
 
       const res = await apiFetch(
         `${env.backendApi}/api/updateStory?storyId=${storyId}`,
@@ -510,7 +499,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
 
       if (res.ok) {
         setLastSaved(new Date());
-        console.log(`Auto-saved existing story while preserving status`);
       }
     } catch (err) {
       console.error('Autosave failed:', err);
@@ -574,7 +562,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
       if (prefillData) {
         // Map assignedTo field correctly for edit mode
 
-        console.log("1");
         const initial = {
           storyId: prefillData.storyId || '',
           title: prefillData.title || '',
@@ -585,10 +572,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
           assignedEditor: prefillData.assignedEditor || prefillData.assignedTo || '',
         };
 
-        console.log('🔍 Prefill data mapping:');
-        console.log('  - prefillData.assignedTo:', prefillData.assignedTo);
-        console.log('  - prefillData.assignedEditor:', prefillData.assignedEditor);
-        console.log('  - final assignedEditor:', initial.assignedEditor);
 
         setStoryId(initial.storyId);
 
@@ -600,15 +583,12 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
 
         if (existingTitleInDescription && existingTitleInDescription.trim() === initial.title.trim()) {
           // Title is already in description, use as-is
-          console.log('✅ Title already exists in description blocks, using as-is');
           setDescription(normalizedDescription);
         } else if (initial.title && initial.title.trim()) {
           // Title exists but not in description, merge it
-          console.log('✅ Merging separate title with description blocks');
           setDescription(mergeTitleAndBody(initial.title, normalizedDescription));
         } else {
           // No title or title in description, use description as-is
-          console.log('✅ Using description blocks as-is (no separate title)');
           setDescription(normalizedDescription);
         }
 
@@ -626,14 +606,11 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
         if (status === 'Suggested' || status === 'Completed' || status === 'Published') {
           setIsReadOnly(true);
           setHasSubmitted(true);
-          console.log('🔒 Story has been submitted - disabling draft options');
         } else {
           setIsReadOnly(false);
           setHasSubmitted(false);
         }
 
-        console.log('✅ Loaded specific draft for editing with assignedEditor:', initial.assignedEditor);
-        console.log("description>>", description);
 
       } else {
         // NEW: When opening as "Raise Story" (new), DO NOT auto-load drafts.
@@ -654,7 +631,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
         setHasSubmitted(false);
         setLastSaved(null);
 
-        console.log('✅ Opening new blank story (no auto-loaded drafts)');
       }
 
       // Reset validation / submit state
@@ -706,10 +682,8 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
 
     try {
       let res;
-      console.log("i am seeing my story id: ", storyId)
       // ✅ Check if we have existing draft (storyId exists)
       if (storyId) {
-        console.log('📝 Updating existing draft with PUT method');
         // UPDATE existing draft
         res = await apiFetch(
           `${env.backendApi}/api/updateStory?storyId=${storyId}`,
@@ -725,7 +699,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
           }
         );
       } else {
-        console.log('🆕 Creating new draft with POST method');
         // CREATE new draft
         res = await apiFetch(
           `${env.backendApi}/api/articles/postStory`,
@@ -754,7 +727,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
 
       if (res.ok) {
         toast.success('Draft saved successfully!');
-        console.log('✅ Draft saved successfully');
       } else {
         const errorData = await res.json();
         console.error('Save failed:', errorData);
@@ -768,7 +740,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
 
   const handleSubmit = useCallback(async (e) => {
     // DevExpress Button events don't have preventDefault, so we check if it exists
-    console.log("Clicked!");
 
     if (e && e.preventDefault) {
       e.preventDefault();
@@ -802,7 +773,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
       };
 
 
-      console.log('Submitting story with status: Suggested');
 
       let res;
       if (prefillData && storyId) {
@@ -854,7 +824,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
 
       if (res.ok) {
         const responseData = await res.json();
-        console.log('Story submitted successfully:', responseData);
 
         // ✅ UPDATE LOCAL STATUS TO REFLECT SUBMISSION
         setCurrentStatus('Suggested');
@@ -892,8 +861,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
   const descriptionCharCount = rawPlainText.replace(/\s/g, "").length;
 
 
-  console.log("storyId >>", storyId);
-  console.log("prefilledData>>", prefillData);
 
   return (
     <Popup
@@ -1113,7 +1080,6 @@ export default function SuggestStoryModal({ isOpen, onClose, prefillData }) {
                     valueExpr="userId"
                     value={assignedEditor}
                     onValueChanged={(e) => {
-                      console.log('🔧 Editor selected:', e.value);
                       handleFieldChange('assignedEditor', e.value, setAssignedEditor);
                       setAssignedEditor(e.value);
                     }}

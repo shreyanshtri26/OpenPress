@@ -172,7 +172,6 @@ private getCurrentOrCachedSelection(): {
   storeSelectionAndShowMenu = async () => {
     AIInlineTool.handleSelectionChange(); // Ensure we capture the latest selection
     const { selection, range, selectedText } = this.getCurrentOrCachedSelection();
-    console.log('selectedtext>>>', selectedText);
 
     if (!selection || !range) {
       alert('Could not get text selection.');
@@ -188,7 +187,6 @@ private getCurrentOrCachedSelection(): {
       let startBlockIndex = this.findBlockIndexFromNode(range.startContainer);
       let endBlockIndex = this.findBlockIndexFromNode(range.endContainer);
 
-      console.log('blockIndices>>>', startBlockIndex, endBlockIndex);
 
       // Handle "Select All" or large selections where start/end might be outside blocks
       if (startBlockIndex === -1 || endBlockIndex === -1) {
@@ -265,7 +263,6 @@ private getCurrentOrCachedSelection(): {
 
           if (blockTexts.length > 0) {
             textToProcess = blockTexts.join('\n\n');
-            console.log('Constructed text from blocks:', textToProcess);
           }
         } catch (err) {
           console.error('Error constructing text from blocks:', err);
@@ -282,7 +279,6 @@ private getCurrentOrCachedSelection(): {
         blockData: blockData,
       };
 
-      console.log('Stored selection:', this.storedSelection);
 
       // Show AI menu
       this.showAIMenu();
@@ -396,7 +392,6 @@ private getCurrentOrCachedSelection(): {
   }
 
   createInlineMenu(commands: any[]) {
-    console.log('Creating inline menu...');
     // Remove existing menu if any
     const existingMenu = document.querySelector('.ai-inline-menu');
     if (existingMenu) existingMenu.remove();
@@ -912,7 +907,6 @@ private getCurrentOrCachedSelection(): {
               prompt: finalPrompt,
             })
               .then((processedText) => {
-                console.log('processedText>>>', processedText);
                 // Show result modal with replace option
                 this.showResultModal(processedText, command.title);
                 resolve(undefined);
@@ -934,7 +928,6 @@ private getCurrentOrCachedSelection(): {
         },
       );
 
-      console.log('processedText>>>', processedText);
 
       // Show result modal with replace option
       this.showResultModal(processedText, command.title);
@@ -945,8 +938,6 @@ private getCurrentOrCachedSelection(): {
   }
 
   async processWithAI(text: string, command: any) {
-    console.log('command>>>', command);
-    console.log('text >>>', text);
 
     // SHOW LOADING POPPER - NEW
     this.showLoadingPopper();
@@ -964,15 +955,12 @@ private getCurrentOrCachedSelection(): {
       finalPrompt = `${command.prompt} ${text}`;
     }
 
-    console.log('finalPrompt>>>', finalPrompt);
-    console.log('aiConfig>>>', aiConfig);
 
     try {
       const requestBody = {
         query: text ? `${text}\n\n${finalPrompt}` : finalPrompt,
       };
 
-      console.log('requestBody>>>', requestBody);
 
       const response = await apiFetch(aiEndpoint, {
         method: 'POST',
@@ -1008,7 +996,6 @@ private getCurrentOrCachedSelection(): {
         responseText += content;
       }
 
-      console.log('response of inline AI >>>', responseText);
       return responseText.trim() || 'No response received';
     } catch (error) {
       console.error('Processing error:', error);
@@ -1019,8 +1006,6 @@ private getCurrentOrCachedSelection(): {
   }
 
   showResultModal(result: string, commandTitle: string) {
-    console.log('result >>', result);
-    console.log('commandTitle>>>', commandTitle);
 
     const existingModal = document.querySelector('.ai-result-modal');
     if (existingModal) existingModal.remove();
@@ -1148,7 +1133,6 @@ private getCurrentOrCachedSelection(): {
       return;
     }
 
-    console.log('newText to replace>>>>', newText);
 
     try {
       const {
@@ -1157,9 +1141,6 @@ private getCurrentOrCachedSelection(): {
         text: originalText,
         blockData,
       } = this.storedSelection;
-      console.log('blockIndex>>>', blockIndex);
-      console.log('text to replace>>>', originalText);
-      console.log('blockData>>', blockData);
 
       // Handle multi-block replacement
       if (endBlockIndex !== undefined && endBlockIndex > blockIndex) {
@@ -1215,17 +1196,13 @@ private getCurrentOrCachedSelection(): {
         throw new Error('Block not found');
       }
 
-      console.log('currentBlock>>', currentBlock);
 
       // Get current block data
       const currentBlockData = await currentBlock.save();
-      console.log('currentBlockData>>>', currentBlockData);
       const currentText = currentBlockData.data.text || '';
-      console.log('currentText>>>', currentText);
 
       // Replace only the selected text portion
       const updatedText = currentText.replace(originalText, newText);
-      console.log('updatedtext>>>', updatedText);
 
       // Update the block with new content
       const newBlockData = {
@@ -1247,7 +1224,6 @@ private getCurrentOrCachedSelection(): {
         this.api.caret.setToBlock(blockIndex, 'end');
       }, 100);
 
-      console.log('Successfully replaced selected text');
     } catch (error) {
       console.error('Error replacing stored selection:', error);
       alert('Failed to replace text. Content copied to clipboard.');

@@ -63,7 +63,6 @@ const QUALITY_CONFIGS = {
 };
 
 export const handler = async (event) => {
-  console.log("🎬 FFmpeg Video Transcoding Processor started");
   
   // Process SQS messages
   for (const record of event.Records) {
@@ -80,7 +79,6 @@ async function processFFmpegTranscodingJob(record) {
     const message = JSON.parse(record.body);
     const { assetId, userId, qualities } = message;
 
-    console.log(`🎬 Processing FFmpeg transcoding for asset: ${assetId}`);
 
     // ✅ Cleanup /tmp first
     await cleanupTempDirectory();
@@ -102,13 +100,11 @@ async function processFFmpegTranscodingJob(record) {
       throw new Error("Asset is not a video");
     }
 
-    console.log(`📁 Asset: ${asset.name} (${asset.type})`);
 
     // ✅ Check file size before download
     const key = asset.url.split('/').pop();
     const fileSize = await getS3FileSize(BUCKET_NAME, key);
     
-    console.log(`📁 File size: ${fileSize} bytes (${(fileSize / 1024 / 1024).toFixed(2)} MB)`);
 
     // ✅ Size check - function has limited /tmp space
     const MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024; // 2GB
@@ -119,23 +115,19 @@ async function processFFmpegTranscodingJob(record) {
     // ✅ Download original video
     tempInputPath = `/tmp/${Date.now()}_input_${key}`;
     
-    console.log(`📥 Downloading original video: ${key}`);
     await downloadFileFromS3(BUCKET_NAME, key, tempInputPath);
 
     // ✅ Get video metadata to determine applicable qualities
     const videoMetadata = await getVideoMetadata(tempInputPath);
-    console.log(`📊 Source video: ${videoMetadata.width}x${videoMetadata.height}, ${videoMetadata.duration}s`);
 
     // ✅ Determine which qualities to generate based on source
     const applicableQualities = getApplicableQualities(videoMetadata, qualities);
-    console.log(`🎯 Will generate qualities: ${applicableQualities.join(', ')}`);
 
     // ✅ Transcode to each quality
     const qualityVariants = {};
     
     for (const quality of applicableQualities) {
       try {
-        console.log(`🔄 Transcoding to ${quality}...`);
         
         const outputPath = `/tmp/${Date.now()}_${quality}_${assetId}.mp4`;
         tempOutputPaths.push(outputPath);
@@ -162,7 +154,6 @@ async function processFFmpegTranscodingJob(record) {
           processingTimeSeconds: Math.round((Date.now() - startTime) / 1000)
         };
         
-        console.log(`✅ ${quality} transcoded successfully: ${s3Url} (${(stats.size / 1024 / 1024).toFixed(2)} MB)`);
         
       } catch (qualityError) {
         console.error(`❌ Failed to transcode ${quality}:`, qualityError.message);
@@ -212,15 +203,8 @@ async function processFFmpegTranscodingJob(record) {
     await docClient.send(updateCommand);
 
     const elapsed = Date.now() - startTime;
-    console.log(`✅ FFmpeg transcoding completed in ${elapsed}ms`);
     
     // ✅ Success summary
-    console.log(`🎉 Asset ${assetId} transcoding summary:`, {
-      qualities: Object.keys(qualityVariants),
-      successful: Object.keys(qualityVariants).filter(q => qualityVariants[q].url).length,
-      failed: Object.keys(qualityVariants).filter(q => qualityVariants[q].status === 'failed').length,
-      totalSize: `${Math.round(Object.values(qualityVariants).reduce((sum, variant) => sum + (variant.size || 0), 0) / 1024 / 1024)}MB`
-    });
 
   } catch (err) {
     console.error("❌ FFmpeg transcoding job failed:", err);
@@ -249,7 +233,6 @@ async function processFFmpegTranscodingJob(record) {
 
       await docClient.send(updateCommand);
       
-      console.log(`📝 Asset ${assetId} marked as transcoding failed`);
       
     } catch (updateError) {
       console.error("❌ Failed to update asset with error status:", updateError);
@@ -261,7 +244,6 @@ async function processFFmpegTranscodingJob(record) {
       if (path && existsSync(path)) {
         try {
           unlinkSync(path);
-          console.log(`🧹 Cleaned up: ${path}`);
         } catch (cleanupError) {
           console.warn(`⚠️ Failed to cleanup ${path}:`, cleanupError);
         }
@@ -270,7 +252,6 @@ async function processFFmpegTranscodingJob(record) {
 
     // ✅ Final memory check
     const memUsage = process.memoryUsage();
-    console.log(`💾 Final memory usage: ${Math.round(memUsage.rss / 1024 / 1024)}MB`);
   }
 }
 
@@ -279,7 +260,6 @@ async function processFFmpegTranscodingJob(record) {
 async function cleanupTempDirectory() {
   try {
     const tmpFiles = readdirSync('/tmp');
-    console.log(`🧹 Found ${tmpFiles.length} files in /tmp`);
     
     for (const file of tmpFiles) {
       try {
@@ -290,7 +270,6 @@ async function cleanupTempDirectory() {
         const tenMinutesAgo = Date.now() - (10 * 60 * 1000);
         if (stats.mtime.getTime() < tenMinutesAgo) {
           unlinkSync(filePath);
-          console.log(`🗑️ Removed old file: ${file}`);
         }
       } catch (err) {
         // Ignore individual file errors
@@ -317,7 +296,6 @@ function getApplicableQualities(videoMetadata, requestedQualities) {
   const sourceWidth = videoMetadata.width;   // 720
   const applicable = [];
   
-  console.log(`📐 Source resolution: ${sourceWidth}x${sourceHeight}`);
   
   for (const quality of requestedQualities) {
     const config = QUALITY_CONFIGS[quality];
@@ -332,20 +310,16 @@ function getApplicableQualities(videoMetadata, requestedQualities) {
     if (quality === "360p") {
       // Always generate 360p for mobile compatibility
       shouldGenerate = true;
-      console.log(`✅ ${quality}: Always generated for mobile compatibility`);
       
     } else if (quality === "480p") {
       // Generate 480p if source is at least 360p quality
       shouldGenerate = sourceHeight >= 360 || sourceWidth >= 640;
-      console.log(`${shouldGenerate ? '✅' : '❌'} ${quality}: Source ${sourceHeight}px height ${shouldGenerate ? 'sufficient' : 'too small'}`);
       
     } else if (sourceHeight >= targetHeight * 0.8) {
       // Generate if source is at least 80% of target height
       shouldGenerate = true;
-      console.log(`✅ ${quality}: Source height ${sourceHeight}px >= ${Math.round(targetHeight * 0.8)}px (80% of ${targetHeight}px)`);
       
     } else {
-      console.log(`❌ ${quality}: Source height ${sourceHeight}px < ${Math.round(targetHeight * 0.8)}px (80% of ${targetHeight}px)`);
     }
     
     if (shouldGenerate) {
@@ -356,10 +330,8 @@ function getApplicableQualities(videoMetadata, requestedQualities) {
   // Ensure at least one quality
   if (applicable.length === 0) {
     applicable.push("360p");
-    console.log(`✅ Fallback: Added 360p as minimum quality`);
   }
   
-  console.log(`🎯 Final applicable qualities: ${applicable.join(', ')}`);
   return applicable;
 }
 
@@ -445,7 +417,6 @@ async function transcodeVideoFFmpeg(inputPath, outputPath, quality, sourceMetada
       outputPath
     ];
 
-    console.log(`🔧 FFmpeg command: ${FFMPEG_PATH} ${ffmpegArgs.join(' ')}`);
 
     const ffmpeg = spawn(FFMPEG_PATH, ffmpegArgs);
     let stderr = '';
@@ -460,7 +431,6 @@ async function transcodeVideoFFmpeg(inputPath, outputPath, quality, sourceMetada
       if (data.toString().includes('time=')) {
         const progressLine = data.toString().split('\n').find(line => line.includes('time='));
         if (progressLine && Math.random() < 0.1) { // Log 10% of progress lines
-          console.log(`📊 FFmpeg: ${progressLine.trim()}`);
         }
       }
     });
@@ -478,7 +448,6 @@ async function transcodeVideoFFmpeg(inputPath, outputPath, quality, sourceMetada
       }
 
       const outputStats = statSync(outputPath);
-      console.log(`✅ ${quality} transcoding completed: ${outputStats.size} bytes`);
       resolve(outputPath);
     });
 
@@ -490,7 +459,6 @@ async function transcodeVideoFFmpeg(inputPath, outputPath, quality, sourceMetada
     // ✅ Timeout protection (12 minutes max)
     const timeoutMs = 12 * 60 * 1000;
     const timeoutId = setTimeout(() => {
-      console.log(`⏰ FFmpeg timeout for ${quality} - killing process`);
       ffmpeg.kill('SIGKILL');
       reject(new Error(`FFmpeg timeout after ${timeoutMs / 1000}s`));
     }, timeoutMs);
@@ -525,7 +493,6 @@ async function downloadFileFromS3(bucket, key, localPath) {
   await pipeline(response.Body, writeStream);
   
   const stats = statSync(localPath);
-  console.log(`✅ Downloaded ${stats.size} bytes to ${localPath}`);
 }
 
 async function uploadToS3(localPath, s3Key) {
@@ -540,6 +507,5 @@ async function uploadToS3(localPath, s3Key) {
 
   await s3Client.send(new PutObjectCommand(uploadParams));
   const url = `${publicObjectUrl(BUCKET_NAME, s3Key)}`;
-  console.log(`📤 Uploaded to S3: ${url}`);
   return url;
 }

@@ -8,8 +8,6 @@ const MediaTab = ({ storyData, hasEditPermission, storyDetails, onFieldChange })
 
     const isValidHttpUrl = (url) => /^(https?:\/\/)[^\s$.?#].[^\s]*$/i.test(url || "");
 
-    console.log("story details >>>>>>>>>", storyDetails);
-    console.log("story data >>>>>>>>>", storyData);
 
 
 
@@ -93,10 +91,6 @@ const MediaTab = ({ storyData, hasEditPermission, storyDetails, onFieldChange })
     };
 
     const handlePublish = () => {
-        console.log("Publishing media data:", {
-            altText: getAltTextValue(),
-            caption: getCaptionValue()
-        });
     };
 
     const canonicalUrlValue = getCanonicalUrlValue();

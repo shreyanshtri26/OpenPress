@@ -466,7 +466,6 @@ export const commonBlocks: Record<string, any> = {
           };
         });
         if (mostReadField) newFields.autoMostRead = mostReadField;
-        if (newFields.autoRecency) newFields.autoRecency = newFields.autoRecency;
         newFields.autoSidebarSpacer = autoSidebarSpacerField;
       } else {
         // Manual mode: only keep manual controls.
@@ -688,7 +687,6 @@ export const commonBlocks: Record<string, any> = {
           };
         });
         if (mostReadField) newFields.autoMostRead = mostReadField;
-        if (newFields.autoRecency) newFields.autoRecency = newFields.autoRecency;
         newFields.autoSidebarSpacer = autoSidebarSpacerField;
       } else {
         delete newFields.automaticCategory;
@@ -900,7 +898,6 @@ export const commonBlocks: Record<string, any> = {
           };
         });
         if (mostReadField) newFields.autoMostRead = mostReadField;
-        if (newFields.autoRecency) newFields.autoRecency = newFields.autoRecency;
         newFields.autoSidebarSpacer = autoSidebarSpacerField;
       } else {
         delete newFields.automaticCategory;
@@ -1112,7 +1109,6 @@ export const commonBlocks: Record<string, any> = {
           };
         });
         if (mostReadField) newFields.autoMostRead = mostReadField;
-        if (newFields.autoRecency) newFields.autoRecency = newFields.autoRecency;
         newFields.autoSidebarSpacer = autoSidebarSpacerField;
       } else {
         delete newFields.automaticCategory;
@@ -1324,7 +1320,6 @@ export const commonBlocks: Record<string, any> = {
           };
         });
         if (mostReadField) newFields.autoMostRead = mostReadField;
-        if (newFields.autoRecency) newFields.autoRecency = newFields.autoRecency;
         newFields.autoSidebarSpacer = autoSidebarSpacerField;
       } else {
         delete newFields.automaticCategory;

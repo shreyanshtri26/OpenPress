@@ -91,19 +91,14 @@ const useAssetLibraryData = ({
 
       if (isAISearch) {
         try {
-          console.log('🔍 Starting AI search for:', query);
 
           const aiResult = await getAiSearchResults(query, null);
-          console.log('🤖 AI response:', aiResult.response);
 
           const relevantAssetIds = extractAssetIdsFromResponse(aiResult.response);
-          console.log('📋 Found asset IDs from AI:', relevantAssetIds);
 
           if (relevantAssetIds.length > 0) {
-            console.log('✅ Using AI results with relevance scoring');
             fetchedAssets = scoreAssets(fetchedAssets, query, relevantAssetIds);
           } else {
-            console.log('⚠️ AI returned no results, using smart keyword search');
             fetchedAssets = performKeywordSearch(fetchedAssets, query);
           }
 

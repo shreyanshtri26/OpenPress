@@ -16,7 +16,6 @@ Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
 `,
 }) => {
 
-  console.log("bodyText >>>", bodyText);
   const bodyRef = useRef<HTMLDivElement>(null);
 
   const [displayText, setDisplayText] = useState(bodyText);
@@ -26,19 +25,16 @@ Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
 
     if (storyId) {
       const story = findStoryById(storyId);
-      console.log("story in BlogBodyCard >>>", story);
 
       // Priority: description.blocks (EditorJS) > fullDescription > bodyText
       if (story?.description?.blocks && story.description.blocks.length > 0) {
         // Use renderEditorJsBlocks to convert EditorJS blocks to HTML (including images)
         html = renderEditorJsBlocks(story.description.blocks);
-        console.log("Using EditorJS blocks, html >>>", html);
       } else if (story?.fullDescription) {
         // Fallback to fullDescription
         html = story.fullDescription
           .replace(/\n{1,}/g, "<br/><br/>")
           .replace(/\n/g, "<br/>");
-        console.log("Using fullDescription, html >>>", html);
       }
     } else if (bodyText) {
       // Convert newlines → <br/>
@@ -47,7 +43,6 @@ Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
         .replace(/\n/g, "<br/>");
     }
 
-    console.log("Final html >>>>", html);
     html = html
       .replace(/&nbsp;/g, ' ')
       .replace(/\u00A0/g, ' ');
@@ -92,7 +87,6 @@ Pulvinar vivamus fringilla lacus nec metus bibendum egestas.
       // @ts-ignore
       const twttr = window.twttr;
       if (twttr && twttr.widgets) {
-        console.log("🐦 Twitter script found, loading widgets...");
         twttr.widgets.load(bodyRef.current);
       }
     };

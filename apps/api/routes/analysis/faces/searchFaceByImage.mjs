@@ -13,10 +13,6 @@ export const handler = async (event) => {
       threshold = 80
     } = body;
 
-    console.log('🔍 Searching for faces');
-    console.log('   Collection:', collectionId);
-    console.log('   S3 Key:', s3Key);
-    console.log('   Threshold:', threshold);
 
     if (!s3Key) {
       return {
@@ -51,10 +47,7 @@ export const handler = async (event) => {
       confidence: Math.round(match.Face.Confidence * 100) / 100
     }));
 
-    console.log('✅ Search complete');
-    console.log('   Matches found:', faceMatches.length);
     if (faceMatches.length > 0) {
-      console.log('   Top match:', faceMatches[0].personName, `(${faceMatches[0].similarity}% similar)`);
     }
 
     return {

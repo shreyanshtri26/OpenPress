@@ -303,7 +303,6 @@ const toEditorJsDescription = (description) => {
 const buildStoryOverride = (storyData, resolvedSlug, resolvedCategory, resolvedSection) => {
   if (!storyData) return undefined;
 
-  console.log("story data in buildStoryOveride >>>", storyData);
 
   const idCandidates = [
     safeString(storyData.storyId),
@@ -559,8 +558,6 @@ export default function PublishDrawer({
 
 
   const handleInputChange = (field, value, silent = false) => {
-    console.log("field >>>", field);
-    console.log("value >>>", value);
     if (field !== 'decision' && !effectiveEditPermission) {
       // Only show toast if not in silent mode (for initialization)
       if (!silent) {
@@ -585,23 +582,13 @@ export default function PublishDrawer({
   const isPublishedArticle = storyStatus === 'published' || !!publishedUrl || !!storyData?.publishUrl;
 
   // DEBUG: Log all related state on every render
-  console.log('📌 PublishDrawer RENDER:', {
-    storyStatus,
-    publishedUrl,
-    storyDataPublishUrl: storyData?.publishUrl,
-    isPublishedArticle,
-    showEditActions,
-    isEditingPublishedArticleForTabs: isPublishedArticle && showEditActions
-  });
 
   // Track if autosave is disabled due to published article
   const isAutosaveDisabledRef = useRef(false);
 
   // Disable autosave when viewing a published article
   useEffect(() => {
-    console.log('📍 useEffect for autosave:', { isPublishedArticle, refValue: isAutosaveDisabledRef.current });
     if (isPublishedArticle && !isAutosaveDisabledRef.current) {
-      console.log('🔴 PublishDrawer: Published article detected, CALLING onEnableEditMode to disable autosave');
       isAutosaveDisabledRef.current = true;
       onClearAutoSaveTimer();
       onEnableEditMode();
@@ -612,7 +599,6 @@ export default function PublishDrawer({
   useEffect(() => {
     return () => {
       if (isAutosaveDisabledRef.current) {
-        console.log('🟢 PublishDrawer unmounting: re-enabling autosave');
         onDisableEditMode();
       }
     };
@@ -844,7 +830,6 @@ export default function PublishDrawer({
       });
 
       const data = await res.json();
-      console.log("fetched blog page data >>>", data);
       setPageJson(data);
       return data; // Return the data so it can be used immediately
     } catch (error) {
@@ -894,7 +879,6 @@ export default function PublishDrawer({
         const authorName = author.name || author.authorName || author.fullName;
 
         try {
-          console.log(`Publishing author page for ${authorName} (${authorId})...`);
 
           const resolvedPageType = `Author-${authorId}`;
           const pageRes = await apiFetch(`${env.backendApi}/pagestudio/page?id=${authorId}&pageType=${encodeURIComponent(resolvedPageType)}`, {
@@ -950,7 +934,6 @@ export default function PublishDrawer({
           });
 
           if (saveRes.ok) {
-            console.log(`Successfully published author page for ${authorName}`);
           } else {
             console.error(`Failed to save author HTML for ${authorName}`);
           }
@@ -969,7 +952,6 @@ export default function PublishDrawer({
 
   // const handlePublishAuthorsList = async (authors) => {
   //   try {
-  //     console.log("Updating All Authors list page...");
   //     const pageRes = await apiFetch(`${env.backendApi}/pagestudio/page?pageType=AuthorsList`, {
   //       method: "GET",
   //       headers: {
@@ -1003,7 +985,6 @@ export default function PublishDrawer({
   //     });
 
   //     if (saveRes.ok) {
-  //       console.log("Successfully published All Authors list page");
   //     }
   //   } catch (err) {
   //     console.error("Error publishing AuthorsList page:", err);
@@ -1059,7 +1040,6 @@ export default function PublishDrawer({
       await handleSave();
 
       // ✨ FETCH FRESH STORY DATA from backend before publishing
-      console.log("Fetching latest story data before publishing...");
       const storyResponse = await apiFetch(
         `${env.backendApi}/api/storyById?storyId=${currentStoryId}`,
         {
@@ -1086,7 +1066,6 @@ export default function PublishDrawer({
         return;
       }
 
-      console.log("Fresh story data fetched >>>", freshStoryData);
 
       // Determine if story has already been published
       const isAlreadyPublished =
@@ -1147,8 +1126,6 @@ export default function PublishDrawer({
         return;
       }
 
-      console.log("slug >>>", resolvedSlug);
-      console.log("category >>>", resolvedCategory);
 
       // ✨ Build clean override using FRESH data
       const cleanStory = buildStoryOverride(
@@ -1161,7 +1138,6 @@ export default function PublishDrawer({
         resolvedSection
       );
 
-      console.log("clean story >>>", cleanStory);
       localStorage.setItem("currentStory", JSON.stringify(cleanStory));
 
 
@@ -1256,7 +1232,6 @@ export default function PublishDrawer({
         campaigns: campaignsList
       });
 
-      console.log("html code >>>", htmlCode);
 
       //  Prepare payload for API
       const payload = {
@@ -1379,13 +1354,11 @@ export default function PublishDrawer({
 
         // Trigger Author Page Publishing for all byline authors
         if (byLine.length > 0 && authorsList.length > 0) {
-          console.log("Triggering author page publish for:", byLine);
           handlePublishAuthorPages(byLine, authorsList); // Run in background
         }
 
         // Republish Home plus this story's section page and its authors' story pages
         try {
-          console.log("Automatically republishing home page...");
           await publishHomePage(user?.token, {
             section: resolvedSection,
             authors: [freshStoryData?.authorId, freshStoryData?.authorName].concat(byLine),
@@ -1410,7 +1383,6 @@ export default function PublishDrawer({
   const handleSave = async () => {
     if (isSaving) return;
     setIsSaving(true);
-    console.log("storyyyyyyyyyyyy details >>>", storyDetails);
     try {
       // Temporarily disable edit mode to allow save to go through
       onDisableEditMode();
@@ -1541,7 +1513,6 @@ export default function PublishDrawer({
     if (!taxonomies || !storyData) return;
 
     const initial = {};
-    console.log("story data in publish stories >>>>", storyData);
 
     // Always include Publish Date
     initial["Publish Date"] = storyData?.proposedFilingDate

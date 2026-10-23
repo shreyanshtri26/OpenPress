@@ -127,8 +127,6 @@ export const performKeywordSearch = (assets, searchValue) => {
   // Normalize keywords (handle plurals)
   const keywords = rawKeywords.map(normalizeWord);
 
-  console.log('🔑 Original keywords:', rawKeywords);
-  console.log('🔑 Normalized keywords:', keywords);
 
   // Detect if this is a person + attribute query - removed: celebrity detection feature deprecated
   // const attributeKeywords = ['smiling', 'smile', 'happy', 'sad', 'angry', 'turban', 'hat', 'glasses', 'suit'];
@@ -223,7 +221,6 @@ export const performKeywordSearch = (assets, searchValue) => {
 
   scoredAssets.sort((a, b) => b.relevanceScore - a.relevanceScore);
 
-  console.log(`✅ Found ${scoredAssets.length} assets matching ALL keywords`);
 
   return scoredAssets;
 };

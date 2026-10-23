@@ -248,7 +248,6 @@ export default function RaiseStoryDrawer({
       return true;
     });
 
-    console.debug("RaiseStoryDrawer -> filtered taxonomies for drawer:", filtered.map(f => ({ name: f.name, taxonomyId: f.taxonomyId })));
 
     return filtered.map((t, index) => {
       const options = (t.values || []).map((v) => ({ id: v, name: v }));
@@ -353,7 +352,6 @@ export default function RaiseStoryDrawer({
   const handleSubmit = async () => {
     const missingFields = validateFields();
 
-    console.log("missing fields >>>>", missingFields);
 
     if (missingFields.length > 0) {
       setError(`Please complete all required fields: ${missingFields.join(', ')}`);
@@ -365,7 +363,6 @@ export default function RaiseStoryDrawer({
     await handleSaveChanges();
 
     if (decision) {
-      console.log("decision >>>", decision);
       await handleStoryAction(decision);
     }
   };
@@ -653,7 +650,6 @@ export default function RaiseStoryDrawer({
     });
   };
 
-  console.log("story status ...", storyStatus);
   // ✨ NEW: Check Edit and Decide permissions
   const hasEditPermission = storyStatus
     ? checkStoryPermission(permissions ?? null, storyStatus ? storyStatus : "raise_a_story", 'Edit')
@@ -695,7 +691,6 @@ export default function RaiseStoryDrawer({
   ];
   const taxonomyFields = buildTaxonomyAccordionItems();
 
-  console.log("Taxonomy fields available:", taxonomyFields.map(f => ({ title: f.title, isMandatory: f.title.includes('*') })));
 
   const accordionData = [
     ...taxonomyFields,
@@ -899,7 +894,6 @@ export default function RaiseStoryDrawer({
                 variant="black"
                 className="px-8"
                 onClick={() => {
-                  console.log("has edit permission", hasEditPermission);
                   if (!hasEditPermission) {
                     toast.error("You don't have permission to save changes.");
                     return;

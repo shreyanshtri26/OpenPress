@@ -113,7 +113,6 @@ export const handler = async (event) => {
                         resultsCount: data.web?.results?.length || 0
                     }
                 }));
-                console.log(`📊 Search history saved for user: ${user?.userName || 'anonymous'}`);
             } catch (dbError) {
                 console.error('❌ Error saving search history:', dbError);
                 // We don't return an error to the user if history tracking fails

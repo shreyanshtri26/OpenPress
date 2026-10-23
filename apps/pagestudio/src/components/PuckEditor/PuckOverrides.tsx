@@ -1,3 +1,6 @@
+import { StudioSelectField } from './fields/StudioSelectField';
+import { LibraryPanel, LibraryItem } from './LibrarySearch';
+import type { Overrides } from '@measured/puck';
 import { StudioDropdown } from './fields/StudioDropdown';
 import { StudioHeader, HeaderPortal } from './StudioHeader';
 import { describeSave, type SaveStatus } from './saveStatus';
@@ -723,8 +726,6 @@ export function PuckHeaderActions({
         campaigns: campaigns,
       });
 
-      console.log("Error page htmlContent>>>>>>>", htmlContent);
-      console.log("Sending payload to saveErrorHtml API >>>", htmlContent);
 
 
       // Call the API
@@ -743,7 +744,6 @@ export function PuckHeaderActions({
       );
 
       const result = await response.json();
-      console.log("Save Error HTML API result >>>", result);
 
       if (!response.ok) {
         throw new Error(result?.message || "Failed to upload Error HTML");
@@ -878,8 +878,6 @@ export function PuckHeaderActions({
         campaigns: campaigns,
       });
 
-      console.log("Section htmlContent>>>>>>", htmlContent);
-      console.log("Sending payload to saveSectionHtml API >>>", { htmlContent, sectionValue: activeSection });
 
       // Call the API with htmlContent and sectionValue
       const response = await fetch(
@@ -898,7 +896,6 @@ export function PuckHeaderActions({
       );
 
       const result = await response.json();
-      console.log("Save Section HTML API result >>>", result);
 
       if (!response.ok) {
         throw new Error(result?.message || "Failed to upload Section HTML");
@@ -1032,8 +1029,6 @@ export function PuckHeaderActions({
         campaigns: campaigns,
       });
 
-      console.log("About page htmlContent>>>>>>>", htmlContent);
-      console.log("Sending payload to saveAboutHtml API >>>", htmlContent);
 
       // Call the API
       const response = await fetch(
@@ -1051,7 +1046,6 @@ export function PuckHeaderActions({
       );
 
       const result = await response.json();
-      console.log("Save About HTML API result >>>", result);
 
       if (!response.ok) {
         throw new Error(result?.message || "Failed to upload About HTML");
@@ -1183,8 +1177,6 @@ export function PuckHeaderActions({
         campaigns: campaigns,
       });
 
-      console.log("Support Us page htmlContent>>>>>>>", htmlContent);
-      console.log("Sending payload to saveSupportUsHtml API >>>", htmlContent);
 
       // Call the API
       const response = await fetch(
@@ -1202,7 +1194,6 @@ export function PuckHeaderActions({
       );
 
       const result = await response.json();
-      console.log("Save Support Us HTML API result >>>", result);
 
       if (!response.ok) {
         throw new Error(result?.message || "Failed to upload Support Us HTML");
@@ -1336,7 +1327,6 @@ export function PuckHeaderActions({
         campaigns: campaigns,
       });
 
-      console.log("Privacy Policy page htmlContent>>>>>>>", htmlContent);
 
       // Call the specific API for Privacy Policy
       const response = await fetch(
@@ -1626,7 +1616,6 @@ export function PuckHeaderActions({
         campaigns: campaigns,
       });
 
-      console.log("Media Council page htmlContent>>>>>>>", htmlContent);
 
       // Call the specific API for Media Council
       const response = await fetch(
@@ -1775,8 +1764,6 @@ export function PuckHeaderActions({
         campaigns: campaigns,
       });
 
-      console.log("AuthorsList page htmlContent>>>>>>>", htmlContent);
-      console.log("Sending payload to saveAuthorsHtml API >>>", htmlContent);
 
       // Call the API
       const response = await fetch(
@@ -1794,7 +1781,6 @@ export function PuckHeaderActions({
       );
 
       const result = await response.json();
-      console.log("Save AuthorsList HTML API result >>>", result);
 
       if (!response.ok) {
         throw new Error(result?.message || "Failed to upload AuthorsList HTML");
@@ -1936,7 +1922,6 @@ export function PuckHeaderActions({
         campaigns: campaigns,
       });
 
-      console.log("html content >>>", htmlContent);
 
       // Call the API
       const response = await fetch(`${base}/pagestudio/saveAuthorHtml`, {
@@ -2106,6 +2091,7 @@ export function PuckHeaderActions({
             <span className="studio-field-label">Editing</span>
             <StudioDropdown
               variant="toolbar"
+              swatches={false}
               ariaLabel="Page being edited"
               value={selectedPage}
               onChange={(v) => setSelectedPage(v as PageType)}
@@ -2269,45 +2255,64 @@ const headerTitleFor = (page: PageType, section: string | null, author: string |
   return detail ? `${base} · ${detail}` : base;
 };
 
-export const PuckOverrides = (
-  selectedPage: PageType,
-  setSelectedPage: (page: PageType) => void,
-  scheduleAutosave: (data: PageStudioData) => void,
-  handlePublish: (data: PageStudioData) => void,
-  saveStatus: SaveStatus,
-  saveNow: () => void,
-  activeSection: string | null,
-  setActiveSection: (section: string | null) => void,
-  activeAuthor: string | null,
-  setActiveAuthor: (author: string | null) => void,
-) => ({
-  header: ({ actions }: { actions: React.ReactNode }) => (
-    <StudioHeader title={headerTitleFor(selectedPage, activeSection, activeAuthor)} actions={actions} />
+/** The editor's current values. Override components read them from here, so their identity never changes. */
+export type StudioLive = {
+  selectedPage: PageType
+  setSelectedPage: (page: PageType) => void
+  scheduleAutosave: (data: PageStudioData) => void
+  handlePublish: (data: PageStudioData) => void
+  saveStatus: SaveStatus
+  saveNow: () => void
+  activeSection: string | null
+  setActiveSection: (section: string | null) => void
+  activeAuthor: string | null
+  setActiveAuthor: (author: string | null) => void
+  libraryLabels: Record<string, string>
+}
+export const StudioLiveContext = React.createContext<StudioLive | null>(null)
+const useLive = () => {
+  const live = React.useContext(StudioLiveContext)
+  if (!live) throw new Error('Studio overrides rendered outside StudioLiveContext')
+  return live
+}
+
+/**
+ * Puck treats a new component in `overrides` as a new component type and remounts it. Building these inside the editor's
+ * render remounted the whole UI (sidebar, header, fields, open dropdowns) on every edit and save-status change. This object
+ * is created once; changing values flow through StudioLiveContext instead.
+ */
+export const STUDIO_OVERRIDES = {
+  // Every Puck `select` field (Select Story, colours, ...) uses the shared Studio dropdown.
+  fieldTypes: { select: StudioSelectField } as unknown as NonNullable<Overrides["fieldTypes"]>,
+  // Search box above the grouped list; non-matching items are hidden (see LibrarySearch.tsx).
+  components: ({ children }: { children: React.ReactNode }) => <LibraryPanel labels={useLive().libraryLabels}>{children}</LibraryPanel>,
+  componentItem: ({ children, name }: { children: React.ReactNode; name: string }) => (
+    <LibraryItem name={name} label={useLive().libraryLabels[name]}>{children}</LibraryItem>
   ),
-  headerActions: () => (
-    <PuckHeaderActions
-      selectedPage={selectedPage}
-      setSelectedPage={setSelectedPage}
-      scheduleAutosave={scheduleAutosave}
-      handlePublish={handlePublish}
-      saveStatus={saveStatus}
-      saveNow={saveNow}
-      activeSection={activeSection}
-      setActiveSection={setActiveSection}
-      activeAuthor={activeAuthor}
-      setActiveAuthor={setActiveAuthor}
-    />
-  ),
+  header: ({ actions }: { actions: React.ReactNode }) => {
+    const l = useLive()
+    return <StudioHeader title={headerTitleFor(l.selectedPage, l.activeSection, l.activeAuthor)} actions={actions} />
+  },
+  headerActions: () => {
+    const l = useLive()
+    return (
+      <PuckHeaderActions
+        selectedPage={l.selectedPage}
+        setSelectedPage={l.setSelectedPage}
+        scheduleAutosave={l.scheduleAutosave}
+        handlePublish={l.handlePublish}
+        saveStatus={l.saveStatus}
+        saveNow={l.saveNow}
+        activeSection={l.activeSection}
+        setActiveSection={l.setActiveSection}
+        activeAuthor={l.activeAuthor}
+        setActiveAuthor={l.setActiveAuthor}
+      />
+    )
+  },
   componentOverlay: ({ children }: { children: React.ReactNode }) => (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        background: "transparent",
-        pointerEvents: "none",
-      }}
-    >
+    <div style={{ width: "100%", height: "100%", background: "transparent", pointerEvents: "none" }}>
       {children}
     </div>
   ),
-});
+}

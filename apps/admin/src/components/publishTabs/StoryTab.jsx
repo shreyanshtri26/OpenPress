@@ -21,8 +21,6 @@ export default function StoryTab({ storyData, hasEditPermission, onFieldChange, 
   const userContext = useContext(UserContext);
   const user = userContext?.user;
 
-  console.log("story details in story tab >>>>", storyDetails);
-  console.log("story data in story tab >>>>", storyData);
   // Get byline from storyDetails or default to empty array
   const byline = Array.isArray(storyDetails?.byline) ? [...storyDetails.byline] : [];
 
@@ -40,7 +38,7 @@ export default function StoryTab({ storyData, hasEditPermission, onFieldChange, 
           },
         });
         const data = await response.json();
-        console.log("TAXONOMY RESPONSE:", data); // ⬅️ ADD THIS
+// ⬅️ ADD THIS
 
         if (!response.ok) return;
 

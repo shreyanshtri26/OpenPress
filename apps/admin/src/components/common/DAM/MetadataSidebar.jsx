@@ -54,11 +54,8 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
     const labels = availableTags;
     // const celebrities = formData.celebrities || []; // removed: celebrity detection feature deprecated
 
-    console.log("📰 Labels for prompt:", labels);
-    // console.log("🎬 Celebrities for prompt:", celebrities); // removed: celebrity detection feature deprecated
 
     if (labels.length === 0) {
-      console.log("No labels to generate summary");
       return;
     }
 
@@ -78,14 +75,8 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
 - Include context about who, what, where, or why if evident
 - Keep it 2-3 sentences`;
 
-      console.log("📰 Sending journalist prompt to AI:", prompt);
 
       const imagePayload = await buildImagePayload(asset, apiMetadata);
-      console.log("📰 Image payload built for AI:", {
-        hasImage: !!imagePayload,
-        format: imagePayload?.format,
-        bytesLength: imagePayload?.bytes?.length,
-      });
 
       if (!imagePayload) {
         setSummary("Failed to generate AI summary due to issues with the image.");
@@ -184,7 +175,6 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
         cleanedSummary = cleanedSummary.slice(1, -1).trim();
       }
 
-      console.log("✅ Journalist Caption Generated:", cleanedSummary);
 
       setFormData((prev) => ({
         ...prev,
@@ -199,11 +189,9 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
 
   useEffect(() => {
     if (!apiMetadata) {
-      console.log("No apiMetadata available yet");
       return;
     }
 
-    console.log("Processing apiMetadata...");
 
     let allTags = [];
     let autoSelectedTags = [];
@@ -213,7 +201,6 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
       apiMetadata.analysis?.labels?.data &&
       Array.isArray(apiMetadata.analysis.labels.data)
     ) {
-      console.log("📹 Found VIDEO labels");
       const labelData = apiMetadata.analysis.labels.data;
 
       const uniqueLabels = {};
@@ -239,11 +226,9 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
       //     (celeb) => celeb.name
       //   );
       //   allCelebrities = celebrityNames;
-      //   console.log("📺 Video celebrities:", celebrityNames);
       // }
 
     } else if (apiMetadata.imageAnalysis) {
-      console.log("📷 Found IMAGE metadata");
       const analysis = apiMetadata.imageAnalysis;
 
       if (
@@ -258,7 +243,6 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
           .map((label) => label.name);
         autoSelectedTags = [...autoSelectedTags, ...highConfidenceLabels];
 
-        console.log("📌 Image labels:", labelNames);
       }
 
       if (
@@ -276,7 +260,6 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
       //   allCelebrities = analysis.celebrities.celebrities.map(
       //     (celeb) => celeb.name
       //   );
-      //   console.log("🎬 Image celebrities:", allCelebrities);
       // }
 
     }
@@ -303,13 +286,11 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
 
   useEffect(() => {
     if (availableTags.length > 0 && !isGeneratingSummary) {
-      console.log("🚀 Generating summary with tags:", availableTags);
       generateAISummary();
     }
   }, [availableTags]);
 
   const handleInputChange = (field, value) => {
-    console.log(`Updating ${field}:`, value);
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -317,7 +298,6 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
   };
 
   const handleSave = async () => {
-    console.log("💾 Saving asset metadata:", formData);
     setIsSaving(true);
 
     try {
@@ -341,7 +321,6 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
         location: formData.location,
       };
 
-      console.log("📤 Sending data to backend:", dataToSave);
 
       const response = await apiFetch(`${env.backendApi}/api/assets/update`, {
         method: "PUT",
@@ -357,7 +336,6 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
       }
 
       const result = await response.json();
-      console.log("✅ Metadata saved successfully:", result);
 
       if (onSave) {
         onSave(dataToSave);
@@ -598,9 +576,6 @@ export default function AssetTab({ asset, apiMetadata, onSave }) {
         >
           {isSaving ? " Saving..." : "Save"}
         </button>
-        {/* <button className="cancel-button" onClick={() => console.log("Cancel")}>
-          Cancel
-        </button> */}
       </div>
     </div>
   );

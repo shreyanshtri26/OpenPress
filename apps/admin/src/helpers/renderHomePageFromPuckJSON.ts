@@ -66,7 +66,6 @@ export function renderHomePageFromPuckJSON(
 
     // Check if this block has already been rendered (e.g. as a fallback for an ad)
     if (blockId && renderedBlockIds.has(blockId)) {
-      console.log(`Skipping duplicate block with ID: ${blockId}`);
       return "";
     }
 
@@ -270,7 +269,6 @@ export function renderHomePageFromPuckJSON(
     (function() {
       // Safe stringification for campaigns
       const campaigns = ${JSON.stringify(campaigns || []).replace(/</g, '\\u003c')};
-      console.log("Client-side campaigns loaded:", campaigns.length);
 
       // Impression deduplication tracker (survives refreshAds interval calls)
       const impressionTracker = window.__campaignImpressionTracker || new Set();

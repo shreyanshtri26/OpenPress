@@ -352,7 +352,6 @@ const ControlledBoard = ({ handleReviewStory, stories, handleUpdateStory }) => {
 
       if (!card) return;
 
-      console.log("editor id", card.assignedTo, "user id", user?.userId);
 
       // Authorization check
       if (card.assignedTo !== user?.userId) {
@@ -360,7 +359,6 @@ const ControlledBoard = ({ handleReviewStory, stories, handleUpdateStory }) => {
         return;
       }
 
-      console.log("Authorization passed");
 
       const isAllowed = allowedMoves[fromData]?.includes(toData);
 

@@ -64,12 +64,10 @@ export function usePWAInstall() {
         const { outcome } = await deferredPrompt.userChoice;
 
         if (outcome === 'accepted') {
-            console.log('User accepted the install prompt');
             setIsInstallable(false);
             setDeferredPrompt(null);
             return true;
         } else {
-            console.log('User dismissed the install prompt');
             return false;
         }
     };

@@ -140,7 +140,7 @@ export function resolveAd(
     // Temporary diagnostic: shows exactly why an ad slot did/didn't resolve
     // content, without needing backend/S3 access to inspect. Safe to remove
     // once the leaderboard gap is confirmed fixed.
-    console.log(`[adResolver] placement="${placement}" campaigns=${campaigns.length} matched=${!!activeCampaign} campaignId=${activeCampaign?.campaignId || activeCampaign?.id || 'none'} jobsForPlacement=${placementJobs.length} desktopUrl=${!!(props.desktopImageUrl || creative?.desktop)}`);
+    undefined;
 
     return {
         activeCampaign,

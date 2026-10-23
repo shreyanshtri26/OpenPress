@@ -188,7 +188,7 @@ export async function republishAllCampaignPages(token, label = null) {
         console.warn("Backend republish unavailable; falling back to in-browser sync (home, sections, stories only).");
 
         // 1. Start Home sync immediately while loading shared data in parallel.
-        console.log("Syncing Home Page...");
+        undefined;
         const homeSyncPromise = publishHomePage(token);
 
         // 2. Fetch all shared inputs in parallel.
@@ -252,7 +252,6 @@ export async function republishAllCampaignPages(token, label = null) {
 
         await homeSyncPromise;
 
-        console.log(`Starting bulk re-render for ${allStories.length} stories...`);
 
         // Build storiesById map for recommendations
         const storiesById = {};
@@ -336,7 +335,6 @@ export async function republishAllCampaignPages(token, label = null) {
                             sectionValue: section,
                         }),
                     });
-                    console.log(`Successfully synced section: ${section}`);
                     return true;
                 }
             } catch (err) {
@@ -511,11 +509,9 @@ export async function republishAllCampaignPages(token, label = null) {
                 return false;
             });
 
-            console.log(`Blog sync completed. Success: ${processedCount}/${allStories.length}`);
         }
 
         toast.success(`syncing completed`);
-        console.log("Global campaign sync complete!");
     } catch (error) {
         toast.error("Campaign sync failed. Check console.");
         console.error("Global campaign sync failed:", error);

@@ -30,7 +30,6 @@ export const handler = async (event) => {
       };
     }
 
-    console.log(`🎨 Processing custom thumbnail upload for asset: ${assetId}`);
 
     // ✅ Validate asset exists and is a video
     const getCommand = new GetCommand({
@@ -119,7 +118,6 @@ export const handler = async (event) => {
       unsignableHeaders: new Set(['x-amz-content-sha256'])
     });
 
-    console.log("✅ Custom thumbnail upload URL generated");
 
     return {
       statusCode: 200,

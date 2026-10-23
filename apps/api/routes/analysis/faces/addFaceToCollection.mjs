@@ -12,10 +12,6 @@ export const handler = async (event) => {
       personName 
     } = body;
 
-    console.log('👤 Adding face to collection');
-    console.log('   Collection:', collectionId);
-    console.log('   S3 Key:', s3Key);
-    console.log('   Person:', personName);
 
     if (!s3Key || !personName) {
       return {
@@ -80,8 +76,6 @@ export const handler = async (event) => {
       }
     }));
 
-    console.log('✅ Face(s) added successfully:', faces.length);
-    console.log('   Face IDs:', faces.map(f => f.faceId).join(', '));
 
     return {
       statusCode: 200,

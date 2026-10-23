@@ -31,7 +31,6 @@ const AssetDetailView = ({ asset, onBack, onAssetUpdate }) => {
     const { searchFaceByImage, addFaceToCollection, loading: faceLoading } = useFaceSearch();
 
     const handleAssetSaveSuccess = (updatedAsset) => {
-        console.log("Asset updated in detail view:", updatedAsset);
         if (updatedAsset?.name) {
             setTitle(updatedAsset.name);
         }
@@ -161,7 +160,6 @@ const AssetDetailView = ({ asset, onBack, onAssetUpdate }) => {
                 setMetadata(data);
 
                 if (data.assetType === 'video') {
-                    console.log("📹 Video detected, starting polling...");
                     startPolling(asset.assetId || asset.id, 30000);
                     //   toast.loading('📹 Video analysis started...');
                 }

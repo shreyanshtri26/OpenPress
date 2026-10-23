@@ -143,7 +143,6 @@ export const SidebarAdBlock: React.FC<SidebarAdProps> = ({
         const ensureStories = async () => {
             const current = getStories();
             if (current.length === 0) {
-                console.log("SidebarAd: No stories in cache, fetching global stories for fallback...");
                 await initializeStories({});
                 setAvailableStories(getStories());
             }

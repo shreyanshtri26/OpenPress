@@ -3,6 +3,7 @@ import { buildLibraryCategories, matchesLibraryQuery } from '../libraryGroups'
 import { describeSave, hasUnsavedChanges, retryDelayMs, saveReducer, type SaveStatus } from '../saveStatus'
 import { blockingIssues, validatePageForPublish } from '../validatePage'
 import { placeList } from '../fields/dropdownPlacement'
+import { isCssColor, swatchFor } from '../fields/dropdownSwatch'
 
 describe('component library groups', () => {
   const keys = ['LeaderboardAd', 'PopupAd', 'HeroGrid', 'PopularGrid', 'PopularBlogCard', 'AtlanticNavbar', 'StoryCard', 'Ad_Home_Banner', 'BrandNewBlock']
@@ -117,5 +118,32 @@ describe('dropdown placement', () => {
     expect(edge.left + edge.width).toBeLessThanOrEqual(1200 - 8)
     const tiny = placeList(rect({ left: 0, right: 100, width: 100, top: 10, bottom: 40 }), { width: 200, height: 400 })
     expect(tiny.width).toBeLessThanOrEqual(200 - 16)
+  })
+})
+
+describe('dropdown colour swatches', () => {
+  it('recognises the colours a browser understands', () => {
+    for (const v of ['#fff', '#0057FF', '#0057ff80', 'rgb(0, 87, 255)', 'rgba(0,0,0,0.5)', 'hsl(210 50% 40%)']) expect(isCssColor(v)).toBe(true)
+    for (const v of ['Slate', 'red', '#12', '#ggg', 'url(x)', '', null, 42, undefined]) expect(isCssColor(v)).toBe(false)
+  })
+
+  it('uses an option value that is itself a colour (the Accent / Title / Paragraph pickers)', () => {
+    expect(swatchFor({ label: '#B42318', value: '#B42318' })).toBe('#B42318')
+    expect(swatchFor({ label: 'Slate', value: '#d1d5db' })).toBe('#d1d5db')
+  })
+
+  it('prefers an explicit swatch, e.g. the default colour on "Default Color"', () => {
+    expect(swatchFor({ label: 'Default Color', value: '', swatch: '#6e6e73' })).toBe('#6e6e73')
+  })
+
+  it('looks up the colour an admin assigned to a category or section, ignoring case', () => {
+    const colors = { Politics: '#b42318', Sports: '#067647' }
+    expect(swatchFor({ label: 'Politics', value: 'politics-id' }, colors)).toBe('#b42318')
+    expect(swatchFor({ label: 'x', value: 'sports' }, colors)).toBe('#067647')
+  })
+
+  it('shows nothing for options with no colour, and ignores a bad stored colour', () => {
+    expect(swatchFor({ label: 'Home', value: 'Home' }, { Politics: '#b42318' })).toBeUndefined()
+    expect(swatchFor({ label: 'Politics', value: 'p' }, { Politics: 'not-a-colour' })).toBeUndefined()
   })
 })

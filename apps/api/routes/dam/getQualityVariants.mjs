@@ -16,12 +16,10 @@ const BUCKET_NAME = process.env.DAM_BUCKET_NAME;
 // Check real-time Transcode job status
 async function checkTranscodeJobStatus(jobId) {
   if (!jobId) {
-    console.log("⚠️ No Transcode job ID provided");
     return null;
   }
   
   try {
-    console.log(`📊 Checking Transcode job status: ${jobId}`);
     const command = new GetJobCommand({ Id: jobId });
     const result = await transcodeClient.send(command);
     
@@ -34,7 +32,6 @@ async function checkTranscodeJobStatus(jobId) {
       outputGroupDetails: result.Job.OutputGroupDetails
     };
     
-    console.log(`✅ Transcode job ${jobId} status: ${jobStatus.status} (${jobStatus.progress}%)`);
     return jobStatus;
     
   } catch (error) {
@@ -65,7 +62,6 @@ async function updateAssetTranscodingStatus(assetId, status, additionalFields = 
       ExpressionAttributeValues: expressionAttributeValues
     }));
     
-    console.log(`✅ Updated asset ${assetId} transcoding status to: ${status}`);
   } catch (error) {
     console.error(`❌ Failed to update asset status:`, error);
   }
@@ -74,7 +70,6 @@ async function updateAssetTranscodingStatus(assetId, status, additionalFields = 
 // List S3 objects with error handling
 async function listStorageObjects(prefix) {
   try {
-    console.log(`📁 Listing S3 objects with prefix: ${prefix}`);
     const command = new ListObjectsV2Command({
       Bucket: BUCKET_NAME,
       Prefix: prefix
@@ -82,7 +77,6 @@ async function listStorageObjects(prefix) {
     
     const result = await s3Client.send(command);
     const objects = result.Contents || [];
-    console.log(`📋 Found ${objects.length} objects in ${prefix}`);
     return objects;
   } catch (error) {
     console.error(`❌ Failed to list S3 objects for prefix ${prefix}:`, error);
@@ -149,8 +143,6 @@ export const handler = async (event) => {
   const startTime = Date.now();
   
   try {
-    console.log("🎬 GetQualityVariants API called");
-    console.log("📋 Event:", JSON.stringify(event, null, 2));
     
     // Extract assetId from multiple possible sources
     let assetId = null;
@@ -158,21 +150,17 @@ export const handler = async (event) => {
     // Method 1: Query parameter
     if (event.queryStringParameters && event.queryStringParameters.assetId) {
       assetId = event.queryStringParameters.assetId;
-      console.log("✅ AssetId from queryStringParameters:", assetId);
     }
     // Method 2: Path parameter
     else if (event.pathParameters && event.pathParameters.assetId) {
       assetId = event.pathParameters.assetId;
-      console.log("✅ AssetId from pathParameters:", assetId);
     }
     // Method 3: Extract from rawPath
     else if (event.rawPath && event.rawPath.includes('/api/getQualityVariants/')) {
       assetId = event.rawPath.split('/api/getQualityVariants/')[1];
-      console.log("✅ AssetId from rawPath:", assetId);
     }
     
     if (!assetId) {
-      console.log("❌ No assetId found in request");
       return {
         statusCode: 400,
         headers: { 
@@ -191,7 +179,6 @@ export const handler = async (event) => {
       };
     }
 
-    console.log(`🎯 Processing quality variants for asset: ${assetId}`);
 
     // Get asset from database
     const getCommand = new GetCommand({
@@ -203,7 +190,6 @@ export const handler = async (event) => {
     const asset = result.Item;
 
     if (!asset) {
-      console.log(`❌ Asset not found: ${assetId}`);
       return {
         statusCode: 404,
         headers: { 
@@ -220,7 +206,6 @@ export const handler = async (event) => {
     // Verify this is a video asset
     const isVideo = asset.isVideo || asset.type?.startsWith('video/');
     if (!isVideo) {
-      console.log(`❌ Asset is not a video: ${assetId}`);
       return {
         statusCode: 400,
         headers: { 
@@ -235,17 +220,14 @@ export const handler = async (event) => {
       };
     }
 
-    console.log(`✅ Video asset found: ${assetId}`);
 
     // Check real-time Transcode job status if job exists
     let realTimeJobStatus = null;
     if (asset.transcodeJobId) {
-      console.log(`📊 Checking Transcode job: ${asset.transcodeJobId}`);
       realTimeJobStatus = await checkTranscodeJobStatus(asset.transcodeJobId);
       
       // Update database if status changed
       if (realTimeJobStatus && realTimeJobStatus.status !== asset.transcodingStatus) {
-        console.log(`🔄 Updating transcoding status: ${asset.transcodingStatus} -> ${realTimeJobStatus.status}`);
         const updateFields = {
           jobProgress: realTimeJobStatus.progress
         };
@@ -299,7 +281,6 @@ export const handler = async (event) => {
     // Check for processed files if transcoding exists
     if (asset.transcodeJobId) {
       try {
-        console.log(`📁 Checking for processed files...`);
         
         // List processed video files and thumbnails
         const [videoFiles, thumbnailFiles] = await Promise.all([
@@ -307,13 +288,11 @@ export const handler = async (event) => {
           listStorageObjects(`processed/${assetId}/thumbnails/`)
         ]);
 
-        console.log(`📊 Found ${videoFiles.length} video files, ${thumbnailFiles.length} thumbnail files`);
 
         // Process video variants
         for (const file of videoFiles) {
           const quality = extractQualityFromFilename(file.Key);
           if (quality) {
-            console.log(`🎬 Processing video variant: ${quality}`);
             const fileInfo = await getFileInfo(file.Key);
             
             response.processedVariants.push({
@@ -332,7 +311,6 @@ export const handler = async (event) => {
         for (const file of thumbnailFiles) {
           const thumbnailType = extractThumbnailType(file.Key);
           if (thumbnailType) {
-            console.log(`🖼️ Processing thumbnail: ${thumbnailType}`);
             const fileInfo = await getFileInfo(file.Key);
             
             response.thumbnails.push({
@@ -352,7 +330,6 @@ export const handler = async (event) => {
           return (qualityOrder[b.quality] || 0) - (qualityOrder[a.quality] || 0);
         });
 
-        console.log(`✅ Processed ${response.processedVariants.length} video variants, ${response.thumbnails.length} thumbnails`);
 
       } catch (s3Error) {
         console.error(`❌ Error checking processed files:`, s3Error);
@@ -370,8 +347,6 @@ export const handler = async (event) => {
       processingTime: Date.now() - startTime
     };
 
-    console.log(`🎉 API response prepared in ${Date.now() - startTime}ms`);
-    console.log(`📈 Summary: ${response.summary.totalVariants} variants, status: ${response.transcodingStatus}`);
 
     return {
       statusCode: 200,

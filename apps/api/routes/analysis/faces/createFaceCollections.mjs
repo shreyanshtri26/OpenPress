@@ -6,7 +6,6 @@ export const handler = async (event) => {
     const body = JSON.parse(event.body);
     const { collectionId = "OpenPress-faces" } = body;
 
-    console.log('🆕 Creating face collection:', collectionId);
 
     const command = new CreateCollectionCommand({
       CollectionId: collectionId
@@ -14,9 +13,6 @@ export const handler = async (event) => {
 
     const response = await analysisClient.send(command);
     
-    console.log('✅ Face collection created successfully');
-    console.log('   Collection ARN:', response.CollectionArn);
-    console.log('   Face Model Version:', response.FaceModelVersion);
 
     return {
       statusCode: 200,

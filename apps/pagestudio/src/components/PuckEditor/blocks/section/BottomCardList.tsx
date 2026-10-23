@@ -13,8 +13,6 @@ export const BottomCardList: React.FC<BottomCardListProps> = ({ id }) => {
     const [visibleCount, setVisibleCount] = useState(10);
 
     const { activeSection, activeAuthor } = useActiveSection();
-    console.log("active section >>>", activeSection);
-    console.log("active author >>>", activeAuthor);
 
     useEffect(() => {
         const stories = getStories();

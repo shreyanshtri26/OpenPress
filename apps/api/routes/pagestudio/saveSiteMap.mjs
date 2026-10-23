@@ -45,7 +45,6 @@ export const handler = async () => {
       );
 
     const storiesList = rawStories.map(formatStory);
-    console.log(`Found ${storiesList.length} published stories`);
 
     // ===============================
     // 2️⃣ Fetch Section Values
@@ -57,7 +56,6 @@ export const handler = async () => {
       .limit(1);
 
     const sectionValues = Array.isArray(taxonomy?.values) ? taxonomy.values : [];
-    console.log(`Found ${sectionValues.length} sections`);
 
     // ===============================
     // 3️⃣ Build XML
@@ -113,7 +111,6 @@ export const handler = async () => {
     xml += `
 </urlset>`;
 
-    console.log("final sitemap.xml >>>", xml);
     // ===============================
     // 4️⃣ Upload to S3
     // ===============================
@@ -127,7 +124,6 @@ export const handler = async () => {
       })
     );
 
-    console.log("Sitemap uploaded successfully");
 
     return {
       statusCode: 200,

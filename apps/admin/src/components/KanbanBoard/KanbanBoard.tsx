@@ -253,8 +253,6 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
     }
 
     const { item: droppedItem, sourceColumnId } = draggedItemInfo;
-    console.log(" handleDrop ~ destColumnId:", destColumnId)
-    console.log(" handleDrop ~ sourceColumnId:", sourceColumnId)
     const originalColumns: Columns = {
       ideas: { ...columns.ideas, items: [...columns.ideas.items] },
       inProgress: {
@@ -280,7 +278,6 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
 
     const userRole = user?.role?.toLowerCase();
     const isSuperUser = userRole === 'super user';
-    console.log("userRole>>>", userRole, "isSuperUser:", isSuperUser);
 
     // Define the sequential order of swimlanes
     const swimlaneOrder: ColumnKey[] = ['ideas', 'inProgress', 'inReview', 'published'];
@@ -304,7 +301,6 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
 
     if (isSuperUser) {
       // Super user can move cards to any swimlane - no restrictions
-      console.log("Super user - allowing move to any swimlane");
     } else {
       // For non-super users:
       // 1. Check if user has "Decide" permission for the source swimlane
@@ -429,9 +425,6 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
   };
 
   const handleUpdateStory = async ({ storyId, state, status }: UpdateStory) => {
-    console.log("storyId>>>", storyId);
-    console.log("state>>", state);
-    console.log("status>>", status);
 
     try {
       await apiFetch(
@@ -446,7 +439,6 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
         },
       );
     } catch (err) {
-      console.log(err);
     }
   };
 
@@ -529,7 +521,6 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
       try {
         data = await response.json();
       } catch (error) {
-        console.log('Delete story response parse skipped:', error);
       }
 
       if (!response.ok) {

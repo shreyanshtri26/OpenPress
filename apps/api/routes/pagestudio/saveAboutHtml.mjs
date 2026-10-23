@@ -30,7 +30,6 @@ export const handler = async (event) => {
     // ✅ Fixed key for ABOUT page
     const s3Key = "about/index.html";
 
-    console.log(`🔧 Publishing ABOUT page to S3: ${BUCKET_NAME}/${s3Key}`);
 
     // ✅ Upload to S3 (overwrite)
     const uploadParams = {
@@ -51,9 +50,7 @@ export const handler = async (event) => {
 
     await s3Client.send(new PutObjectCommand(uploadParams));
 
-    console.log("✅ About page published successfully");
 
-    console.log("⏱ Time taken:", Date.now() - startTime, "ms");
 
     return {
       statusCode: 200,

@@ -3,7 +3,8 @@ import { Children, forwardRef, isValidElement, useImperativeHandle, useState } f
 import { cx, toArray } from './_shared';
 import { Column, Pager, Paging, SearchPanel, Selection, Sorting } from './data-grid';
 
-const HeaderPanel = () => null;
+/** @param {Record<string, any>} _props */
+const HeaderPanel = (_props) => null;
 HeaderPanel.dxRole = 'HeaderPanel';
 
 export { Column, Pager, Paging, SearchPanel, Selection, Sorting, HeaderPanel };

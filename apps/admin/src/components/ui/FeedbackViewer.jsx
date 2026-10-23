@@ -125,7 +125,6 @@ export default function FeedbackViewer({ articleId, feedback = [], user }) {
       const data = await response.json();
       setArticle(prev => ({ ...prev, title: editedTitle, content: editedContent, status: 'pending' }));
       setIsEditing(false);
-      console.log('Article updated successfully');
     } catch (err) {
       setError(err.message);
       console.error('Failed to update article:', err);

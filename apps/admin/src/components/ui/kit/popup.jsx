@@ -45,7 +45,7 @@ export function Popup({
             )}
           </div>
         )}
-        <div className="min-h-0 flex-1 overflow-auto p-5">{contentRender ? contentRender() : children}</div>
+        <div className="min-h-0 flex-1 overflow-auto p-3 sm:p-5">{contentRender ? contentRender() : children}</div>
       </div>
     </div>,
     document.body,

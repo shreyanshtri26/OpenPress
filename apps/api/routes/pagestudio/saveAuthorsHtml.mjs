@@ -30,9 +30,6 @@ export const handler = async (event) => {
     // ✅ Fixed S3 key → /authors/index.html
     const s3Key = `authors/index.html`;
 
-    console.log(
-      `🔧 Publishing AUTHORS page: ${BUCKET_NAME}/${s3Key}`
-    );
 
     // ✅ Upload (overwrite existing)
     await s3Client.send(
@@ -53,9 +50,7 @@ export const handler = async (event) => {
       })
     );
 
-    console.log("✅ Authors page published successfully");
 
-    console.log("⏱ Time taken:", Date.now() - startTime, "ms");
 
     return {
       statusCode: 200,

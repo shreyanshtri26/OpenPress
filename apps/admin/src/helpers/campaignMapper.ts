@@ -6,7 +6,6 @@ export const placementMapping: Record<string, string> = {
 };
 
 export const mapBackendCampaignToFrontend = (cp: any) => {
-    console.log("🔍 DEBUG - RAW BACKEND CAMPAIGN:", cp);
     let jobs = [];
 
     const getAssetUrl = (jobVal: any, legacyVal: any) => {

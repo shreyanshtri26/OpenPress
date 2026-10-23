@@ -30,7 +30,6 @@ export const handler = async (event) => {
     // ✅ Error page path
     const s3Key = "error.html";
 
-    console.log(`🔧 Publishing ERROR page to S3: ${BUCKET_NAME}/${s3Key}`);
 
     // ✅ Upload to S3 (overwrite allowed)
     const uploadParams = {
@@ -51,9 +50,7 @@ export const handler = async (event) => {
 
     await s3Client.send(new PutObjectCommand(uploadParams));
 
-    console.log("✅ Error page published successfully");
 
-    console.log("⏱ Time taken:", Date.now() - startTime, "ms");
 
     return {
       statusCode: 200,

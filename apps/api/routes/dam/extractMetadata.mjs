@@ -46,10 +46,6 @@ function findFFprobePath() {
 
 // Complete Multi-Quality Video Transcoding Function - FIXED H.264 SETTINGS
 async function createMultiQualityTranscodingJob(assetId, videoKey, fileSize, duration, dimensions, videoMetadata) {
-  console.log(`🎬 STARTING MULTI-QUALITY TRANSCODING for ${assetId}`);
-  console.log(`   📊 File size: ${Math.round(fileSize / (1024 * 1024))} MB`);
-  console.log(`   📐 Dimensions: ${dimensions}`);
-  console.log(`   ⏱️ Duration: ${duration} seconds`);
 
   // File size limits
   const maxFileSize = 10 * 1024 * 1024 * 1024; // 10GB limit
@@ -57,12 +53,10 @@ async function createMultiQualityTranscodingJob(assetId, videoKey, fileSize, dur
   const minDuration = 1; // 1 second minimum
 
   if (fileSize > maxFileSize) {
-      console.log(`⏭️ Skipping transcoding - file too large: ${Math.round(fileSize / (1024 * 1024 * 1024))}GB`);
       return null;
   }
 
   if (duration && duration < minDuration) {
-      console.log(`⏭️ Skipping transcoding - video too short: ${duration} seconds`);
       return null;
   }
 
@@ -77,7 +71,6 @@ async function createMultiQualityTranscodingJob(assetId, videoKey, fileSize, dur
       const is4K = sourceWidth >= 3840 || sourceHeight >= 2160;
       const isHD = sourceWidth >= 1920 || sourceHeight >= 1080;
       
-      console.log(`📺 Source analysis: ${sourceWidth}x${sourceHeight} (${isVertical ? 'Vertical' : 'Horizontal'}${is4K ? ', 4K' : isHD ? ', HD' : ''})`);
 
       // Quality configurations based on source
       const qualitySettings = [];
@@ -136,7 +129,6 @@ async function createMultiQualityTranscodingJob(assetId, videoKey, fileSize, dur
           level: "H264_LEVEL_2_1"
       });
 
-      console.log(`🎯 Creating ${qualitySettings.length} quality variants: ${qualitySettings.map(q => q.suffix).join(', ')}`);
 
       // Build Transcode job with FIXED H.264 settings
       const outputs = qualitySettings.map(quality => ({
@@ -271,7 +263,6 @@ async function createMultiQualityTranscodingJob(assetId, videoKey, fileSize, dur
           }
       };
 
-      console.log(`🚀 Creating Transcode job with ${outputs.length} video qualities + ${thumbnailOutputs.length} thumbnails`);
 
       const command = new CreateJobCommand(jobSettings);
       const response = await transcodeClient.send(command);
@@ -281,13 +272,6 @@ async function createMultiQualityTranscodingJob(assetId, videoKey, fileSize, dur
       const qualityMultiplier = qualitySettings.length * 0.5; // 30s per quality
       const estimatedMinutes = Math.ceil(baseMinutes + qualityMultiplier + (is4K ? 10 : 5));
 
-      console.log(`✅ TRANSCODING JOB CREATED SUCCESSFULLY!`);
-      console.log(`   🆔 Job ID: ${response.Job.Id}`);
-      console.log(`   📊 Status: ${response.Job.Status}`);
-      console.log(`   📥 Input: ${inputUri}`);
-      console.log(`   📤 Output: ${outputUri}${assetId}/`);
-      console.log(`   🎯 Qualities: ${qualitySettings.map(q => q.suffix).join(', ')}`);
-      console.log(`   ⏱️ Estimated completion: ${estimatedMinutes} minutes`);
 
       return {
           jobId: response.Job.Id,
@@ -331,7 +315,6 @@ async function createMultiQualityTranscodingJob(assetId, videoKey, fileSize, dur
 
 
 export const handler = async (event) => {
-  console.log(`🚀 EXTRACT METADATA HANDLER STARTED - ${new Date().toISOString()}`);
   const startTime = Date.now();
   let tempFilePath = null;
   let assetId = null;
@@ -350,7 +333,6 @@ export const handler = async (event) => {
     const { assetId: requestAssetId, userId, subtype } = body;
     assetId = requestAssetId;
 
-    console.log(`📋 Processing asset: ${assetId}`);
 
     if (!assetId) {
       return {
@@ -380,7 +362,6 @@ export const handler = async (event) => {
       };
     }
 
-    console.log(`📄 Asset found: ${asset.url}`);
 
     // Get user details
     const userIdToLookup = userId || asset.userId;
@@ -416,7 +397,6 @@ export const handler = async (event) => {
     }
 
     const assetType = isVideo ? 'video' : (isImage ? 'image' : 'audio');
-    console.log(`🎯 Asset type: ${assetType}`);
 
     // Handle very large files (basic metadata only)
     const key = asset.url.split('/').pop();
@@ -427,11 +407,9 @@ export const handler = async (event) => {
       const headResult = await s3Client.send(headCommand);
       fileSize = headResult.ContentLength;
       
-      console.log(`📊 File size: ${Math.round(fileSize / (1024 * 1024))} MB`);
       
       // 5GB limit for detailed processing
       if (fileSize > 5 * 1024 * 1024 * 1024) {
-        console.log(`⚠️ Very large file detected - providing basic metadata only`);
         
         let updateExpression = `SET fileSize = :fileSize, updatedAt = :updatedAt`;
         const expressionAttributeValues = {
@@ -483,31 +461,24 @@ export const handler = async (event) => {
     }
 
     // Download file and extract detailed metadata
-    console.log(`📥 Downloading file for metadata extraction...`);
     const ffprobePath = findFFprobePath();
 
     // Extract metadata based on file type
     let extractedMetadata;
     if (!ffprobePath) {
-      console.log(`ℹ️ FFprobe not available - recording basic metadata only`);
       extractedMetadata = {};
     } else {
     tempFilePath = `/tmp/${Date.now()}_${key}`;
     await downloadFileFromS3(BUCKET_NAME, key, tempFilePath);
-    console.log(`✅ File downloaded to: ${tempFilePath}`);
     if (isVideo) {
-      console.log(`🎬 Extracting video metadata...`);
       extractedMetadata = await extractVideoMetadata(tempFilePath, ffprobePath);
     } else if (isImage) {
-      console.log(`🖼️ Extracting image metadata...`);
       extractedMetadata = await extractImageMetadata(tempFilePath, ffprobePath);
     } else {
-      console.log(`🎵 Extracting audio metadata...`);
       extractedMetadata = await extractAudioMetadata(tempFilePath, ffprobePath);
     }
     }
 
-    console.log(`✅ Metadata extracted successfully`);
 
    
 
@@ -575,7 +546,6 @@ export const handler = async (event) => {
 
         if (labels && !labels.error) {
           analysisResults.labels = labels;
-          console.log('✅ Labels:', labels.totalLabels, 'detected');
         } else {
           analysisResults.labels = {
             error: labels?.error || 'Unknown error',
@@ -587,7 +557,6 @@ export const handler = async (event) => {
         
         if (moderation && !moderation.error) {
           analysisResults.moderation = moderation;
-          console.log('✅ Moderation:', { isSafe: moderation.isSafe, riskLevel: moderation.riskLevel, flags: moderation.totalFlags });
         } else {
           analysisResults.moderation = {
             error: moderation?.error || 'Unknown error',
@@ -601,9 +570,7 @@ export const handler = async (event) => {
         // if (celebrities && !celebrities.error) {
         //   analysisResults.celebrities = celebrities;
         //   if (celebrities.totalCelebrities > 0) {
-        //     console.log('✅ Celebrities detected:', celebrities.celebrities.map(c => c.name).join(', '));
         //   } else {
-        //     console.log('✅ Celebrity detection: None found');
         //   }
         // } else {
         //   analysisResults.celebrities = {
@@ -618,9 +585,7 @@ export const handler = async (event) => {
         if (text && !text.error) {
           analysisResults.text = text;
           if (text.totalLines > 0) {
-            console.log('✅ Text detected:', text.fullText.substring(0, 50) + (text.fullText.length > 50 ? '...' : ''));
           } else {
-            console.log('✅ Text detection: No text found');
           }
         } else {
           analysisResults.text = {
@@ -633,11 +598,6 @@ export const handler = async (event) => {
         }
         
         // Summary log
-        console.log('✅ AI ANALYSIS COMPLETED');
-        console.log(`   🏷️ Labels: ${analysisResults.labels.totalLabels || 0}`);
-        console.log(`   🛡️ Moderation: ${analysisResults.moderation.isSafe !== null ? (analysisResults.moderation.isSafe ? 'SAFE' : analysisResults.moderation.riskLevel) : 'ERROR'}`);
-        // console.log(`   🌟 Celebrities: ${analysisResults.celebrities.totalCelebrities || 0} detected`); // removed: celebrity detection feature deprecated
-        console.log(`   📝 Text: ${analysisResults.text.totalLines || 0} lines, ${analysisResults.text.totalWords || 0} words`);
 
         // Extract AI tags from ImageAnalysis results (for images)
         let aiTags = [];
@@ -664,7 +624,6 @@ export const handler = async (event) => {
           customTags: [] // empty for now; frontend will later update this
         };
 
-        console.log(`🤖 AI Tags extracted: ${aiTags.length} (${aiTags.join(", ")})`);
 
         const metadataToSave = {
           assetId: assetId,
@@ -676,8 +635,6 @@ export const handler = async (event) => {
           imageAnalysis: analysisResults
         };
         const metadataS3Key = `${assetId}-metadata.json`;
-        console.log('📝 Auto-saving metadata to S3');
-        console.log('   S3 Key:', metadataS3Key);
 
         const saveCommand = new PutObjectCommand({
           Bucket: REKOGNITION_BUCKET_NAME,
@@ -693,7 +650,6 @@ export const handler = async (event) => {
 
         // 👇 THIS is the important part
         await s3Client.send(saveCommand);
-        console.log('✅ Metadata auto-saved to S3');
         
       } catch (error) {
         console.error('❌ CRITICAL: AI analysis failed completely:', error);
@@ -708,16 +664,12 @@ export const handler = async (event) => {
 let videoAnalysisJobs = null;
 
 if (isVideo && !isMp3 && isEnabled('analysis')) {
-  console.log('🎬 STARTING VIDEO AI ANALYSIS');
 
   try {
     const analysisTypes = ["labels", "moderation", "text"]; // "celebrities" removed: celebrity detection feature deprecated
     videoAnalysisJobs = await startVideoAnalysis(key, analysisTypes);
 
     if (videoAnalysisJobs && !videoAnalysisJobs.error) {
-      console.log('Video analysis jobs started:');
-      console.log(` Total jobs: ${videoAnalysisJobs.totalJobs}`);
-      console.log(` Job IDs:`, JSON.stringify(videoAnalysisJobs.jobs, null, 2));
       
       // Add to database
       updateExpression += `, videoAnalysisJobs = :videoJobs, videoAnalysisStatus = :videoStatus, videoAnalysisStartedAt = :videoStartedAt`;
@@ -743,13 +695,9 @@ if (isVideo && !isMp3 && isEnabled('analysis')) {
     // 🎬 AUTOMATIC VIDEO TRANSCODING INTEGRATION
     let transcodingResult = null;
     if (isVideo && !isMp3) {
-        console.log(`🎬 VIDEO DETECTED - CHECKING TRANSCODING REQUIREMENTS`);
-        console.log(`   Transcode Role: ${!!process.env.TRANSCODE_ROLE_ARN ? 'SET' : 'MISSING'}`);
-        console.log(`   Transcode Endpoint: ${!!process.env.TRANSCODE_ENDPOINT ? 'SET' : 'MISSING'}`);
         
         if (process.env.TRANSCODE_ROLE_ARN && process.env.TRANSCODE_ENDPOINT) {
             try {
-                console.log(`🚀 INITIATING AUTOMATIC TRANSCODING...`);
                 
                 transcodingResult = await createMultiQualityTranscodingJob(
                     assetId,
@@ -771,12 +719,8 @@ if (isVideo && !isMp3 && isEnabled('analysis')) {
                     expressionAttributeValues[":estimatedCompletion"] = transcodingResult.estimatedCompletion.toISOString();
                     expressionAttributeValues[":outputQualities"] = transcodingResult.outputQualities;
                     
-                    console.log(`✅ TRANSCODING INITIATED SUCCESSFULLY!`);
-                    console.log(`   Job ID: ${transcodingResult.jobId}`);
-                    console.log(`   Qualities: ${transcodingResult.outputQualities.join(', ')}`);
                 } else if (transcodingResult && transcodingResult.error) {
                     // Error but graceful fallback
-                    console.log(`⚠️ TRANSCODING FAILED - VIDEO REMAINS AVAILABLE IN ORIGINAL FORMAT`);
                     updateExpression += `, transcodingStatus = :transcodingStatus, transcodingError = :transcodingError, transcodingErrorType = :transcodingErrorType`;
                     expressionAttributeValues[":transcodingStatus"] = "ERROR";
                     expressionAttributeValues[":transcodingError"] = transcodingResult.errorMessage;
@@ -790,9 +734,6 @@ if (isVideo && !isMp3 && isEnabled('analysis')) {
                 expressionAttributeValues[":transcodingError"] = transcodingError.message;
             }
         } else {
-            console.log(`⚠️ TRANSCODING SKIPPED - Environment variables missing`);
-            console.log(`   TRANSCODE_ROLE_ARN: ${process.env.TRANSCODE_ROLE_ARN ? 'SET' : 'MISSING'}`);
-            console.log(`   TRANSCODE_ENDPOINT: ${process.env.TRANSCODE_ENDPOINT ? 'SET' : 'MISSING'}`);
         }
     }
 
@@ -808,7 +749,6 @@ if (isVideo && !isMp3 && isEnabled('analysis')) {
     });
 
     await docClient.send(updateCommand);
-    console.log(`✅ Database updated successfully`);
 
     const elapsed = Date.now() - startTime;
 
@@ -878,7 +818,6 @@ if (isVideo && !isMp3 && isEnabled('analysis')) {
       };
     }
 
-    console.log(`🎉 PROCESSING COMPLETED SUCCESSFULLY in ${elapsed}ms`);
     
     return {
       statusCode: 200,
@@ -904,7 +843,6 @@ if (isVideo && !isMp3 && isEnabled('analysis')) {
     if (tempFilePath && existsSync(tempFilePath)) {
       try { 
         unlinkSync(tempFilePath); 
-        console.log(`🧹 Cleaned up temp file: ${tempFilePath}`);
       } catch (e) {
         console.warn(`Warning: Could not clean up temp file: ${e.message}`);
       }

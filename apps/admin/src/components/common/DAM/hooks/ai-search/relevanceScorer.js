@@ -246,7 +246,6 @@ const applyContextPenalties = (asset, searchValue, currentScore) => {
   //       );
   //       if (hasSearchTermWithIndicator) {
   //         score -= 50;
-  //         console.log(`  ⚠️ Location penalty for: ${indicator}`);
   //       }
   //     }
   //   });
@@ -267,7 +266,6 @@ const applyContextPenalties = (asset, searchValue, currentScore) => {
 
   if (eventPenaltyCount >= 2) {
     score -= 30;
-    console.log(`  ⚠️ Event context penalty (${eventPenaltyCount} indicators)`);
   }
 
   // PENALTY 3: Other subjects detected - removed: celebrity detection feature deprecated
@@ -282,7 +280,6 @@ const applyContextPenalties = (asset, searchValue, currentScore) => {
   //     const searchTermEarly = searchKeywords.some(k => filenameStart.includes(k));
   //     if (!searchTermEarly) {
   //       score -= 25;
-  //       console.log(`  ⚠️ Other subject penalty: ${otherCelebritiesInFilename[0]}`);
   //     }
   //   }
   // }
@@ -293,7 +290,6 @@ const applyContextPenalties = (asset, searchValue, currentScore) => {
     if (filenameLower.includes(term)) {
       if (!searchKeywords.some(k => k.includes(term))) {
         score -= 35;
-        console.log(`  ⚠️ Infrastructure penalty: ${term}`);
       }
     }
   });
@@ -302,7 +298,6 @@ const applyContextPenalties = (asset, searchValue, currentScore) => {
   const datePattern = /\d{4}[-_]\d{2}[-_]\d{2}|\d{2}[-_]\d{2}[-_]\d{4}/;
   if (datePattern.test(filenameLower)) { // && !isProbablyPersonSearch - removed: celebrity detection feature deprecated
     score -= 15;
-    console.log(`  ⚠️ Generic date filename penalty`);
   }
 
   // BONUS: Exact name in filename (without context words) - removed: celebrity detection feature deprecated
@@ -317,7 +312,6 @@ const applyContextPenalties = (asset, searchValue, currentScore) => {
   //   );
   //   if (exactNameMatch) {
   //     score += 15;
-  //     console.log(`  ✅ Prominent name bonus`);
   //   }
   // }
 

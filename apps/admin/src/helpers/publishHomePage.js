@@ -196,7 +196,6 @@ export async function publishHomePage(token, { section, authors } = {}) {
     });
 
     // 6. Call the API to save HTML
-    console.log("Saving Home Page HTML...");
     const response = await apiFetch(`${base}/pagestudio/saveHomeHtml`, {
       method: "POST",
       headers: {
@@ -222,7 +221,6 @@ export async function publishHomePage(token, { section, authors } = {}) {
         { type: 'Blog', activeSection: 'Blog', isSection: false }
       ];
 
-    console.log(`Starting sub-pages republish for ${landingPages.length} landing pages...`);
 
     // Fetch Blog Template if needed
     let blogTemplate = null;
@@ -246,7 +244,6 @@ export async function publishHomePage(token, { section, authors } = {}) {
         if (pageRes.ok) {
           const pageJson = await pageRes.json();
           if (pageJson && pageJson.data) {
-            console.log(`Republishing landing page: ${pageInfo.type}`);
             const html = renderHomePageFromPuckJSON({
               pageType: pageJson.pageType || pageInfo.type,
               data: getPublishableData(pageJson.data),
@@ -282,7 +279,6 @@ export async function publishHomePage(token, { section, authors } = {}) {
     // 6.6. NEW: Background trigger for all stories
     (async () => {
       try {
-        console.log("Triggering background site-wide story sync...");
 
         // Helper to extract text for read time/summary
         const extractText = (desc) => {
@@ -347,7 +343,6 @@ export async function publishHomePage(token, { section, authors } = {}) {
             }
           }));
         }
-        console.log("Background site-wide story sync completed successfully.");
       } catch (err) {
         console.error("Critical error in background stories sync:", err);
       }

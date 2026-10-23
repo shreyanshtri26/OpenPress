@@ -19,9 +19,6 @@ export const handler = async (event) => {
       };
     }
 
-    console.log(`📸 Selecting thumbnail for asset: ${assetId}`);
-    console.log(`🎯 Selected thumbnail:`, selectedThumbnail);
-    console.log(`🔄 Thumbnail type:`, thumbnailType || "not specified");
 
     // ✅ First, get the current asset to check its structure
     const getCommand = new GetCommand({
@@ -45,10 +42,8 @@ export const handler = async (event) => {
     const switchingToCustom = thumbnailType === "custom";
     
     if (switchingToAuto) {
-      console.log("🔄 Switching from custom to auto thumbnail");
     }
     if (switchingToCustom) {
-      console.log("🔄 Switching to custom thumbnail");
     }
 
     // ✅ Prepare update based on current state and target type
@@ -58,7 +53,6 @@ export const handler = async (event) => {
 
     if (!asset.videoMetadata) {
       // Create complete videoMetadata structure if it doesn't exist
-      console.log("🔧 Creating videoMetadata structure...");
       
       updateExpression = `
         SET videoMetadata = :videoMetadata,
@@ -90,7 +84,6 @@ export const handler = async (event) => {
       };
     } else {
       // ✅ Update existing videoMetadata with safe path handling
-      console.log("🔧 Updating existing videoMetadata structure...");
       
       if (switchingToAuto) {
         // Switching from custom back to auto - use conditional update
@@ -209,7 +202,6 @@ export const handler = async (event) => {
 
     await docClient.send(updateCommand);
 
-    console.log("✅ Thumbnail selection updated successfully");
 
     return {
       statusCode: 200,

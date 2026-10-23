@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import { Puck } from "@measured/puck";
 import "../../styles/studio-theme.css";
 import { type PageStudioData, getConfigForPage, type PageType, getInitialDataForPage, sanitizeAutomaticGridMode, renameLegacyTitle } from "./builderConfig";
@@ -14,13 +14,10 @@ import VideosLayout from "./layouts/videos";
 import SectionLayout from "./layouts/section";
 import AuthorLayout from "./layouts/author";
 import ErrorLayout from "./layouts/error";
-import { PuckOverrides } from "./PuckOverrides";
+import { STUDIO_OVERRIDES, StudioLiveContext, type StudioLive } from "./PuckOverrides";
 import { ActiveSectionContext } from "./ActiveSectionContext";
 import { checkAuth } from "../../utils/auth";
 import { saveReducer, hasUnsavedChanges, retryDelayMs, MAX_SAVE_ATTEMPTS, type SaveStatus } from "./saveStatus";
-import { LibraryPanel, LibraryItem } from "./LibrarySearch";
-import { StudioSelectField } from "./fields/StudioSelectField";
-import type { Overrides } from "@measured/puck";
 
 
 // Block types the ad renderers' fallback switch statements actually know how to
@@ -206,10 +203,6 @@ export function PuckEditor() {
       setAuthors(fetchedAuthors);
       setCampaigns(fetchedCampaigns);
       setPlacements(fetchedPlacements);
-      console.log("Stories loaded:", fetchedStories.length);
-      console.log("Authors loaded:", fetchedAuthors.length);
-      console.log("Campaigns loaded:", fetchedCampaigns.length);
-      console.log("Placements loaded:", fetchedPlacements.length);
       setIsLoading(false);
     };
     loadContent();
@@ -570,7 +563,7 @@ export function PuckEditor() {
       }
       return finalData;
     },
-    [selectedPage, activeSection, activeAuthor, pageId]
+    [selectedPage, activeSection, activeAuthor, pageId, injectFallbacks]
   );
 
   if (isLoading) return <LoadingScreen text="Loading stories..." />;
@@ -578,31 +571,17 @@ export function PuckEditor() {
 
   // const stories = getStories(); // Remove redundant call
   const hasNoStories = stories.length === 0;
-  const activeConfig = getConfigForPage(selectedPage);
+  // Same object between renders: a new `config` makes Puck rebuild its whole component tree. Dynamic ad blocks are
+  // registered when placements load, so `placements` is a dependency.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const activeConfig = useMemo(() => getConfigForPage(selectedPage), [selectedPage, placements]);
 
   const libraryLabels = Object.fromEntries(
     Object.entries((activeConfig as any).components ?? {}).map(([key, c]: [string, any]) => [key, c?.label ?? key])
   ) as Record<string, string>;
-  const overrides = {
-    // Every Puck `select` field (Select Story, colours, ...) uses the shared Studio dropdown.
-    fieldTypes: { select: StudioSelectField } as unknown as NonNullable<Overrides["fieldTypes"]>,
-    // Search box above the grouped list; non-matching items are hidden (see LibrarySearch.tsx).
-    components: ({ children }: { children: React.ReactNode }) => <LibraryPanel labels={libraryLabels}>{children}</LibraryPanel>,
-    componentItem: ({ children, name }: { children: React.ReactNode; name: string }) => (
-      <LibraryItem name={name} label={libraryLabels[name]}>{children}</LibraryItem>
-    ),
-    ...PuckOverrides(
-    selectedPage,
-    setSelectedPage,
-    scheduleAutosave,
-    handlePublish,
-    saveStatus,
-    saveNow,
-    activeSection,
-    setActiveSection,
-    activeAuthor,
-    setActiveAuthor
-  ),
+  const live: StudioLive = {
+    selectedPage, setSelectedPage, scheduleAutosave, handlePublish, saveStatus, saveNow,
+    activeSection, setActiveSection, activeAuthor, setActiveAuthor, libraryLabels,
   };
 
   const Layout =
@@ -638,17 +617,19 @@ export function PuckEditor() {
             )
           ) : null
           }
-          <div className="studio-puck">
+          <StudioLiveContext.Provider value={live}>
+          <StudioPuckBox>
           <Puck
             key={`${selectedPage}-${activeSection || ''}-${stories.length}-${authors.length}-${campaigns.length}-${placements.length}`}
             config={activeConfig}
             data={pageData}
             onPublish={(data) => handlePublish(data as PageStudioData)}
             onChange={(data) => handleOnChange(data as PageStudioData)}
-            overrides={overrides}
+            overrides={STUDIO_OVERRIDES}
             viewports={STUDIO_VIEWPORTS}
           />
-          </div>
+          </StudioPuckBox>
+          </StudioLiveContext.Provider>
         </Layout>
       ) : (
         <p>Loading page {selectedPage}...</p>
@@ -656,6 +637,22 @@ export function PuckEditor() {
       </div>
     </ActiveSectionContext.Provider>
   );
+}
+
+/** Puck divides by the canvas size to pick its zoom: mounting it into a 0x0 box gives it a NaN height. Wait for a real size. */
+function StudioPuckBox({ children }: { children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [sized, setSized] = useState(false);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const check = () => { if (el.clientWidth > 0 && el.clientHeight > 0) setSized(true); };
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return <div ref={ref} className="studio-puck">{sized ? children : null}</div>;
 }
 
 function LoadingScreen({ text }: { text: string }) {

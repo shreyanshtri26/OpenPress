@@ -213,7 +213,6 @@ export const handler = async (event, context) => {
           followUpQueued: false,
         });
       }
-      console.log(`[republishAll] resuming job ${existing.jobId} at ${existing.phase}:${existing.cursor}`);
       return await runAndReport(context, existing.jobId, extra);
     }
 
@@ -257,9 +256,6 @@ export const handler = async (event, context) => {
       throw err;
     }
 
-    console.log(
-      `[republishAll] job ${job.jobId} started by ${job.requestedBy || "unknown user"}`
-    );
 
     return await runAndReport(context, job.jobId, extra);
   } catch (err) {

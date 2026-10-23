@@ -10,11 +10,9 @@ export const handler = async (event) => {
     const body = event.body ? JSON.parse(event.body) : {};
     const { collectionId, maxResults = 100 } = body;
 
-    console.log('📋 Listing face collections');
 
     // If collectionId provided, list faces in that collection
     if (collectionId) {
-      console.log('   Getting faces in collection:', collectionId);
       
       const command = new ListFacesCommand({
         CollectionId: collectionId,
@@ -31,7 +29,6 @@ export const handler = async (event) => {
         boundingBox: face.BoundingBox
       }));
 
-      console.log('✅ Found', faces.length, 'faces');
 
       return {
         statusCode: 200,
@@ -46,7 +43,6 @@ export const handler = async (event) => {
     }
 
     // Otherwise, list all collections
-    console.log('   Getting all collections');
     
     const listCommand = new ListCollectionsCommand({});
     const listResponse = await analysisClient.send(listCommand);
@@ -73,7 +69,6 @@ export const handler = async (event) => {
       }
     }
 
-    console.log('✅ Found', collections.length, 'collections');
 
     return {
       statusCode: 200,

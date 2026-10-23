@@ -188,7 +188,6 @@ export default function RaiseStory({
 
 }) {
 
-  console.log("initial story data >>>", initialStoryData);
 
   const userContext = useContext(UserContext);
   const user = userContext?.user ?? null;
@@ -360,12 +359,10 @@ export default function RaiseStory({
 
   // ✨ NEW: Check if user has edit permission AND is the original author (for in_progress) OR assigned editor (for ideas/in_review)
   const hasEditPermission = (() => {
-    console.log("11");
     const isSuperUser = user?.role?.toLowerCase() === 'super user';
     if (isSuperUser) return true;
 
 
-    console.log("initial story data status >>>", initialStoryData?.status)
     const basePermission = checkStoryPermission(permissions ?? null, permissionStatus(initialStoryData?.status) || 'raise_a_story', 'Edit', user?.role);
 
     if (!basePermission) return false;
@@ -434,7 +431,6 @@ export default function RaiseStory({
     autoSaveTimerRef.current = setTimeout(() => {
       // Double-check edit mode status when timer fires
       if (isEditingFromPublishDrawerRef.current) {
-        console.log('Autosave timer fired but edit mode is active, skipping');
         return;
       }
       setAutoSaveStatus('saving');
@@ -507,13 +503,11 @@ export default function RaiseStory({
             text: `<em>(About the Author : ${authorBio})</em>`
           }
         });
-        console.log("RaiseStory: Appended italicized author bio block.");
       } else {
         const currentText = lastBlock.data.text;
         if (!currentText.toLowerCase().includes('<em>') && !currentText.toLowerCase().includes('<i>')) {
           const cleanText = currentText.replace(/<\/?(em|i|b|strong)>/gi, '');
           lastBlock.data.text = `<em>${cleanText}</em>`;
-          console.log("RaiseStory: Wrapped existing author bio in <em> tags.");
         }
       }
     }
@@ -572,7 +566,6 @@ export default function RaiseStory({
     if (autoSaveTimerRef.current) {
       clearTimeout(autoSaveTimerRef.current);
       autoSaveTimerRef.current = null;
-      console.log('Cleared pending autosave timer');
     }
   }, []);
 
@@ -761,7 +754,6 @@ export default function RaiseStory({
   useEffect(() => {
     const prefillData = (story: StoryDetails) => {
 
-      console.log("prefilled story data >>>", story);
 
       setStoryId(story.storyId ?? story._id ?? '');
 
@@ -861,7 +853,6 @@ export default function RaiseStory({
       filled["keywords"] = Array.isArray((story as any)?.keywords) ? (story as any).keywords : [];
 
       filled["author_bio"] = story.author_bio || story.authorBio || "";
-      console.log("RaiseStory: author_bio prefilled value:", filled["author_bio"]);
 
       setStoryDetails(filled);
 
@@ -1296,7 +1287,6 @@ export default function RaiseStory({
         .filter((caption): caption is string => Boolean(caption)),
     };
 
-    console.log('Saving draft with storyDetails:', storyDetails);
 
     try {
       let url =
@@ -1358,7 +1348,6 @@ export default function RaiseStory({
 
     //  Check if editor is ready and has save method
     if (!editorInstanceRef.current.save || typeof editorInstanceRef.current.save !== 'function') {
-      console.log('Editor not ready for auto-save yet');
       setAutoSaveStatus('idle');
       hasUserChangesRef.current = false;
       return false;
@@ -1368,7 +1357,6 @@ export default function RaiseStory({
     try {
       await editorInstanceRef.current.isReady;
     } catch (error) {
-      console.log('Editor not ready:', error);
       setAutoSaveStatus('idle');
       hasUserChangesRef.current = false;
       return false;
@@ -1477,7 +1465,6 @@ export default function RaiseStory({
           return true;
         } else {
           // No content to save, skip auto-save
-          console.log('No content to auto-save yet');
           setAutoSaveStatus('idle');
           hasUserChangesRef.current = false;
           return false;
@@ -1537,9 +1524,6 @@ export default function RaiseStory({
 
       const url = `${env.backendApi}/api/updateStory?storyId=${currentStoryId}`;
 
-      console.log("calling auto save ......");
-      console.log("story details data here before calling auto save .....", storyDetails);
-      console.log("RaiseStory: autoSaveData.author_bio:", (autoSaveData as any).author_bio);
       const res = await apiFetch(url, {
         method: 'PUT',
         headers: {
@@ -1582,7 +1566,6 @@ export default function RaiseStory({
 
   const handleStoryAction = async (status: StoryStatus, additionalData = {}): Promise<boolean> => {
     const isSuperUser = user?.role?.toLowerCase() === 'super user';
-    console.log("isSuperUser >>>", isSuperUser);
 
     const statusMaps: Record<string, string> = {
       approved:
@@ -1828,7 +1811,6 @@ export default function RaiseStory({
         .filter((caption): caption is string => Boolean(caption)),
     };
 
-    console.log("RaiseStory: submitting finalData with author_bio:", (finalData as any).author_bio);
 
     try {
       let url = storyId
@@ -1972,7 +1954,6 @@ export default function RaiseStory({
           }
         );
         const data = await res.json();
-        console.log("Raw taxonomies data from API:", data);
 
         const normalized = (data.taxonomies || [])
           .filter((t: any) => !t.name?.startsWith("[C] "))
@@ -1985,7 +1966,6 @@ export default function RaiseStory({
               selectionType: normalizeSelectionMode(selectionTypeValue),
             };
           });
-        console.log("Normalized taxonomies:", normalized);
         setTaxonomies(normalized);
       } catch (err) {
         console.error("Failed to fetch taxonomies:", err);
@@ -2009,11 +1989,8 @@ export default function RaiseStory({
     };
 
     //  Normalize current story status
-    console.log("initialStoryData >>>", initialStoryData);
     const normalized = (initialStoryData?.status || "raise_a_story").toLowerCase();
-    console.log("normalized >>>", normalized);
     const apiKey = statusKeyMap[normalized] || "Raise a story";
-    console.log("apiKey >>>", apiKey);
     //  Build drawer visibility map
     const selections: Record<string, any> = {};
 
@@ -2030,7 +2007,6 @@ export default function RaiseStory({
       };
     });
 
-    console.log("selections >>>", selections);
     setTaxonomySelections(selections);
   }, [taxonomies, initialStoryData?.status]);
 
@@ -2447,7 +2423,6 @@ export default function RaiseStory({
                                     if (blob.size <= MAX_SIZE_BYTES || quality <= 0.2) {
                                       const uniqueName = `social_preview_${currentStoryId}_${Date.now()}.jpg`;
                                       const file = new File([blob], uniqueName, { type: "image/jpeg" });
-                                      console.log(`✅ Social image standardized: ${(blob.size / 1024).toFixed(2)}KB (quality: ${quality}, size: ${TARGET_WIDTH}x${TARGET_HEIGHT})`);
                                       resolve(file);
                                       return;
                                     }
@@ -2656,12 +2631,10 @@ export default function RaiseStory({
                           }}
                           slug={slug}
                           onEnableEditMode={() => {
-                            console.log('🔴 ENABLING edit mode - disabling autosave');
                             isEditingFromPublishDrawerRef.current = true;
                             setIsEditingFromPublishDrawer(true);
                           }}
                           onDisableEditMode={() => {
-                            console.log('🟢 DISABLING edit mode - enabling autosave');
                             isEditingFromPublishDrawerRef.current = false;
                             setIsEditingFromPublishDrawer(false);
                           }}

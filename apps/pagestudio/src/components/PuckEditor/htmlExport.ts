@@ -472,11 +472,6 @@ export const DEFAULT_GET_URL = `${API_BASE}/pagestudio/page`;
 export const DEFAULT_POST_URL = `${API_BASE}/pagestudio/saveHtml`;
 
 // Log the configured URLs for debugging
-console.log('🔧 API Configuration:', {
-  API_BASE,
-  DEFAULT_GET_URL,
-  DEFAULT_POST_URL
-});
 
 interface SaveHtmlResponse {
   success: boolean;
@@ -546,7 +541,6 @@ export async function fetchPageData(pageType: string = 'Blog'): Promise<any | nu
   try {
     const url = `${DEFAULT_GET_URL}?pageType=${encodeURIComponent(pageType)}`;
 
-    console.log('📥 Fetching page data:', url);
 
     const response = await fetch(url, {
       headers: {
@@ -569,7 +563,6 @@ export async function fetchPageData(pageType: string = 'Blog'): Promise<any | nu
       return null;
     }
 
-    console.log('✅ Page data fetched successfully');
     return result.data || result;
 
   } catch (error) {
@@ -604,12 +597,6 @@ export async function saveHtmlToBackend(
       category: metadata.category,
     };
 
-    console.log('📤 Saving HTML to backend:', {
-      url: DEFAULT_POST_URL,
-      slug: metadata.slug,
-      category: metadata.category,
-      htmlLength: htmlContent.length
-    });
 
     const response = await fetch(DEFAULT_POST_URL, {
       method: 'POST',
@@ -642,7 +629,6 @@ export async function saveHtmlToBackend(
       };
     }
 
-    console.log('✅ HTML saved successfully:', json);
     return {
       success: true,
       message: json.message || 'HTML saved successfully',
@@ -694,7 +680,6 @@ export async function captureRenderedHTML(): Promise<string | null> {
     return null
   }
 
-  console.log('📸 Capturing rendered HTML from DOM...');
 
   // Clone the content to avoid modifying the DOM
   const clone = container.cloneNode(true) as HTMLElement
@@ -717,11 +702,9 @@ export async function captureRenderedHTML(): Promise<string | null> {
 
   // Wait for all images to be converted
   if (imagePromises.length > 0) {
-    console.log(`🖼️ Converting ${imagePromises.length} images to data URLs...`);
     await Promise.all(imagePromises)
   }
 
-  console.log('✅ HTML captured successfully');
   return clone.innerHTML
 }
 

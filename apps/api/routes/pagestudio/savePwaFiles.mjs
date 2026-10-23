@@ -65,7 +65,6 @@ export const handler = async (event) => {
         Expires: new Date(0),
         Metadata: { uploadedAt: new Date().toISOString() }
       }));
-      console.log("✅ manifest.json uploaded");
       uploaded.push("manifest.json");
     }
 
@@ -80,7 +79,6 @@ export const handler = async (event) => {
         Expires: new Date(0),
         Metadata: { uploadedAt: new Date().toISOString() }
       }));
-      console.log("✅ sw.js uploaded");
       uploaded.push("sw.js");
     }
 
@@ -95,7 +93,6 @@ export const handler = async (event) => {
         CacheControl: "public, max-age=86400",
         Metadata: { uploadedAt: new Date().toISOString() }
       }));
-      console.log("✅ pwa-screenshot-mobile.png uploaded");
       uploaded.push("pwa-screenshot-mobile.png");
     }
 
@@ -110,7 +107,6 @@ export const handler = async (event) => {
         CacheControl: "public, max-age=86400",
         Metadata: { uploadedAt: new Date().toISOString() }
       }));
-      console.log("✅ pwa-screenshot-desktop.png uploaded");
       uploaded.push("pwa-screenshot-desktop.png");
     }
 
@@ -133,7 +129,6 @@ export const handler = async (event) => {
           CacheControl: "public, max-age=86400",
           Metadata: { uploadedAt: new Date().toISOString() }
         }));
-        console.log(`✅ ${icon.key} uploaded`);
         uploaded.push(icon.key);
       }
     }
@@ -142,7 +137,6 @@ export const handler = async (event) => {
     // ── 6. CDN Invalidation ───────────────────────────────────────────
     if (uploaded.length > 0 && process.env.CDN_DISTRIBUTION_ID) {
       try {
-        console.log(`🔄 Invalidating CDN cache for ${uploaded.length} PWA files...`);
         const invalidationParams = {
           DistributionId: process.env.CDN_DISTRIBUTION_ID,
           InvalidationBatch: {
@@ -154,13 +148,11 @@ export const handler = async (event) => {
           }
         };
         await cdnClient.send(new CreateInvalidationCommand(invalidationParams));
-        console.log("✅ CDN invalidation triggered");
       } catch (cfErr) {
         console.error("⚠️ Failed to invalidate CDN cache (non-fatal):", cfErr);
       }
     }
 
-    console.log("⏱ Time taken:", Date.now() - startTime, "ms");
 
     return {
       statusCode: 200,

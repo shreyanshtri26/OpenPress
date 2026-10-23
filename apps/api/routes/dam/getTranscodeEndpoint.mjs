@@ -6,14 +6,12 @@ const transcodeClient = new MediaConvertClient({ ...clientConfig(),});
 
 export const handler = async (event) => {
     try {
-        console.log("🔍 Getting Transcode endpoint...");
         
         const command = new DescribeEndpointsCommand({});
         const response = await transcodeClient.send(command);
         
         const endpoint = response.Endpoints[0].Url;
         
-        console.log("✅ Transcode endpoint found:", endpoint);
         
         return {
             statusCode: 200,

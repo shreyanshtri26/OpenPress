@@ -298,7 +298,6 @@ const TaxonomyTab = () => {
     //   ...taxonomySelections[groupId],
     //   "Selection": selectionType
     // }
-    console.log("updated permission >>>", permission);
 
 
 

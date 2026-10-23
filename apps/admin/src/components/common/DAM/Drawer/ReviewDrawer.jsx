@@ -48,7 +48,6 @@ const isFormValid = ()=>{
   const handleClose = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Close button clicked', { onClose });
     if (onClose && typeof onClose === 'function') {
       onClose();
     } else {
@@ -57,7 +56,6 @@ const isFormValid = ()=>{
   };
 
   const handleSubmit = () => {
-    console.log('Form data:', formData);
     if (onClose) onClose();
   };
 

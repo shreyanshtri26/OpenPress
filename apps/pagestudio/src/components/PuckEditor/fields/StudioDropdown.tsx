@@ -3,8 +3,11 @@ import { createPortal } from 'react-dom'
 import { Check, ChevronDown } from 'lucide-react'
 
 import { placeList, type Placement } from './dropdownPlacement'
+import { swatchFor } from './dropdownSwatch'
+import { useTaxonomyColors } from './useTaxonomyColors'
 
-export type DropdownOption = { label: string; value: unknown; disabled?: boolean }
+/** `swatch`: a CSS colour shown as a dot beside the label. Colour values and coloured taxonomy values get one automatically. */
+export type DropdownOption = { label: string; value: unknown; disabled?: boolean; swatch?: string }
 
 type StudioDropdownProps = {
   options: DropdownOption[]
@@ -16,6 +19,8 @@ type StudioDropdownProps = {
   variant?: 'toolbar' | 'field'
   disabled?: boolean
   placeholder?: string
+  /** Colour dots beside colour options and coloured categories. Off for lists where colour means nothing (e.g. page names). */
+  swatches?: boolean
 }
 
 const same = (a: unknown, b: unknown) =>
@@ -27,7 +32,7 @@ const same = (a: unknown, b: unknown) =>
  * clip it; it sizes itself for long labels instead of copying the trigger's width, wraps long labels instead of cutting them,
  * flips above when there is no room below, and follows the WAI-ARIA combobox/listbox keyboard pattern.
  */
-export function StudioDropdown({ options, value, onChange, id, ariaLabel, variant = 'field', disabled, placeholder = 'Select…' }: StudioDropdownProps) {
+export function StudioDropdown({ options, value, onChange, id, ariaLabel, variant = 'field', disabled, placeholder = 'Select…', swatches = true }: StudioDropdownProps) {
   const uid = useId()
   const listId = `${uid}-list`
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -36,6 +41,9 @@ export function StudioDropdown({ options, value, onChange, id, ariaLabel, varian
 
   const selectedIndex = useMemo(() => options.findIndex((o) => same(o.value, value)), [options, value])
   const selected = selectedIndex >= 0 ? options[selectedIndex] : undefined
+  const taxonomyColors = useTaxonomyColors()
+  const swatchOf = (o: DropdownOption) => (swatches ? swatchFor(o, taxonomyColors) : undefined)
+  const selectedSwatch = selected ? swatchOf(selected) : undefined
 
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
@@ -153,6 +161,7 @@ export function StudioDropdown({ options, value, onChange, id, ariaLabel, varian
         onClick={() => { if (open) close(); else openList() }}
         onKeyDown={onTriggerKey}
       >
+        {selectedSwatch && <span className="studio-dd__swatch" style={{ background: selectedSwatch }} aria-hidden="true" />}
         <span className={`studio-dd__value${selected ? '' : ' is-placeholder'}`}>{selected ? selected.label : placeholder}</span>
         <ChevronDown className="studio-dd__chevron" size={14} aria-hidden="true" />
       </button>
@@ -182,6 +191,7 @@ export function StudioDropdown({ options, value, onChange, id, ariaLabel, varian
               onClick={() => choose(i)}
             >
               <span className="studio-dd__check" aria-hidden="true">{i === selectedIndex ? <Check size={14} /> : null}</span>
+              {swatchOf(opt) && <span className="studio-dd__swatch" style={{ background: swatchOf(opt) }} aria-hidden="true" />}
               <span className="studio-dd__label">{opt.label}</span>
             </div>
           ))}

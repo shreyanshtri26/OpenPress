@@ -36,7 +36,6 @@ export const handler = async () => {
       );
 
     const storiesList = rawStories.map(formatStory);
-    console.log(`Found ${storiesList.length} published stories`);
 
     // ===============================
     // 2️⃣ Filter stories from the last 2 days (48 hours)
@@ -48,7 +47,6 @@ export const handler = async () => {
       return pubDate >= fortyEightHoursAgo;
     });
 
-    console.log(`Filtered down to ${newsStories.length} news stories from the last 48 hours`);
 
     // ===============================
     // 3️⃣ Build News XML
@@ -76,7 +74,6 @@ export const handler = async () => {
 
     xml += `\n</urlset>`;
 
-    console.log("final news-sitemap.xml >>>", xml);
 
     // ===============================
     // 4️⃣ Upload to S3
@@ -91,7 +88,6 @@ export const handler = async () => {
       })
     );
 
-    console.log("News Sitemap uploaded successfully");
 
     return {
       statusCode: 200,

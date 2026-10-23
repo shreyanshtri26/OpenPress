@@ -14,7 +14,6 @@ function calculateReadTime(text = "") {
 
 export async function fetchReadyToPublishStories(apiUrl, token) {
     try {
-        console.log("Fetching stories from:", `${apiUrl}/story/fetchReadyToPublish`);
         const response = await apiFetch(`${apiUrl}/story/fetchReadyToPublish`, {
             headers: {
                 'Authorization': token ? `Bearer ${token}` : '',

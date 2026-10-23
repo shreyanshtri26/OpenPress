@@ -10,7 +10,6 @@ export const handler = async (event) => {
     const body = event.body ? JSON.parse(event.body) : {};
     const prefix = body.prefix || '';
     
-    console.log(`🔍 Listing S3 objects with prefix: "${prefix}"`);
     
     const command = new ListObjectsV2Command({
       Bucket: BUCKET_NAME,

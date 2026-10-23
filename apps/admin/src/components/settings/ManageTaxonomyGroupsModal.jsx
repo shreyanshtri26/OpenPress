@@ -20,7 +20,6 @@ const ManageTaxonomyGroupsModal = ({
     return null;
   }
 
-  console.log("groups>>>", groups);
 
   const filteredGroups = groups
     .map((group) => ({

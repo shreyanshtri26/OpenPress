@@ -10,8 +10,8 @@ import apiFetch from '../../utils/api';
 
 // Mock toast and UserContext for demo
 const toast = {
-    success: (msg) => console.log('Success:', msg),
-    error: (msg) => console.log('Error:', msg)
+    success: (msg) => undefined,
+    error: (msg) => undefined
 };
 
 const UserContext = React.createContext({
@@ -19,13 +19,12 @@ const UserContext = React.createContext({
 });
 
 export default function ReviewStory({
-    onClose = () => console.log('Dialog closed'),
+    onClose = () => undefined,
     // isOpen
 }) {
     const router = useRouter();
 
     const { storyId } = router.query;
-    console.log("storyIdddd>>>>", storyId);
 
     const [story, setStory] = useState({
         storyId: storyId,
@@ -43,9 +42,6 @@ export default function ReviewStory({
     const [editors, setEditors] = useState([]);
 
     const handleUpdateStory = async (storyId, state, status) => {
-        console.log("storyId>>>", storyId);
-        console.log("state>>", state);
-        console.log("status>>", status);
 
         try {
             await apiFetch(
@@ -60,7 +56,6 @@ export default function ReviewStory({
                 },
             );
         } catch (err) {
-            console.log(err);
         }
     };
 
@@ -80,7 +75,6 @@ export default function ReviewStory({
             const editor = (data?.data || []).filter(u => u.role === "editor");
             setEditors(editor);
         } catch (err) {
-            console.log(err);
         }
     };
 
@@ -108,17 +102,14 @@ export default function ReviewStory({
                 const data = await res.json();
                 const storyData = data?.data;
 
-                console.log("storyData>>", storyData);
 
                 const plainDescription = storyData?.description?.blocks
                     .map(block => cleanText(block.data?.text || ""))
                     .filter(text => text.length > 0) // drop empty blocks
                     .join("\n");
 
-                console.log("editors>>", editors);
                 const editor = editors?.find((user) => user?.userId === storyData?.assignedTo);
 
-                console.log("ASSIGNED EDITOR>>", editor);
 
                 setStory({
                     storyId: storyData.storyId,
@@ -136,7 +127,6 @@ export default function ReviewStory({
 
                 if (storyData?.state === "Not_opened") {
 
-                    console.log("calling handle update story api ....");
                     handleUpdateStory(storyData?.storyId, "Opened", storyData.status);
 
                 }
@@ -395,7 +385,6 @@ export default function ReviewStory({
             if (res.ok) {
                 const data = await res.json();
                 const comments = data?.data || [];
-                console.log("comments data of a story >>", comments);
 
                 // Filter out resolved comments
                 const pendingComments = comments.filter(c => c.status !== "resolve");
@@ -502,11 +491,10 @@ export default function ReviewStory({
 
 
     const handleEditComment = async (commentId, newText) => {
-        console.log("commentId>>", commentId);
 
         if (isReadOnly) return; // Disable in read-only mode
 
-        console.log('Starting edit comment...'); // Debug log
+// Debug log
 
         if (!newText.trim()) {
             toast.error('Comment text cannot be empty');
@@ -532,7 +520,7 @@ export default function ReviewStory({
             });
 
             if (res.ok) {
-                console.log('Edit successful, showing toast...'); // Debug log
+// Debug log
                 toast.success('Comment updated successfully!', {
                     duration: 3000,
                     position: 'top-right',
@@ -557,7 +545,6 @@ export default function ReviewStory({
     const handleDeleteComment = async () => {
         if (isReadOnly || !commentToDelete) return; // Disable in read-only mode
 
-        console.log('Starting delete comment...');
 
         try {
             const res = await apiFetch(
@@ -576,7 +563,6 @@ export default function ReviewStory({
             const data = await res.json().catch(() => ({})); // always try to parse JSON
 
             if (res.ok) {
-                console.log('Delete response:', data);
                 toast.success('Comment deleted successfully!', {
                     duration: 3000,
                     position: 'top-right',
@@ -660,9 +646,7 @@ export default function ReviewStory({
     const handleCommentAction = async (actionText = '') => {
         if (isReadOnly || !selectedCommentForAction) return; // Disable in read-only mode
 
-        console.log("selected comment>>", selectedCommentForAction);
 
-        console.log("selected comment for action >>", selectedCommentForAction);
 
         if ((actionType === 'reopen' || actionType === 'review') && !actionText.trim()) {
             toast.error('Please provide a comment');
@@ -670,7 +654,6 @@ export default function ReviewStory({
         }
 
         try {
-            console.log(`${actionType} comment:`, selectedCommentForAction.commentId, actionText);
 
             let actionData = {
                 actionType: actionType === 'review' ? 'update' : actionType,
@@ -681,7 +664,6 @@ export default function ReviewStory({
                 commentId: selectedCommentForAction?.commentId
             };
 
-            console.log("action Data>>", actionData);
 
             const res = await apiFetch(`${env.backendApi}/api/story/postCommentAction`, {
                 method: 'POST',
@@ -696,7 +678,6 @@ export default function ReviewStory({
 
             if (res.ok) {
                 const data = await res.json();
-                console.log("response >>", data);
                 toast.success(`Comment ${actionType}d successfully!`);
                 closeActionModal();
                 fetchComments();
@@ -710,7 +691,6 @@ export default function ReviewStory({
 
     // ✅ UPDATED: Render comment card with read-only support
     const renderCommentCard = (comment, tabType) => {
-        console.log("comment>>", comment);
 
 
         const isHighlighted = highlightedComment?._id === comment?._id;
@@ -894,7 +874,6 @@ export default function ReviewStory({
                 toast.error(`Failed to ${status.toLowerCase().replace('_', ' ')} story: ${errorData.message || 'Unknown error'}`);
             }
 
-            console.log("Story action response:", res);
         } catch (err) {
             console.error('Error updating story:', err);
             toast.error(`Failed to ${status.toLowerCase().replace('_', ' ')} story: ${err?.message}`);
@@ -1061,7 +1040,7 @@ export default function ReviewStory({
                             autoFocus
                         />
                         <div className="flex gap-2">
-                            {console.log("editorNote>>", editorNote)}
+                            {}
                             <button
                                 onClick={() => handleEditComment(editorNote.commentId, editNoteText)}
                                 disabled={!editNoteText.trim() || editNoteText.trim() === editorNote.commentText}

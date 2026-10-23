@@ -295,7 +295,6 @@ export function renderPageFromPuckJSON(pageJson, options = {}) {
   const { content = [], zones = {} } = data || {};
   const sections = options.sections ?? [];
   const allAuthors = options.authors ?? [];
-  console.log("all authors in render function >>>", allAuthors);
   const baseUrl = import.meta.env.VITE_CANONICAL_URL || "https://openpress.com";
   const backendApi = import.meta.env.VITE_BACKEND_API || '';
 
@@ -408,11 +407,9 @@ export function renderPageFromPuckJSON(pageJson, options = {}) {
 
     // Check if this block has already been rendered (e.g. as a fallback for an ad)
     if (blockId && renderedBlockIds.has(blockId)) {
-      console.log(`Skipping duplicate block with ID: ${blockId}`);
       return "";
     }
 
-    console.log("type >>>>", type);
     let renderer = ComponentRegistry[type];
 
     // Fallback for dynamically generated Ad components from Page Studio
@@ -461,7 +458,6 @@ export function renderPageFromPuckJSON(pageJson, options = {}) {
     .map((block) => renderComponent(block))
     .join("\n");
 
-  // console.log("contentHtml >>>", contentHTML);
 
   /***************************************************
    * Popup Ad — page-wide overlay, injected once here (not as a Puck block,

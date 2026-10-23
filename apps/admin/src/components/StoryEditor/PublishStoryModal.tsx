@@ -94,7 +94,6 @@ export const PublishStoryModal = ({
         toast.error(`Failed to ${status.toLowerCase().replace('_', ' ')} story: ${errorData.message || 'Unknown error'}`);
       }
 
-      console.log("Story action response:", res);
     } catch (error: unknown) {
       // ✅ Safe error handling
       const message =

@@ -34,7 +34,6 @@ export const useVideoAnalysisPolling = () => {
         }
 
         const data = await response.json();
-        console.log(`[Video Status] Asset ${assetId}:`, data);
 
         return data;
       } catch (err) {
@@ -57,7 +56,6 @@ export const useVideoAnalysisPolling = () => {
         clearTimeout(timeoutRef.current);
       }
 
-      console.log(`Starting video analysis polling for asset: ${assetId}`);
       assetIdRef.current = assetId;
       setIsPolling(true);
       setError(null);
@@ -67,22 +65,17 @@ export const useVideoAnalysisPolling = () => {
       const poll = async () => {
         try {
           pollCountRef.current++;
-          console.log(
-            `Polling attempt ${pollCountRef.current} for asset: ${assetId}`
-          );
 
           const status = await fetchVideoStatus(assetId);
           setVideoStatus(status);
 
           if (status?.analysis?.labels?.status === 'SUCCEEDED') {
-            console.log(`✅ Analysis labels SUCCEEDED for asset: ${assetId}`);
             setIsPolling(false);
             assetIdRef.current = null;
             return;
           }
 
           if (status?.status === 'completed' || status?.status === 'COMPLETED') {
-            console.log(`Video processing completed for asset: ${assetId}`);
             setIsPolling(false);
             assetIdRef.current = null;
             return;
@@ -113,7 +106,6 @@ export const useVideoAnalysisPolling = () => {
           setError(errorMessage);
 
           if (pollCountRef.current < maxPollsRef.current) {
-            console.log('Retrying polling...');
             timeoutRef.current = setTimeout(poll, pollingInterval);
           } else {
             setIsPolling(false);
@@ -134,7 +126,6 @@ export const useVideoAnalysisPolling = () => {
     }
     setIsPolling(false);
     assetIdRef.current = null;
-    console.log('Video analysis polling stopped');
   }, []);
 
   useEffect(() => {

@@ -3,6 +3,7 @@ import { Popup } from "@/components/ui/kit/popup";
 import { useEffect, useRef, useState } from "react";
 import apiFetch from '../../utils/api';
 import CustomButton from "./CustomButton";
+import { featuredPopupSize } from "./featuredImageUpload";
 
 const aspectRatios = [
   { text: "1:1", value: 1 },
@@ -25,10 +26,15 @@ const FeaturedImageCropper = ({ storyId, onCropped, AssetSelectorComponent, imag
 
   const [ratio, setRatio] = useState(16 / 9);
   const [popupVisible, setPopupVisible] = useState(false);
-  const [popupDimensions, setPopupDimensions] = useState({
-    width: typeof window !== 'undefined' && window.innerWidth < 768 ? window.innerWidth * 0.95 : 1200,
-    height: typeof window !== 'undefined' && window.innerWidth < 768 ? window.innerHeight * 0.90 : 800,
-  });
+  // Same size as before on a big screen, but never larger than the window (it used to be a fixed 1200px).
+  const [popupDimensions, setPopupDimensions] = useState(() =>
+    featuredPopupSize(typeof window !== 'undefined' ? window.innerWidth : 1280, typeof window !== 'undefined' ? window.innerHeight : 800)
+  );
+  useEffect(() => {
+    const onResize = () => setPopupDimensions(featuredPopupSize(window.innerWidth, window.innerHeight));
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
 
   const [mobileIndex, setMobileIndex] = useState(0);

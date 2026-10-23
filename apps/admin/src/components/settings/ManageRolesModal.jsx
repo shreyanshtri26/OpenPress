@@ -68,7 +68,6 @@ const ManageRolesModal = ({
                     />
                   </button>
                   <button onClick={() => {
-                    console.log("role>>>", role.key);
                     onDeleteRole(role.key);
                   }}>
                     <img

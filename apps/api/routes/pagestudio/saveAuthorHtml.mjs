@@ -42,7 +42,6 @@ export const handler = async (event) => {
     // ✅ S3 key → authors/{authorSlug}/index.html
     const s3Key = `authors/${authorSlug}/index.html`;
 
-    console.log(`🔧 Publishing AUTHOR page: ${BUCKET_NAME}/${s3Key}`);
 
     await s3Client.send(
       new PutObjectCommand({
@@ -62,9 +61,7 @@ export const handler = async (event) => {
       })
     );
 
-    console.log("✅ Author page published successfully");
 
-    console.log("⏱ Time taken:", Date.now() - startTime, "ms");
 
     return {
       statusCode: 200,

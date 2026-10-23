@@ -563,7 +563,6 @@ export default function AllStories({ onBack, handleEditStory }: AllStoriesProps)
       setHasMore(fetchedStories.length < total);
       setServerFilters({}); // ✅ Clear server filters when reloading normal data
 
-      console.log(`✅ Loaded ${fetchedStories.length} stories (total: ${total})`);
     } catch (err) {
       console.error('Error fetching stories:', err);
       toast.error('Failed to fetch stories');
@@ -578,7 +577,6 @@ export default function AllStories({ onBack, handleEditStory }: AllStoriesProps)
   const fetchFilteredStories = useCallback(async (apiParams: Record<string, string>) => {
     if (!user || !user.userId) return;
 
-    console.log('🔍 [AllStories] fetchFilteredStories called with apiParams:', apiParams);
 
     if (Object.keys(apiParams).length === 0) {
       // No filters — reload normal data
@@ -611,7 +609,6 @@ export default function AllStories({ onBack, handleEditStory }: AllStoriesProps)
       // ✅ Tell the backend this is a filtered search, not a normal paginated fetch
       params.set('isFiltering', 'true');
 
-      console.log('🚀 [AllStories] Filter API URL:', `${API}/api/fetchStory?${params.toString()}`);
 
       const response = await apiFetch(
         `${API}/api/fetchStory?${params.toString()}`,
@@ -633,7 +630,6 @@ export default function AllStories({ onBack, handleEditStory }: AllStoriesProps)
       setHasMore(fetchedStories.length < total);
       setServerFilters(apiParams); // ✅ Store the plain params for loadMore
 
-      console.log(`✅ Filter results: ${fetchedStories.length} stories (total: ${total})`);
       toast.success(`Found ${fetchedStories.length} matching stories`);
     } catch (err) {
       console.error('Error fetching filtered stories:', err);
@@ -645,7 +641,6 @@ export default function AllStories({ onBack, handleEditStory }: AllStoriesProps)
 
   // ✅ Called by StoriesTable when user presses Enter in a filter row
   const handleApplyServerFilter = (apiParams: Record<string, string>) => {
-    console.log('🚀 handleApplyServerFilter called with:', apiParams);
     const newParams = { ...apiParams };
     if (newParams.state) {
       setActiveType(newParams.state as StoryFilterKey);
@@ -660,7 +655,6 @@ export default function AllStories({ onBack, handleEditStory }: AllStoriesProps)
   const loadMoreStories = async () => {
     if (isLoadingMore || !hasMore || !user) return;
 
-    console.log(`🔄 Loading more stories... (offset: ${currentOffset})`);
     setIsLoadingMore(true);
 
     try {
@@ -716,7 +710,6 @@ export default function AllStories({ onBack, handleEditStory }: AllStoriesProps)
         setTotalCount(total);
         setHasMore(currentOffset + fetchedStories.length < total);
 
-        console.log(`✅ Loaded ${fetchedStories.length} more stories`);
         toast.success(`Loaded ${fetchedStories.length} more stories`);
       } else {
         setHasMore(false);
@@ -742,9 +735,7 @@ export default function AllStories({ onBack, handleEditStory }: AllStoriesProps)
   }, [isUserLoading, user?.userId, fetchUserStories]);
 
   const handleStoryClick = (story: StorySummary) => {
-    console.log("story clicked ....,", story);
     handleEditStory(story as unknown as Story);
-    console.log("story clicked ended ...");
   };
 
   const gridData: GridStory[] = useMemo(
@@ -894,7 +885,6 @@ export default function AllStories({ onBack, handleEditStory }: AllStoriesProps)
         campaigns: campaigns
       } as any);
 
-      console.log("html code >>>>", htmlCode);
 
       // 5. Save HTML
       const payload = {

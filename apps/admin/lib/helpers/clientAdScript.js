@@ -1,6 +1,5 @@
 export const getClientAdScript = (sidebarDefaultPlacement = 'sidebar') => {
   return `
-        console.log("Client-side campaigns loaded:", campaigns.length);
 
         function safeParse(raw) {
           if (!raw) return null;

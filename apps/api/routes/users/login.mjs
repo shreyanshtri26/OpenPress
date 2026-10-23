@@ -18,13 +18,11 @@ const generateToken = (user) => {
 };
 
 export const handler = async (event) => {
-  console.log("loginHandler event:", event);
 
   try {
     const body = JSON.parse(event.body || "{}");
     const { email, password } = body;
 
-    console.log("Email:", email);
 
     if (!email || !password) {
       return {
@@ -39,7 +37,6 @@ export const handler = async (event) => {
       .from(users)
       .where(eq(users.email, email.toLowerCase().trim()));
 
-    console.log("User found:", user ? { email: user.email, role: user.role } : null);
 
     if (!user || !user.password) {
       return {
@@ -50,7 +47,6 @@ export const handler = async (event) => {
 
     // Compare password
     const match = await bcrypt.compare(password, user.password);
-    console.log("Password match:", match);
 
     if (!match) {
       return {
@@ -61,7 +57,6 @@ export const handler = async (event) => {
 
     // Generate JWT
     const token = generateToken(user);
-    console.log("JWT generated");
 
     return {
       statusCode: 200,

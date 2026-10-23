@@ -94,22 +94,6 @@ export const handler = async (event) => {
     const clicks = Number(attrs.clicks || 0);
     const ctr = impressions > 0 ? `${((clicks / impressions) * 100).toFixed(2)}%` : "0%";
 
-    console.info(
-      JSON.stringify({
-        event: "campaign_metric_event",
-        eventType,
-        campaignId,
-        placement: body.placement || null,
-        jobId: body.jobId || null,
-        pageUrl: body.pageUrl || null,
-        userAgent: body.userAgent || null,
-        referrer: body.referrer || null,
-        timestamp: nowIso,
-        clicks,
-        impressions,
-        ctr,
-      })
-    );
 
     return json(200, {
       message: "Campaign metric recorded",

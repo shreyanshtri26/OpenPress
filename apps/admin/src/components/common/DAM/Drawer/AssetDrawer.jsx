@@ -158,7 +158,6 @@ const AssetDrawer = forwardRef(({
     if (!asset?.assetId && !asset?.id) return null;
 
     try {
-      // console.log("🔍 Fetching ImageAnalysis metadata...");
 
       const response = await apiFetch(
         `${env.backendApi}/api/extractMetadata`,
@@ -185,7 +184,6 @@ const AssetDrawer = forwardRef(({
         throw new Error(data.error);
       }
 
-      // console.log("✅ ImageAnalysis metadata fetched:", data);
       return data;
     } catch (err) {
       console.error('❌ Error fetching metadata:', err);
@@ -203,7 +201,6 @@ const AssetDrawer = forwardRef(({
     const hasImageAnalysis = asset?.imageAnalysis || asset?.analysis;
 
     if (hasImageAnalysis) {
-      console.log("✅ Using embedded ImageAnalysis data from asset");
       const metadataFromAsset = {
         imageAnalysis: asset.imageAnalysis,
         analysis: asset.analysis,
@@ -217,7 +214,6 @@ const AssetDrawer = forwardRef(({
     }
 
     // ✅ No embedded data - fetch from API (for new uploads)
-    console.log("📡 No embedded data, fetching from API...");
 
     (async () => {
       setLoading(true);
@@ -225,7 +221,6 @@ const AssetDrawer = forwardRef(({
         const data = await fetchMetadata(asset);
 
         if (data?.assetType === 'video') {
-          console.log("📹 VIDEO detected - polling for analysis...");
 
           const pollForAnalysis = async () => {
             let attempts = 0;
@@ -233,7 +228,6 @@ const AssetDrawer = forwardRef(({
 
             const poll = async () => {
               attempts++;
-              console.log(`📹 Polling attempt ${attempts}...`);
 
               try {
                 const statusResponse = await apiFetch(
@@ -248,12 +242,10 @@ const AssetDrawer = forwardRef(({
 
                 if (statusResponse.ok) {
                   const statusData = await statusResponse.json();
-                  console.log("✅ Video status:", statusData);
                   setApiMetadata(statusData);
                   setMetadata(statusData);
 
                   if (statusData?.analysis?.labels?.status === 'SUCCEEDED') {
-                    console.log("✅ Analysis SUCCEEDED - stopping poll");
                     setLoading(false);
                     return;
                   }

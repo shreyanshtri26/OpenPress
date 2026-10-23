@@ -11,8 +11,6 @@ export const handler = async (event) => {
     const body = JSON.parse(event.body);
     const { assetId, userId, qualities } = body;
 
-    console.log(`🎬 [${assetId}] Async transcoding request received`);
-    console.log(`📋 [${assetId}] Requested qualities: ${qualities?.join(', ') || 'default'}`);
 
     if (!assetId) {
       return {
@@ -31,7 +29,6 @@ export const handler = async (event) => {
     const asset = result.Item;
 
     if (!asset) {
-      console.log(`❌ [${assetId}] Asset not found in database`);
       return {
         statusCode: 404,
         headers: { "Content-Type": "application/json" },
@@ -40,7 +37,6 @@ export const handler = async (event) => {
     }
 
     if (!asset.isVideo) {
-      console.log(`❌ [${assetId}] Asset is not a video: ${asset.type}`);
       return {
         statusCode: 400,
         headers: { "Content-Type": "application/json" },
@@ -48,12 +44,10 @@ export const handler = async (event) => {
       };
     }
 
-    console.log(`✅ [${assetId}] Asset validation passed: ${asset.name}`);
 
     const requestedQualities = qualities || ["360p", "480p", "720p", "1080p"];
     
     // Update status to "processing" immediately
-    console.log(`🔄 [${assetId}] Updating status to processing...`);
     const updateCommand = new UpdateCommand({
       TableName: TABLE_NAME,
       Key: { assetId },
@@ -76,17 +70,14 @@ export const handler = async (event) => {
     });
 
     await docClient.send(updateCommand);
-    console.log(`✅ [${assetId}] Status updated to processing`);
 
     // Start background processing (DON'T WAIT FOR IT)
-    console.log(`🚀 [${assetId}] Starting background processing...`);
     processTranscodingInBackground(assetId, userId, requestedQualities)
       .catch(error => {
         console.error(`❌ [${assetId}] Background transcoding failed:`, error);
       });
 
     const elapsed = Date.now() - startTime;
-    console.log(`⚡ [${assetId}] Immediate response ready in ${elapsed}ms`);
 
     // Return IMMEDIATE response
     return {
@@ -124,13 +115,11 @@ export const handler = async (event) => {
 // Background processing function (ASYNC - doesn't block response)
 async function processTranscodingInBackground(assetId, userId, requestedQualities) {
   try {
-    console.log(`🔄 [${assetId}] Starting background transcoding...`);
     
     // Import background processing module
     const { processVideoTranscoding } = await import('./backgroundProcessing.mjs');
     await processVideoTranscoding(assetId, userId, requestedQualities);
     
-    console.log(`✅ [${assetId}] Background transcoding completed successfully`);
   } catch (error) {
     console.error(`❌ [${assetId}] Background transcoding failed:`, error);
     console.error(`📊 [${assetId}] Error stack:`, error.stack);
@@ -154,7 +143,6 @@ async function processTranscodingInBackground(assetId, userId, requestedQualitie
         }
       }));
       
-      console.log(`📝 [${assetId}] Updated status to failed in database`);
     } catch (updateError) {
       console.error(`❌ [${assetId}] Failed to update error status:`, updateError);
     }

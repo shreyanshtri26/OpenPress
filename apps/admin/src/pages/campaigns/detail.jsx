@@ -327,7 +327,6 @@ export default function CampaignDetailPage() {
                                     onBack={() => setCurrentView('detail')}
                                     editData={campaign}
                                     onSave={(data) => {
-                                        console.log("Saved campaign:", data);
                                         fetchCampaignDetail();
                                         setCurrentView('detail');
                                     }}

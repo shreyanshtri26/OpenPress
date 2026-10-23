@@ -565,9 +565,7 @@ export default function Signals({ onBack }: SignalsProps) {
                         ...cachedScrape,
                         sourceUrl: finalStory.sourceUrl,
                     };
-                    console.log('handleImport: Using cached scrape for story:', story.sourceUrl);
                 } else {
-                    console.log('handleImport: Story not fully scraped. Scraping now...', story.sourceUrl);
                     try {
                         const html = await fetchWithProxies(story.sourceUrl, 1000, user?.token || undefined);
                         if (html) {
@@ -645,7 +643,6 @@ export default function Signals({ onBack }: SignalsProps) {
                                         authorName: finalStory.authorName,
                                         author_bio: finalStory.author_bio || '',
                                     });
-                                    console.log('handleImport: Successfully scraped story details:', { scrapedAuthorName, scrapedAuthorBio });
                                 }
                             }
                         } else {
@@ -723,10 +720,6 @@ export default function Signals({ onBack }: SignalsProps) {
             }
 
             // Always append the author bio at the end of the bodyBlocks if author_bio is available
-            console.log('--- Author Bio Import Debug ---');
-            console.log('finalStory.author_bio:', finalStory.author_bio);
-            console.log('replacedDisclosure:', replacedDisclosure);
-            console.log('bodyBlocks length before checking end block:', bodyBlocks.length);
 
             if (finalStory.author_bio) {
                 const lastBlock = bodyBlocks[bodyBlocks.length - 1];
@@ -735,8 +728,6 @@ export default function Signals({ onBack }: SignalsProps) {
                     typeof lastBlock.data?.text === 'string' &&
                     lastBlock.data.text.toLowerCase().includes('(about the author');
 
-                console.log('lastBlock:', lastBlock);
-                console.log('hasAboutAuthor:', hasAboutAuthor);
 
                 if (!hasAboutAuthor) {
                     bodyBlocks.push({
@@ -746,20 +737,15 @@ export default function Signals({ onBack }: SignalsProps) {
                             text: `<em>(About the Author : ${finalStory.author_bio})</em>`
                         }
                     });
-                    console.log('Successfully appended author bio block to the end.');
                 } else {
-                    console.log('Author bio block already exists at the end.');
                     const currentText = lastBlock.data.text;
                     if (!currentText.toLowerCase().includes('<em>') && !currentText.toLowerCase().includes('<i>')) {
                         const cleanText = currentText.replace(/<\/?(em|i|b|strong)>/gi, '');
                         lastBlock.data.text = `<em>${cleanText}</em>`;
-                        console.log('Formatted existing author bio block with <em> tags.');
                     }
                 }
             } else {
-                console.log('Cannot add author bio: finalStory.author_bio is empty or undefined.');
             }
-            console.log('--------------------------------');
 
             const payload = {
                 title: finalStory.title.slice(0, 180),
@@ -800,9 +786,6 @@ export default function Signals({ onBack }: SignalsProps) {
 
             // Print the converted HTML representation to the console
             const htmlContent = convertBlocksToHtml(bodyBlocks);
-            console.log('%c--- Created Story HTML ---', 'color: #10b981; font-weight: bold; font-size: 1.1em;');
-            console.log(htmlContent);
-            console.log('%c---------------------------', 'color: #10b981; font-weight: bold;');
 
             toast.success('Imported! Redirecting...', { id: 'import' });
 

@@ -24,7 +24,6 @@ export const handler = async (event) => {
       };
     }
 
-    console.log(`🔍 Confirming custom thumbnail for asset: ${assetId}`);
 
     // ✅ Get current asset
     const getCommand = new GetCommand({
@@ -55,7 +54,6 @@ export const handler = async (event) => {
         Key: s3Key
       });
       const s3Object = await s3Client.send(headCommand);
-      console.log("✅ Custom thumbnail verified in S3");
     } catch (s3Error) {
       return {
         statusCode: 400,
@@ -73,7 +71,6 @@ export const handler = async (event) => {
     let replacementInfo = null;
 
     if (previousCustomThumbnail && previousCustomThumbnail !== customThumbnailUrl) {
-      console.log("🔄 Replacing existing custom thumbnail");
       replacementInfo = {
         previousUrl: previousCustomThumbnail,
         newUrl: customThumbnailUrl,
@@ -87,7 +84,6 @@ export const handler = async (event) => {
           Bucket: BUCKET_NAME,
           Key: oldS3Key
         }));
-        console.log("🗑️ Old custom thumbnail deleted");
       } catch (deleteError) {
         console.warn("⚠️ Failed to delete old custom thumbnail:", deleteError);
       }
@@ -159,7 +155,6 @@ export const handler = async (event) => {
 
     await docClient.send(updateCommand);
 
-    console.log("✅ Custom thumbnail confirmed and activated");
 
     return {
       statusCode: 200,

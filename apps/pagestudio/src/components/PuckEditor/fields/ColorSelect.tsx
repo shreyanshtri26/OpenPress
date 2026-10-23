@@ -113,7 +113,7 @@ export function ColorSelect({
           onChange={(v) => onChange(String(v ?? ''))}
           ariaLabel={label ?? 'Colour'}
           options={[
-            { label: 'Default Color', value: '' },
+            { label: 'Default Color', value: '', swatch: defaultColor },
             ...(isLoading && options.length === 0 ? [{ label: 'Loading colors…', value: '__loading', disabled: true }] : []),
             ...options.map((option) => ({ label: option, value: option })),
           ]}

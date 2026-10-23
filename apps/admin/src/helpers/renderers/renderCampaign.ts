@@ -123,7 +123,6 @@ export function renderCampaign(props: CampaignAdProps, ctx?: RenderContext): str
         const isVisible = !activeCampaign || alwaysShow;
         if (isVisible && !placementName.toLowerCase().includes('leaderboard')) {
             if (blockId && ctx?.renderedBlockIds && ctx.renderedBlockIds.has(blockId)) {
-                console.log(`Fallback block ${blockId} already rendered elsewhere, skipping in ad.`);
                 return '';
             }
 

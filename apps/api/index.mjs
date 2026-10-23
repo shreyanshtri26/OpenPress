@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { requestEventForLogging } from './requestLogging.mjs';
 import { disabledResponse, featureForRoute, isEnabled } from './lib/features.mjs';
 
 //Articles
@@ -195,7 +194,6 @@ const applyCors = (response, corsHeaders) => ({
 });
 
 export const handler = async (event, context) => {
-  console.log('Received event:', JSON.stringify(requestEventForLogging(event), null, 2));
 
   // Early exit for EventBridge scheduled cron (no rawPath, just task marker)
   if (event.task === 'publishScheduledStories') {

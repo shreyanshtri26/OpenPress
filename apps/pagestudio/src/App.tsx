@@ -67,7 +67,6 @@ function App() {
 
   useEffect(() => {
     initializeStories({}).then(() => {
-      console.log('✅ Stories initialized');
     });
   }, []);
 
@@ -83,7 +82,6 @@ function App() {
 
   if (route.startsWith('/authors/')) {
     const authorSlug = route.replace('/authors/', '').replace(/\.html$/, '');
-    console.log('authorSlug', authorSlug);
     return <PublishedPage pageId="author-profile" authorSlug={authorSlug} />;
   }
 

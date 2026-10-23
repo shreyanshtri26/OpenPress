@@ -207,7 +207,6 @@ function DashboardPageContent() {
       const cached = getStoriesCache(cacheKey);
 
       if (cached) {
-        console.log('✅ Using cached stories');
         if (!isCancelled) {
           setStories(cached.data);
           setCurrentOffset(cached.data.length); // ✅ Fix: Set offset to cached length
@@ -217,7 +216,6 @@ function DashboardPageContent() {
         return;
       }
 
-      console.log('🔄 Fetching fresh stories...');
       setIsLoading(true);
 
       try {
@@ -274,10 +272,7 @@ function DashboardPageContent() {
           hasFetchedRef.current = true;
 
           const responseSize = JSON.stringify(response).length;
-          console.log(`📦 Response size: ${(responseSize / 1024).toFixed(2)} KB`);
-          console.log(`📊 Stories loaded: ${mappedStories.length} / ${totalStories}`);
-          if (response.data?.length) console.log(`📏 Avg story size: ${(responseSize / response.data.length / 1024).toFixed(2)} KB`);
-          console.log(`✅ Loaded ${mappedStories.length} stories for Kanban`);
+          if (response.data?.length) undefined;
         }
       } catch (error) {
         if (!isCancelled) {
@@ -303,11 +298,9 @@ function DashboardPageContent() {
 
   const loadMoreStories = async () => {
     if (isLoadingMore || !hasMore) {
-      console.log('⚠️ Load More blocked:', { isLoadingMore, hasMore });
       return;
     }
 
-    console.log(`🔄 Loading more stories... (current offset: ${currentOffset})`);
     setIsLoadingMore(true);
 
     try {
@@ -329,11 +322,6 @@ function DashboardPageContent() {
         params.set('authorId', user.userId);
       }
 
-      console.log('📡 Fetching with params:', {
-        limit: ITEMS_PER_PAGE,
-        offset: currentOffset,
-        status: workflowStatuses.join(','),
-      });
 
       const res = await apiFetch(`${API}/story/fetchStories?${params.toString()}`, {
         method: 'GET',
@@ -380,13 +368,9 @@ function DashboardPageContent() {
 
         setHasMore(hasMoreStories);
 
-        console.log(`✅ Loaded ${mappedStories.length} more stories`);
-        console.log(`📊 Total loaded: ${totalLoaded} / ${totalStories}`);
-        console.log(`🔄 Has more: ${hasMoreStories}`);
 
         toast.success(`Loaded ${mappedStories.length} more stories`);
       } else {
-        console.log('📭 No more stories to load');
         setHasMore(false);
         toast.success('No more stories to load');
       }
@@ -433,7 +417,6 @@ function DashboardPageContent() {
   };
 
   const handleRaiseStory = () => {
-    console.log("11111111");
     // Check "Open" permission for "raise_a_story" status (same pattern as KanbanBoard)
     const hasOpenPermission = checkStoryPermission(
       permissions ?? null,
@@ -473,7 +456,6 @@ function DashboardPageContent() {
 
   // ✅ UPDATED: Fetch full story before opening editor
   const handleEditStory = async (storyData: Story) => {
-    console.log('📖 Opening story:', storyData.storyId);
 
     // ✅ Show loading state
     setIsLoadingStory(true);
@@ -496,7 +478,6 @@ function DashboardPageContent() {
       const response = await res.json();
 
       if (response.data) {
-        console.log('✅ Loaded full story with description');
         setStoryToEdit(response.data); // ✅ Set full story with ALL fields
         setActiveView('raiseStory');
       } else {
@@ -703,7 +684,6 @@ function DashboardPageContent() {
         return null;
       }
 
-      console.log('✅ Role fetched successfully:', data.role);
 
       return data.permissions;
     } catch (error) {
@@ -719,7 +699,6 @@ function DashboardPageContent() {
       const rolePermissions = await fetchRolePermissions(user.role);
       if (rolePermissions && updatePermissions) {
         updatePermissions(rolePermissions);
-        console.log('🔐 Stored role permissions:', rolePermissions);
       }
     };
 

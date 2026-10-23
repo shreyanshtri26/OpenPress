@@ -43,7 +43,6 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
     setStory(found || null);
   }, [storyId]);
 
-  console.log("story in BlogPostCard >>>", story);
 
   // 🧠 Merge story data with fallback props
   const displayTitle = story?.headline || title;
@@ -56,13 +55,10 @@ export const BlogPostCard: React.FC<BlogPostCardProps> = ({
   let displayBody = bodyText || "";
   if (story?.description?.blocks && story.description.blocks.length > 0) {
     displayBody = renderEditorJsBlocks(story.description.blocks);
-    console.log("Using EditorJS blocks for displayBody >>>", displayBody);
   } else if (story?.summary) {
     displayBody = story.summary;
-    console.log("Using summary for displayBody >>>", displayBody);
   }
 
-  console.log("displayBodyyyy >>>", displayBody);
   return (
     <article className={`${className}`}>
       <div className="flex flex-col">

@@ -141,7 +141,6 @@ const ComponentRegistry: Record<string, RendererFn> = {
     // Extract the active section from current story if available
     const rawSection = ctx.currentStory?.section || 'HOME';
     const activeSection = rawSection.toString().trim().toUpperCase();
-    console.log("active section in component registry of renderblogpage >>>", activeSection);
 
     return renderMastheadNavbar({
       ...props,
@@ -337,7 +336,6 @@ export function renderPageFromPuckJSON(
   const { content = [], zones = {} } = data || {};
   const sections = options.sections ?? [];
   const currentStory = options.currentStory ?? null;
-  console.log("current story in render page from puck json function >>>", currentStory);
   // Helper to strip HTML tags
   const stripHtml = (html: string | undefined | null): string => {
     if (!html) return "";
@@ -484,7 +482,6 @@ export function renderPageFromPuckJSON(
     .map((block: PuckBlock) => renderComponent(block))
     .join("\n");
 
-  console.log("contentHtml >>>", contentHTML);
 
   /* ==================================================
    * Popup Ad — page-wide overlay, injected once here (not as a Puck block,

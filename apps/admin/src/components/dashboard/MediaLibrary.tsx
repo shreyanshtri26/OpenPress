@@ -83,7 +83,6 @@ export default function MediaLibrary({ onBack }: MediaLibraryProps) {
   `;
   };
 
-  console.log("user>>>>", user);
   const isUserLoading = userContext?.loading ?? true;
 
   // Handle filter changes
@@ -273,7 +272,6 @@ export default function MediaLibrary({ onBack }: MediaLibraryProps) {
             onBack={handleBackToLibrary}
             onAssetUpdate={(updatedAsset: AssetRecord) => {
               setUploadedAsset(updatedAsset);
-              console.log("Asset updated in MediaLibrary:", updatedAsset);
             }}
           />
         )}

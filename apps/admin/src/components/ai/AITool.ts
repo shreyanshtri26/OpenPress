@@ -102,7 +102,6 @@ export class AITool {
   resetBlockIndexStorage() {
     this.storedBlockIndex = -1;
     this.blockIndexStored = false;
-    console.log('Block index storage reset');
   }
 
   // Method to replace the stored block with AI response
@@ -152,7 +151,6 @@ export class AITool {
   }
 
   showAIMenu() {
-    console.log('inside showAIMenu function....');
     if (this.showingMenu) return;
     this.showingMenu = true;
 

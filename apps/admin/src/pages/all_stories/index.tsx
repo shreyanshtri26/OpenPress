@@ -45,7 +45,6 @@ export default function AllStoriesPage() {
       const response = await res.json();
 
       if (response.data) {
-        console.log('✅ Loaded full story with description');
         // ✅ Save the FULL story data to sessionStorage
         if (typeof window !== "undefined") {
           window.sessionStorage.setItem("dashboard_edit_story", JSON.stringify(response.data));

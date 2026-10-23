@@ -271,7 +271,6 @@ export default function CampaignsManager() {
 
         // Pro-Developer Check: If unpausing, verify there are no conflicts with other active campaigns
         if (!isCurrentlyActive) {
-            console.log("🔍 DEBUG - UNPAUSE CONFLICT CHECK FOR:", cp.name);
             const hasConflict = (campaigns || []).some(otherCp => {
                 if (String(otherCp.id) === String(cp.id)) return false;
 
@@ -302,9 +301,6 @@ export default function CampaignsManager() {
 
                         const overlap = (startA <= endB && endA >= startB);
                         if (overlap) {
-                            console.log(`⚠️ CONFLICT DETECTED with "${otherCp.name}" on placement "${job.placement}"`);
-                            console.log(`- Current: ${startA.toDateString()} to ${endA.toDateString()}`);
-                            console.log(`- Other: ${startB.toDateString()} to ${endB.toDateString()}`);
                         }
                         return overlap;
                     });
@@ -612,7 +608,6 @@ export default function CampaignsManager() {
                     editData={window.editingCampaign}
                     allCampaigns={campaigns}
                     onSave={(data) => {
-                        console.log("Saving...", data);
                         if (window.editingCampaign) {
                             delete window.editingCampaign;
                         }

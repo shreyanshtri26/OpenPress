@@ -35,9 +35,6 @@ export default function CoreTab({
 
     const getFormat = () => apiMetadata?.extractedMetadata?.format || (isVideo ? "mp4" : isAudio ? "mp3" : "jpg");
 
-    console.log("isVideo>>>", isVideo);
-    console.log("isAudio>>>", isAudio);
-    console.log("isImage>>>", isImage);
 
 
     return (

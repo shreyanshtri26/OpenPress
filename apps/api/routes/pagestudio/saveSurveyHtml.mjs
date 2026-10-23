@@ -28,7 +28,6 @@ export const handler = async (event) => {
     //          e.g. https://openpress.com/surveys/survey_abc123.html
     const s3Key = `surveys/${surveyId}.html`;
 
-    console.log(`🔧 Publishing SURVEY page: ${BUCKET_NAME}/${s3Key}`);
 
     await s3Client.send(
       new PutObjectCommand({
@@ -49,7 +48,6 @@ export const handler = async (event) => {
     const duration = Date.now() - startTime;
     const pageUrl = `${FRONTEND_WEBSITE_URL}/surveys/${surveyId}.html`;
 
-    console.log(`✅ Survey page published in ${duration}ms → ${pageUrl}`);
 
     return {
       statusCode: 200,

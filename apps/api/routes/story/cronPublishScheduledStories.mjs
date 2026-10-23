@@ -65,7 +65,6 @@ const queueStoryRepublish = async (storiesToRepublish) => {
 };
 
 export const handler = async (event) => {
-  console.log("[cronPublishScheduledStories] Triggered", JSON.stringify(event));
   const now = new Date().toISOString();
   const results = { processed: 0, published: 0, skipped: 0, errors: [] };
   const publishedStories = [];
@@ -82,7 +81,6 @@ export const handler = async (event) => {
       );
 
     const dueStories = dueStoryRows.map((r) => formatStory(r));
-    console.log(`[cronPublishScheduledStories] Found ${dueStories.length} due stories`);
 
     for (const story of dueStories) {
       results.processed++;
@@ -158,7 +156,6 @@ export const handler = async (event) => {
           })
           .where(eq(stories.storyId, storyId));
 
-        console.log(`[cronPublishScheduledStories] Published story ${storyId}`);
         results.published++;
 
         const parsed = parseStory({ storyId, slug: slug || storyId, section: resolvedSection, category: story.Category ?? story.category });
@@ -184,7 +181,6 @@ export const handler = async (event) => {
     };
   }
 
-  console.log("[cronPublishScheduledStories] Complete:", results);
   return {
     statusCode: 200,
     body: JSON.stringify({ message: "Scheduled publish cron complete", results })

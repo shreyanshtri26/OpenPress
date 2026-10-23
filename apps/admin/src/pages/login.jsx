@@ -75,26 +75,17 @@ function ReaderLogin() {
 
       // Check if user was redirected due to timeout
       const lastRoute = localStorage.getItem('lastRoute');
-      console.log('🔍 Checking lastRoute:', lastRoute);
-      console.log('🔍 lastRoute type:', typeof lastRoute);
-      console.log('🔍 Is not /login?', lastRoute !== '/login');
-      console.log('🔍 Condition result:', lastRoute && lastRoute !== '/login');
 
       if (lastRoute && lastRoute !== '/login') {
-        console.log('✅ Redirecting back to saved route:', lastRoute);
         localStorage.removeItem('lastRoute');
         router.push(lastRoute);
       } else {
-        console.log('⚠️ No saved route, using default routing');
         // Default routing based on role
         const role = res.user.role;
-        console.log('👤 User role:', role);
 
         if (role) {
-          console.log('📍 Redirecting to /dashboard');
           router.push('/dashboard');
         } else {
-          console.log('📍 Redirecting to /');
           router.push('/');
         }
       }

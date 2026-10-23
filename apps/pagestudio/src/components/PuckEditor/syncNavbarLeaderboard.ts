@@ -425,14 +425,12 @@ export const publishAllNavbarPagesHtml = async (
   const layout = extractHomeChromeLayout(homeData, placements);
   if (!layout) return;
 
-  console.log('[navbar-leaderboard sync] starting bulk publish', layout);
 
   await Promise.all(
     FLAT_PAGE_TARGETS.map(async (target) => {
       const record = await fetchPageRecord(target.pageType as PageType);
       const publishableData = getPublishableData(record?.data);
       if (!record || !publishableData) {
-        console.log(`[navbar-leaderboard sync] skip ${target.pageType} (no saved record)`);
         return;
       }
 
@@ -458,7 +456,6 @@ export const publishAllNavbarPagesHtml = async (
       }
 
       await postSaveHtml(target.endpoint, { htmlContent });
-      console.log(`[navbar-leaderboard sync] published ${target.pageType} via ${target.endpoint}`);
     })
   );
 };
@@ -485,9 +482,6 @@ export const publishAllSectionPagesHtml = async (
   if (!layout) return;
   if (!sectionsList || sectionsList.length === 0) return;
 
-  console.log(
-    `[navbar-leaderboard sync] starting Section bulk publish for ${sectionsList.length} section(s)`
-  );
 
   await Promise.all(
     sectionsList.map(async (sectionName) => {
@@ -495,7 +489,6 @@ export const publishAllSectionPagesHtml = async (
       const record = await fetchPageRecordByKey(key);
       const publishableData = getPublishableData(record?.data);
       if (!record || !publishableData) {
-        console.log(`[navbar-leaderboard sync] skip ${key} (no saved record)`);
         return;
       }
 
@@ -524,7 +517,6 @@ export const publishAllSectionPagesHtml = async (
         htmlContent,
         sectionValue: sectionName,
       });
-      console.log(`[navbar-leaderboard sync] published ${key}`);
     })
   );
 };
@@ -544,9 +536,6 @@ export const publishAllAuthorPagesHtml = async (
   const authors = getAuthors();
   if (!authors.length) return;
 
-  console.log(
-    `[navbar-leaderboard sync] starting Author bulk publish for ${authors.length} author(s)`
-  );
 
   await Promise.all(
     authors.map(async (author) => {
@@ -554,7 +543,6 @@ export const publishAllAuthorPagesHtml = async (
       const record = await fetchPageRecordByKey(key);
       const publishableData = getPublishableData(record?.data);
       if (!record || !publishableData) {
-        console.log(`[navbar-leaderboard sync] skip ${key} (no saved record)`);
         return;
       }
 
@@ -592,7 +580,6 @@ export const publishAllAuthorPagesHtml = async (
         authorSlug,
         userId: author.id,
       });
-      console.log(`[navbar-leaderboard sync] published ${key}`);
     })
   );
 };
@@ -617,7 +604,6 @@ export const publishAllBlogStoriesHtml = async (
   const record = await fetchPageRecordByKey('Blog');
   const publishableData = getPublishableData(record?.data);
   if (!record || !publishableData) {
-    console.log('[navbar-leaderboard sync] skip Blog (no saved template)');
     return;
   }
 
@@ -633,9 +619,6 @@ export const publishAllBlogStoriesHtml = async (
   }
   if (storiesToPublish.length === 0) return;
 
-  console.log(
-    `[navbar-leaderboard sync] starting Blog bulk publish for ${storiesToPublish.length} story/stories`
-  );
 
   const authors = getAuthors();
 
@@ -681,7 +664,6 @@ export const publishAllBlogStoriesHtml = async (
     }
   }
 
-  console.log('[navbar-leaderboard sync] Blog bulk publish complete');
 };
 
 /**
@@ -775,9 +757,6 @@ export const publishPwaFiles = async (): Promise<boolean> => {
       console.warn('[PWA publish] savePwaFiles returned HTTP', res.status);
       return false;
     }
-
-    const json = await res.json().catch(() => null);
-    console.log('[PWA publish] PWA files uploaded to S3:', json?.data?.uploaded);
     return true;
   } catch (e) {
     console.warn('[PWA publish] publishPwaFiles failed:', e);

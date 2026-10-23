@@ -31,7 +31,6 @@ export const handler = async (event) => {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    console.log(`🔄 Password reset attempt for: ${normalizedEmail}`);
 
     const [user] = await db
       .select()
@@ -39,7 +38,6 @@ export const handler = async (event) => {
       .where(eq(users.email, normalizedEmail));
 
     if (!user) {
-      console.log(`⚠️ User not found: ${normalizedEmail}`);
       return {
         statusCode: 400,
         headers: { "Content-Type": "application/json" },
@@ -49,7 +47,6 @@ export const handler = async (event) => {
 
     // Check if reset token exists
     if (!user.resetToken || !user.resetExpiresAt) {
-      console.log(`⚠️ No reset token found for: ${normalizedEmail}`);
       return {
         statusCode: 400,
         headers: { "Content-Type": "application/json" },
@@ -64,7 +61,6 @@ export const handler = async (event) => {
     const expiryDate = new Date(user.resetExpiresAt);
     
     if (now > expiryDate) {
-      console.log(`⏰ Token expired for: ${normalizedEmail}`);
       return {
         statusCode: 400,
         headers: { "Content-Type": "application/json" },
@@ -77,7 +73,6 @@ export const handler = async (event) => {
     // Verify token matches (Hashed comparison)
     const isTokenValid = await bcrypt.compare(resetToken, user.resetToken);
     if (!isTokenValid) {
-      console.log(`❌ Token mismatch for: ${normalizedEmail}`);
       return {
         statusCode: 400,
         headers: { "Content-Type": "application/json" },
@@ -85,7 +80,6 @@ export const handler = async (event) => {
       };
     }
 
-    console.log(`✅ Token verified for: ${user.fullName || user.email}`);
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -99,7 +93,6 @@ export const handler = async (event) => {
       })
       .where(eq(users.email, normalizedEmail));
 
-    console.log(`💾 Password updated and reset token cleared for: ${normalizedEmail}`);
 
     return {
       statusCode: 200,

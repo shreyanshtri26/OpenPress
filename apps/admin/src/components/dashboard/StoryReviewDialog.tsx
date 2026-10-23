@@ -7,8 +7,8 @@ import apiFetch from '../../utils/api';
 
 // Mock toast and UserContext for demo
 const toast = {
-    success: (msg) => console.log('Success:', msg),
-    error: (msg) => console.log('Error:', msg)
+    success: (msg) => undefined,
+    error: (msg) => undefined
 };
 
 const UserContext = React.createContext({
@@ -17,10 +17,9 @@ const UserContext = React.createContext({
 
 export default function StoryReviewDialog({
     story,
-    onClose = () => console.log('Dialog closed'),
+    onClose = () => undefined,
     isOpen
 }) {
-    console.log("story >>", story);
 
     const { user } = useContext(UserContext);
 
@@ -260,7 +259,6 @@ export default function StoryReviewDialog({
             if (res.ok) {
                 const data = await res.json();
                 const comments = data?.data || [];
-                console.log("comments data of a story >>", comments);
 
                 // Filter out resolved comments
                 const pendingComments = comments.filter(c => c.status !== "resolve");
@@ -348,11 +346,10 @@ export default function StoryReviewDialog({
     }, []);
 
     const handleEditComment = async (commentId, newText) => {
-        console.log("commentId>>", commentId);
 
         if (isReadOnly) return; // Disable in read-only mode
 
-        console.log('Starting edit comment...'); // Debug log
+// Debug log
 
         if (!newText.trim()) {
             toast.error('Comment text cannot be empty');
@@ -378,7 +375,7 @@ export default function StoryReviewDialog({
             });
 
             if (res.ok) {
-                console.log('Edit successful, showing toast...'); // Debug log
+// Debug log
                 toast.success('Comment updated successfully!', {
                     duration: 3000,
                     position: 'top-right',
@@ -403,7 +400,6 @@ export default function StoryReviewDialog({
     const handleDeleteComment = async () => {
         if (isReadOnly || !commentToDelete) return; // Disable in read-only mode
 
-        console.log('Starting delete comment...');
 
         try {
             const res = await apiFetch(
@@ -422,7 +418,6 @@ export default function StoryReviewDialog({
             const data = await res.json().catch(() => ({})); // always try to parse JSON
 
             if (res.ok) {
-                console.log('Delete response:', data);
                 toast.success('Comment deleted successfully!', {
                     duration: 3000,
                     position: 'top-right',
@@ -505,9 +500,7 @@ export default function StoryReviewDialog({
     const handleCommentAction = async (actionText = '') => {
         if (isReadOnly || !selectedCommentForAction) return; // Disable in read-only mode
 
-        console.log("selected comment>>", selectedCommentForAction);
 
-        console.log("selected comment for action >>", selectedCommentForAction);
 
         if ((actionType === 'reopen' || actionType === 'review') && !actionText.trim()) {
             toast.error('Please provide a comment');
@@ -515,7 +508,6 @@ export default function StoryReviewDialog({
         }
 
         try {
-            console.log(`${actionType} comment:`, selectedCommentForAction.commentId, actionText);
 
             let actionData = {
                 actionType: actionType === 'review' ? 'update' : actionType,
@@ -526,7 +518,6 @@ export default function StoryReviewDialog({
                 commentId: selectedCommentForAction?.commentId
             };
 
-            console.log("action Data>>", actionData);
 
             const res = await apiFetch(`${env.backendApi}/api/story/postCommentAction`, {
                 method: 'POST',
@@ -541,7 +532,6 @@ export default function StoryReviewDialog({
 
             if (res.ok) {
                 const data = await res.json();
-                console.log("response >>", data);
                 toast.success(`Comment ${actionType}d successfully!`);
                 closeActionModal();
                 fetchComments();
@@ -555,7 +545,6 @@ export default function StoryReviewDialog({
 
     // ✅ UPDATED: Render comment card with read-only support
     const renderCommentCard = (comment, tabType) => {
-        console.log("comment>>", comment);
 
 
         const isHighlighted = highlightedComment?._id === comment?._id;
@@ -734,7 +723,6 @@ export default function StoryReviewDialog({
                 toast.error(`Failed to ${status.toLowerCase().replace('_', ' ')} story: ${errorData.message || 'Unknown error'}`);
             }
 
-            console.log("Story action response:", res);
         } catch (err) {
             console.error('Error updating story:', err);
             toast.error(`Failed to ${status.toLowerCase().replace('_', ' ')} story: ${err?.message}`);
@@ -900,7 +888,7 @@ export default function StoryReviewDialog({
                             autoFocus
                         />
                         <div className="flex gap-2">
-                            {console.log("editorNote>>", editorNote)}
+                            {}
                             <button
                                 onClick={() => handleEditComment(editorNote.commentId, editNoteText)}
                                 disabled={!editNoteText.trim() || editNoteText.trim() === editorNote.commentText}

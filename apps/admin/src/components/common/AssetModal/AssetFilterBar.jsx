@@ -41,6 +41,7 @@ const AssetFilterBar = ({
   sortByValue,
   onSortByChange,
   onShowUpload,
+  showUpload = true,
 }) => {
   const [selectedDateUpdatedValue, setSelectedDateUpdatedValue] = useState(dateUpdatedValue);
   const [isCustomDateRangeOpen, setIsCustomDateRangeOpen] = useState(false);
@@ -88,11 +89,11 @@ const AssetFilterBar = ({
   );
 
   return (
-  <div className="header-bar-inside-cardview">
+  <div className="header-bar-inside-cardview pb-4">
     <div className="relume-filter-container">
       {/* Mobile: Grid layout, Desktop: Horizontal flex */}
-      <div className="hidden md:flex md:items-center md:justify-between md:gap-4">
-        <div className="flex items-center gap-3">
+      <div className="hidden md:flex md:flex-wrap md:items-center md:justify-between md:gap-x-4 md:gap-y-3">
+        <div className="flex min-w-0 flex-wrap items-center gap-3">
           <div className="relative w-72 lg:w-80 min-w-[240px]">
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
               <svg
@@ -112,7 +113,7 @@ const AssetFilterBar = ({
             </div>
             <TextBox
               className="search-input w-full"
-              inputClassName="pl-9 h-10 border border-gray-300 rounded-md focus:border-black focus:ring-1 focus:ring-black text-sm"
+              inputClassName="!pl-9 h-10 border border-gray-300 rounded-md focus:border-black focus:ring-1 focus:ring-black text-sm"
               placeholder="Search With aI..."
               value={searchValue}
               valueChangeEvent="input"
@@ -167,7 +168,7 @@ const AssetFilterBar = ({
         </div>
  
         <div className="flex-shrink-0">
-          <CustomButton onClick={onShowUpload}>Upload</CustomButton>
+          {showUpload && <CustomButton onClick={onShowUpload}>Upload</CustomButton>}
         </div>
       </div>
  
@@ -193,7 +194,7 @@ const AssetFilterBar = ({
           </div>
           <TextBox
             className="search-input w-full"
-            inputClassName="pl-9 h-10 border border-gray-300 rounded-md focus:border-black focus:ring-1 focus:ring-black text-sm"
+            inputClassName="!pl-9 h-10 border border-gray-300 rounded-md focus:border-black focus:ring-1 focus:ring-black text-sm"
             placeholder="Search With aI..."
             value={searchValue}
             valueChangeEvent="input"
@@ -248,7 +249,7 @@ const AssetFilterBar = ({
           </div>
  
           <div>
-            <CustomButton onClick={onShowUpload}>Upload</CustomButton>
+            {showUpload && <CustomButton onClick={onShowUpload}>Upload</CustomButton>}
           </div>
         </div>
       </div>
@@ -258,6 +259,7 @@ const AssetFilterBar = ({
 };
  
 AssetFilterBar.propTypes = {
+  showUpload: PropTypes.bool,
   accordionArrowTemplate: PropTypes.func,
   searchValue: PropTypes.string.isRequired,
   onSearchChange: PropTypes.func.isRequired,

@@ -43,9 +43,6 @@ export const handler = async (event) => {
     // ✅ S3 key → /section/{value}/index.html
     const s3Key = `${sectionSlug}/index.html`;
 
-    console.log(
-      `🔧 Publishing SECTION page: ${BUCKET_NAME}/${s3Key}`
-    );
 
     // ✅ Upload (overwrite)
     await s3Client.send(
@@ -67,8 +64,6 @@ export const handler = async (event) => {
       })
     );
 
-    console.log("✅ Section page published successfully");
-    console.log("⏱ Time taken:", Date.now() - startTime, "ms");
 
     return {
       statusCode: 200,

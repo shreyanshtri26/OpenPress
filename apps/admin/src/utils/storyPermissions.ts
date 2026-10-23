@@ -15,7 +15,6 @@ export const checkStoryPermission = (
   action: 'Create' | 'Open' | 'Edit' | 'Decide',
   userRole?: string
 ): boolean => {
-  console.log("inside check story permission ...", permissions, status, action, userRole);
   if (!permissions) return false;
   if (!status) return true;
 
@@ -31,10 +30,8 @@ export const checkStoryPermission = (
     'ready_to_publish': 'Ready to publish',
     'published': 'Published',
   };
-  console.log("status map ...", statusMap);
 
   const permissionKey = statusMap[status.toLowerCase().replace(/ /g, '_')];
-  console.log("permission key ...", permissions?.editorial?.[permissionKey]?.[action]);
   if (!permissionKey) return false;
 
   // Helper to detect role

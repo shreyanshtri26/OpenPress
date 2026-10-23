@@ -12,7 +12,6 @@
 export const extractAssetIdsFromResponse = (aiResponse) => {
   if (!aiResponse) return [];
   
-  console.log('🔍 Extracting from response:', aiResponse);
   
   const assetData = [];
   
@@ -22,7 +21,6 @@ export const extractAssetIdsFromResponse = (aiResponse) => {
   let s3Match;
   while ((s3Match = s3UrlPattern.exec(aiResponse)) !== null) {
     const filename = s3Match[1];
-    console.log('  ✅ Found S3 URL with filename:', filename);
     assetData.push(filename);
   }
   
@@ -30,7 +28,6 @@ export const extractAssetIdsFromResponse = (aiResponse) => {
   const uuidPattern = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi;
   const foundUuids = aiResponse.match(uuidPattern);
   if (foundUuids) {
-    console.log('  ✅ Found UUIDs:', foundUuids);
     assetData.push(...foundUuids);
   }
   
@@ -38,13 +35,11 @@ export const extractAssetIdsFromResponse = (aiResponse) => {
   const filenamePattern = /[\w\-\.]+\.(jpg|jpeg|png|gif|mp4|mov|pdf|doc|docx|webp|svg|JPG|JPEG|PNG)/gi;
   const foundFilenames = aiResponse.match(filenamePattern);
   if (foundFilenames) {
-    console.log('  ✅ Found filenames:', foundFilenames);
     assetData.push(...foundFilenames);
   }
   
   // Remove duplicates
   const uniqueData = [...new Set(assetData)];
-  console.log('  📦 Final extracted data:', uniqueData);
   
   return uniqueData;
 };

@@ -42,28 +42,22 @@ function getApplicableQualities(videoMetadata, requestedQualities) {
   const sourceHeight = videoMetadata.height;
   const sourceWidth = videoMetadata.width;
   
-  console.log(`📐 Source resolution: ${sourceWidth}x${sourceHeight}`);
-  console.log(`🎯 Requested qualities: ${requestedQualities.join(', ')}`);
   
   // ✅ Generate ALL requested qualities - let FFmpeg handle upscaling
   const applicable = requestedQualities.filter(quality => {
     const config = QUALITY_CONFIGS[quality];
     if (!config) {
-      console.log(`❌ ${quality}: Invalid quality config`);
       return false;
     }
     
-    console.log(`✅ ${quality}: Will be generated (${config.width}x${config.height})`);
     return true;
   });
   
   // Ensure at least 360p
   if (applicable.length === 0) {
     applicable.push("360p");
-    console.log(`✅ Fallback: Added 360p as minimum quality`);
   }
   
-  console.log(`🎯 Final qualities to generate: ${applicable.join(', ')}`);
   return applicable;
 }
 
@@ -74,7 +68,6 @@ export async function processVideoTranscoding(assetId, userId, requestedQualitie
   let tempOutputPaths = [];
 
   try {
-    console.log(`🎬 Background processing started for: ${assetId}`);
 
     // Find FFmpeg binaries
     const ffmpegPath = findFFmpegPath();
@@ -113,7 +106,6 @@ export async function processVideoTranscoding(assetId, userId, requestedQualitie
     
     for (const quality of applicableQualities) {
       try {
-        console.log(`🔄 Processing ${quality}...`);
         
         const outputPath = `/tmp/${Date.now()}_${quality}_${assetId}.mp4`;
         tempOutputPaths.push(outputPath);
@@ -140,7 +132,6 @@ export async function processVideoTranscoding(assetId, userId, requestedQualitie
           createdAt: new Date().toISOString()
         };
         
-        console.log(`✅ ${quality} completed: ${(stats.size / 1024 / 1024).toFixed(2)} MB`);
         
       } catch (qualityError) {
         console.error(`❌ Failed ${quality}:`, qualityError.message);
@@ -186,7 +177,6 @@ export async function processVideoTranscoding(assetId, userId, requestedQualitie
 
     await docClient.send(updateCommand);
 
-    console.log(`✅ Background transcoding completed for ${assetId} in ${Date.now() - startTime}ms`);
 
   } finally {
     // Cleanup

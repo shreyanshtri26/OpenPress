@@ -334,7 +334,6 @@ export function renderComponent(
   block: PuckBlock | null | undefined,
   ctx: RenderContext
 ): string {
-  console.log("prepared ctx >>>", ctx);
   if (!block || typeof block !== "object") return "";
 
   const { type, props = {} } = block;
@@ -366,9 +365,6 @@ export function renderBlogGrid(
   storiesById: StoryMap,
   ctx?: RenderContext | null
 ): string {
-  console.log("props inside blog grid >>>>", props);
-  console.log("zones inside blog grid >>>>", zones);
-  console.log("stories inside blog grid >>>", storiesById);
   const id = props.id;
 
   // Build context if not passed (for backwards compatibility)
@@ -411,7 +407,6 @@ export function renderBlogGrid(
         ? { ...renderCtx, moreStoriesInjections: pageMoreStoriesInjections }
         : renderCtx;
 
-    console.log("zone Items >>>>", zoneItems);
     return zoneItems
       .map((item) => {
         // Suppress BlogMoreStoriesCard items that are being injected inline
@@ -708,8 +703,6 @@ export function renderBlogShowcaseCard(
 
 // Recommended Card
 function renderRecommendCard(props: { storyId?: string; title?: string; description?: string; imageUrl?: string; imageAlt?: string; className?: string }, storyData: BlogStory | null | undefined) {
-  console.log("props data in recommend card >>>", props);
-  console.log("story data in recommend card >>>", storyData)
   const {
     // storyId,
     title: fallbackTitle = "Recommended Story",
@@ -721,7 +714,6 @@ function renderRecommendCard(props: { storyId?: string; title?: string; descript
 
   const imageUrl = storyData?.image || storyData?.imageUrl || fallbackImage;
   const description = storyData?.section || fallbackDesc;
-  console.log("description >>>", description);
   const title = storyData?.title || storyData?.headline || fallbackTitle;
   const imageAlt = storyData?.imageAlt || fallbackAlt;
   const publishUrl = storyData?.publishUrl || '';
@@ -1749,11 +1741,9 @@ export function renderBlogMoreStoriesCard(props: {
 
 
 //  RENDER: ShareCard (copy + share). Each BlogPostCard instance wires its own buttons.
-function renderShareCard({ title, url = "" }: { title?: string; url?: string }, containerId: string) {
+function renderShareCard({ title }: { title?: string; url?: string }, containerId: string) {
   // create buttons with data attributes; wiring script will be inserted by parent
   const safeTitle = escapeHtml(title || "");
-  const safeUrl = escapeHtml(url || "");
-  console.log("safe Url >>", safeUrl);
 
   return `
     <div class="flex flex-col items-start space-y-4 pb-2 pt-[1.40rem]">
@@ -2230,7 +2220,7 @@ export function renderBlogPostCard(
     bodyText?: string;
     className?: string;
   },
-  zones: Record<string, PuckBlock[]>,
+  _zones: Record<string, PuckBlock[]>,
   storiesById: StoryMap,
   ctx?: RenderContext
 ): string {
@@ -2240,7 +2230,6 @@ export function renderBlogPostCard(
     title = "Default Blog Title",
     author = "Author Name",
     time = "Just now",
-    category = "CATEGORY",
     section,
     imageUrl,
     bodyText,
@@ -2363,9 +2352,6 @@ export function renderBlogPostCard(
   }
 
 
-  console.log("props of blog post card >>>>", props);
-  console.log("storiesById of blog post card >>>>>>", storiesById);
-  console.log("zones of blog post card >>>", zones);
 
   // bulletproof story lookup
   const story: BlogStory | null = (storyId && storiesById && storiesById[storyId])
@@ -2374,7 +2360,6 @@ export function renderBlogPostCard(
       ? Object.values(storiesById).find(s => s && (s.id === storyId || (s as any).storyId === storyId || (s as any).slug === storyId)) ||
       (Object.keys(storiesById).length === 1 ? Object.values(storiesById)[0] : null)
       : null);
-  console.log("story in blog post card>>>", story);
 
   // NOTE: these fields are guaranteed to exist because PublishDrawer overrides them
   const displayTitle =
@@ -2387,18 +2372,12 @@ export function renderBlogPostCard(
     window.__PUCK_FINAL_TITLE__ = displayTitle;
   }
 
-  console.log("dispayTitle >>>", displayTitle);
 
   const displayAuthor =
     story?.author ||
     story?.authorName ||
     author;
 
-  const displayCategory =
-    story?.category ||
-    category;
-
-  console.log("display category >>", displayCategory);
   const displaySection =
     story?.section ||
     section;
@@ -2421,31 +2400,23 @@ export function renderBlogPostCard(
   let displayBody = "";
 
   if (story?.description?.blocks) {
-    console.log("inside editorJS");
     displayBody = renderEditorJsBlocks(story.description.blocks);
   } else if (story?.fullDescription) {
-    console.log("inside fullDescription");
     displayBody = story.fullDescription;
   } else {
-    console.log("inside else");
     displayBody = bodyText || "";
   }
 
   // if (story?.fullDescription) {
-  //   console.log("1");
   //   displayBody = story.fullDescription;
   // } else if (story?.summary) {
-  //   console.log("2");
   //   displayBody = story.summary;
   // } else if (story?.description?.blocks) {
-  //   console.log("3");
   //   displayBody = renderEditorJsBlocks(story.description.blocks);
   // } else {
-  //   console.log("4");
   //   displayBody = bodyText || "";
   // }
 
-  console.log("displayBodyyyyy >>>>", displayBody);
 
   // container id (use provided id or a generated one)
   const containerId = id || `blogpost-${Math.random().toString(36).slice(2, 9)}`;

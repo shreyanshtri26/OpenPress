@@ -18,7 +18,6 @@ import {
         // Add user to event for downstream use
         event.user = user;
         
-        console.log(`✅ Authenticated user: ${user.email} (${user.role})`);
         
         return await handler(event);
       } catch (error) {
@@ -65,7 +64,6 @@ import {
           }
           
           event.user = user;
-          console.log(`✅ Authorized user: ${user.email} (${user.role})`);
           
           return await handler(event);
         } catch (error) {
@@ -113,7 +111,6 @@ import {
           }
           
           event.user = user;
-          console.log(`✅ Authorized user: ${user.email} with permission ${requiredPermission}`);
           
           return await handler(event);
         } catch (error) {

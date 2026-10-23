@@ -101,7 +101,6 @@ export const loadPublishedPage = (id: string): PageStudioData | null => {
   const pages = readPages(storage)
   const pageData = pages[id]?.data ?? null
 
-  console.log("loadPublishedPage - Full data:", JSON.stringify(pageData, null, 2))
 
   return pageData
 }

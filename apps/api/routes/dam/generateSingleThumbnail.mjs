@@ -29,7 +29,6 @@ export const handler = async (event) => {
       };
     }
 
-    console.log(`🎬 Generating single thumbnail for asset: ${assetId}`);
 
     // ✅ Get asset
     const getCommand = new GetCommand({
@@ -56,13 +55,11 @@ export const handler = async (event) => {
       };
     }
 
-    console.log(`📁 Asset found: ${asset.name} (${asset.type})`);
 
     // ✅ Download video from S3
     const key = asset.url.split('/').pop();
     tempFilePath = `/tmp/${Date.now()}_${key}`;
     
-    console.log(`📥 Downloading file from S3: ${key} → ${tempFilePath}`);
     await downloadFileFromS3(BUCKET_NAME, key, tempFilePath);
 
     if (!existsSync(tempFilePath)) {
@@ -71,7 +68,6 @@ export const handler = async (event) => {
 
     // ✅ Use fixed timepoint or default to 5 seconds
     const thumbnailTime = timepoint || 5;
-    console.log(`📸 Extracting thumbnail at ${thumbnailTime} seconds`);
 
     // ✅ Generate unique thumbnail path
     thumbnailPath = `/tmp/thumb_${Date.now()}_${assetId.substring(0, 8)}.jpg`;
@@ -83,13 +79,11 @@ export const handler = async (event) => {
       throw new Error(`Thumbnail generation failed - file not created at ${thumbnailPath}`);
     }
 
-    console.log("✅ Thumbnail generated successfully");
 
     // ✅ Upload to S3
     const thumbnailFileName = `thumbnails/${assetId}-${thumbnailTime}s.jpg`;
     const thumbnailUrl = await uploadThumbnailToS3(thumbnailPath, thumbnailFileName);
 
-    console.log(`✅ Thumbnail uploaded to S3: ${thumbnailUrl}`);
 
     // ✅ Update asset
     const updateCommand = new UpdateCommand({
@@ -122,7 +116,6 @@ export const handler = async (event) => {
     await docClient.send(updateCommand);
 
     const elapsed = Date.now() - startTime;
-    console.log(`✅ Single thumbnail generation completed in ${elapsed}ms`);
 
     return {
       statusCode: 200,
@@ -192,7 +185,6 @@ export const handler = async (event) => {
       if (path && existsSync(path)) {
         try {
           unlinkSync(path);
-          console.log(`🧹 Cleaned up: ${path}`);
         } catch (cleanupError) {
           console.warn(`⚠️ Failed to cleanup ${path}:`, cleanupError);
         }
@@ -217,10 +209,6 @@ async function generateThumbnailAtTime(videoPath, outputPath, timepoint) {
       return;
     }
 
-    console.log(`🎬 Starting FFmpeg thumbnail generation:`);
-    console.log(`   Input: ${videoPath}`);
-    console.log(`   Output: ${outputPath}`);
-    console.log(`   Timepoint: ${timepoint}s`);
 
     const args = [
       '-i', videoPath,
@@ -232,7 +220,6 @@ async function generateThumbnailAtTime(videoPath, outputPath, timepoint) {
       outputPath
     ];
 
-    console.log(`🔧 FFmpeg command: ${FFMPEG_PATH} ${args.join(' ')}`);
 
     const ffmpeg = spawn(FFMPEG_PATH, args);
     let stdout = '';
@@ -247,8 +234,6 @@ async function generateThumbnailAtTime(videoPath, outputPath, timepoint) {
     });
 
     ffmpeg.on('close', (code) => {
-      console.log(`🎬 FFmpeg finished with code: ${code}`);
-      console.log(`📊 FFmpeg stderr: ${stderr.substring(0, 200)}...`);
 
       if (code !== 0) {
         reject(new Error(`FFmpeg failed with code ${code}: ${stderr}`));
@@ -256,7 +241,6 @@ async function generateThumbnailAtTime(videoPath, outputPath, timepoint) {
         reject(new Error(`FFmpeg completed but output file not created: ${outputPath}`));
       } else {
         const stats = statSync(outputPath);
-        console.log(`✅ Thumbnail created: ${outputPath} (${stats.size} bytes)`);
         resolve(true);
       }
     });
@@ -283,7 +267,6 @@ async function uploadThumbnailToS3(localPath, s3Key) {
   const fileBuffer = readFileSync(localPath);
   const stats = statSync(localPath);
   
-  console.log(`📤 Uploading thumbnail: ${localPath} (${stats.size} bytes) → s3://${BUCKET_NAME}/${s3Key}`);
   
   const uploadParams = {
     Bucket: BUCKET_NAME,

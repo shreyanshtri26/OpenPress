@@ -31,7 +31,6 @@ const DAMContainer = () => {
     if (!user) return null;
 
     const handleFileUpload = async (file) => {
-        console.log("file details >>", file);
 
 
 
@@ -40,7 +39,6 @@ const DAMContainer = () => {
 
         if (!file) return;
 
-        console.log("file>>", file);
 
 
         try {
@@ -61,12 +59,9 @@ const DAMContainer = () => {
 
             if (result?.ok) {
                 const res = await result.json();
-                console.log("response>>", res);
 
                 const { uploadUrl, fileUrl } = res;
 
-                console.log("uploadUrl >>>", uploadUrl);
-                console.log("fileUrl >>>", fileUrl);
 
 
                 // Step 2: Upload file directly to S3
@@ -79,7 +74,6 @@ const DAMContainer = () => {
 
 
                 if (answer.ok) {
-                    console.log("Upload successful!");
                     toast.success(`File uploaded !!`);
 
 
@@ -121,7 +115,6 @@ const DAMContainer = () => {
 
             }
         } catch (error) {
-            console.log("Error uploadig file in DAM >>>", error);
             toast.error('Error uploadig file in DAM' + error?.message);
         }
 

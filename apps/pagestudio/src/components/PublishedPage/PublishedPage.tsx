@@ -86,7 +86,6 @@ export function PublishedPage({ pageId, authorSlug }: PublishedPageProps) {
   // Fetch section-specific page data
   const fetchSectionPageData = useCallback(async (section: string | null) => {
     setIsLoading(true);
-    console.log("sectionnnn", section);
     try {
       const base = import.meta.env.VITE_BACKEND_API;
       const token = getToken(); // optional — sections are public, token improves auth if present
@@ -147,7 +146,6 @@ export function PublishedPage({ pageId, authorSlug }: PublishedPageProps) {
           // Registers Ad_* blocks so placements render in preview
           initializePlacements().then(registerDynamicBlocks),
         ]);
-        console.log("Stories and authors loaded for preview page");
         // Then load the published page data
         const livePages = ['login', 'home', 'about', 'privacy-policy', 'media-council', 'contact-us', 'support-us', 'error', 'my-account'];
 
@@ -224,7 +222,6 @@ export function PublishedPage({ pageId, authorSlug }: PublishedPageProps) {
     // Skip on initial load
     if (initialLoadRef.current) return;
 
-    console.log("Section changed to:", activeSection);
     fetchSectionPageData(activeSection);
   }, [activeSection, fetchSectionPageData]);
 

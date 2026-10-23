@@ -27,7 +27,6 @@ const FFMPEG_PATHS = [
 function findFFmpegPath() {
   for (const path of FFMPEG_PATHS) {
     if (existsSync(path)) {
-      console.log(`✅ Found FFmpeg at: ${path}`);
       return path;
     }
   }
@@ -37,7 +36,6 @@ function findFFmpegPath() {
 
 function isTranscodeConfigured() {
   const configured = !!(process.env.TRANSCODE_ROLE_ARN && process.env.TRANSCODE_ENDPOINT);
-  console.log(`📋 Transcode configured: ${configured}`);
   return configured;
 }
 
@@ -48,8 +46,6 @@ export const handler = async (event) => {
   let tempVideoPath = null;
 
   try {
-    console.log(`🎬 Thumbnail Generation Handler Started - ${new Date().toISOString()}`);
-    console.log(`Event:`, JSON.stringify(event, null, 2));
 
     // Parse request body
     let body;
@@ -71,7 +67,6 @@ export const handler = async (event) => {
       };
     }
 
-    console.log(`📋 Processing: assetId=${assetId}, regenerate=${regenerate}, method=${method}`);
 
     // 1️⃣ Get asset from database
     const getCommand = new GetCommand({
@@ -90,7 +85,6 @@ export const handler = async (event) => {
       };
     }
 
-    console.log(`✅ Asset found: ${asset.url}`);
 
     if (!asset.isVideo) {
       return {
@@ -102,7 +96,6 @@ export const handler = async (event) => {
 
     // 2️⃣ Check if thumbnails already exist
     if (asset.videoMetadata?.hasAutoThumbnail && !regenerate) {
-      console.log(`ℹ️ Thumbnails already exist for ${assetId}`);
       return {
         statusCode: 200,
         headers: { "Content-Type": "application/json" },
@@ -126,17 +119,13 @@ export const handler = async (event) => {
       // Auto-detect: prefer Transcode if configured, fallback to FFmpeg
       if (isTranscodeConfigured()) {
         useMethod = 'transcode';
-        console.log(`🎯 Auto-selected: Transcode (configured and available)`);
       } else if (findFFmpegPath()) {
         useMethod = 'ffmpeg';
-        console.log(`🎯 Auto-selected: FFmpeg (Transcode not configured)`);
       } else {
         useMethod = 'placeholder';
-        console.log(`🎯 Auto-selected: Placeholder (no processing tools available)`);
       }
     }
 
-    console.log(`🎬 Using method: ${useMethod}`);
 
     // 4️⃣ Route to appropriate method
     switch (useMethod) {
@@ -175,7 +164,6 @@ export const handler = async (event) => {
     if (tempVideoPath && existsSync(tempVideoPath)) {
       try {
         unlinkSync(tempVideoPath);
-        console.log(`🧹 Cleaned up: ${tempVideoPath}`);
       } catch (err) {
         console.warn(`⚠️ Cleanup failed: ${err.message}`);
       }
@@ -187,7 +175,6 @@ export const handler = async (event) => {
 // METHOD 1: MEDIACONVERT (High Quality, Async)
 // =============================================================================
 async function generateWithTranscode(asset, assetId) {
-  console.log(`📸 Generating thumbnails with Transcode`);
 
   const videoKey = asset.url.split('/').pop();
   const duration = asset.metadata?.duration || 60;
@@ -210,7 +197,6 @@ async function generateWithTranscode(asset, assetId) {
     thumbnailTimes = [5, 15, 30];
   }
 
-  console.log(`🎯 Thumbnail timepoints: ${thumbnailTimes.map(t => `${t}s`).join(', ')}`);
 
   // Create thumbnail outputs
   const thumbnailOutputs = thumbnailTimes.map((time) => {
@@ -268,7 +254,6 @@ async function generateWithTranscode(asset, assetId) {
     const command = new CreateJobCommand(jobSettings);
     const response = await transcodeClient.send(command);
 
-    console.log(`✅ Transcode job created: ${response.Job.Id}`);
 
     // Update database
     await docClient.send(new UpdateCommand({
@@ -324,7 +309,6 @@ async function generateWithTranscode(asset, assetId) {
 // METHOD 2: FFMPEG (Instant, Medium Quality)
 // =============================================================================
 async function generateWithFFmpeg(asset, assetId) {
-  console.log(`⚡ Generating thumbnails with FFmpeg (instant)`);
 
   const ffmpegPath = findFFmpegPath();
   if (!ffmpegPath) {
@@ -339,12 +323,10 @@ async function generateWithFFmpeg(asset, assetId) {
     const videoKey = asset.url.split('/').pop();
     tempVideoPath = `/tmp/${Date.now()}_${videoKey}`;
     
-    console.log(`📥 Downloading video: ${videoKey}`);
     await downloadVideoFromS3(videoKey, tempVideoPath);
 
     // ✅ Get full video metadata including dimensions
     const videoMetadata = await getVideoMetadata(tempVideoPath);
-    console.log(`📹 Video metadata:`, videoMetadata);
 
     // Calculate thumbnail times
     let thumbnailTimes = videoMetadata.duration < 30 
@@ -425,7 +407,6 @@ async function generateWithFFmpeg(asset, assetId) {
 // METHOD 3: PLACEHOLDER (Fallback)
 // =============================================================================
 async function generateWithPlaceholder(asset, assetId) {
-  console.log(`🎨 Generating placeholder thumbnails`);
 
   const placeholderThumbnails = [];
   const timepoints = [5, 15, 30];
@@ -568,8 +549,6 @@ async function getVideoMetadata(videoPath) {
 
 // Extract frame with smart dimensions based on aspect ratio
 async function extractRealVideoFrame(ffmpegPath, videoPath, timepoint, fileName, assetId, videoMetadata) {
-  console.log(`🎬 Extracting REAL frame at ${timepoint}s using FFmpeg`);
-  console.log(`   Video dimensions: ${videoMetadata.width}x${videoMetadata.height}`);
   
   const tempThumbnailPath = `/tmp/${assetId}-${timepoint}s-${Date.now()}.jpg`;
   
@@ -602,7 +581,6 @@ async function extractRealVideoFrame(ffmpegPath, videoPath, timepoint, fileName,
     dimensions = '360x640';
   }
   
-  console.log(`   Target dimensions: ${dimensions} (aspect ratio: ${sourceAspectRatio.toFixed(2)})`);
   
   return new Promise((resolve, reject) => {
     const ffmpeg = spawn(ffmpegPath, [

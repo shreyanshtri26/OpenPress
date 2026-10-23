@@ -25,7 +25,6 @@ export const handler = async (event) => {
     }
 
     const s3Key = "login.html";
-    console.log(`🔧 Publishing LOGIN page to S3: ${BUCKET_NAME}/${s3Key}`);
 
     const uploadParams = {
       Bucket: BUCKET_NAME,
@@ -48,8 +47,6 @@ export const handler = async (event) => {
       Key: "login/index.html"
     }));
 
-    console.log("✅ Login page published successfully");
-    console.log("⏱ Time taken:", Date.now() - startTime, "ms");
 
     return {
       statusCode: 200,

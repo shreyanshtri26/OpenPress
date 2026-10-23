@@ -227,7 +227,6 @@ const VideoControlsBar = ({
                 <div className="relative">
                     <button
                         onClick={(e) => {
-                            console.log("cliked on quality button....");
                             e.stopPropagation();
                             setShowQualityDropdown(!showQualityDropdown);
                         }}
@@ -251,7 +250,6 @@ const VideoControlsBar = ({
                                         key={quality.quality}
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            console.log("clicked on quality options");
                                             handleQualitySelect(quality.quality);
                                         }}
                                         className={`w-full px-3 py-2 text-left text-sm hover:bg-gray-700 transition-colors ${selectedQuality === quality.quality
@@ -374,7 +372,6 @@ const AssetPreview = ({ asset, metadata, showThumbnail = true }) => {
                 if (!res.ok) throw new Error("Failed to fetch quality variants");
 
                 const data = await res.json();
-                console.log("Quality variants data >>>", data);
 
                 // Update transcoding status and progress
                 setTranscodingStatus(data.transcodingStatus || 'UNKNOWN');
@@ -383,7 +380,6 @@ const AssetPreview = ({ asset, metadata, showThumbnail = true }) => {
                 // Check transcoding status
                 if (data.transcodingStatus === 'COMPLETE' && data.processedVariants && data.processedVariants.length > 0) {
 
-                    console.log("data>>>>", data);
 
                     // Processing is complete - set the variants
                     setQualityVariants(data.processedVariants);
@@ -399,13 +395,11 @@ const AssetPreview = ({ asset, metadata, showThumbnail = true }) => {
                     setIsPolling(false);
 
                     // toast.success('Video processing complete! All quality options are now available.');
-                    console.log("Transcoding completed successfully:", data.processedVariants);
 
                     return; // Exit polling
 
                 } else if (data.transcodingStatus === 'PROGRESSING' || data.transcodingStatus === 'SUBMITTED') {
                     // Still processing - continue polling
-                    console.log(`Transcoding in progress... Retry ${retryCount + 1}/${maxRetries} - Progress: ${data.jobProgress || 0}%`);
 
                     if (retryCount < maxRetries) {
                         retryCount++;
@@ -597,7 +591,6 @@ const AssetPreview = ({ asset, metadata, showThumbnail = true }) => {
 
             if (!response.ok) throw new Error(`Failed to save thumbnail: ${response.status}`);
 
-            console.log('✅ Auto-saved thumbnail:', payload.selectedThumbnail);
         } catch (err) {
             console.error('❌ Error auto-saving thumbnail:', err);
         } finally {
@@ -767,15 +760,9 @@ const AssetPreview = ({ asset, metadata, showThumbnail = true }) => {
     };
 
     if (import.meta.env.DEV) {
-        console.log('Asset preview data:', asset);
-        console.log('Metadata:', metadata);
-        console.log('Media source:', getMediaSource());
-        console.log('Quality variants:', qualityVariants);
-        console.log('Selected quality:', selectedQuality);
     }
 
 
-    console.log("metadata >>>", metadata);
 
 
     return (
@@ -814,7 +801,6 @@ const AssetPreview = ({ asset, metadata, showThumbnail = true }) => {
                                 }}
                                 onLoad={() => {
                                     if (import.meta.env.DEV) {
-                                        console.log('Image loaded successfully:', getMediaSource());
                                     }
                                 }}
                             />
@@ -945,7 +931,7 @@ const AssetPreview = ({ asset, metadata, showThumbnail = true }) => {
                             </div>
                         )}
 
-                        {console.log('Loading:', thumbnailLoading, 'Thumbnails:', generatedThumbnails)}
+                        {}
 
 
                         {/* Thumbnail Selector - Only show if thumbnails are available */}
