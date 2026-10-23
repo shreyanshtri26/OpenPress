@@ -378,13 +378,13 @@ export function renderMastheadNavbar({
           <button
             onclick="toggleAccountDropdown(event)"
             id="account-dropdown-btn"
-            class="flex items-center gap-2 px-3 py-2 font-share text-black text-xs sm:text-sm lg:text-[1rem] hover:opacity-70 transition-opacity whitespace-nowrap cursor-pointer"
+            class="flex items-center gap-2 px-1 sm:px-3 py-1 sm:py-2 font-share text-black text-xs sm:text-sm lg:text-[1rem] hover:opacity-70 transition-opacity whitespace-nowrap cursor-pointer" aria-label="My account" aria-haspopup="menu"
           >
-            <img id="user-picture" src="" alt="" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover border border-black hidden" />
-            <div id="user-initial" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold">?</div>
+            <img id="user-picture" src="" alt="" class="w-9 h-9 sm:w-8 sm:h-8 rounded-full object-cover border border-black hidden" />
+            <div id="user-initial" class="w-9 h-9 sm:w-8 sm:h-8 rounded-full bg-black text-white flex items-center justify-center text-sm sm:text-xs font-bold">?</div>
             <svg
               id="account-chevron"
-              class="w-4 h-4 transition-transform duration-200"
+              class="hidden sm:block w-4 h-4 transition-transform duration-200"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -447,7 +447,10 @@ export function renderMastheadNavbar({
   <div id="mobile-menu-overlay" class="op-menu" data-open="false" aria-hidden="true">
     <div id="mobile-menu-drawer" class="op-menu__sheet" role="dialog" aria-modal="true" aria-label="Site menu">
       <div class="op-menu__bar">
-        <img class="op-menu__logo" src="/openpress-logo-full-nobg-trim.png" alt="OpenPress" />
+        <img class="op-menu__logo" src="/openpress-logo-full-nobg-trim.png" width="675" height="228" alt="OpenPress. Every thought has a story." />
+        <button id="mobile-menu-close" type="button" onclick="closeMobileMenu()" class="op-menu__close" aria-label="Close menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
         <div class="op-menu__bar-actions">
           <div id="drawer-avatar-container" class="op-menu__avatar">
             ${resolvedShowSignIn ? `
@@ -462,13 +465,9 @@ export function renderMastheadNavbar({
             </button>
             ` : ''}
           </div>
-          <button id="mobile-menu-close" type="button" onclick="closeMobileMenu()" class="op-menu__close" aria-label="Close menu">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          </button>
         </div>
       </div>
 
-      <div class="op-menu__scroll">
         <div id="drawer-search-container" class="op-menu__search">
           <svg id="drawer-search-icon" class="op-menu__search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.3-4.3M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
           <input
@@ -487,8 +486,22 @@ export function renderMastheadNavbar({
           </button>
         </div>
 
+      <div class="op-menu__scroll">
         <div id="drawer-nav-container" class="op-menu__body">
           <nav id="drawer-nav-links" class="op-menu__nav" aria-label="Sections">
+            <!-- Guest card (shown while signed out): the OpenPress app icon with a way in, mirroring the reader card below -->
+            ${resolvedShowSignIn ? `
+            <div id="drawer-guest-card" class="hidden op-menu__reader op-menu__guest">
+              <div class="op-menu__reader-row">
+                <span class="op-menu__guest-tile"><img class="op-menu__guest-icon" src="/openpress-quill-nobg-trim.png" width="354" height="414" alt="OpenPress" /></span>
+                <div class="op-menu__reader-text">
+                  <div class="op-menu__reader-name">Welcome to OpenPress</div>
+                  <div class="op-menu__reader-email op-menu__guest-sub">Sign in to personalise your ePaper</div>
+                </div>
+              </div>
+              <button id="mobile-drawer-guest-login-btn" onclick="closeMobileMenu(); openEpaperAuthModal();" type="button" class="op-menu__guest-btn" style="background-color: ${resolvedSignInBg}; color: ${resolvedSignInText};">${signInText}</button>
+            </div>
+            ` : ''}
             <!-- Reader profile card (shown once a reader is signed in) -->
             <div id="drawer-reader-card" class="hidden op-menu__reader">
               <div class="op-menu__reader-row">
@@ -714,14 +727,18 @@ export function renderMastheadNavbar({
         clearBtn.style.display = (q || active) ? 'block' : 'none';
       }
 
+      var sheet = document.getElementById('mobile-menu-drawer');
       if (!q && !active) {
         resultsEl.classList.add('hidden');
         linksEl.classList.remove('hidden');
+        if (sheet) sheet.classList.remove('is-searching');
         return;
       }
 
       resultsEl.classList.remove('hidden');
       linksEl.classList.add('hidden');
+      // While searching, the section list and the buttons under it step aside so the results get the whole sheet.
+      if (sheet) sheet.classList.add('is-searching');
 
       if (q !== lastDrawerQuery) {
         drawerVisibleCount = 10;
@@ -737,28 +754,32 @@ export function renderMastheadNavbar({
       var headerText = q ? (filtered.length + ' result' + (filtered.length !== 1 ? 's' : '')) : 'LATEST STORIES';
 
       if (filtered.length === 0) {
-        resultsEl.innerHTML = '<div class="p-4 text-center text-gray-500 font-merriweather text-sm">No stories found.</div>';
+        var safeQuery = String(query || '').replace(/[&<>"']/g, function(c) { return '&#' + c.charCodeAt(0) + ';'; });
+        resultsEl.innerHTML = '<div class="op-menu__empty">' +
+          '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.3-4.3M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>' +
+          '<p class="op-menu__empty-title">No stories found' + (safeQuery ? ' for &ldquo;' + safeQuery + '&rdquo;' : '') + '</p>' +
+          '<p class="op-menu__empty-hint">Try a different word, or clear the search to browse the sections.</p>' +
+          '<button type="button" onclick="clearDrawerSearch()" class="op-menu__empty-btn">Clear search</button>' +
+          '</div>';
         return;
       }
 
+      var esc = function(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function(c) { return '&#' + c.charCodeAt(0) + ';'; }); };
       var displayed = filtered.slice(0, drawerVisibleCount);
-      var listHtml = '<div class="flex flex-col gap-3">' +
-        '<p class="text-xs font-merriweather text-gray-400 uppercase tracking-widest px-2">' + headerText + '</p>' +
-        '<div class="flex flex-col gap-2">' +
+      var count = '<strong>' + filtered.length + '</strong> ' + (q ? 'result' + (filtered.length !== 1 ? 's' : '') : 'latest stories');
+      var forQ = q ? ' <span class="op-menu__results-q">for &ldquo;' + esc(query.trim()) + '&rdquo;</span>' : '';
+      var listHtml = '<p class="op-menu__results-head" role="status">' + count + forQ + '</p><ul class="op-menu__list">' +
         displayed.map(function(s) {
-          var imgHtml = s.image ? '<img src="' + s.image + '" alt="" class="w-full h-full object-cover" loading="lazy" />' : '';
-          var sectionBadge = s.section ? '<span class="inline-block text-[8px] font-share text-white bg-black uppercase tracking-widest px-1 py-0.5 mb-0.5">' + s.section + '</span>' : '';
-          return '<a href="' + (s.publishUrl || '#') + '" onclick="closeMobileMenu()" class="flex items-start gap-3 p-2 hover:bg-gray-50 active:bg-gray-100 rounded-sm group transition-colors border-b border-gray-100 last:border-0">' +
-            '<div class="w-16 h-12 flex-shrink-0 overflow-hidden rounded-sm bg-gray-100">' + imgHtml + '</div>' +
-            '<div class="flex-1 min-w-0">' + sectionBadge + '<p class="font-merriweather text-black text-xs leading-snug line-clamp-2">' + s.title + '</p></div>' +
-            '</a>';
-        }).join('') +
-        '</div></div>';
+          var thumb = s.image ? '<img src="' + esc(s.image) + '" alt="" loading="lazy" />' : '';
+          var badge = s.section ? '<span class="op-result__badge">' + esc(s.section) + '</span>' : '';
+          return '<li><a class="op-result" href="' + esc(s.publishUrl || '#') + '" onclick="closeMobileMenu()">' +
+            '<span class="op-result__thumb">' + thumb + '</span>' +
+            '<span class="op-result__body">' + badge + '<span class="op-result__title">' + esc(s.title) + '</span></span>' +
+            '</a></li>';
+        }).join('') + '</ul>';
 
       if (filtered.length > drawerVisibleCount) {
-        listHtml += '<div class="flex justify-center pt-4 pb-2">' +
-          '<button onmousedown="event.preventDefault()" onclick="loadMoreDrawerStories()" class="bg-black font-merriweather text-white text-[10px] px-4 py-1.5 hover:bg-neutral-850 transition-colors uppercase tracking-wider border border-black hover:border-neutral-850 rounded-sm">Load More</button>' +
-          '</div>';
+        listHtml += '<button type="button" onmousedown="event.preventDefault()" onclick="loadMoreDrawerStories()" class="op-menu__more">Show more stories</button>';
       }
 
       resultsEl.innerHTML = listHtml;
@@ -1333,6 +1354,8 @@ export function renderMastheadNavbar({
             }
 
             if (drawerAvatarContainer) drawerAvatarContainer.innerHTML = '';
+            const guestCardIn = document.getElementById('drawer-guest-card');
+            if (guestCardIn) guestCardIn.classList.add('hidden');
 
             const drawerCard = document.getElementById('drawer-reader-card');
             if (drawerCard) {
@@ -1365,9 +1388,9 @@ export function renderMastheadNavbar({
           if (mobileLoginBtn) mobileLoginBtn.style.display = 'flex';
           if (mobileAccountContainer) mobileAccountContainer.style.display = 'none';
           const drawerAvatarContainer = document.getElementById('drawer-avatar-container');
-          if (drawerAvatarContainer) {
-            drawerAvatarContainer.innerHTML = mobileDrawerLoginHtml;
-          }
+          if (drawerAvatarContainer) drawerAvatarContainer.innerHTML = '';
+          const guestCardOut = document.getElementById('drawer-guest-card');
+          if (guestCardOut) guestCardOut.classList.remove('hidden');
           const drawerCard = document.getElementById('drawer-reader-card');
           if (drawerCard) drawerCard.classList.add('hidden');
         }
