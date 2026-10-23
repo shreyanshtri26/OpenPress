@@ -126,7 +126,7 @@ export const AssetLibraryDesktopHeader = ({
             </div>
             <TextBox
               className="search-input w-full"
-              inputClassName="pl-9 h-10 border border-gray-300 rounded-md focus:border-black focus:ring-1 focus:ring-black text-sm"
+              inputClassName="pl-9 h-10 border border-[var(--color-border)] bg-[var(--color-input)] rounded-lg focus:border-black focus:ring-1 focus:ring-black text-sm"
               placeholder="search with AI..."
               value={searchValue}
               valueChangeEvent="input"
@@ -152,8 +152,8 @@ export const AssetLibraryDesktopHeader = ({
               value={selectedDateUpdatedValue}
               onValueChanged={(e) => handleDateUpdatedValueChange(e.value)}
               placeholder="Date updated"
-              height={42}
-              inputClassName="h-[42px] border border-gray-300 rounded-md focus:border-black focus:ring-1 focus:ring-black text-sm"
+              height={40}
+              inputClassName="h-10 border border-[var(--color-border)] bg-[var(--color-input)] rounded-lg focus:border-black focus:ring-1 focus:ring-black text-sm"
               dropDownButtonTemplate={accordionArrowTemplate}
               onOpened={() => setIsDateUpdatedDropdownOpen(true)}
               onClosed={() => {
@@ -236,8 +236,8 @@ export const AssetLibraryDesktopHeader = ({
               value={fileTypeValue}
               onValueChanged={(e) => onFileTypeChange?.(e.value)}
               placeholder="File type"
-              height={42}
-              inputClassName="h-[42px] border border-gray-300 rounded-md focus:border-black focus:ring-1 focus:ring-black text-sm"
+              height={40}
+              inputClassName="h-10 border border-[var(--color-border)] bg-[var(--color-input)] rounded-lg focus:border-black focus:ring-1 focus:ring-black text-sm"
               dropDownButtonTemplate={accordionArrowTemplate}
             />
           </div>
@@ -250,8 +250,8 @@ export const AssetLibraryDesktopHeader = ({
               value={sortByValue}
               onValueChanged={(e) => onSortByChange?.(e.value)}
               placeholder="Sort by"
-              height={42}
-              inputClassName="h-[42px] border border-gray-300 rounded-md focus:border-black focus:ring-1 focus:ring-black text-sm"
+              height={40}
+              inputClassName="h-10 border border-[var(--color-border)] bg-[var(--color-input)] rounded-lg focus:border-black focus:ring-1 focus:ring-black text-sm"
               dropDownButtonTemplate={accordionArrowTemplate}
             />
           </div>
@@ -260,7 +260,7 @@ export const AssetLibraryDesktopHeader = ({
         <div className="flex-shrink-0">
           <button
             onClick={onShowUpload}
-            className="h-10 px-5 bg-black text-white rounded-md text-xs font-semibold hover:bg-gray-800 border border-black transition-colors whitespace-nowrap flex items-center justify-center shadow-sm"
+            className="h-10 px-5 bg-black text-white rounded-lg text-sm font-semibold hover:bg-gray-800 border border-black transition-colors whitespace-nowrap flex items-center justify-center shadow-sm"
           >
             Upload
           </button>
