@@ -904,9 +904,9 @@ const TaxonomyTab = () => {
                   </td>
                   {activeTaxonomyTab === "editorial" && (
                     <>
-                      <td className="px-4 py-3 text-sm align-top">
+                      <td className="min-w-[180px] px-4 py-3 text-sm align-top">
                         <select
-                          className="w-full border border-gray-300 px-2 py-1 text-sm focus:border-black focus:ring-black"
+                          className="h-9 w-full min-w-[150px] rounded-lg border border-[var(--color-border)] bg-[var(--color-input)] pl-3 pr-8 text-sm focus:border-black focus:ring-0"
                           value={group.selectionType || "single"}
                           onChange={(event) => handleSelectionTypeChange(group.id, event.target.value)}
                         >

@@ -354,7 +354,7 @@ export function generateSurveyPageHtml(survey: Survey): string {
   }
 
   function renderUpcoming(s){
-    var startStr = s.startTime ? new Date(s.startTime).toLocaleString('en-NZ', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : 'soon';
+    var startStr = s.startTime ? new Date(s.startTime).toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : 'soon';
     document.getElementById('app').innerHTML = '<div class="card"><div class="card-bar"></div><div class="card-body"><div class="state"><div class="state-icon">⏳</div><div class="state-title">' + esc(s.title) + '</div><div class="state-msg">This survey has not started yet. It is scheduled to begin on <strong>' + esc(startStr) + '</strong>.</div></div></div></div>';
   }
 

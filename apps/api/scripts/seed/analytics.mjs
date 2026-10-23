@@ -8,7 +8,7 @@ const sql = (...a) => getClient().sql(...a); // the exported `sql` proxy cannot 
 sql.end = (o) => getClient().sql.end(o);
 const PLACES = [
   ["IN", "MH", "Mumbai"], ["IN", "DL", "New Delhi"], ["IN", "KA", "Bengaluru"], ["IN", "UP", "Lucknow"], ["IN", "TN", "Chennai"],
-  ["US", "CA", "San Francisco"], ["GB", "ENG", "London"], ["AE", "DU", "Dubai"], ["SG", "SG", "Singapore"], ["NZ", "AUK", "Auckland"],
+  ["US", "CA", "San Francisco"], ["GB", "ENG", "London"], ["AE", "DU", "Dubai"], ["SG", "SG", "Singapore"], ["IN", "WB", "Kolkata"],
 ];
 const AGENTS = [
   { device: "Desktop", browser: "Chrome", os: "Windows", w: 4 }, { device: "Mobile", browser: "Chrome", os: "Android", w: 6 },
@@ -16,7 +16,7 @@ const AGENTS = [
   { device: "Desktop", browser: "Firefox", os: "Linux", w: 1 }, { device: "Tablet", browser: "Safari", os: "iOS", w: 1 },
 ];
 const REFERRERS = [null, null, null, "google.com", "google.com", "twitter.com", "facebook.com", "news.ycombinator.com", "linkedin.com"];
-const LANGS = ["en-IN", "en-IN", "en-US", "en-GB", "hi-IN", "en-NZ"];
+const LANGS = ["en-IN", "en-IN", "en-US", "en-GB", "hi-IN", "en-IN"];
 const PLATFORMS = ["whatsapp", "twitter", "facebook", "linkedin", "copy_link"];
 
 // small deterministic generator so re-running gives the same shape

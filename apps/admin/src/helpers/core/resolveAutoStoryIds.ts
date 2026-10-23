@@ -108,7 +108,7 @@ export function resolveAutoStoryIds(
     })
   })
 
-  // Apply legacy automaticCategory fallback (e.g. "Section::New Zealand")
+  // Apply legacy automaticCategory fallback (e.g. "Section::India")
   const automaticCategory = blockProps.automaticCategory as string | undefined
   let pool2 = filtered
   if (automaticCategory) {

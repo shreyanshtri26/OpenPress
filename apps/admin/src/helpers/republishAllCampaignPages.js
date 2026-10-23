@@ -301,7 +301,7 @@ export async function republishAllCampaignPages(token, label = null) {
         });
 
         // 3. Re-publish all section pages in concurrent batches.
-        const sectionsToSync = sectionsList.length > 0 ? sectionsList : ["New Zealand", "World", "Politics", "Culture", "Immigration", "Entertainment", "Sport", "Business", "Opinion"];
+        const sectionsToSync = sectionsList.length > 0 ? sectionsList : ["India", "World", "Politics", "Culture", "Immigration", "Entertainment", "Sport", "Business", "Opinion"];
         await processInBatches(sectionsToSync, 12, async (section) => {
             try {
                 const resolvedPageType = `Section-${section}`;

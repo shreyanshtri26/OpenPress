@@ -35,7 +35,7 @@ export const SAMPLE_ASSETS = [
     tags: ["Politics", "Government", "Parliament", "Legislation", "National"],
     creator: "Staff Photojournalist",
     licensing: "Editorial Use Only",
-    location: "Wellington",
+    location: "New Delhi",
   },
   {
     name: "technology-datacenter.jpg",
@@ -50,7 +50,7 @@ export const SAMPLE_ASSETS = [
     tags: ["Technology", "AI", "Cloud", "Data", "Innovation"],
     creator: "Tech Wire",
     licensing: "Editorial Use Only",
-    location: "Auckland",
+    location: "Mumbai",
   },
   {
     name: "business-stock-exchange.jpg",
@@ -110,7 +110,7 @@ export const SAMPLE_ASSETS = [
     tags: ["Arts & Culture", "Museum", "Exhibition", "Gallery", "Lifestyle"],
     creator: "Culture Reporter",
     licensing: "Editorial Use Only",
-    location: "Wellington",
+    location: "New Delhi",
   },
   {
     name: "healthcare-hospital-lab.jpg",
@@ -125,7 +125,7 @@ export const SAMPLE_ASSETS = [
     tags: ["Health", "Medicine", "Science", "Healthcare", "Research"],
     creator: "Health Desk",
     licensing: "Editorial Use Only",
-    location: "Auckland",
+    location: "Mumbai",
   },
   {
     name: "breaking-news-press-conference.jpg",

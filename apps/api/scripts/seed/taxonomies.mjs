@@ -137,11 +137,11 @@ export const DEFAULT_TAXONOMIES = [
     isMendatory: false,
     values: [
       'National',
-      'Auckland',
-      'Wellington',
-      'Canterbury',
+      'North India',
+      'South India',
+      'East India',
+      'West India',
       'International',
-      'Pacific',
     ],
     permissions: {
       Selection: 'single',
