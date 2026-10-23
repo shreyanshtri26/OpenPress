@@ -250,7 +250,7 @@ export function renderDevLoginPageHtml() {
         try {
           const tokenRes = await fetch(neonAuth + '/token', { credentials: 'include' });
           const tokenData = tokenRes.ok ? await tokenRes.json() : null;
-          if (!tokenData || !tokenData.token) throw new Error('Sign in did not finish. If your browser blocks third-party cookies, allow them for this site and try again.');
+          if (!tokenData || !tokenData.token) throw new Error('Google sign-in did not finish. Please try again.');
           const res = await fetch(apiBase + '/epaper/auth/sync', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tokenData.token },
@@ -270,6 +270,16 @@ export function renderDevLoginPageHtml() {
         if (!neonAuth || urlParams.get('neon') !== '1') return;
         const btn = document.getElementById('google-signin-btn');
         if (btn) { btn.disabled = true; btn.textContent = 'Finishing sign in...'; }
+        // Google sends the reader back with a one-time verifier. Trading it (with the challenge cookie set when sign-in
+        // started) for the session is what puts the session cookie on this site, so it survives iOS Safari.
+        const verifier = urlParams.get('neon_auth_session_verifier');
+        if (verifier) {
+          try {
+            await fetch(neonAuth + '/get-session?neon_auth_session_verifier=' + encodeURIComponent(verifier), { credentials: 'include' });
+          } catch (e) { /* the token step below reports a failed sign-in */ }
+          urlParams.delete('neon_auth_session_verifier');
+          try { history.replaceState(null, '', window.location.pathname + '?' + urlParams.toString()); } catch (e) {}
+        }
         await finishNeonSession(btn, 'Continue with Google');
       }
 
