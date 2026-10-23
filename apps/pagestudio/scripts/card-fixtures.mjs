@@ -121,7 +121,7 @@ export const MEASURE = `function measure(doc, W, editor) {
       var spread = function (a) { return Math.max.apply(0, a) - Math.min.apply(0, a); };
       spread(tops) <= 2 && spread(heights) <= 2 ? pass('latest: cards share a top edge and an image height') : fail('latest: cards share a top edge and an image height', 'tops differ ' + Math.round(spread(tops)) + 'px, heights differ ' + Math.round(spread(heights)) + 'px');
     } else { fail('latest: four cards', 'found ' + imgs.length + ' images'); }
-    var pop = editor ? null : rect('#popular-grid table'), boxEl = doc.querySelector('#popular-grid .op-container');
+    var pop = editor ? null : rect('#popular-grid .mp-list'), boxEl = doc.querySelector('#popular-grid .op-container');
     if (pop && boxEl) { var cs = win.getComputedStyle(boxEl); var inner = boxEl.getBoundingClientRect().width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight); var short = inner - pop.width; short <= 8 ? pass('ranked list fills the page container') : fail('ranked list fills the page container', 'list is ' + Math.round(short) + 'px narrower than the container'); }
     else if (!editor) { fail('ranked list', 'table or container not found'); }
     var mm = editor ? null : rect('#multimedia-grid .op-container'), mmCard = rect('#multimedia-grid .grid > div');

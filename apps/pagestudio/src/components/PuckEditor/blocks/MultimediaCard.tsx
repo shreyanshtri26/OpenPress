@@ -39,9 +39,9 @@ export const MultimediaCard: React.FC<MultimediaCardProps> = ({
 
 
   return (
-    <div className="relative w-full overflow-hidden flex flex-col lg:flex-row h-auto lg:h-[500px]">
+    <div className="relative w-full overflow-hidden flex flex-col lg:flex-row h-auto lg:min-h-[340px] lg:items-stretch">
       {/* Image Section with Play Button */}
-      <div className="relative w-full lg:w-[45%] h-[400px] lg:h-full overflow-hidden">
+      <div className="relative w-full lg:w-[45%] h-[260px] sm:h-[340px] lg:h-auto lg:min-h-[340px] overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
           {imageUrl ? (
             <img
@@ -68,7 +68,7 @@ export const MultimediaCard: React.FC<MultimediaCardProps> = ({
       </div>
 
       {/* Text Section */}
-      <div className="w-full lg:w-[55%] p-4 lg:py-0 lg:pl-8 lg:pr-8 flex flex-col h-full">
+      <div className="w-full lg:w-[55%] p-4 lg:py-6 lg:pl-8 lg:pr-4 flex flex-col justify-center gap-4">
         {/* Top part: label, title, description */}
         <div className="flex flex-col gap-2 flex-grow">
           {/* Static label */}

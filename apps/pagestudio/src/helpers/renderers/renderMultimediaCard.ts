@@ -32,11 +32,11 @@ export function renderMultimediaCard(
 
   return `
 <${Tag}
-  class="relative w-full overflow-hidden block flex flex-col lg:flex-row h-auto lg:h-[500px] ${publishUrl ? 'cursor-pointer hover:opacity-90' : ''} transition-opacity"
+  class="relative w-full overflow-hidden block flex flex-col lg:flex-row h-auto lg:min-h-[340px] lg:items-stretch ${publishUrl ? 'cursor-pointer hover:opacity-90' : ''} transition-opacity"
   ${actionAttr}
 >
 
-  <div class="relative w-full lg:w-[45%] h-[400px] lg:h-full overflow-hidden">
+  <div class="relative w-full lg:w-[45%] h-[260px] sm:h-[340px] lg:h-auto lg:min-h-[340px] overflow-hidden">
     <img
       src="${escapeHtml(imageUrl)}"
       alt="${escapeHtml(title)}"
@@ -50,7 +50,7 @@ export function renderMultimediaCard(
     </div>
   </div>
 
-  <div class="w-full lg:w-[55%] p-4 lg:py-0 lg:pl-8 lg:pr-8 flex flex-col h-full">
+  <div class="w-full lg:w-[55%] p-4 lg:py-6 lg:pl-8 lg:pr-4 flex flex-col justify-center gap-4">
     <div class="flex flex-col gap-2 flex-grow">
       <span class="text-black font-share border-black border text-[10px] uppercase tracking-wide px-2 w-fit">
         VIDEOS
